@@ -55,11 +55,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (found) {
       setIsAdmin(true);
       localStorage.setItem('adai_admin', 'true');
-      if (!user) {
-        const u: User = { id: 0, nome: 'Admin', sobre: '', email: 'admin@adai.com', plano: 'Pro' };
-        setUser(u);
-        localStorage.setItem('adai_user', JSON.stringify(u));
-      }
+      // Admin always gets Pro plan
+      const u: User = { id: user?.id ?? 0, nome: user?.nome ?? 'Admin', sobre: user?.sobre ?? '', email: user?.email ?? 'admin@adai.com', plano: 'Pro' };
+      setUser(u);
+      localStorage.setItem('adai_user', JSON.stringify(u));
       return true;
     }
     return false;
