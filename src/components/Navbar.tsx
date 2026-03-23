@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Menu } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import AuthModal from './AuthModal';
 
 export default function Navbar({ onNavigate }: { onNavigate: (page: string) => void }) {
