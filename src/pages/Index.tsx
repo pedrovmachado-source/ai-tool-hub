@@ -1,16 +1,135 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from 'react';
+import { CATEGORIES } from '@/data/tools-data';
+import Navbar from '@/components/Navbar';
+import CategoryTabs from '@/components/CategoryTabs';
+import ToolCard from '@/components/ToolCard';
+import EbookModal from '@/components/EbookModal';
+import ProPage from '@/components/ProPage';
+import AdminPanel from '@/components/AdminPanel';
+import PromptsLibrary from '@/components/PromptsLibrary';
+import UserProfile from '@/components/UserProfile';
+import { useAuth } from '@/contexts/AuthContext';
+import { Search, Lock } from 'lucide-react';
+import type { Tool, Category } from '@/data/tools-data';
 
-// IMPORTANT: Fully REPLACE this with your own code
-const PlaceholderIndex = () => {
-  // PLACEHOLDER: Replace this entire return statement with the user's app.
-  // The inline background color is intentionally not part of the design system.
+export default function Index() {
+  const { user, isAdmin } = useAuth();
+  const [page, setPage] = useState('home');
+  const [activeCategory, setActiveCategory] = useState('texto');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [ebookModal, setEbookModal] = useState<{ tool: Tool; category: Category } | null>(null);
+
+  const category = CATEGORIES.find(c => c.key === activeCategory)!;
+
+  const filteredTools = searchQuery
+    ? CATEGORIES.flatMap(c => c.tools.map(t => ({ tool: t, category: c }))).filter(({ tool }) =>
+        tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        tool.desc.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        tool.badge.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : category.tools.map(t => ({ tool: t, category }));
+
+  const handleOpenEbook = (tool: Tool, cat: Category) => {
+    const canAccess = isAdmin || (user && user.plano === 'Pro');
+    if (!canAccess) {
+      setPage('pro');
+      return;
+    }
+    setEbookModal({ tool, category: cat });
+  };
+
+  if (page === 'admin' && isAdmin) return <AdminPanel onBack={() => setPage('home')} />;
+  if (page === 'pro') return <ProPage onBack={() => setPage('home')} onNavigate={setPage} />;
+  if (page === 'profile') return <UserProfile onBack={() => setPage('home')} onNavigate={setPage} />;
+
   return (
-    <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: '#fcfbf8' }}>
-      <img data-lovable-blank-page-placeholder="REMOVE_THIS" src="/placeholder.svg" alt="Your app will live here!" />
+    <div className="flex flex-col min-h-screen">
+      <Navbar onNavigate={setPage} />
+
+      {/* Hero */}
+      <div className="bg-navy py-14 px-8 text-center">
+        <div className="inline-flex items-center gap-2 bg-brand-blue/15 border border-brand-blue/30 text-brand-blue-medium text-xs px-4 py-1.5 rounded-full mb-5">
+          ✨ Curadoria atualizada em 2025
+        </div>
+        <h1 className="font-serif-display text-4xl leading-tight text-primary-foreground tracking-tight mb-3">
+          Descubra as melhores <em className="text-brand-blue-medium italic">IAs</em> para<br />turbinar seu negócio
+        </h1>
+        <p className="text-[15px] text-muted-foreground/60 max-w-[520px] mx-auto leading-relaxed">
+          Guia completo com as ferramentas de inteligência artificial mais poderosas para empreendedores. Com e-books, prompts prontos e passo a passo.
+        </p>
+
+        {/* Search */}
+        <div className="max-w-md mx-auto mt-6 relative">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <input
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            placeholder="Buscar ferramentas de IA..."
+            className="w-full pl-10 pr-4 py-2.5 rounded-lg text-sm bg-primary-foreground/10 text-primary-foreground placeholder:text-muted-foreground/40 border border-primary-foreground/10 focus:outline-none focus:border-brand-blue"
+          />
+        </div>
+
+        {!user && (
+          <div className="flex items-center justify-center gap-2 mt-5 text-[13px] text-muted-foreground/40">
+            <Lock size={14} /> E-books completos exclusivos para assinantes Pro
+          </div>
+        )}
+      </div>
+
+      {/* Tabs */}
+      {!searchQuery && <CategoryTabs activeCategory={activeCategory} onSelect={setActiveCategory} />}
+
+      {/* Content */}
+      <div className="max-w-[1100px] mx-auto px-6 py-8 flex-1">
+        {/* Intro Panel */}
+        {!searchQuery && (
+          <div className="bg-card border border-border rounded-xl p-7 mb-7 flex justify-between items-start gap-8">
+            <div>
+              <h2 className="font-serif-display text-2xl mb-2">{category.introTitle}</h2>
+              <p className="text-sm text-muted-foreground leading-7 max-w-[580px]">{category.introText}</p>
+              <div className="flex flex-wrap gap-1.5 mt-3">
+                {category.whenTags.map(tag => (
+                  <span key={tag} className="text-xs px-3 py-1 rounded-full border border-border text-muted-foreground">{tag}</span>
+                ))}
+              </div>
+            </div>
+            <div className="flex flex-col gap-2 shrink-0">
+              {category.stats.map((s, i) => (
+                <div key={i} className="bg-secondary rounded-lg px-4 py-2.5 text-center min-w-[100px]">
+                  <div className="text-xl font-medium">{s.num}</div>
+                  <div className="text-[11px] text-muted-foreground mt-0.5">{s.lbl}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {searchQuery && (
+          <p className="text-sm text-muted-foreground mb-4">{filteredTools.length} resultado(s) para "{searchQuery}"</p>
+        )}
+
+        {/* Tools Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredTools.map(({ tool, category: cat }) => (
+            <ToolCard key={tool.key} tool={tool} category={cat} onOpenEbook={() => handleOpenEbook(tool, cat)} />
+          ))}
+        </div>
+
+        {/* Prompts Section */}
+        {!searchQuery && (
+          <PromptsLibrary category={category} />
+        )}
+      </div>
+
+      {/* Footer */}
+      <footer className="bg-navy py-8 text-center mt-12">
+        <p className="text-xs text-muted-foreground/40">AdAI · Guia de Inteligência Artificial para Empreendedores · Todos os links são externos e oficiais de cada plataforma</p>
+      </footer>
+
+      {/* Ebook Modal */}
+      {ebookModal && (
+        <EbookModal tool={ebookModal.tool} category={ebookModal.category} isOpen={true} onClose={() => setEbookModal(null)} />
+      )}
     </div>
   );
-};
-
-const Index = PlaceholderIndex;
-
-export default Index;
+}
