@@ -1,39 +1,24 @@
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Sparkles, Menu } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import AuthModal from './AuthModal';
 
 export default function Navbar({ onNavigate }: { onNavigate: (page: string) => void }) {
   const { user, isAdmin, logout } = useAuth();
   const [authModal, setAuthModal] = useState<{ open: boolean; mode: 'login' | 'register' | 'admin' }>({ open: false, mode: 'login' });
-  const navigate = useNavigate();
 
   return (
     <>
       <nav className="bg-navy h-[72px] px-8 flex items-center justify-between sticky top-0 z-[200]">
-        <div className="flex items-center gap-3">
-          {/* Admin hamburger button - only visible to admins */}
-          {isAdmin && (
-            <button
-              onClick={() => navigate('/admin')}
-              className="w-10 h-10 rounded-lg bg-primary-foreground/[0.08] hover:bg-primary-foreground/[0.15] flex items-center justify-center transition-colors"
-              title="Painel Administrativo"
-            >
-              <Menu size={20} className="text-primary-foreground" />
-            </button>
-          )}
-
-          <button onClick={() => { onNavigate('home'); navigate('/'); }} className="flex items-center gap-3 text-primary-foreground text-xl font-semibold tracking-tight">
-            <div className="w-10 h-10 bg-brand-blue rounded-[10px] flex items-center justify-center">
-              <Sparkles size={20} className="text-primary-foreground" />
-            </div>
-            <div>
-              <span>AdAI</span>
-              <span className="block text-[11px] font-normal text-muted-foreground/60 leading-none mt-0.5">Guia de IAs para Empreendedores</span>
-            </div>
-          </button>
-        </div>
+        <button onClick={() => onNavigate('home')} className="flex items-center gap-3 text-primary-foreground text-xl font-semibold tracking-tight">
+          <div className="w-10 h-10 bg-brand-blue rounded-[10px] flex items-center justify-center">
+            <Sparkles size={20} className="text-primary-foreground" />
+          </div>
+          <div>
+            <span>AdAI</span>
+            <span className="block text-[11px] font-normal text-muted-foreground/60 leading-none mt-0.5">Guia de IAs para Empreendedores</span>
+          </div>
+        </button>
 
         <div className="flex items-center gap-2">
           {!user ? (
@@ -56,6 +41,17 @@ export default function Navbar({ onNavigate }: { onNavigate: (page: string) => v
           )}
         </div>
       </nav>
+
+      {/* Admin hamburger - fixed below navbar, top-left */}
+      {isAdmin && (
+        <button
+          onClick={() => onNavigate('admin')}
+          className="fixed top-[80px] left-3 z-[199] w-10 h-10 rounded-lg bg-navy border border-primary-foreground/10 hover:bg-primary-foreground/[0.15] flex items-center justify-center transition-colors shadow-lg"
+          title="Painel Administrativo"
+        >
+          <Menu size={20} className="text-primary-foreground" />
+        </button>
+      )}
 
       <AuthModal isOpen={authModal.open} mode={authModal.mode} onClose={() => setAuthModal({ ...authModal, open: false })} onSwitch={mode => setAuthModal({ open: true, mode })} />
     </>
