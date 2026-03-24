@@ -192,7 +192,7 @@ export const CATEGORIES: Category[] = [
     introTitle: 'Produtividade & Automação com IA',
     introText: 'Automatize tarefas repetitivas e libere tempo para o que realmente importa no seu negócio.',
     whenTags: ['Automação de processos', 'Gestão de projetos', 'CRM', 'Atendimento ao cliente'],
-    stats: [{ num: '4', lbl: 'ferramentas' }, { num: '80%', lbl: 'menos trabalho manual' }],
+    stats: [{ num: '6', lbl: 'ferramentas' }, { num: '80%', lbl: 'menos trabalho manual' }],
     tools: [
       { key: 'make', name: 'Make (Integromat)', url: 'https://make.com', urlLabel: 'make.com', badge: 'Automação', desc: 'Plataforma visual de automação: conecte apps e crie fluxos sem programar.', stats: [{ num: '1000+', lbl: 'integrações' }] },
       { key: 'zapier', name: 'Zapier', url: 'https://zapier.com', urlLabel: 'zapier.com', badge: 'Automação', desc: 'A plataforma de automação mais popular, com milhares de integrações.', stats: [{ num: '7000+', lbl: 'apps' }] },
@@ -211,7 +211,7 @@ export const CATEGORIES: Category[] = [
     introTitle: 'Dados & Pesquisa com IA',
     introText: 'Transforme dados em insights de negócio e pesquise com IA de forma mais eficiente.',
     whenTags: ['Pesquisa de mercado', 'Análise de dados', 'Business intelligence'],
-    stats: [{ num: '3', lbl: 'ferramentas' }, { num: '10×', lbl: 'mais rápido' }],
+    stats: [{ num: '6', lbl: 'ferramentas' }, { num: '10×', lbl: 'mais rápido' }],
     tools: [
       { key: 'perplexity', name: 'Perplexity AI', url: 'https://perplexity.ai', urlLabel: 'perplexity.ai', badge: 'Pesquisa IA', desc: 'Motor de pesquisa com IA que cita fontes. O "Google do futuro".', stats: [{ num: 'Free', lbl: 'ilimitado' }, { num: 'Fontes', lbl: 'citadas' }] },
       { key: 'julius', name: 'Julius AI', url: 'https://julius.ai', urlLabel: 'julius.ai', badge: 'Dados', desc: 'Analise planilhas e dados com linguagem natural. Cole CSV e faça perguntas.', stats: [{ num: 'CSV', lbl: 'upload direto' }] },
@@ -230,7 +230,7 @@ export const CATEGORIES: Category[] = [
     introTitle: 'Tráfego & SEO com IA',
     introText: 'Aumente o tráfego orgânico e pago do seu site com ferramentas de IA para SEO e marketing.',
     whenTags: ['SEO on-page', 'Pesquisa de keywords', 'Link building'],
-    stats: [{ num: '3', lbl: 'ferramentas' }],
+    stats: [{ num: '6', lbl: 'ferramentas' }],
     tools: [
       { key: 'surfer', name: 'Surfer SEO', url: 'https://surferseo.com', urlLabel: 'surferseo.com', badge: 'SEO', desc: 'Otimiza conteúdo para SEO em tempo real com score e sugestões de IA.', stats: [{ num: 'Score', lbl: 'SEO em tempo real' }] },
       { key: 'semrush', name: 'Semrush', url: 'https://semrush.com', urlLabel: 'semrush.com', badge: 'SEO Pro', desc: 'Suíte completa de SEO e marketing digital com IA integrada.', stats: [{ num: '25B+', lbl: 'keywords' }] },
@@ -249,7 +249,7 @@ export const CATEGORIES: Category[] = [
     introTitle: 'Social Media com IA',
     introText: 'Gerencie redes sociais de forma mais inteligente com ferramentas de IA para criação e agendamento.',
     whenTags: ['Agendamento de posts', 'Análise de engajamento', 'Criação de conteúdo'],
-    stats: [{ num: '3', lbl: 'ferramentas' }],
+    stats: [{ num: '6', lbl: 'ferramentas' }],
     tools: [
       { key: 'hootsuite', name: 'Hootsuite', url: 'https://hootsuite.com', urlLabel: 'hootsuite.com', badge: 'Social', desc: 'Plataforma de gestão de redes sociais com IA para melhor horário de postagem.', stats: [{ num: '35+', lbl: 'redes suportadas' }] },
       { key: 'buffer', name: 'Buffer', url: 'https://buffer.com', urlLabel: 'buffer.com', badge: 'Social', desc: 'Agendamento simples e eficaz para redes sociais com analytics.', stats: [{ num: 'Free', lbl: '3 canais grátis' }] },
@@ -268,7 +268,7 @@ export const CATEGORIES: Category[] = [
     introTitle: 'Ads & Performance com IA',
     introText: 'Otimize suas campanhas de anúncios pagos com IA para melhorar conversão e reduzir custos.',
     whenTags: ['Meta Ads', 'Google Ads', 'Otimização de conversão'],
-    stats: [{ num: '3', lbl: 'ferramentas' }],
+    stats: [{ num: '6', lbl: 'ferramentas' }],
     tools: [
       { key: 'adcreative', name: 'AdCreative.ai', url: 'https://adcreative.ai', urlLabel: 'adcreative.ai', badge: 'Ads IA', desc: 'Gera criativos de anúncios otimizados para conversão com IA.', stats: [{ num: '14×', lbl: 'mais conversão' }] },
       { key: 'madgicx', name: 'Madgicx', url: 'https://madgicx.com', urlLabel: 'madgicx.com', badge: 'Meta Ads', desc: 'Plataforma de otimização de Meta Ads com IA para audiências e criativos.', stats: [{ num: 'Meta', lbl: 'especialista' }] },
@@ -287,7 +287,7 @@ export const CATEGORIES: Category[] = [
     introTitle: 'LLMs & Open Source',
     introText: 'Modelos de linguagem open source que você pode rodar localmente, com total controle e privacidade dos dados.',
     whenTags: ['Privacidade de dados', 'Custo reduzido', 'Customização completa'],
-    stats: [{ num: '4', lbl: 'modelos' }, { num: 'R$0', lbl: 'custo possível' }],
+    stats: [{ num: '6', lbl: 'modelos' }, { num: 'R$0', lbl: 'custo possível' }],
     tools: [
       { key: 'llama', name: 'Llama 3.1 (Meta)', url: 'https://llama.meta.com', urlLabel: 'llama.meta.com', badge: 'Open Source', desc: 'O modelo open source mais poderoso. Rode localmente com total privacidade.', stats: [{ num: '405B', lbl: 'maior versão' }, { num: 'Grátis', lbl: 'open source' }] },
       { key: 'deepseek', name: 'DeepSeek R1', url: 'https://chat.deepseek.com', urlLabel: 'chat.deepseek.com', badge: 'Raciocínio', desc: 'IA chinesa que rivaliza com GPT-o1 em raciocínio — e é gratuita.', stats: [{ num: 'Grátis', lbl: 'sem limite' }, { num: '-95%', lbl: 'custo vs GPT-4o' }] },
@@ -306,7 +306,7 @@ export const CATEGORIES: Category[] = [
     introTitle: 'Código & Desenvolvimento com IA',
     introText: 'IAs de código estão transformando o desenvolvimento de software. Mesmo não-programadores conseguem criar aplicações funcionais.',
     whenTags: ['Geração de código', 'Debug', 'Criação de sites', 'Automação'],
-    stats: [{ num: '4', lbl: 'ferramentas' }],
+    stats: [{ num: '6', lbl: 'ferramentas' }],
     tools: [
       { key: 'github-copilot', name: 'GitHub Copilot', url: 'https://github.com/features/copilot', urlLabel: 'github.com/copilot', badge: 'Código IA', desc: 'Assistente de código da GitHub/Microsoft que gera código em tempo real no VS Code.', stats: [{ num: '#1', lbl: 'assistente de código' }] },
       { key: 'cursor', name: 'Cursor', url: 'https://cursor.sh', urlLabel: 'cursor.sh', badge: 'IDE IA', desc: 'Editor de código com IA integrada que entende o contexto do projeto inteiro.', stats: [{ num: 'Full', lbl: 'contexto do projeto' }] },
@@ -325,7 +325,7 @@ export const CATEGORIES: Category[] = [
     introTitle: 'Áudio & Voz com IA',
     introText: 'Crie narrações, podcasts e conteúdo de áudio profissional com vozes geradas por IA.',
     whenTags: ['Narração', 'Podcasts', 'Audiobooks', 'Clonagem de voz'],
-    stats: [{ num: '3', lbl: 'ferramentas' }],
+    stats: [{ num: '6', lbl: 'ferramentas' }],
     tools: [
       { key: 'elevenlabs', name: 'ElevenLabs', url: 'https://elevenlabs.io', urlLabel: 'elevenlabs.io', badge: 'Voz IA', desc: 'A melhor IA de voz do mercado. Clona vozes e gera narração ultrarrealista.', stats: [{ num: '29', lbl: 'idiomas' }, { num: 'Clone', lbl: 'sua voz' }] },
       { key: 'murf', name: 'Murf AI', url: 'https://murf.ai', urlLabel: 'murf.ai', badge: 'Text-to-Speech', desc: 'Plataforma de text-to-speech com vozes naturais para vídeos e apresentações.', stats: [{ num: '120+', lbl: 'vozes' }] },
