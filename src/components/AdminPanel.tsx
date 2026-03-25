@@ -1,19 +1,212 @@
 import { useState } from 'react';
-import { USERS_DB } from '@/data/tools-data';
-import { CATEGORIES } from '@/data/tools-data';
-import { ArrowLeft, LayoutDashboard, Users, CreditCard, FileText, Settings, LogOut, Search, Download } from 'lucide-react';
+import { USERS_DB, CATEGORIES as INITIAL_CATEGORIES, type Tool, type Category } from '@/data/tools-data';
+import { ArrowLeft, LayoutDashboard, Users, CreditCard, FileText, Settings, LogOut, Search, Download, Plus, Pencil, Trash2, X, Check, Palette, Eye, EyeOff, Globe, Bell, Shield, Database, Mail } from 'lucide-react';
+
+// ── Modals ──────────────────────────────────────────────────────────
+
+function ToolFormModal({ tool, onSave, onClose }: { tool?: Tool; onSave: (t: Tool) => void; onClose: () => void }) {
+  const [form, setForm] = useState<Tool>(tool || { key: '', name: '', url: '', urlLabel: 'Acessar', badge: 'Grátis', desc: '' });
+  const set = (k: keyof Tool, v: string) => setForm(p => ({ ...p, [k]: v }));
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={onClose}>
+      <div className="bg-navy border border-primary-foreground/10 rounded-xl p-6 w-[480px] max-h-[80vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-medium text-primary-foreground">{tool ? 'Editar Ferramenta' : 'Nova Ferramenta'}</h3>
+          <button onClick={onClose} className="text-muted-foreground/40 hover:text-primary-foreground"><X size={16} /></button>
+        </div>
+        {[
+          { label: 'Nome', key: 'name' as const, placeholder: 'Ex: ChatGPT' },
+          { label: 'Chave (slug)', key: 'key' as const, placeholder: 'Ex: chatgpt' },
+          { label: 'URL', key: 'url' as const, placeholder: 'https://...' },
+          { label: 'Label do botão', key: 'urlLabel' as const, placeholder: 'Acessar' },
+          { label: 'Badge', key: 'badge' as const, placeholder: 'Grátis / Freemium / Pago' },
+        ].map(f => (
+          <div key={f.key} className="mb-3">
+            <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">{f.label}</label>
+            <input value={(form[f.key] as string) || ''} onChange={e => set(f.key, e.target.value)} placeholder={f.placeholder} className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" />
+          </div>
+        ))}
+        <div className="mb-3">
+          <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Descrição</label>
+          <textarea value={form.desc} onChange={e => set('desc', e.target.value)} rows={3} className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue resize-none" />
+        </div>
+        <div className="flex gap-2 justify-end mt-4">
+          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm text-muted-foreground/60 hover:text-primary-foreground">Cancelar</button>
+          <button onClick={() => { if (form.name && form.key) onSave(form); }} className="px-4 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90">Salvar</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CategoryFormModal({ category, onSave, onClose }: { category: Category; onSave: (c: Category) => void; onClose: () => void }) {
+  const [form, setForm] = useState({ label: category.label, accent: category.accent, accentLight: category.accentLight, accentDark: category.accentDark, introTitle: category.introTitle, introText: category.introText });
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={onClose}>
+      <div className="bg-navy border border-primary-foreground/10 rounded-xl p-6 w-[480px] max-h-[80vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-medium text-primary-foreground">Editar Categoria</h3>
+          <button onClick={onClose} className="text-muted-foreground/40 hover:text-primary-foreground"><X size={16} /></button>
+        </div>
+        <div className="mb-3">
+          <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Nome da categoria</label>
+          <input value={form.label} onChange={e => setForm(p => ({ ...p, label: e.target.value }))} className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" />
+        </div>
+        <div className="mb-3">
+          <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Título de introdução</label>
+          <input value={form.introTitle} onChange={e => setForm(p => ({ ...p, introTitle: e.target.value }))} className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" />
+        </div>
+        <div className="mb-3">
+          <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Texto de introdução</label>
+          <textarea value={form.introText} onChange={e => setForm(p => ({ ...p, introText: e.target.value }))} rows={3} className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue resize-none" />
+        </div>
+        <div className="grid grid-cols-3 gap-3 mb-3">
+          {[
+            { label: 'Cor principal', key: 'accent' as const },
+            { label: 'Cor clara', key: 'accentLight' as const },
+            { label: 'Cor escura', key: 'accentDark' as const },
+          ].map(c => (
+            <div key={c.key}>
+              <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">{c.label}</label>
+              <div className="flex items-center gap-2">
+                <input type="color" value={form[c.key]} onChange={e => setForm(p => ({ ...p, [c.key]: e.target.value }))} className="w-8 h-8 rounded border-0 cursor-pointer bg-transparent" />
+                <input value={form[c.key]} onChange={e => setForm(p => ({ ...p, [c.key]: e.target.value }))} className="flex-1 px-2 py-1.5 rounded text-[11px] bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none" />
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="flex gap-2 justify-end mt-4">
+          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm text-muted-foreground/60 hover:text-primary-foreground">Cancelar</button>
+          <button onClick={() => onSave({ ...category, ...form })} className="px-4 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90">Salvar</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ConfirmModal({ message, onConfirm, onCancel }: { message: string; onConfirm: () => void; onCancel: () => void }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={onCancel}>
+      <div className="bg-navy border border-primary-foreground/10 rounded-xl p-6 w-[380px]" onClick={e => e.stopPropagation()}>
+        <p className="text-sm text-primary-foreground mb-4">{message}</p>
+        <div className="flex gap-2 justify-end">
+          <button onClick={onCancel} className="px-4 py-2 rounded-lg text-sm text-muted-foreground/60 hover:text-primary-foreground">Cancelar</button>
+          <button onClick={onConfirm} className="px-4 py-2 bg-brand-red text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90">Confirmar</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Category Tools Detail ───────────────────────────────────────────
+
+function CategoryToolsView({ category, onBack, onUpdateCategory }: { category: Category; onBack: () => void; onUpdateCategory: (c: Category) => void }) {
+  const [tools, setTools] = useState<Tool[]>(category.tools);
+  const [editingTool, setEditingTool] = useState<Tool | null>(null);
+  const [isAdding, setIsAdding] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filtered = tools.filter(t => t.name.toLowerCase().includes(searchQuery.toLowerCase()));
+
+  const saveTool = (t: Tool) => {
+    if (editingTool) {
+      const updated = tools.map(old => old.key === editingTool.key ? t : old);
+      setTools(updated);
+      onUpdateCategory({ ...category, tools: updated });
+    } else {
+      const updated = [...tools, t];
+      setTools(updated);
+      onUpdateCategory({ ...category, tools: updated });
+    }
+    setEditingTool(null);
+    setIsAdding(false);
+  };
+
+  const deleteTool = (key: string) => {
+    const updated = tools.filter(t => t.key !== key);
+    setTools(updated);
+    onUpdateCategory({ ...category, tools: updated });
+    setConfirmDelete(null);
+  };
+
+  return (
+    <>
+      <button onClick={onBack} className="flex items-center gap-1.5 text-xs text-brand-blue-medium hover:underline mb-4"><ArrowLeft size={14} /> Voltar</button>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-3">
+          <div className="w-3 h-3 rounded-full" style={{ background: category.accent }} />
+          <h2 className="text-lg font-medium text-primary-foreground">{category.label}</h2>
+          <span className="text-xs text-muted-foreground/40">{tools.length} ferramentas</span>
+        </div>
+        <div className="flex gap-3">
+          <div className="relative">
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/40" />
+            <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Buscar ferramenta..." className="pl-8 pr-4 py-2 rounded-lg text-sm bg-navy border border-primary-foreground/10 text-primary-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:border-brand-blue w-[220px]" />
+          </div>
+          <button onClick={() => setIsAdding(true)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-brand-green/20 text-brand-green hover:bg-brand-green/30">
+            <Plus size={14} /> Adicionar
+          </button>
+        </div>
+      </div>
+      <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl overflow-hidden">
+        <table className="w-full">
+          <thead><tr className="border-b border-primary-foreground/[0.07]">
+            {['Nome', 'Badge', 'URL', 'Ações'].map(h => <th key={h} className="px-5 py-3 text-left text-[11px] font-semibold text-muted-foreground/40 uppercase tracking-wider">{h}</th>)}
+          </tr></thead>
+          <tbody>
+            {filtered.map(t => (
+              <tr key={t.key} className="border-b border-primary-foreground/[0.04] hover:bg-primary-foreground/[0.02]">
+                <td className="px-5 py-3 text-[13px] text-primary-foreground/80">{t.name}</td>
+                <td className="px-5 py-3"><span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${t.badge === 'Grátis' ? 'bg-brand-green/20 text-brand-green' : t.badge === 'Pago' ? 'bg-brand-red/20 text-brand-red' : 'bg-brand-amber/20 text-brand-amber'}`}>{t.badge}</span></td>
+                <td className="px-5 py-3 text-[13px] text-muted-foreground/50 max-w-[200px] truncate">{t.url}</td>
+                <td className="px-5 py-3">
+                  <div className="flex gap-2">
+                    <button onClick={() => setEditingTool(t)} className="text-[11px] px-2 py-1 rounded bg-brand-blue/20 text-brand-blue-medium hover:bg-brand-blue/30 flex items-center gap-1"><Pencil size={11} /> Editar</button>
+                    <button onClick={() => setConfirmDelete(t.key)} className="text-[11px] px-2 py-1 rounded bg-brand-red/20 text-brand-red hover:bg-brand-red/30 flex items-center gap-1"><Trash2 size={11} /> Excluir</button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {(editingTool || isAdding) && <ToolFormModal tool={editingTool || undefined} onSave={saveTool} onClose={() => { setEditingTool(null); setIsAdding(false); }} />}
+      {confirmDelete && <ConfirmModal message={`Excluir a ferramenta "${tools.find(t => t.key === confirmDelete)?.name}"?`} onConfirm={() => deleteTool(confirmDelete)} onCancel={() => setConfirmDelete(null)} />}
+    </>
+  );
+}
+
+// ── Main Admin Panel ────────────────────────────────────────────────
 
 export default function AdminPanel({ onBack }: { onBack: () => void }) {
   const [section, setSection] = useState('dashboard');
   const [users, setUsers] = useState(USERS_DB);
+  const [categories, setCategories] = useState<Category[]>(INITIAL_CATEGORIES);
   const [searchQuery, setSearchQuery] = useState('');
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [viewingCategory, setViewingCategory] = useState<Category | null>(null);
+
+  // Settings state
+  const [settingsSection, setSettingsSection] = useState('credentials');
+  const [siteName, setSiteName] = useState('AdAI');
+  const [siteDesc, setSiteDesc] = useState('Diretório de Ferramentas de IA');
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [emailNotifications, setEmailNotifications] = useState(true);
+  const [newUserNotif, setNewUserNotif] = useState(true);
+  const [paymentNotif, setPaymentNotif] = useState(true);
+  const [proPrice, setProPrice] = useState('19.90');
+  const [proAnnualPrice, setProAnnualPrice] = useState('178.80');
+  const [trialDays, setTrialDays] = useState('7');
+  const [showSaved, setShowSaved] = useState('');
 
   const filteredUsers = users.filter(u =>
     `${u.nome} ${u.sobre} ${u.email}`.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const proUsers = users.filter(u => u.plano === 'Pro').length;
-  const totalTools = CATEGORIES.reduce((sum, c) => sum + c.tools.length, 0);
+  const totalTools = categories.reduce((sum, c) => sum + c.tools.length, 0);
 
   const navItems = [
     { key: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -41,6 +234,25 @@ export default function AdminPanel({ onBack }: { onBack: () => void }) {
     a.click();
   };
 
+  const updateCategory = (updated: Category) => {
+    setCategories(prev => prev.map(c => c.key === updated.key ? updated : c));
+    setViewingCategory(updated);
+  };
+
+  const saveSettings = (label: string) => {
+    setShowSaved(label);
+    setTimeout(() => setShowSaved(''), 2000);
+  };
+
+  const settingsTabs = [
+    { key: 'credentials', label: 'Credenciais', icon: Shield },
+    { key: 'general', label: 'Geral', icon: Globe },
+    { key: 'notifications', label: 'Notificações', icon: Bell },
+    { key: 'plans', label: 'Planos & Preços', icon: CreditCard },
+    { key: 'seo', label: 'SEO & Meta', icon: Search },
+    { key: 'data', label: 'Dados & Backup', icon: Database },
+  ];
+
   return (
     <div className="min-h-screen flex" style={{ background: '#0F0F1A' }}>
       {/* Sidebar */}
@@ -51,7 +263,7 @@ export default function AdminPanel({ onBack }: { onBack: () => void }) {
         </div>
         <div className="py-3 flex-1">
           {navItems.map(item => (
-            <button key={item.key} onClick={() => setSection(item.key)} className={`w-full flex items-center gap-2.5 px-5 py-2.5 text-[13px] transition-colors ${section === item.key ? 'text-brand-blue-medium bg-brand-blue/15' : 'text-muted-foreground/50 hover:text-primary-foreground hover:bg-primary-foreground/5'}`}>
+            <button key={item.key} onClick={() => { setSection(item.key); setViewingCategory(null); }} className={`w-full flex items-center gap-2.5 px-5 py-2.5 text-[13px] transition-colors ${section === item.key ? 'text-brand-blue-medium bg-brand-blue/15' : 'text-muted-foreground/50 hover:text-primary-foreground hover:bg-primary-foreground/5'}`}>
               <item.icon size={15} /> {item.label}
             </button>
           ))}
@@ -69,10 +281,10 @@ export default function AdminPanel({ onBack }: { onBack: () => void }) {
             <h1 className="text-xl font-medium text-primary-foreground mb-6">Dashboard</h1>
             <div className="grid grid-cols-4 gap-4 mb-8">
               {[
-                { label: 'Total de Usuários', value: users.length, change: `↑ +2 essa semana` },
-                { label: 'Assinantes Pro', value: proUsers, change: `↑ +1 esse mês` },
+                { label: 'Total de Usuários', value: users.length, change: '↑ +2 essa semana' },
+                { label: 'Assinantes Pro', value: proUsers, change: '↑ +1 esse mês' },
                 { label: 'Receita Mensal', value: `R$${(proUsers * 19.9).toFixed(0)}`, change: '↑ +R$19,90 vs mês anterior' },
-                { label: 'Ferramentas', value: totalTools, change: `${CATEGORIES.length} categorias` },
+                { label: 'Ferramentas', value: totalTools, change: `${categories.length} categorias` },
               ].map((s, i) => (
                 <div key={i} className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-5">
                   <div className="text-[11px] text-muted-foreground/40 uppercase tracking-wider mb-2">{s.label}</div>
@@ -174,7 +386,7 @@ export default function AdminPanel({ onBack }: { onBack: () => void }) {
           </>
         )}
 
-        {section === 'content' && (
+        {section === 'content' && !viewingCategory && (
           <>
             <h1 className="text-xl font-medium text-primary-foreground mb-6">Conteúdo</h1>
             <div className="grid grid-cols-3 gap-4 mb-8">
@@ -184,27 +396,39 @@ export default function AdminPanel({ onBack }: { onBack: () => void }) {
               </div>
               <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-5">
                 <div className="text-[11px] text-muted-foreground/40 uppercase tracking-wider mb-2">Categorias</div>
-                <div className="text-[28px] font-medium text-primary-foreground">{CATEGORIES.length}</div>
+                <div className="text-[28px] font-medium text-primary-foreground">{categories.length}</div>
               </div>
               <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-5">
                 <div className="text-[11px] text-muted-foreground/40 uppercase tracking-wider mb-2">E-books</div>
-                <div className="text-[28px] font-medium text-primary-foreground">24</div>
+                <div className="text-[28px] font-medium text-primary-foreground">{totalTools}</div>
               </div>
             </div>
+
             <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl overflow-hidden">
-              <div className="px-5 py-4 border-b border-primary-foreground/[0.07]">
+              <div className="flex items-center justify-between px-5 py-4 border-b border-primary-foreground/[0.07]">
                 <h3 className="text-sm font-medium text-primary-foreground">Ferramentas por Categoria</h3>
+                <div className="flex gap-2">
+                  <button onClick={() => {/* could add new category */}} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium bg-brand-green/20 text-brand-green hover:bg-brand-green/30">
+                    <Plus size={12} /> Nova Categoria
+                  </button>
+                </div>
               </div>
               <table className="w-full">
                 <thead><tr className="border-b border-primary-foreground/[0.07]">
-                  {['Categoria', 'Ferramentas', 'Cor'].map(h => <th key={h} className="px-5 py-3 text-left text-[11px] font-semibold text-muted-foreground/40 uppercase tracking-wider">{h}</th>)}
+                  {['Categoria', 'Ferramentas', 'Cor', 'Ações'].map(h => <th key={h} className="px-5 py-3 text-left text-[11px] font-semibold text-muted-foreground/40 uppercase tracking-wider">{h}</th>)}
                 </tr></thead>
                 <tbody>
-                  {CATEGORIES.map(c => (
-                    <tr key={c.key} className="border-b border-primary-foreground/[0.04]">
+                  {categories.map(c => (
+                    <tr key={c.key} className="border-b border-primary-foreground/[0.04] hover:bg-primary-foreground/[0.02]">
                       <td className="px-5 py-3 text-[13px] text-primary-foreground/80">{c.label}</td>
                       <td className="px-5 py-3 text-[13px] text-muted-foreground/50">{c.tools.length} ferramentas</td>
                       <td className="px-5 py-3"><div className="w-4 h-4 rounded" style={{ background: c.accent }} /></td>
+                      <td className="px-5 py-3">
+                        <div className="flex gap-2">
+                          <button onClick={() => setViewingCategory(c)} className="text-[11px] px-2 py-1 rounded bg-brand-blue/20 text-brand-blue-medium hover:bg-brand-blue/30 flex items-center gap-1"><Eye size={11} /> Ver</button>
+                          <button onClick={() => setEditingCategory(c)} className="text-[11px] px-2 py-1 rounded bg-brand-amber/20 text-brand-amber hover:bg-brand-amber/30 flex items-center gap-1"><Palette size={11} /> Editar</button>
+                        </div>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -213,18 +437,139 @@ export default function AdminPanel({ onBack }: { onBack: () => void }) {
           </>
         )}
 
+        {section === 'content' && viewingCategory && (
+          <CategoryToolsView
+            category={viewingCategory}
+            onBack={() => setViewingCategory(null)}
+            onUpdateCategory={updateCategory}
+          />
+        )}
+
         {section === 'settings' && (
           <>
             <h1 className="text-xl font-medium text-primary-foreground mb-6">Configurações</h1>
-            <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-6 max-w-md">
-              <h3 className="text-sm font-medium text-primary-foreground mb-4">Credenciais de Acesso</h3>
-              <div className="mb-4"><label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Usuário admin</label><input defaultValue="admin" className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" /></div>
-              <div className="mb-4"><label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Nova senha</label><input type="password" placeholder="Nova senha" className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" /></div>
-              <button className="px-4 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90">Salvar</button>
+            <div className="flex gap-6">
+              {/* Settings sidebar */}
+              <div className="w-[200px] shrink-0 space-y-1">
+                {settingsTabs.map(t => (
+                  <button key={t.key} onClick={() => setSettingsSection(t.key)} className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] transition-colors ${settingsSection === t.key ? 'text-brand-blue-medium bg-brand-blue/15' : 'text-muted-foreground/50 hover:text-primary-foreground hover:bg-primary-foreground/5'}`}>
+                    <t.icon size={14} /> {t.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Settings content */}
+              <div className="flex-1 max-w-lg">
+                {settingsSection === 'credentials' && (
+                  <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-6">
+                    <h3 className="text-sm font-medium text-primary-foreground mb-4">Credenciais de Acesso</h3>
+                    <div className="mb-4"><label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Usuário admin</label><input defaultValue="admin" className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" /></div>
+                    <div className="mb-4"><label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Nova senha</label><input type="password" placeholder="Nova senha" className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" /></div>
+                    <div className="mb-4"><label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Confirmar senha</label><input type="password" placeholder="Confirmar senha" className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" /></div>
+                    <button onClick={() => saveSettings('credentials')} className="px-4 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 flex items-center gap-2">{showSaved === 'credentials' ? <><Check size={14} /> Salvo!</> : 'Salvar'}</button>
+                  </div>
+                )}
+
+                {settingsSection === 'general' && (
+                  <div className="space-y-4">
+                    <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-6">
+                      <h3 className="text-sm font-medium text-primary-foreground mb-4">Informações do Site</h3>
+                      <div className="mb-4"><label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Nome do site</label><input value={siteName} onChange={e => setSiteName(e.target.value)} className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" /></div>
+                      <div className="mb-4"><label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Descrição</label><textarea value={siteDesc} onChange={e => setSiteDesc(e.target.value)} rows={2} className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue resize-none" /></div>
+                      <button onClick={() => saveSettings('general')} className="px-4 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 flex items-center gap-2">{showSaved === 'general' ? <><Check size={14} /> Salvo!</> : 'Salvar'}</button>
+                    </div>
+                    <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-6">
+                      <h3 className="text-sm font-medium text-primary-foreground mb-4">Modo Manutenção</h3>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-[13px] text-primary-foreground/80">Ativar modo manutenção</p>
+                          <p className="text-[11px] text-muted-foreground/40">Exibe uma página de manutenção para visitantes</p>
+                        </div>
+                        <button onClick={() => setMaintenanceMode(!maintenanceMode)} className={`w-11 h-6 rounded-full transition-colors relative ${maintenanceMode ? 'bg-brand-blue' : 'bg-primary-foreground/10'}`}>
+                          <div className={`w-4 h-4 rounded-full bg-primary-foreground absolute top-1 transition-all ${maintenanceMode ? 'left-6' : 'left-1'}`} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {settingsSection === 'notifications' && (
+                  <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-6">
+                    <h3 className="text-sm font-medium text-primary-foreground mb-4">Notificações</h3>
+                    {[
+                      { label: 'Notificações por e-mail', desc: 'Receber resumos e alertas por e-mail', value: emailNotifications, set: setEmailNotifications },
+                      { label: 'Novo usuário cadastrado', desc: 'Notificar quando um novo usuário se cadastrar', value: newUserNotif, set: setNewUserNotif },
+                      { label: 'Novo pagamento', desc: 'Notificar quando um pagamento for realizado', value: paymentNotif, set: setPaymentNotif },
+                    ].map((n, i) => (
+                      <div key={i} className={`flex items-center justify-between ${i > 0 ? 'mt-4 pt-4 border-t border-primary-foreground/[0.05]' : ''}`}>
+                        <div>
+                          <p className="text-[13px] text-primary-foreground/80">{n.label}</p>
+                          <p className="text-[11px] text-muted-foreground/40">{n.desc}</p>
+                        </div>
+                        <button onClick={() => n.set(!n.value)} className={`w-11 h-6 rounded-full transition-colors relative ${n.value ? 'bg-brand-blue' : 'bg-primary-foreground/10'}`}>
+                          <div className={`w-4 h-4 rounded-full bg-primary-foreground absolute top-1 transition-all ${n.value ? 'left-6' : 'left-1'}`} />
+                        </button>
+                      </div>
+                    ))}
+                    <button onClick={() => saveSettings('notifications')} className="mt-6 px-4 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 flex items-center gap-2">{showSaved === 'notifications' ? <><Check size={14} /> Salvo!</> : 'Salvar'}</button>
+                  </div>
+                )}
+
+                {settingsSection === 'plans' && (
+                  <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-6">
+                    <h3 className="text-sm font-medium text-primary-foreground mb-4">Planos & Preços</h3>
+                    <div className="mb-4"><label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Preço Pro Mensal (R$)</label><input value={proPrice} onChange={e => setProPrice(e.target.value)} className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" /></div>
+                    <div className="mb-4"><label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Preço Pro Anual (R$)</label><input value={proAnnualPrice} onChange={e => setProAnnualPrice(e.target.value)} className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" /></div>
+                    <div className="mb-4"><label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Dias de teste grátis</label><input value={trialDays} onChange={e => setTrialDays(e.target.value)} className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" /></div>
+                    <button onClick={() => saveSettings('plans')} className="px-4 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 flex items-center gap-2">{showSaved === 'plans' ? <><Check size={14} /> Salvo!</> : 'Salvar'}</button>
+                  </div>
+                )}
+
+                {settingsSection === 'seo' && (
+                  <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-6">
+                    <h3 className="text-sm font-medium text-primary-foreground mb-4">SEO & Meta Tags</h3>
+                    <div className="mb-4"><label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Meta título</label><input defaultValue="AdAI — Diretório de Ferramentas de IA" className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" /></div>
+                    <div className="mb-4"><label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Meta descrição</label><textarea defaultValue="Descubra as melhores ferramentas de IA para texto, imagem, vídeo, produtividade e mais." rows={3} className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue resize-none" /></div>
+                    <div className="mb-4"><label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Palavras-chave</label><input defaultValue="ferramentas ia, inteligência artificial, chatgpt, midjourney" className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" /></div>
+                    <div className="mb-4"><label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">URL canônica</label><input defaultValue="https://adai.com.br" className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" /></div>
+                    <button onClick={() => saveSettings('seo')} className="px-4 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 flex items-center gap-2">{showSaved === 'seo' ? <><Check size={14} /> Salvo!</> : 'Salvar'}</button>
+                  </div>
+                )}
+
+                {settingsSection === 'data' && (
+                  <div className="space-y-4">
+                    <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-6">
+                      <h3 className="text-sm font-medium text-primary-foreground mb-4">Exportar Dados</h3>
+                      <p className="text-[12px] text-muted-foreground/50 mb-4">Exporte todos os dados do sistema para backup.</p>
+                      <div className="flex gap-3">
+                        <button onClick={exportCSV} className="px-4 py-2 bg-brand-blue/20 text-brand-blue-medium rounded-lg text-sm font-medium hover:bg-brand-blue/30 flex items-center gap-2"><Download size={14} /> Exportar Usuários (CSV)</button>
+                        <button className="px-4 py-2 bg-brand-green/20 text-brand-green rounded-lg text-sm font-medium hover:bg-brand-green/30 flex items-center gap-2"><Download size={14} /> Exportar Ferramentas (JSON)</button>
+                      </div>
+                    </div>
+                    <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-6">
+                      <h3 className="text-sm font-medium text-primary-foreground mb-2">Zona de Perigo</h3>
+                      <p className="text-[12px] text-muted-foreground/50 mb-4">Ações irreversíveis. Tenha cuidado.</p>
+                      <div className="flex gap-3">
+                        <button className="px-4 py-2 bg-brand-red/20 text-brand-red rounded-lg text-sm font-medium hover:bg-brand-red/30">Limpar cache</button>
+                        <button className="px-4 py-2 bg-brand-red/20 text-brand-red rounded-lg text-sm font-medium hover:bg-brand-red/30">Resetar configurações</button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </>
         )}
       </div>
+
+      {/* Category edit modal */}
+      {editingCategory && (
+        <CategoryFormModal
+          category={editingCategory}
+          onSave={(c) => { setCategories(prev => prev.map(old => old.key === c.key ? c : old)); setEditingCategory(null); }}
+          onClose={() => setEditingCategory(null)}
+        />
+      )}
     </div>
   );
 }
