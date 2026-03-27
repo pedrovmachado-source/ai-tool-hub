@@ -153,6 +153,72 @@ function ConfirmModal({ message, onConfirm, onCancel }: { message: string; onCon
   );
 }
 
+function PlanFormModal({ plan, onSave, onClose }: { plan?: Plan; onSave: (p: Plan) => void; onClose: () => void }) {
+  const [form, setForm] = useState<Plan>(plan || { id: '', name: '', period: 'mensal', price: '', active: true, features: [], highlight: false });
+  const [newFeature, setNewFeature] = useState('');
+
+  const addFeature = () => {
+    if (newFeature.trim()) {
+      setForm(p => ({ ...p, features: [...p.features, newFeature.trim()] }));
+      setNewFeature('');
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={onClose}>
+      <div className="bg-navy border border-primary-foreground/10 rounded-xl p-6 w-[480px] max-h-[80vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-medium text-primary-foreground">{plan ? 'Editar Plano' : 'Novo Plano'}</h3>
+          <button onClick={onClose} className="text-muted-foreground/40 hover:text-primary-foreground"><X size={16} /></button>
+        </div>
+        <div className="mb-3">
+          <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Nome do plano</label>
+          <input value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} placeholder="Ex: Pro Mensal" className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" />
+        </div>
+        <div className="mb-3">
+          <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Período</label>
+          <select value={form.period} onChange={e => setForm(p => ({ ...p, period: e.target.value as Plan['period'] }))} className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue">
+            <option value="semanal">Semanal</option>
+            <option value="mensal">Mensal</option>
+            <option value="anual">Anual</option>
+            <option value="vitalicio">Vitalício</option>
+          </select>
+        </div>
+        <div className="mb-3">
+          <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Preço (R$)</label>
+          <input value={form.price} onChange={e => setForm(p => ({ ...p, price: e.target.value }))} placeholder="19.90" className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" />
+        </div>
+        <div className="mb-3 flex gap-4">
+          <label className="flex items-center gap-2 text-[12px] text-primary-foreground/70 cursor-pointer">
+            <input type="checkbox" checked={form.active} onChange={e => setForm(p => ({ ...p, active: e.target.checked }))} className="rounded" /> Ativo
+          </label>
+          <label className="flex items-center gap-2 text-[12px] text-primary-foreground/70 cursor-pointer">
+            <input type="checkbox" checked={form.highlight || false} onChange={e => setForm(p => ({ ...p, highlight: e.target.checked }))} className="rounded" /> Destacar
+          </label>
+        </div>
+        <div className="mb-3">
+          <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Recursos incluídos</label>
+          {form.features.map((f, i) => (
+            <div key={i} className="flex items-center gap-2 mb-1.5">
+              <Check size={12} className="text-brand-green shrink-0" />
+              <span className="text-[12px] text-primary-foreground/70 flex-1">{f}</span>
+              <button onClick={() => setForm(p => ({ ...p, features: p.features.filter((_, fi) => fi !== i) }))} className="text-brand-red/50 hover:text-brand-red"><X size={12} /></button>
+            </div>
+          ))}
+          <div className="flex gap-2 mt-2">
+            <input value={newFeature} onChange={e => setNewFeature(e.target.value)} onKeyDown={e => e.key === 'Enter' && addFeature()} placeholder="Novo recurso..." className="flex-1 px-3 py-1.5 rounded-lg text-[12px] bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" />
+            <button onClick={addFeature} className="px-2 py-1.5 rounded-lg text-[11px] font-medium bg-brand-green/20 text-brand-green hover:bg-brand-green/30"><Plus size={12} /></button>
+          </div>
+        </div>
+        <div className="flex gap-2 justify-end mt-4">
+          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm text-muted-foreground/60 hover:text-primary-foreground">Cancelar</button>
+          <button onClick={() => { if (form.name && form.price) onSave(form); }} className="px-4 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90">Salvar</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Category Tools Detail ───────────────────────────────────────────
 
 function CategoryToolsView({ category, onBack, onUpdateCategory }: { category: Category; onBack: () => void; onUpdateCategory: (c: Category) => void }) {
