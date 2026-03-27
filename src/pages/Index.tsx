@@ -39,7 +39,7 @@ export default function Index() {
     setEbookModal({ tool, category: cat });
   };
 
-  if (page === 'admin' && isAdmin) return <AdminPanel onBack={() => setPage('home')} />;
+  if (page === 'admin' && isAdmin) return <AdminPanel onBack={() => setPage('home')} categories={categories} onUpdateCategories={setCategories} />;
   if (page === 'pro') return <ProPage onBack={() => setPage('home')} onNavigate={setPage} />;
   if (page === 'profile') return <UserProfile onBack={() => setPage('home')} onNavigate={setPage} />;
 
