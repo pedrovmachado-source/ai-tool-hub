@@ -18,8 +18,9 @@ export default function Index() {
   const [activeCategory, setActiveCategory] = useState('texto');
   const [searchQuery, setSearchQuery] = useState('');
   const [ebookModal, setEbookModal] = useState<{ tool: Tool; category: Category } | null>(null);
+  const [categories, setCategories] = useState<Category[]>(CATEGORIES);
 
-  const category = CATEGORIES.find(c => c.key === activeCategory)!;
+  const category = categories.find(c => c.key === activeCategory)!;
 
   const filteredTools = searchQuery
     ? CATEGORIES.flatMap(c => c.tools.map(t => ({ tool: t, category: c }))).filter(({ tool }) =>
