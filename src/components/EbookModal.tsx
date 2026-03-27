@@ -1,4 +1,4 @@
-import { X, Copy, Check, ExternalLink, Zap, DollarSign, CheckSquare, Image, Lightbulb } from 'lucide-react';
+import { X, Copy, Check, ExternalLink, Zap, DollarSign, CheckSquare, Image, Lightbulb, Play } from 'lucide-react';
 import { useState } from 'react';
 import type { Tool, Category } from '@/data/tools-data';
 

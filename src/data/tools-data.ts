@@ -23,6 +23,7 @@ export interface Tool {
   automations?: string[];
   checklist?: string[];
   imageDescriptions?: { title: string; desc: string }[];
+  videos?: { title: string; url: string; desc?: string }[];
 }
 
 export interface Category {
