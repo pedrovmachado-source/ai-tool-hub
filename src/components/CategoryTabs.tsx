@@ -1,12 +1,14 @@
 import { useRef, useEffect, useCallback, useState } from 'react';
-import { CATEGORIES } from '@/data/tools-data';
+import { CATEGORIES, type Category } from '@/data/tools-data';
 
 interface CategoryTabsProps {
   activeCategory: string;
   onSelect: (key: string) => void;
+  categories?: Category[];
 }
 
-export default function CategoryTabs({ activeCategory, onSelect }: CategoryTabsProps) {
+export default function CategoryTabs({ activeCategory, onSelect, categories: cats }: CategoryTabsProps) {
+  const categories = cats || CATEGORIES;
   const tabsRef = useRef<HTMLDivElement>(null);
   const thumbRef = useRef<HTMLDivElement>(null);
   const barRef = useRef<HTMLDivElement>(null);
