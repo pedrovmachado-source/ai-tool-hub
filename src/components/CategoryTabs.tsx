@@ -1,12 +1,14 @@
 import { useRef, useEffect, useCallback, useState } from 'react';
-import { CATEGORIES } from '@/data/tools-data';
+import { CATEGORIES, type Category } from '@/data/tools-data';
 
 interface CategoryTabsProps {
   activeCategory: string;
   onSelect: (key: string) => void;
+  categories?: Category[];
 }
 
-export default function CategoryTabs({ activeCategory, onSelect }: CategoryTabsProps) {
+export default function CategoryTabs({ activeCategory, onSelect, categories: cats }: CategoryTabsProps) {
+  const categories = cats || CATEGORIES;
   const tabsRef = useRef<HTMLDivElement>(null);
   const thumbRef = useRef<HTMLDivElement>(null);
   const barRef = useRef<HTMLDivElement>(null);
@@ -74,7 +76,7 @@ export default function CategoryTabs({ activeCategory, onSelect }: CategoryTabsP
     <div className="bg-card border-b border-border sticky top-[72px] z-[90]">
       <div className="max-w-[1100px] mx-auto px-6 overflow-x-auto scrollbar-hide" ref={tabsRef}>
         <div className="flex gap-0">
-          {CATEGORIES.map(cat => (
+          {categories.map(cat => (
             <button
               key={cat.key}
               onClick={() => onSelect(cat.key)}

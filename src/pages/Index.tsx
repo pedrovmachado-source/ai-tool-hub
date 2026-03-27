@@ -18,11 +18,12 @@ export default function Index() {
   const [activeCategory, setActiveCategory] = useState('texto');
   const [searchQuery, setSearchQuery] = useState('');
   const [ebookModal, setEbookModal] = useState<{ tool: Tool; category: Category } | null>(null);
+  const [categories, setCategories] = useState<Category[]>(CATEGORIES);
 
-  const category = CATEGORIES.find(c => c.key === activeCategory)!;
+  const category = categories.find(c => c.key === activeCategory)!;
 
   const filteredTools = searchQuery
-    ? CATEGORIES.flatMap(c => c.tools.map(t => ({ tool: t, category: c }))).filter(({ tool }) =>
+    ? categories.flatMap(c => c.tools.map(t => ({ tool: t, category: c }))).filter(({ tool }) =>
         tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         tool.desc.toLowerCase().includes(searchQuery.toLowerCase()) ||
         tool.badge.toLowerCase().includes(searchQuery.toLowerCase())
@@ -38,7 +39,7 @@ export default function Index() {
     setEbookModal({ tool, category: cat });
   };
 
-  if (page === 'admin' && isAdmin) return <AdminPanel onBack={() => setPage('home')} />;
+  if (page === 'admin' && isAdmin) return <AdminPanel onBack={() => setPage('home')} categories={categories} onUpdateCategories={setCategories} />;
   if (page === 'pro') return <ProPage onBack={() => setPage('home')} onNavigate={setPage} />;
   if (page === 'profile') return <UserProfile onBack={() => setPage('home')} onNavigate={setPage} />;
 
@@ -77,7 +78,7 @@ export default function Index() {
       </div>
 
       {/* Tabs */}
-      {!searchQuery && <CategoryTabs activeCategory={activeCategory} onSelect={setActiveCategory} />}
+      {!searchQuery && <CategoryTabs activeCategory={activeCategory} onSelect={setActiveCategory} categories={categories} />}
 
       {/* Content */}
       <div className="max-w-[1100px] mx-auto px-6 py-8 flex-1">
