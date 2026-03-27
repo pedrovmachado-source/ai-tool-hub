@@ -575,12 +575,77 @@ export default function AdminPanel({ onBack }: { onBack: () => void }) {
                 )}
 
                 {settingsSection === 'plans' && (
-                  <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-6">
-                    <h3 className="text-sm font-medium text-primary-foreground mb-4">Planos & Preços</h3>
-                    <div className="mb-4"><label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Preço Pro Mensal (R$)</label><input value={proPrice} onChange={e => setProPrice(e.target.value)} className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" /></div>
-                    <div className="mb-4"><label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Preço Pro Anual (R$)</label><input value={proAnnualPrice} onChange={e => setProAnnualPrice(e.target.value)} className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" /></div>
-                    <div className="mb-4"><label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Dias de teste grátis</label><input value={trialDays} onChange={e => setTrialDays(e.target.value)} className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" /></div>
-                    <button onClick={() => saveSettings('plans')} className="px-4 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 flex items-center gap-2">{showSaved === 'plans' ? <><Check size={14} /> Salvo!</> : 'Salvar'}</button>
+                  <div className="space-y-4">
+                    <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-sm font-medium text-primary-foreground">Planos & Preços</h3>
+                        <button onClick={() => setIsAddingPlan(true)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium bg-brand-green/20 text-brand-green hover:bg-brand-green/30">
+                          <Plus size={12} /> Novo Plano
+                        </button>
+                      </div>
+
+                      <div className="space-y-3">
+                        {plans.map(plan => (
+                          <div key={plan.id} className={`border rounded-xl p-4 ${plan.active ? 'border-brand-blue/30 bg-brand-blue/5' : 'border-primary-foreground/[0.07]'}`}>
+                            <div className="flex items-center justify-between mb-2">
+                              <div className="flex items-center gap-2">
+                                <h4 className="text-[13px] font-medium text-primary-foreground">{plan.name}</h4>
+                                <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${plan.active ? 'bg-brand-green/20 text-brand-green' : 'bg-muted-foreground/10 text-muted-foreground/50'}`}>{plan.active ? 'Ativo' : 'Inativo'}</span>
+                                {plan.highlight && <span className="text-[10px] px-2 py-0.5 rounded-full bg-brand-amber/20 text-brand-amber font-medium">Destaque</span>}
+                                <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary-foreground/5 text-muted-foreground/50 capitalize">{plan.period === 'vitalicio' ? 'Vitalício' : plan.period}</span>
+                              </div>
+                              <div className="flex gap-2">
+                                <button onClick={() => setEditingPlan(plan)} className="text-[11px] px-2 py-1 rounded bg-brand-blue/20 text-brand-blue-medium hover:bg-brand-blue/30 flex items-center gap-1"><Pencil size={11} /> Editar</button>
+                                <button onClick={() => setPlans(ps => ps.map(p => p.id === plan.id ? { ...p, active: !p.active } : p))} className="text-[11px] px-2 py-1 rounded bg-brand-amber/20 text-brand-amber hover:bg-brand-amber/30 flex items-center gap-1">
+                                  {plan.active ? <><EyeOff size={11} /> Desativar</> : <><Eye size={11} /> Ativar</>}
+                                </button>
+                                <button onClick={() => setConfirmDeletePlan(plan.id)} className="text-[11px] px-2 py-1 rounded bg-brand-red/20 text-brand-red hover:bg-brand-red/30 flex items-center gap-1"><Trash2 size={11} /></button>
+                              </div>
+                            </div>
+                            <div className="flex items-baseline gap-1">
+                              <span className="text-xl font-bold text-primary-foreground">R${plan.price}</span>
+                              <span className="text-[11px] text-muted-foreground/40">/{plan.period === 'vitalicio' ? 'único' : plan.period === 'anual' ? 'ano' : plan.period === 'semanal' ? 'semana' : 'mês'}</span>
+                            </div>
+                            <div className="flex flex-wrap gap-1.5 mt-2">
+                              {plan.features.map((f, i) => (
+                                <span key={i} className="text-[10px] px-2 py-0.5 rounded-full bg-primary-foreground/5 text-muted-foreground/50">{f}</span>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-6">
+                      <h3 className="text-sm font-medium text-primary-foreground mb-4">Configurações Gerais</h3>
+                      <div className="mb-4"><label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Dias de teste grátis</label><input value={trialDays} onChange={e => setTrialDays(e.target.value)} className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" /></div>
+                      <button onClick={() => saveSettings('plans')} className="px-4 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 flex items-center gap-2">{showSaved === 'plans' ? <><Check size={14} /> Salvo!</> : 'Salvar'}</button>
+                    </div>
+
+                    {/* Plan form modal */}
+                    {(editingPlan || isAddingPlan) && (
+                      <PlanFormModal
+                        plan={editingPlan || undefined}
+                        onSave={(p) => {
+                          if (editingPlan) {
+                            setPlans(ps => ps.map(old => old.id === editingPlan.id ? p : old));
+                          } else {
+                            setPlans(ps => [...ps, { ...p, id: Date.now().toString() }]);
+                          }
+                          setEditingPlan(null);
+                          setIsAddingPlan(false);
+                        }}
+                        onClose={() => { setEditingPlan(null); setIsAddingPlan(false); }}
+                      />
+                    )}
+
+                    {confirmDeletePlan && (
+                      <ConfirmModal
+                        message={`Excluir o plano "${plans.find(p => p.id === confirmDeletePlan)?.name}"?`}
+                        onConfirm={() => { setPlans(ps => ps.filter(p => p.id !== confirmDeletePlan)); setConfirmDeletePlan(null); }}
+                        onCancel={() => setConfirmDeletePlan(null)}
+                      />
+                    )}
                   </div>
                 )}
 
