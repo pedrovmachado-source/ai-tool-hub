@@ -44,7 +44,21 @@ function PromptCard({ prompt, accentLight, accentDark }: { prompt: { label: stri
   );
 }
 
+function getEmbedUrl(url: string): string | null {
+  // YouTube
+  const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
+  if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`;
+  // Vimeo
+  const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+  if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+  // Loom
+  const loomMatch = url.match(/loom\.com\/share\/([a-zA-Z0-9]+)/);
+  if (loomMatch) return `https://www.loom.com/embed/${loomMatch[1]}`;
+  return null;
+}
+
 export default function EbookModal({ tool, category, isOpen, onClose }: EbookModalProps) {
+  const [activeTab, setActiveTab] = useState<'ebook' | 'videos'>('ebook');
   if (!isOpen) return null;
 
   const beginnerPrompts = tool.prompts || [];
