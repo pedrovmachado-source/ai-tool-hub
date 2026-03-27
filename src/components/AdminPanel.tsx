@@ -360,7 +360,9 @@ export default function AdminPanel({ onBack, categories: externalCategories, onU
   };
 
   const updateCategory = (updated: Category) => {
-    setCategories(prev => prev.map(c => c.key === updated.key ? updated : c));
+    const newCats = categories.map(c => c.key === updated.key ? updated : c);
+    setCategories(newCats);
+    onUpdateCategories(newCats);
     setViewingCategory(updated);
   };
 
