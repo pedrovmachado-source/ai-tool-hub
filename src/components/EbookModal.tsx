@@ -344,6 +344,7 @@ export default function EbookModal({ tool, category, isOpen, onClose }: EbookMod
               Acessar {tool.name} <ExternalLink size={14} />
             </a>
           </div>
+        </>)}
         </div>
       </div>
     </div>
