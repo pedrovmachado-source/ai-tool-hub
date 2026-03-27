@@ -1,15 +1,46 @@
 import { useState } from 'react';
 import { USERS_DB, CATEGORIES as INITIAL_CATEGORIES, type Tool, type Category } from '@/data/tools-data';
-import { ArrowLeft, LayoutDashboard, Users, CreditCard, FileText, Settings, LogOut, Search, Download, Plus, Pencil, Trash2, X, Check, Palette, Eye, EyeOff, Globe, Bell, Shield, Database, Mail } from 'lucide-react';
+import { ArrowLeft, LayoutDashboard, Users, CreditCard, FileText, Settings, LogOut, Search, Download, Plus, Pencil, Trash2, X, Check, Palette, Eye, EyeOff, Globe, Bell, Shield, Database, Mail, Play, Video } from 'lucide-react';
+
+// ── Plan type ───────────────────────────────────────────────────────
+interface Plan {
+  id: string;
+  name: string;
+  period: 'semanal' | 'mensal' | 'anual' | 'vitalicio';
+  price: string;
+  active: boolean;
+  features: string[];
+  highlight?: boolean;
+}
+
+const DEFAULT_PLANS: Plan[] = [
+  { id: '1', name: 'Pro Semanal', period: 'semanal', price: '9.90', active: false, features: ['Acesso a e-books', 'Prompts prontos', 'Suporte básico'] },
+  { id: '2', name: 'Pro Mensal', period: 'mensal', price: '19.90', active: true, highlight: true, features: ['Acesso a e-books', 'Prompts prontos', 'Vídeos tutoriais', 'Suporte prioritário'] },
+  { id: '3', name: 'Pro Anual', period: 'anual', price: '178.80', active: true, features: ['Tudo do mensal', 'Economia de 25%', 'Acesso antecipado'] },
+  { id: '4', name: 'Pro Vitalício', period: 'vitalicio', price: '497.00', active: false, features: ['Acesso permanente', 'Todas as atualizações', 'Suporte VIP'] },
+];
 
 // ── Modals ──────────────────────────────────────────────────────────
 
 function ToolFormModal({ tool, onSave, onClose }: { tool?: Tool; onSave: (t: Tool) => void; onClose: () => void }) {
-  const [form, setForm] = useState<Tool>(tool || { key: '', name: '', url: '', urlLabel: 'Acessar', badge: 'Grátis', desc: '' });
-  const set = (k: keyof Tool, v: string) => setForm(p => ({ ...p, [k]: v }));
+  const [form, setForm] = useState<Tool>(tool || { key: '', name: '', url: '', urlLabel: 'Acessar', badge: 'Grátis', desc: '', videos: [] });
+  const [newVideo, setNewVideo] = useState({ title: '', url: '', desc: '' });
+  const set = (k: keyof Tool, v: any) => setForm(p => ({ ...p, [k]: v }));
+
+  const addVideo = () => {
+    if (newVideo.title && newVideo.url) {
+      set('videos', [...(form.videos || []), { ...newVideo }]);
+      setNewVideo({ title: '', url: '', desc: '' });
+    }
+  };
+
+  const removeVideo = (idx: number) => {
+    set('videos', (form.videos || []).filter((_: any, i: number) => i !== idx));
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={onClose}>
-      <div className="bg-navy border border-primary-foreground/10 rounded-xl p-6 w-[480px] max-h-[80vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+      <div className="bg-navy border border-primary-foreground/10 rounded-xl p-6 w-[520px] max-h-[85vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-medium text-primary-foreground">{tool ? 'Editar Ferramenta' : 'Nova Ferramenta'}</h3>
           <button onClick={onClose} className="text-muted-foreground/40 hover:text-primary-foreground"><X size={16} /></button>
@@ -30,6 +61,30 @@ function ToolFormModal({ tool, onSave, onClose }: { tool?: Tool; onSave: (t: Too
           <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Descrição</label>
           <textarea value={form.desc} onChange={e => set('desc', e.target.value)} rows={3} className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue resize-none" />
         </div>
+
+        {/* Videos section */}
+        <div className="mb-3 border-t border-primary-foreground/[0.07] pt-4 mt-4">
+          <label className="text-[11px] font-medium text-muted-foreground/40 mb-2 block flex items-center gap-1.5"><Video size={12} /> Vídeos Tutoriais</label>
+          {(form.videos || []).map((v: any, i: number) => (
+            <div key={i} className="flex items-center gap-2 mb-2 bg-primary-foreground/5 rounded-lg p-2">
+              <Play size={12} className="text-brand-blue-medium shrink-0" />
+              <div className="flex-1 min-w-0">
+                <div className="text-[12px] text-primary-foreground/80 truncate">{v.title}</div>
+                <div className="text-[10px] text-muted-foreground/40 truncate">{v.url}</div>
+              </div>
+              <button onClick={() => removeVideo(i)} className="text-brand-red/60 hover:text-brand-red shrink-0"><Trash2 size={12} /></button>
+            </div>
+          ))}
+          <div className="space-y-2 mt-2">
+            <input value={newVideo.title} onChange={e => setNewVideo(p => ({ ...p, title: e.target.value }))} placeholder="Título do vídeo" className="w-full px-3 py-1.5 rounded-lg text-[12px] bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" />
+            <input value={newVideo.url} onChange={e => setNewVideo(p => ({ ...p, url: e.target.value }))} placeholder="URL (YouTube, Vimeo, Loom...)" className="w-full px-3 py-1.5 rounded-lg text-[12px] bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" />
+            <input value={newVideo.desc} onChange={e => setNewVideo(p => ({ ...p, desc: e.target.value }))} placeholder="Descrição (opcional)" className="w-full px-3 py-1.5 rounded-lg text-[12px] bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" />
+            <button onClick={addVideo} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-medium bg-brand-green/20 text-brand-green hover:bg-brand-green/30">
+              <Plus size={12} /> Adicionar vídeo
+            </button>
+          </div>
+        </div>
+
         <div className="flex gap-2 justify-end mt-4">
           <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm text-muted-foreground/60 hover:text-primary-foreground">Cancelar</button>
           <button onClick={() => { if (form.name && form.key) onSave(form); }} className="px-4 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90">Salvar</button>
@@ -92,6 +147,72 @@ function ConfirmModal({ message, onConfirm, onCancel }: { message: string; onCon
         <div className="flex gap-2 justify-end">
           <button onClick={onCancel} className="px-4 py-2 rounded-lg text-sm text-muted-foreground/60 hover:text-primary-foreground">Cancelar</button>
           <button onClick={onConfirm} className="px-4 py-2 bg-brand-red text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90">Confirmar</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PlanFormModal({ plan, onSave, onClose }: { plan?: Plan; onSave: (p: Plan) => void; onClose: () => void }) {
+  const [form, setForm] = useState<Plan>(plan || { id: '', name: '', period: 'mensal', price: '', active: true, features: [], highlight: false });
+  const [newFeature, setNewFeature] = useState('');
+
+  const addFeature = () => {
+    if (newFeature.trim()) {
+      setForm(p => ({ ...p, features: [...p.features, newFeature.trim()] }));
+      setNewFeature('');
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={onClose}>
+      <div className="bg-navy border border-primary-foreground/10 rounded-xl p-6 w-[480px] max-h-[80vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-medium text-primary-foreground">{plan ? 'Editar Plano' : 'Novo Plano'}</h3>
+          <button onClick={onClose} className="text-muted-foreground/40 hover:text-primary-foreground"><X size={16} /></button>
+        </div>
+        <div className="mb-3">
+          <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Nome do plano</label>
+          <input value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} placeholder="Ex: Pro Mensal" className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" />
+        </div>
+        <div className="mb-3">
+          <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Período</label>
+          <select value={form.period} onChange={e => setForm(p => ({ ...p, period: e.target.value as Plan['period'] }))} className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue">
+            <option value="semanal">Semanal</option>
+            <option value="mensal">Mensal</option>
+            <option value="anual">Anual</option>
+            <option value="vitalicio">Vitalício</option>
+          </select>
+        </div>
+        <div className="mb-3">
+          <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Preço (R$)</label>
+          <input value={form.price} onChange={e => setForm(p => ({ ...p, price: e.target.value }))} placeholder="19.90" className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" />
+        </div>
+        <div className="mb-3 flex gap-4">
+          <label className="flex items-center gap-2 text-[12px] text-primary-foreground/70 cursor-pointer">
+            <input type="checkbox" checked={form.active} onChange={e => setForm(p => ({ ...p, active: e.target.checked }))} className="rounded" /> Ativo
+          </label>
+          <label className="flex items-center gap-2 text-[12px] text-primary-foreground/70 cursor-pointer">
+            <input type="checkbox" checked={form.highlight || false} onChange={e => setForm(p => ({ ...p, highlight: e.target.checked }))} className="rounded" /> Destacar
+          </label>
+        </div>
+        <div className="mb-3">
+          <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Recursos incluídos</label>
+          {form.features.map((f, i) => (
+            <div key={i} className="flex items-center gap-2 mb-1.5">
+              <Check size={12} className="text-brand-green shrink-0" />
+              <span className="text-[12px] text-primary-foreground/70 flex-1">{f}</span>
+              <button onClick={() => setForm(p => ({ ...p, features: p.features.filter((_, fi) => fi !== i) }))} className="text-brand-red/50 hover:text-brand-red"><X size={12} /></button>
+            </div>
+          ))}
+          <div className="flex gap-2 mt-2">
+            <input value={newFeature} onChange={e => setNewFeature(e.target.value)} onKeyDown={e => e.key === 'Enter' && addFeature()} placeholder="Novo recurso..." className="flex-1 px-3 py-1.5 rounded-lg text-[12px] bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" />
+            <button onClick={addFeature} className="px-2 py-1.5 rounded-lg text-[11px] font-medium bg-brand-green/20 text-brand-green hover:bg-brand-green/30"><Plus size={12} /></button>
+          </div>
+        </div>
+        <div className="flex gap-2 justify-end mt-4">
+          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm text-muted-foreground/60 hover:text-primary-foreground">Cancelar</button>
+          <button onClick={() => { if (form.name && form.price) onSave(form); }} className="px-4 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90">Salvar</button>
         </div>
       </div>
     </div>
@@ -200,6 +321,10 @@ export default function AdminPanel({ onBack }: { onBack: () => void }) {
   const [proAnnualPrice, setProAnnualPrice] = useState('178.80');
   const [trialDays, setTrialDays] = useState('7');
   const [showSaved, setShowSaved] = useState('');
+  const [plans, setPlans] = useState<Plan[]>(DEFAULT_PLANS);
+  const [editingPlan, setEditingPlan] = useState<Plan | null>(null);
+  const [isAddingPlan, setIsAddingPlan] = useState(false);
+  const [confirmDeletePlan, setConfirmDeletePlan] = useState<string | null>(null);
 
   const filteredUsers = users.filter(u =>
     `${u.nome} ${u.sobre} ${u.email}`.toLowerCase().includes(searchQuery.toLowerCase())
@@ -516,12 +641,77 @@ export default function AdminPanel({ onBack }: { onBack: () => void }) {
                 )}
 
                 {settingsSection === 'plans' && (
-                  <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-6">
-                    <h3 className="text-sm font-medium text-primary-foreground mb-4">Planos & Preços</h3>
-                    <div className="mb-4"><label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Preço Pro Mensal (R$)</label><input value={proPrice} onChange={e => setProPrice(e.target.value)} className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" /></div>
-                    <div className="mb-4"><label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Preço Pro Anual (R$)</label><input value={proAnnualPrice} onChange={e => setProAnnualPrice(e.target.value)} className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" /></div>
-                    <div className="mb-4"><label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Dias de teste grátis</label><input value={trialDays} onChange={e => setTrialDays(e.target.value)} className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" /></div>
-                    <button onClick={() => saveSettings('plans')} className="px-4 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 flex items-center gap-2">{showSaved === 'plans' ? <><Check size={14} /> Salvo!</> : 'Salvar'}</button>
+                  <div className="space-y-4">
+                    <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-sm font-medium text-primary-foreground">Planos & Preços</h3>
+                        <button onClick={() => setIsAddingPlan(true)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium bg-brand-green/20 text-brand-green hover:bg-brand-green/30">
+                          <Plus size={12} /> Novo Plano
+                        </button>
+                      </div>
+
+                      <div className="space-y-3">
+                        {plans.map(plan => (
+                          <div key={plan.id} className={`border rounded-xl p-4 ${plan.active ? 'border-brand-blue/30 bg-brand-blue/5' : 'border-primary-foreground/[0.07]'}`}>
+                            <div className="flex items-center justify-between mb-2">
+                              <div className="flex items-center gap-2">
+                                <h4 className="text-[13px] font-medium text-primary-foreground">{plan.name}</h4>
+                                <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${plan.active ? 'bg-brand-green/20 text-brand-green' : 'bg-muted-foreground/10 text-muted-foreground/50'}`}>{plan.active ? 'Ativo' : 'Inativo'}</span>
+                                {plan.highlight && <span className="text-[10px] px-2 py-0.5 rounded-full bg-brand-amber/20 text-brand-amber font-medium">Destaque</span>}
+                                <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary-foreground/5 text-muted-foreground/50 capitalize">{plan.period === 'vitalicio' ? 'Vitalício' : plan.period}</span>
+                              </div>
+                              <div className="flex gap-2">
+                                <button onClick={() => setEditingPlan(plan)} className="text-[11px] px-2 py-1 rounded bg-brand-blue/20 text-brand-blue-medium hover:bg-brand-blue/30 flex items-center gap-1"><Pencil size={11} /> Editar</button>
+                                <button onClick={() => setPlans(ps => ps.map(p => p.id === plan.id ? { ...p, active: !p.active } : p))} className="text-[11px] px-2 py-1 rounded bg-brand-amber/20 text-brand-amber hover:bg-brand-amber/30 flex items-center gap-1">
+                                  {plan.active ? <><EyeOff size={11} /> Desativar</> : <><Eye size={11} /> Ativar</>}
+                                </button>
+                                <button onClick={() => setConfirmDeletePlan(plan.id)} className="text-[11px] px-2 py-1 rounded bg-brand-red/20 text-brand-red hover:bg-brand-red/30 flex items-center gap-1"><Trash2 size={11} /></button>
+                              </div>
+                            </div>
+                            <div className="flex items-baseline gap-1">
+                              <span className="text-xl font-bold text-primary-foreground">R${plan.price}</span>
+                              <span className="text-[11px] text-muted-foreground/40">/{plan.period === 'vitalicio' ? 'único' : plan.period === 'anual' ? 'ano' : plan.period === 'semanal' ? 'semana' : 'mês'}</span>
+                            </div>
+                            <div className="flex flex-wrap gap-1.5 mt-2">
+                              {plan.features.map((f, i) => (
+                                <span key={i} className="text-[10px] px-2 py-0.5 rounded-full bg-primary-foreground/5 text-muted-foreground/50">{f}</span>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-6">
+                      <h3 className="text-sm font-medium text-primary-foreground mb-4">Configurações Gerais</h3>
+                      <div className="mb-4"><label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Dias de teste grátis</label><input value={trialDays} onChange={e => setTrialDays(e.target.value)} className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" /></div>
+                      <button onClick={() => saveSettings('plans')} className="px-4 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 flex items-center gap-2">{showSaved === 'plans' ? <><Check size={14} /> Salvo!</> : 'Salvar'}</button>
+                    </div>
+
+                    {/* Plan form modal */}
+                    {(editingPlan || isAddingPlan) && (
+                      <PlanFormModal
+                        plan={editingPlan || undefined}
+                        onSave={(p) => {
+                          if (editingPlan) {
+                            setPlans(ps => ps.map(old => old.id === editingPlan.id ? p : old));
+                          } else {
+                            setPlans(ps => [...ps, { ...p, id: Date.now().toString() }]);
+                          }
+                          setEditingPlan(null);
+                          setIsAddingPlan(false);
+                        }}
+                        onClose={() => { setEditingPlan(null); setIsAddingPlan(false); }}
+                      />
+                    )}
+
+                    {confirmDeletePlan && (
+                      <ConfirmModal
+                        message={`Excluir o plano "${plans.find(p => p.id === confirmDeletePlan)?.name}"?`}
+                        onConfirm={() => { setPlans(ps => ps.filter(p => p.id !== confirmDeletePlan)); setConfirmDeletePlan(null); }}
+                        onCancel={() => setConfirmDeletePlan(null)}
+                      />
+                    )}
                   </div>
                 )}
 
