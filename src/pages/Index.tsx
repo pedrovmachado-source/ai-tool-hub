@@ -23,7 +23,7 @@ export default function Index() {
   const category = categories.find(c => c.key === activeCategory)!;
 
   const filteredTools = searchQuery
-    ? CATEGORIES.flatMap(c => c.tools.map(t => ({ tool: t, category: c }))).filter(({ tool }) =>
+    ? categories.flatMap(c => c.tools.map(t => ({ tool: t, category: c }))).filter(({ tool }) =>
         tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         tool.desc.toLowerCase().includes(searchQuery.toLowerCase()) ||
         tool.badge.toLowerCase().includes(searchQuery.toLowerCase())

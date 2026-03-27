@@ -301,10 +301,10 @@ function CategoryToolsView({ category, onBack, onUpdateCategory }: { category: C
 
 // ── Main Admin Panel ────────────────────────────────────────────────
 
-export default function AdminPanel({ onBack }: { onBack: () => void }) {
+export default function AdminPanel({ onBack, categories: externalCategories, onUpdateCategories }: { onBack: () => void; categories: Category[]; onUpdateCategories: (cats: Category[]) => void }) {
   const [section, setSection] = useState('dashboard');
   const [users, setUsers] = useState(USERS_DB);
-  const [categories, setCategories] = useState<Category[]>(INITIAL_CATEGORIES);
+  const [categories, setCategories] = useState<Category[]>(externalCategories);
   const [searchQuery, setSearchQuery] = useState('');
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [viewingCategory, setViewingCategory] = useState<Category | null>(null);
