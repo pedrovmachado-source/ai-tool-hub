@@ -255,6 +255,10 @@ export default function AdminPanel({ onBack }: { onBack: () => void }) {
   const [proAnnualPrice, setProAnnualPrice] = useState('178.80');
   const [trialDays, setTrialDays] = useState('7');
   const [showSaved, setShowSaved] = useState('');
+  const [plans, setPlans] = useState<Plan[]>(DEFAULT_PLANS);
+  const [editingPlan, setEditingPlan] = useState<Plan | null>(null);
+  const [isAddingPlan, setIsAddingPlan] = useState(false);
+  const [confirmDeletePlan, setConfirmDeletePlan] = useState<string | null>(null);
 
   const filteredUsers = users.filter(u =>
     `${u.nome} ${u.sobre} ${u.email}`.toLowerCase().includes(searchQuery.toLowerCase())
