@@ -1,15 +1,46 @@
 import { useState } from 'react';
 import { USERS_DB, CATEGORIES as INITIAL_CATEGORIES, type Tool, type Category } from '@/data/tools-data';
-import { ArrowLeft, LayoutDashboard, Users, CreditCard, FileText, Settings, LogOut, Search, Download, Plus, Pencil, Trash2, X, Check, Palette, Eye, EyeOff, Globe, Bell, Shield, Database, Mail } from 'lucide-react';
+import { ArrowLeft, LayoutDashboard, Users, CreditCard, FileText, Settings, LogOut, Search, Download, Plus, Pencil, Trash2, X, Check, Palette, Eye, EyeOff, Globe, Bell, Shield, Database, Mail, Play, Video } from 'lucide-react';
+
+// ── Plan type ───────────────────────────────────────────────────────
+interface Plan {
+  id: string;
+  name: string;
+  period: 'semanal' | 'mensal' | 'anual' | 'vitalicio';
+  price: string;
+  active: boolean;
+  features: string[];
+  highlight?: boolean;
+}
+
+const DEFAULT_PLANS: Plan[] = [
+  { id: '1', name: 'Pro Semanal', period: 'semanal', price: '9.90', active: false, features: ['Acesso a e-books', 'Prompts prontos', 'Suporte básico'] },
+  { id: '2', name: 'Pro Mensal', period: 'mensal', price: '19.90', active: true, highlight: true, features: ['Acesso a e-books', 'Prompts prontos', 'Vídeos tutoriais', 'Suporte prioritário'] },
+  { id: '3', name: 'Pro Anual', period: 'anual', price: '178.80', active: true, features: ['Tudo do mensal', 'Economia de 25%', 'Acesso antecipado'] },
+  { id: '4', name: 'Pro Vitalício', period: 'vitalicio', price: '497.00', active: false, features: ['Acesso permanente', 'Todas as atualizações', 'Suporte VIP'] },
+];
 
 // ── Modals ──────────────────────────────────────────────────────────
 
 function ToolFormModal({ tool, onSave, onClose }: { tool?: Tool; onSave: (t: Tool) => void; onClose: () => void }) {
-  const [form, setForm] = useState<Tool>(tool || { key: '', name: '', url: '', urlLabel: 'Acessar', badge: 'Grátis', desc: '' });
-  const set = (k: keyof Tool, v: string) => setForm(p => ({ ...p, [k]: v }));
+  const [form, setForm] = useState<Tool>(tool || { key: '', name: '', url: '', urlLabel: 'Acessar', badge: 'Grátis', desc: '', videos: [] });
+  const [newVideo, setNewVideo] = useState({ title: '', url: '', desc: '' });
+  const set = (k: keyof Tool, v: any) => setForm(p => ({ ...p, [k]: v }));
+
+  const addVideo = () => {
+    if (newVideo.title && newVideo.url) {
+      set('videos', [...(form.videos || []), { ...newVideo }]);
+      setNewVideo({ title: '', url: '', desc: '' });
+    }
+  };
+
+  const removeVideo = (idx: number) => {
+    set('videos', (form.videos || []).filter((_: any, i: number) => i !== idx));
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={onClose}>
-      <div className="bg-navy border border-primary-foreground/10 rounded-xl p-6 w-[480px] max-h-[80vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+      <div className="bg-navy border border-primary-foreground/10 rounded-xl p-6 w-[520px] max-h-[85vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-medium text-primary-foreground">{tool ? 'Editar Ferramenta' : 'Nova Ferramenta'}</h3>
           <button onClick={onClose} className="text-muted-foreground/40 hover:text-primary-foreground"><X size={16} /></button>
@@ -30,6 +61,30 @@ function ToolFormModal({ tool, onSave, onClose }: { tool?: Tool; onSave: (t: Too
           <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Descrição</label>
           <textarea value={form.desc} onChange={e => set('desc', e.target.value)} rows={3} className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue resize-none" />
         </div>
+
+        {/* Videos section */}
+        <div className="mb-3 border-t border-primary-foreground/[0.07] pt-4 mt-4">
+          <label className="text-[11px] font-medium text-muted-foreground/40 mb-2 block flex items-center gap-1.5"><Video size={12} /> Vídeos Tutoriais</label>
+          {(form.videos || []).map((v: any, i: number) => (
+            <div key={i} className="flex items-center gap-2 mb-2 bg-primary-foreground/5 rounded-lg p-2">
+              <Play size={12} className="text-brand-blue-medium shrink-0" />
+              <div className="flex-1 min-w-0">
+                <div className="text-[12px] text-primary-foreground/80 truncate">{v.title}</div>
+                <div className="text-[10px] text-muted-foreground/40 truncate">{v.url}</div>
+              </div>
+              <button onClick={() => removeVideo(i)} className="text-brand-red/60 hover:text-brand-red shrink-0"><Trash2 size={12} /></button>
+            </div>
+          ))}
+          <div className="space-y-2 mt-2">
+            <input value={newVideo.title} onChange={e => setNewVideo(p => ({ ...p, title: e.target.value }))} placeholder="Título do vídeo" className="w-full px-3 py-1.5 rounded-lg text-[12px] bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" />
+            <input value={newVideo.url} onChange={e => setNewVideo(p => ({ ...p, url: e.target.value }))} placeholder="URL (YouTube, Vimeo, Loom...)" className="w-full px-3 py-1.5 rounded-lg text-[12px] bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" />
+            <input value={newVideo.desc} onChange={e => setNewVideo(p => ({ ...p, desc: e.target.value }))} placeholder="Descrição (opcional)" className="w-full px-3 py-1.5 rounded-lg text-[12px] bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" />
+            <button onClick={addVideo} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-medium bg-brand-green/20 text-brand-green hover:bg-brand-green/30">
+              <Plus size={12} /> Adicionar vídeo
+            </button>
+          </div>
+        </div>
+
         <div className="flex gap-2 justify-end mt-4">
           <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm text-muted-foreground/60 hover:text-primary-foreground">Cancelar</button>
           <button onClick={() => { if (form.name && form.key) onSave(form); }} className="px-4 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90">Salvar</button>
