@@ -69,11 +69,57 @@ export default function EbookModal({ tool, category, isOpen, onClose }: EbookMod
   return (
     <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4" style={{ background: 'rgba(10,10,30,0.65)' }} onClick={onClose}>
       <div className="bg-card rounded-2xl w-full max-w-[900px] max-h-[90vh] overflow-hidden animate-slide-up flex flex-col" onClick={e => e.stopPropagation()}>
-        <div className="flex items-center justify-between p-6 pb-4 border-b border-border shrink-0">
-          <h2 className="text-lg font-medium">📘 E-Book: {tool.name}</h2>
-          <button onClick={onClose} className="text-muted-foreground hover:text-foreground p-1 rounded-md hover:bg-secondary"><X size={18} /></button>
+        <div className="border-b border-border shrink-0">
+          <div className="flex items-center justify-between p-6 pb-3">
+            <h2 className="text-lg font-medium">📘 {tool.name}</h2>
+            <button onClick={onClose} className="text-muted-foreground hover:text-foreground p-1 rounded-md hover:bg-secondary"><X size={18} /></button>
+          </div>
+          <div className="flex gap-1 px-6 pb-0">
+            <button onClick={() => setActiveTab('ebook')} className={`px-4 py-2 text-[13px] font-medium rounded-t-lg transition-colors ${activeTab === 'ebook' ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
+              📖 E-Book
+            </button>
+            <button onClick={() => setActiveTab('videos')} className={`px-4 py-2 text-[13px] font-medium rounded-t-lg transition-colors flex items-center gap-1.5 ${activeTab === 'videos' ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
+              <Play size={13} /> Vídeos {tool.videos && tool.videos.length > 0 && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-brand-blue/20 text-brand-blue-medium">{tool.videos.length}</span>}
+            </button>
+          </div>
         </div>
         <div className="p-6 overflow-y-auto flex-1 space-y-6">
+
+        {activeTab === 'videos' && (
+          <div className="space-y-6">
+            {(!tool.videos || tool.videos.length === 0) ? (
+              <div className="text-center py-16">
+                <Play size={40} className="mx-auto mb-3 text-muted-foreground/30" />
+                <p className="text-sm text-muted-foreground">Nenhum vídeo disponível para esta ferramenta ainda.</p>
+              </div>
+            ) : (
+              tool.videos.map((v, i) => {
+                const embedUrl = getEmbedUrl(v.url);
+                return (
+                  <div key={i} className="rounded-xl border border-border overflow-hidden">
+                    {embedUrl ? (
+                      <div className="aspect-video">
+                        <iframe src={embedUrl} className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen title={v.title} />
+                      </div>
+                    ) : (
+                      <div className="aspect-video bg-secondary flex items-center justify-center">
+                        <a href={v.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm hover:opacity-90">
+                          <Play size={14} /> Assistir vídeo
+                        </a>
+                      </div>
+                    )}
+                    <div className="p-4">
+                      <h4 className="text-sm font-semibold mb-1">{v.title}</h4>
+                      {v.desc && <p className="text-[13px] text-muted-foreground">{v.desc}</p>}
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        )}
+
+        {activeTab === 'ebook' && (<>
           {/* Cover */}
           <div className="rounded-2xl p-8 text-center" style={{ background: `linear-gradient(135deg, ${category.accentDark}, ${category.accent})` }}>
             <div className="text-[11px] font-semibold opacity-70 uppercase tracking-wider text-primary-foreground mb-2">📘 E-Book Completo · AdAI Pro</div>
