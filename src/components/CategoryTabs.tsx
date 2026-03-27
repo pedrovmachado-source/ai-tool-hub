@@ -76,7 +76,7 @@ export default function CategoryTabs({ activeCategory, onSelect, categories: cat
     <div className="bg-card border-b border-border sticky top-[72px] z-[90]">
       <div className="max-w-[1100px] mx-auto px-6 overflow-x-auto scrollbar-hide" ref={tabsRef}>
         <div className="flex gap-0">
-          {CATEGORIES.map(cat => (
+          {categories.map(cat => (
             <button
               key={cat.key}
               onClick={() => onSelect(cat.key)}

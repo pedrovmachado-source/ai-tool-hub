@@ -78,7 +78,7 @@ export default function Index() {
       </div>
 
       {/* Tabs */}
-      {!searchQuery && <CategoryTabs activeCategory={activeCategory} onSelect={setActiveCategory} />}
+      {!searchQuery && <CategoryTabs activeCategory={activeCategory} onSelect={setActiveCategory} categories={categories} />}
 
       {/* Content */}
       <div className="max-w-[1100px] mx-auto px-6 py-8 flex-1">
