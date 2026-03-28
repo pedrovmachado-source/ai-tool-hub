@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { Sparkles, Menu } from 'lucide-react';
+import { Sparkles, Menu, Bookmark, X } from 'lucide-react';
 import AuthModal from './AuthModal';
 
-export default function Navbar({ onNavigate }: { onNavigate: (page: string) => void }) {
-  const { user, isAdmin, logout } = useAuth();
+export default function Navbar({ onNavigate, onOpenSavedEbook }: { onNavigate: (page: string) => void; onOpenSavedEbook?: (toolKey: string, categoryKey: string) => void }) {
+  const { user, isAdmin, logout, savedEbooks, unsaveEbook } = useAuth();
   const [authModal, setAuthModal] = useState<{ open: boolean; mode: 'login' | 'register' | 'admin' }>({ open: false, mode: 'login' });
+  const [showSaved, setShowSaved] = useState(false);
 
   return (
     <>
@@ -21,6 +22,18 @@ export default function Navbar({ onNavigate }: { onNavigate: (page: string) => v
         </button>
 
         <div className="flex items-center gap-2">
+          {user && (
+            <button
+              onClick={() => setShowSaved(true)}
+              className="relative px-2.5 py-1.5 rounded-lg text-primary-foreground/70 hover:text-primary-foreground hover:bg-primary-foreground/[0.08] transition-colors"
+              title="E-books salvos"
+            >
+              <Bookmark size={18} />
+              {savedEbooks.length > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-brand-amber text-[9px] font-bold text-primary-foreground flex items-center justify-center">{savedEbooks.length}</span>
+              )}
+            </button>
+          )}
           {!user ? (
             <>
               <button onClick={() => setAuthModal({ open: true, mode: 'login' })} className="px-4 py-1.5 rounded-lg text-[13px] font-medium text-primary-foreground/80 bg-primary-foreground/[0.08] hover:bg-primary-foreground/[0.15] transition-colors">Entrar</button>
@@ -42,7 +55,7 @@ export default function Navbar({ onNavigate }: { onNavigate: (page: string) => v
         </div>
       </nav>
 
-      {/* Admin hamburger - fixed below navbar, top-left */}
+      {/* Admin hamburger */}
       {isAdmin && (
         <button
           onClick={() => onNavigate('admin')}
@@ -51,6 +64,45 @@ export default function Navbar({ onNavigate }: { onNavigate: (page: string) => v
         >
           <Menu size={20} className="text-primary-foreground" />
         </button>
+      )}
+
+      {/* Saved Ebooks Drawer */}
+      {showSaved && (
+        <div className="fixed inset-0 z-[300]" onClick={() => setShowSaved(false)}>
+          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute right-0 top-0 h-full w-full max-w-[380px] bg-card shadow-2xl flex flex-col animate-slide-up" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between p-5 border-b border-border">
+              <h3 className="text-base font-semibold flex items-center gap-2"><Bookmark size={16} /> E-books salvos</h3>
+              <button onClick={() => setShowSaved(false)} className="text-muted-foreground hover:text-foreground p-1 rounded-md hover:bg-secondary"><X size={18} /></button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4">
+              {savedEbooks.length === 0 ? (
+                <div className="text-center py-16">
+                  <Bookmark size={32} className="mx-auto mb-3 text-muted-foreground/30" />
+                  <p className="text-sm text-muted-foreground">Nenhum e-book salvo ainda.</p>
+                  <p className="text-xs text-muted-foreground/60 mt-1">Abra um e-book e clique em "Salvar" para guardá-lo aqui.</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {savedEbooks.map(eb => (
+                    <div key={eb.toolKey} className="flex items-center justify-between bg-secondary rounded-lg p-3 group">
+                      <button
+                        onClick={() => { setShowSaved(false); onOpenSavedEbook?.(eb.toolKey, eb.categoryKey); }}
+                        className="text-left flex-1 min-w-0"
+                      >
+                        <div className="text-sm font-medium truncate">{eb.toolName}</div>
+                        <div className="text-[11px] text-muted-foreground">{new Date(eb.savedAt).toLocaleDateString('pt-BR')}</div>
+                      </button>
+                      <button onClick={() => unsaveEbook(eb.toolKey)} className="text-muted-foreground hover:text-brand-red p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity" title="Remover">
+                        <X size={14} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       )}
 
       <AuthModal isOpen={authModal.open} mode={authModal.mode} onClose={() => setAuthModal({ ...authModal, open: false })} onSwitch={mode => setAuthModal({ open: true, mode })} />

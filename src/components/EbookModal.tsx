@@ -1,6 +1,7 @@
-import { X, Copy, Check, ExternalLink, Zap, DollarSign, CheckSquare, Image, Lightbulb, Play } from 'lucide-react';
+import { X, Copy, Check, ExternalLink, Zap, DollarSign, CheckSquare, Image, Lightbulb, Play, Bookmark, BookmarkCheck } from 'lucide-react';
 import { useState } from 'react';
 import type { Tool, Category } from '@/data/tools-data';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface EbookModalProps {
   tool: Tool;
@@ -59,6 +60,8 @@ function getEmbedUrl(url: string): string | null {
 
 export default function EbookModal({ tool, category, isOpen, onClose }: EbookModalProps) {
   const [activeTab, setActiveTab] = useState<'ebook' | 'videos'>('ebook');
+  const { user, saveEbook, unsaveEbook, isEbookSaved } = useAuth();
+  const saved = isEbookSaved(tool.key);
   if (!isOpen) return null;
 
   const beginnerPrompts = tool.prompts || [];
@@ -66,13 +69,30 @@ export default function EbookModal({ tool, category, isOpen, onClose }: EbookMod
   const advancedPrompts = tool.promptsAdvanced || [];
   const allPrompts = [...beginnerPrompts, ...intermediatePrompts, ...advancedPrompts];
 
+  const handleToggleSave = () => {
+    if (saved) unsaveEbook(tool.key);
+    else saveEbook(tool.key, tool.name, category.key);
+  };
+
   return (
     <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4" style={{ background: 'rgba(10,10,30,0.65)' }} onClick={onClose}>
       <div className="bg-card rounded-2xl w-full max-w-[900px] max-h-[90vh] overflow-hidden animate-slide-up flex flex-col" onClick={e => e.stopPropagation()}>
         <div className="border-b border-border shrink-0">
           <div className="flex items-center justify-between p-6 pb-3">
             <h2 className="text-lg font-medium">📘 {tool.name}</h2>
-            <button onClick={onClose} className="text-muted-foreground hover:text-foreground p-1 rounded-md hover:bg-secondary"><X size={18} /></button>
+            <div className="flex items-center gap-2">
+              {user && (
+                <button
+                  onClick={handleToggleSave}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium transition-colors ${saved ? 'bg-brand-amber/15 text-brand-amber' : 'bg-secondary text-muted-foreground hover:text-foreground'}`}
+                  title={saved ? 'Remover dos salvos' : 'Salvar e-book'}
+                >
+                  {saved ? <BookmarkCheck size={14} /> : <Bookmark size={14} />}
+                  {saved ? 'Salvo' : 'Salvar'}
+                </button>
+              )}
+              <button onClick={onClose} className="text-muted-foreground hover:text-foreground p-1 rounded-md hover:bg-secondary"><X size={18} /></button>
+            </div>
           </div>
           <div className="flex gap-1 px-6 pb-0">
             <button onClick={() => setActiveTab('ebook')} className={`px-4 py-2 text-[13px] font-medium rounded-t-lg transition-colors ${activeTab === 'ebook' ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>

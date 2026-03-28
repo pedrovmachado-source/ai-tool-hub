@@ -93,21 +93,6 @@ export default function CategoryTabs({ activeCategory, onSelect, categories: cat
           ))}
         </div>
       </div>
-      {/* Scroll indicator */}
-      <div className="max-w-[1100px] mx-auto px-6 py-1 bg-card">
-        <div
-          ref={barRef}
-          className="h-[3px] bg-border rounded-full relative cursor-pointer"
-          onClick={handleBarClick}
-        >
-          <div
-            ref={thumbRef}
-            className="h-[3px] bg-brand-blue rounded-full absolute top-0 left-0 cursor-grab active:cursor-grabbing select-none transition-[width,left] duration-100"
-            style={thumbStyle}
-            onMouseDown={handleThumbMouseDown}
-          />
-        </div>
-      </div>
     </div>
   );
 }
