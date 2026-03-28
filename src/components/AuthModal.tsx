@@ -26,7 +26,7 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch }: AuthModal
   };
 
   const handleRegister = () => {
-    if (!nome || !email || !password) { setError('Preencha todos os campos.'); return; }
+    if (!nome || !sobre || !email || !password) { setError('Preencha todos os campos.'); return; }
     if (password.length < 8) { setError('Senha deve ter no mínimo 8 caracteres.'); return; }
     if (register(nome, sobre, email, password)) { onClose(); } else { setError('Erro ao criar conta.'); }
   };
