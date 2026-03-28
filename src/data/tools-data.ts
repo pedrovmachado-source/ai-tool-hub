@@ -24,6 +24,7 @@ export interface Tool {
   checklist?: string[];
   imageDescriptions?: { title: string; desc: string }[];
   videos?: { title: string; url: string; desc?: string }[];
+  pdfDataUrl?: string;
 }
 
 export interface Category {

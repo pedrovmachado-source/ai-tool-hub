@@ -1,4 +1,4 @@
-import { X, Copy, Check, ExternalLink, Zap, DollarSign, CheckSquare, Image, Lightbulb, Play, Bookmark, BookmarkCheck } from 'lucide-react';
+import { X, Copy, Check, ExternalLink, Zap, DollarSign, CheckSquare, Image, Lightbulb, Play, Bookmark, BookmarkCheck, FileText } from 'lucide-react';
 import { useState } from 'react';
 import type { Tool, Category } from '@/data/tools-data';
 import { useAuth } from '@/contexts/AuthContext';
@@ -59,7 +59,7 @@ function getEmbedUrl(url: string): string | null {
 }
 
 export default function EbookModal({ tool, category, isOpen, onClose }: EbookModalProps) {
-  const [activeTab, setActiveTab] = useState<'ebook' | 'videos'>('ebook');
+  const [activeTab, setActiveTab] = useState<'ebook' | 'videos' | 'pdf'>(tool.pdfDataUrl ? 'pdf' : 'ebook');
   const { user, saveEbook, unsaveEbook, isEbookSaved } = useAuth();
   const saved = isEbookSaved(tool.key);
   if (!isOpen) return null;
@@ -98,12 +98,34 @@ export default function EbookModal({ tool, category, isOpen, onClose }: EbookMod
             <button onClick={() => setActiveTab('ebook')} className={`px-4 py-2 text-[13px] font-medium rounded-t-lg transition-colors ${activeTab === 'ebook' ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
               📖 E-Book
             </button>
+            {tool.pdfDataUrl && (
+              <button onClick={() => setActiveTab('pdf')} className={`px-4 py-2 text-[13px] font-medium rounded-t-lg transition-colors flex items-center gap-1.5 ${activeTab === 'pdf' ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
+                <FileText size={13} /> PDF
+              </button>
+            )}
             <button onClick={() => setActiveTab('videos')} className={`px-4 py-2 text-[13px] font-medium rounded-t-lg transition-colors flex items-center gap-1.5 ${activeTab === 'videos' ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
               <Play size={13} /> Vídeos {tool.videos && tool.videos.length > 0 && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-brand-blue/20 text-brand-blue-medium">{tool.videos.length}</span>}
             </button>
           </div>
         </div>
         <div className="p-6 overflow-y-auto flex-1 space-y-6">
+
+        {activeTab === 'pdf' && tool.pdfDataUrl && (
+          <div className="h-[70vh] -m-6 -mb-6">
+            <iframe
+              src={`${tool.pdfDataUrl}#toolbar=0&navpanes=0&scrollbar=1&view=FitH`}
+              className="w-full h-full border-0"
+              title={`PDF - ${tool.name}`}
+              style={{ pointerEvents: 'auto' }}
+            />
+            <style>{`
+              iframe[title="PDF - ${tool.name}"] {
+                -webkit-user-select: none;
+                user-select: none;
+              }
+            `}</style>
+          </div>
+        )}
 
         {activeTab === 'videos' && (
           <div className="space-y-6">

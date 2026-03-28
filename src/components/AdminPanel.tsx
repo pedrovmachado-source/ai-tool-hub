@@ -27,6 +27,14 @@ function ToolFormModal({ tool, onSave, onClose }: { tool?: Tool; onSave: (t: Too
   const [newVideo, setNewVideo] = useState({ title: '', url: '', desc: '' });
   const set = (k: keyof Tool, v: any) => setForm(p => ({ ...p, [k]: v }));
 
+  const handlePdfUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || file.type !== 'application/pdf') return;
+    const reader = new FileReader();
+    reader.onload = () => set('pdfDataUrl', reader.result as string);
+    reader.readAsDataURL(file);
+  };
+
   const addVideo = () => {
     if (newVideo.title && newVideo.url) {
       set('videos', [...(form.videos || []), { ...newVideo }]);
@@ -60,6 +68,23 @@ function ToolFormModal({ tool, onSave, onClose }: { tool?: Tool; onSave: (t: Too
         <div className="mb-3">
           <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Descrição</label>
           <textarea value={form.desc} onChange={e => set('desc', e.target.value)} rows={3} className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue resize-none" />
+        </div>
+
+        {/* PDF Upload */}
+        <div className="mb-3 border-t border-primary-foreground/[0.07] pt-4 mt-4">
+          <label className="text-[11px] font-medium text-muted-foreground/40 mb-2 block flex items-center gap-1.5"><FileText size={12} /> E-Book em PDF</label>
+          {form.pdfDataUrl ? (
+            <div className="flex items-center gap-2 bg-brand-green/10 rounded-lg p-3 mb-2">
+              <FileText size={14} className="text-brand-green" />
+              <span className="text-[12px] text-primary-foreground/80 flex-1">PDF carregado ✓</span>
+              <button onClick={() => set('pdfDataUrl', undefined)} className="text-brand-red/60 hover:text-brand-red text-[11px]">Remover</button>
+            </div>
+          ) : (
+            <label className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-[12px] bg-primary-foreground/5 border border-dashed border-primary-foreground/20 text-muted-foreground/60 cursor-pointer hover:border-brand-blue hover:text-brand-blue-medium transition-colors">
+              <Plus size={14} /> Subir arquivo PDF
+              <input type="file" accept=".pdf" onChange={handlePdfUpload} className="hidden" />
+            </label>
+          )}
         </div>
 
         {/* Videos section */}
