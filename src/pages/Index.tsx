@@ -45,7 +45,11 @@ export default function Index() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar onNavigate={setPage} />
+      <Navbar onNavigate={setPage} onOpenSavedEbook={(toolKey, categoryKey) => {
+        const cat = categories.find(c => c.key === categoryKey);
+        const tool = cat?.tools.find(t => t.key === toolKey);
+        if (tool && cat) setEbookModal({ tool, category: cat });
+      }} />
 
       {/* Hero */}
       <div className="bg-navy py-14 px-8 text-center">
