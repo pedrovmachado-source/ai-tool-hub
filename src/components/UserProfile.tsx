@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Loader2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 export default function UserProfile({ onBack, onNavigate }: { onBack: () => void; onNavigate: (page: string) => void }) {
   const { user, updateUser, logout } = useAuth();
@@ -11,13 +12,32 @@ export default function UserProfile({ onBack, onNavigate }: { onBack: () => void
   const [telefone, setTelefone] = useState(user?.telefone || '');
   const [empresa, setEmpresa] = useState(user?.empresa || '');
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  // Password change state
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [pwMsg, setPwMsg] = useState('');
+  const [pwLoading, setPwLoading] = useState(false);
 
   if (!user) { onBack(); return null; }
 
-  const save = () => {
-    updateUser({ nome, sobre, telefone, empresa });
+  const save = async () => {
+    setSaving(true);
+    await updateUser({ nome, sobre, telefone, empresa });
+    setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
+  };
+
+  const changePassword = async () => {
+    if (newPassword.length < 8) { setPwMsg('Senha deve ter no mínimo 8 caracteres.'); return; }
+    if (newPassword !== confirmPassword) { setPwMsg('As senhas não coincidem.'); return; }
+    setPwLoading(true);
+    setPwMsg('');
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    setPwLoading(false);
+    if (error) { setPwMsg(error.message); } else { setPwMsg('Senha alterada com sucesso!'); setNewPassword(''); setConfirmPassword(''); }
   };
 
   return (
@@ -26,7 +46,7 @@ export default function UserProfile({ onBack, onNavigate }: { onBack: () => void
         <button onClick={onBack} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6"><ArrowLeft size={16} /> Voltar</button>
 
         <div className="flex items-center gap-5 mb-6 pb-6 border-b border-border">
-          <div className="w-16 h-16 rounded-full bg-brand-blue flex items-center justify-center text-2xl font-semibold text-primary-foreground">{user.nome[0]}</div>
+          <div className="w-16 h-16 rounded-full bg-brand-blue flex items-center justify-center text-2xl font-semibold text-primary-foreground">{user.nome?.[0] || '?'}</div>
           <div>
             <div className="text-lg font-medium">{user.nome} {user.sobre}</div>
             <div className="text-sm text-muted-foreground">{user.email}</div>
@@ -53,16 +73,22 @@ export default function UserProfile({ onBack, onNavigate }: { onBack: () => void
             <div className="mb-4"><label className="text-xs font-medium text-muted-foreground mb-1 block">E-mail</label><input value={email} disabled className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-secondary text-muted-foreground" /></div>
             <div className="mb-4"><label className="text-xs font-medium text-muted-foreground mb-1 block">Telefone</label><input value={telefone} onChange={e => setTelefone(e.target.value)} placeholder="(11) 99999-9999" className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:border-brand-blue" /></div>
             <div className="mb-4"><label className="text-xs font-medium text-muted-foreground mb-1 block">Empresa</label><input value={empresa} onChange={e => setEmpresa(e.target.value)} placeholder="Nome da empresa" className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:border-brand-blue" /></div>
-            <button onClick={save} className="px-5 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 transition-opacity">{saved ? '✓ Salvo!' : 'Salvar alterações'}</button>
+            <button onClick={save} disabled={saving} className="px-5 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2">
+              {saving && <Loader2 size={14} className="animate-spin" />}
+              {saved ? '✓ Salvo!' : 'Salvar alterações'}
+            </button>
           </div>
         )}
 
         {tab === 'senha' && (
           <div>
-            <div className="mb-4"><label className="text-xs font-medium text-muted-foreground mb-1 block">Senha atual</label><input type="password" placeholder="••••••••" className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:border-brand-blue" /></div>
-            <div className="mb-4"><label className="text-xs font-medium text-muted-foreground mb-1 block">Nova senha</label><input type="password" placeholder="Mínimo 8 caracteres" className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:border-brand-blue" /></div>
-            <div className="mb-4"><label className="text-xs font-medium text-muted-foreground mb-1 block">Confirmar nova senha</label><input type="password" placeholder="Repita a nova senha" className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:border-brand-blue" /></div>
-            <button className="px-5 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90">Alterar senha</button>
+            {pwMsg && <p className={`text-sm mb-3 ${pwMsg.includes('sucesso') ? 'text-green-600' : 'text-brand-red'}`}>{pwMsg}</p>}
+            <div className="mb-4"><label className="text-xs font-medium text-muted-foreground mb-1 block">Nova senha</label><input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder="Mínimo 8 caracteres" className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:border-brand-blue" /></div>
+            <div className="mb-4"><label className="text-xs font-medium text-muted-foreground mb-1 block">Confirmar nova senha</label><input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="Repita a nova senha" className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:border-brand-blue" /></div>
+            <button onClick={changePassword} disabled={pwLoading} className="px-5 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 flex items-center gap-2 disabled:opacity-50">
+              {pwLoading && <Loader2 size={14} className="animate-spin" />}
+              Alterar senha
+            </button>
           </div>
         )}
 
@@ -83,8 +109,8 @@ export default function UserProfile({ onBack, onNavigate }: { onBack: () => void
 
             <div className="mt-8 bg-brand-red/5 border border-brand-red/20 rounded-lg p-5">
               <h4 className="text-sm font-semibold text-brand-red mb-2">Zona de perigo</h4>
-              <p className="text-[13px] text-muted-foreground mb-3">Excluir sua conta é irreversível.</p>
-              <button onClick={logout} className="px-4 py-2 bg-brand-red text-primary-foreground rounded-lg text-xs font-medium hover:opacity-90">Excluir conta</button>
+              <p className="text-[13px] text-muted-foreground mb-3">Sair da sua conta.</p>
+              <button onClick={logout} className="px-4 py-2 bg-brand-red text-primary-foreground rounded-lg text-xs font-medium hover:opacity-90">Sair da conta</button>
             </div>
           </div>
         )}

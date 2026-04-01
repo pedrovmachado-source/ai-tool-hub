@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import type { User as SupaUser } from '@supabase/supabase-js';
 
-interface User {
-  id: number;
+interface Profile {
   nome: string;
   sobre: string;
   email: string;
@@ -18,47 +19,101 @@ interface SavedEbook {
 }
 
 interface AuthContextType {
-  user: User | null;
+  user: (Profile & { id: string }) | null;
   isAdmin: boolean;
   savedEbooks: SavedEbook[];
-  login: (email: string, password: string) => boolean;
-  register: (nome: string, sobre: string, email: string, password: string) => boolean;
+  loading: boolean;
+  login: (email: string, password: string) => Promise<string | null>;
+  register: (nome: string, sobre: string, email: string, password: string) => Promise<string | null>;
   adminLogin: (username: string, password: string) => boolean;
-  logout: () => void;
-  upgradeToPro: () => void;
-  updateUser: (data: Partial<User>) => void;
-  saveEbook: (toolKey: string, toolName: string, categoryKey: string) => void;
-  unsaveEbook: (toolKey: string) => void;
+  logout: () => Promise<void>;
+  upgradeToPro: () => Promise<void>;
+  updateUser: (data: Partial<Profile>) => Promise<void>;
+  saveEbook: (toolKey: string, toolName: string, categoryKey: string) => Promise<void>;
+  unsaveEbook: (toolKey: string) => Promise<void>;
   isEbookSaved: (toolKey: string) => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(() => {
-    const saved = localStorage.getItem('adai_user');
-    return saved ? JSON.parse(saved) : null;
-  });
+  const [user, setUser] = useState<(Profile & { id: string }) | null>(null);
   const [isAdmin, setIsAdmin] = useState(() => localStorage.getItem('adai_admin') === 'true');
-  const [savedEbooks, setSavedEbooks] = useState<SavedEbook[]>(() => {
-    const saved = localStorage.getItem('adai_saved_ebooks');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [savedEbooks, setSavedEbooks] = useState<SavedEbook[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const login = useCallback((email: string, _password: string) => {
-    if (!email) return false;
-    const u: User = { id: Date.now(), nome: email.split('@')[0], sobre: '', email, plano: 'Free' };
-    setUser(u);
-    localStorage.setItem('adai_user', JSON.stringify(u));
-    return true;
+  const fetchProfile = useCallback(async (supaUser: SupaUser) => {
+    const { data } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('user_id', supaUser.id)
+      .single();
+
+    if (data) {
+      setUser({
+        id: supaUser.id,
+        nome: data.nome,
+        sobre: data.sobre,
+        email: data.email,
+        plano: (data.plano as 'Free' | 'Pro') || 'Free',
+        telefone: data.telefone || undefined,
+        empresa: data.empresa || undefined,
+      });
+    }
   }, []);
 
-  const register = useCallback((nome: string, sobre: string, email: string, _password: string) => {
-    if (!email || !nome) return false;
-    const u: User = { id: Date.now(), nome, sobre, email, plano: 'Free' };
-    setUser(u);
-    localStorage.setItem('adai_user', JSON.stringify(u));
-    return true;
+  const fetchSavedEbooks = useCallback(async (userId: string) => {
+    const { data } = await supabase
+      .from('saved_ebooks')
+      .select('*')
+      .eq('user_id', userId)
+      .order('saved_at', { ascending: false });
+
+    if (data) {
+      setSavedEbooks(data.map(e => ({
+        toolKey: e.tool_key,
+        toolName: e.tool_name,
+        categoryKey: e.category_key,
+        savedAt: e.saved_at,
+      })));
+    }
+  }, []);
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (session?.user) {
+        await fetchProfile(session.user);
+        await fetchSavedEbooks(session.user.id);
+      } else {
+        setUser(null);
+        setSavedEbooks([]);
+      }
+      setLoading(false);
+    });
+
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (session?.user) {
+        await fetchProfile(session.user);
+        await fetchSavedEbooks(session.user.id);
+      }
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [fetchProfile, fetchSavedEbooks]);
+
+  const login = useCallback(async (email: string, password: string): Promise<string | null> => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    return error ? error.message : null;
+  }, []);
+
+  const register = useCallback(async (nome: string, sobre: string, email: string, password: string): Promise<string | null> => {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { nome, sobre } },
+    });
+    return error ? error.message : null;
   }, []);
 
   const adminLogin = useCallback((username: string, password: string) => {
@@ -70,60 +125,61 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (found) {
       setIsAdmin(true);
       localStorage.setItem('adai_admin', 'true');
-      const u: User = { id: user?.id ?? 0, nome: user?.nome ?? 'Admin', sobre: user?.sobre ?? '', email: user?.email ?? 'admin@adai.com', plano: 'Pro' };
-      setUser(u);
-      localStorage.setItem('adai_user', JSON.stringify(u));
       return true;
     }
     return false;
-  }, [user]);
+  }, []);
 
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
+    await supabase.auth.signOut();
     setUser(null);
     setIsAdmin(false);
-    localStorage.removeItem('adai_user');
+    setSavedEbooks([]);
     localStorage.removeItem('adai_admin');
   }, []);
 
-  const upgradeToPro = useCallback(() => {
-    if (user) {
-      const updated = { ...user, plano: 'Pro' as const };
-      setUser(updated);
-      localStorage.setItem('adai_user', JSON.stringify(updated));
+  const upgradeToPro = useCallback(async () => {
+    if (!user) return;
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return;
+    await supabase.from('profiles').update({ plano: 'Pro' }).eq('user_id', user.id);
+    setUser(prev => prev ? { ...prev, plano: 'Pro' } : null);
+  }, [user]);
+
+  const updateUser = useCallback(async (data: Partial<Profile>) => {
+    if (!user) return;
+    await supabase.from('profiles').update(data).eq('user_id', user.id);
+    setUser(prev => prev ? { ...prev, ...data } : null);
+  }, [user]);
+
+  const saveEbook = useCallback(async (toolKey: string, toolName: string, categoryKey: string) => {
+    if (!user) return;
+    const { error } = await supabase.from('saved_ebooks').insert({
+      user_id: user.id,
+      tool_key: toolKey,
+      tool_name: toolName,
+      category_key: categoryKey,
+    });
+    if (!error) {
+      setSavedEbooks(prev => [
+        { toolKey, toolName, categoryKey, savedAt: new Date().toISOString() },
+        ...prev,
+      ]);
     }
   }, [user]);
 
-  const updateUser = useCallback((data: Partial<User>) => {
-    if (user) {
-      const updated = { ...user, ...data };
-      setUser(updated);
-      localStorage.setItem('adai_user', JSON.stringify(updated));
-    }
+  const unsaveEbook = useCallback(async (toolKey: string) => {
+    if (!user) return;
+    await supabase.from('saved_ebooks').delete().eq('user_id', user.id).eq('tool_key', toolKey);
+    setSavedEbooks(prev => prev.filter(e => e.toolKey !== toolKey));
   }, [user]);
-
-  const saveEbook = useCallback((toolKey: string, toolName: string, categoryKey: string) => {
-    setSavedEbooks(prev => {
-      if (prev.some(e => e.toolKey === toolKey)) return prev;
-      const updated = [...prev, { toolKey, toolName, categoryKey, savedAt: new Date().toISOString() }];
-      localStorage.setItem('adai_saved_ebooks', JSON.stringify(updated));
-      return updated;
-    });
-  }, []);
-
-  const unsaveEbook = useCallback((toolKey: string) => {
-    setSavedEbooks(prev => {
-      const updated = prev.filter(e => e.toolKey !== toolKey);
-      localStorage.setItem('adai_saved_ebooks', JSON.stringify(updated));
-      return updated;
-    });
-  }, []);
 
   const isEbookSaved = useCallback((toolKey: string) => {
     return savedEbooks.some(e => e.toolKey === toolKey);
   }, [savedEbooks]);
 
   return (
-    <AuthContext.Provider value={{ user, isAdmin, savedEbooks, login, register, adminLogin, logout, upgradeToPro, updateUser, saveEbook, unsaveEbook, isEbookSaved }}>
+    <AuthContext.Provider value={{ user, isAdmin, savedEbooks, loading, login, register, adminLogin, logout, upgradeToPro, updateUser, saveEbook, unsaveEbook, isEbookSaved }}>
       {children}
     </AuthContext.Provider>
   );
