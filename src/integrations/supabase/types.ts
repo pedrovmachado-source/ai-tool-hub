@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      categories: {
+        Row: {
+          accent: string
+          accent_dark: string
+          accent_light: string
+          created_at: string
+          id: string
+          intro_text: string
+          intro_title: string
+          key: string
+          label: string
+          prompts_extra: Json | null
+          sort_order: number
+          stats: Json
+          updated_at: string
+          when_tags: Json
+        }
+        Insert: {
+          accent?: string
+          accent_dark?: string
+          accent_light?: string
+          created_at?: string
+          id?: string
+          intro_text?: string
+          intro_title?: string
+          key: string
+          label: string
+          prompts_extra?: Json | null
+          sort_order?: number
+          stats?: Json
+          updated_at?: string
+          when_tags?: Json
+        }
+        Update: {
+          accent?: string
+          accent_dark?: string
+          accent_light?: string
+          created_at?: string
+          id?: string
+          intro_text?: string
+          intro_title?: string
+          key?: string
+          label?: string
+          prompts_extra?: Json | null
+          sort_order?: number
+          stats?: Json
+          updated_at?: string
+          when_tags?: Json
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -79,6 +130,59 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      tools: {
+        Row: {
+          badge: string
+          category_key: string
+          created_at: string
+          data: Json
+          description: string
+          id: string
+          key: string
+          name: string
+          sort_order: number
+          updated_at: string
+          url: string
+          url_label: string
+        }
+        Insert: {
+          badge?: string
+          category_key: string
+          created_at?: string
+          data?: Json
+          description?: string
+          id?: string
+          key: string
+          name: string
+          sort_order?: number
+          updated_at?: string
+          url?: string
+          url_label?: string
+        }
+        Update: {
+          badge?: string
+          category_key?: string
+          created_at?: string
+          data?: Json
+          description?: string
+          id?: string
+          key?: string
+          name?: string
+          sort_order?: number
+          updated_at?: string
+          url?: string
+          url_label?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tools_category_key_fkey"
+            columns: ["category_key"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["key"]
+          },
+        ]
       }
     }
     Views: {
