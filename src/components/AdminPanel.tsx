@@ -519,7 +519,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
                       <td className="px-5 py-3 text-[13px] text-primary-foreground/80">{u.sobre}</td>
                       <td className="px-5 py-3 text-[13px] text-muted-foreground/50">{u.email}</td>
                       <td className="px-5 py-3"><span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${u.plano === 'Pro' ? 'bg-brand-green/20 text-brand-green' : u.plano === 'Cancelado' ? 'bg-brand-red/20 text-brand-red' : 'bg-brand-amber/20 text-brand-amber'}`}>{u.plano}</span></td>
-                      <td className="px-5 py-3 text-[13px] text-muted-foreground/50">{u.acesso}</td>
+                      <td className="px-5 py-3 text-[13px] text-muted-foreground/50">{new Date(u.created_at).toLocaleDateString('pt-BR')}</td>
                       <td className="px-5 py-3">
                         <div className="flex gap-2">
                           <button onClick={() => togglePlan(u.id)} className="text-[11px] px-2 py-1 rounded bg-brand-blue/20 text-brand-blue-medium hover:bg-brand-blue/30">{u.plano === 'Pro' ? 'Rebaixar' : 'Upgrade'}</button>
