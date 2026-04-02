@@ -1,5 +1,7 @@
-import { useState } from 'react';
-import { USERS_DB, CATEGORIES as INITIAL_CATEGORIES, type Tool, type Category } from '@/data/tools-data';
+import { useState, useEffect } from 'react';
+import { type Tool, type Category } from '@/data/tools-data';
+import { useCategories } from '@/hooks/useCategories';
+import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, LayoutDashboard, Users, CreditCard, FileText, Settings, LogOut, Search, Download, Plus, Pencil, Trash2, X, Check, Palette, Eye, EyeOff, Globe, Bell, Shield, Database, Mail, Play, Video } from 'lucide-react';
 
 // ── Plan type ───────────────────────────────────────────────────────
