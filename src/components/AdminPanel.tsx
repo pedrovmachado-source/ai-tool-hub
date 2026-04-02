@@ -325,13 +325,30 @@ function CategoryToolsView({ category, onBack, onSaveTool, onDeleteTool }: { cat
 
 // ── Main Admin Panel ────────────────────────────────────────────────
 
-export default function AdminPanel({ onBack, categories: externalCategories, onUpdateCategories }: { onBack: () => void; categories: Category[]; onUpdateCategories: (cats: Category[]) => void }) {
+interface DbUser {
+  id: string;
+  user_id: string;
+  nome: string;
+  sobre: string;
+  email: string;
+  plano: string;
+  created_at: string;
+}
+
+export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: () => void; onCategoriesChanged: () => Promise<void> }) {
+  const { categories, updateCategory: updateCategoryDb, saveTool: saveToolDb, deleteTool: deleteToolDb } = useCategories();
   const [section, setSection] = useState('dashboard');
-  const [users, setUsers] = useState(USERS_DB);
-  const [categories, setCategories] = useState<Category[]>(externalCategories);
+  const [users, setUsers] = useState<DbUser[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [viewingCategory, setViewingCategory] = useState<Category | null>(null);
+
+  // Fetch real users from profiles
+  useEffect(() => {
+    supabase.from('profiles').select('*').order('created_at', { ascending: false }).then(({ data }) => {
+      if (data) setUsers(data.map((p: any) => ({ id: p.id, user_id: p.user_id, nome: p.nome, sobre: p.sobre, email: p.email, plano: p.plano, created_at: p.created_at })));
+    });
+  }, []);
 
   // Settings state
   const [settingsSection, setSettingsSection] = useState('credentials');
@@ -365,16 +382,20 @@ export default function AdminPanel({ onBack, categories: externalCategories, onU
     { key: 'settings', label: 'Configurações', icon: Settings },
   ];
 
-  const togglePlan = (id: number) => {
-    setUsers(prev => prev.map(u => u.id === id ? { ...u, plano: u.plano === 'Pro' ? 'Grátis' : 'Pro' } : u));
+  const togglePlan = async (userId: string) => {
+    const user = users.find(u => u.id === userId);
+    if (!user) return;
+    const newPlano = user.plano === 'Pro' ? 'Free' : 'Pro';
+    await supabase.from('profiles').update({ plano: newPlano }).eq('id', userId);
+    setUsers(prev => prev.map(u => u.id === userId ? { ...u, plano: newPlano } : u));
   };
 
-  const deleteUser = (id: number) => {
+  const deleteUser = (id: string) => {
     setUsers(prev => prev.filter(u => u.id !== id));
   };
 
   const exportCSV = () => {
-    const csv = 'Nome,Sobrenome,Email,Plano,Último Acesso\n' + users.map(u => `${u.nome},${u.sobre},${u.email},${u.plano},${u.acesso}`).join('\n');
+    const csv = 'Nome,Sobrenome,Email,Plano,Criado em\n' + users.map(u => `${u.nome},${u.sobre},${u.email},${u.plano},${new Date(u.created_at).toLocaleDateString('pt-BR')}`).join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -383,11 +404,17 @@ export default function AdminPanel({ onBack, categories: externalCategories, onU
     a.click();
   };
 
-  const updateCategory = (updated: Category) => {
-    const newCats = categories.map(c => c.key === updated.key ? updated : c);
-    setCategories(newCats);
-    onUpdateCategories(newCats);
+  const handleUpdateCategory = async (updated: Category) => {
+    await updateCategoryDb(updated);
     setViewingCategory(updated);
+  };
+
+  const handleSaveTool = async (tool: Tool, categoryKey: string, isNew: boolean) => {
+    await saveToolDb(tool, categoryKey, isNew);
+  };
+
+  const handleDeleteTool = async (toolKey: string) => {
+    await deleteToolDb(toolKey);
   };
 
   const saveSettings = (label: string) => {
