@@ -248,7 +248,7 @@ function PlanFormModal({ plan, onSave, onClose }: { plan?: Plan; onSave: (p: Pla
 
 // ── Category Tools Detail ───────────────────────────────────────────
 
-function CategoryToolsView({ category, onBack, onUpdateCategory }: { category: Category; onBack: () => void; onUpdateCategory: (c: Category) => void }) {
+function CategoryToolsView({ category, onBack, onSaveTool, onDeleteTool }: { category: Category; onBack: () => void; onSaveTool: (tool: Tool, categoryKey: string, isNew: boolean) => Promise<void>; onDeleteTool: (toolKey: string) => Promise<void> }) {
   const [tools, setTools] = useState<Tool[]>(category.tools);
   const [editingTool, setEditingTool] = useState<Tool | null>(null);
   const [isAdding, setIsAdding] = useState(false);
@@ -257,24 +257,21 @@ function CategoryToolsView({ category, onBack, onUpdateCategory }: { category: C
 
   const filtered = tools.filter(t => t.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
-  const saveTool = (t: Tool) => {
+  const handleSaveTool = async (t: Tool) => {
+    const isNew = !editingTool;
+    await onSaveTool(t, category.key, isNew);
     if (editingTool) {
-      const updated = tools.map(old => old.key === editingTool.key ? t : old);
-      setTools(updated);
-      onUpdateCategory({ ...category, tools: updated });
+      setTools(prev => prev.map(old => old.key === editingTool.key ? t : old));
     } else {
-      const updated = [...tools, t];
-      setTools(updated);
-      onUpdateCategory({ ...category, tools: updated });
+      setTools(prev => [...prev, t]);
     }
     setEditingTool(null);
     setIsAdding(false);
   };
 
-  const deleteTool = (key: string) => {
-    const updated = tools.filter(t => t.key !== key);
-    setTools(updated);
-    onUpdateCategory({ ...category, tools: updated });
+  const handleDeleteTool = async (key: string) => {
+    await onDeleteTool(key);
+    setTools(prev => prev.filter(t => t.key !== key));
     setConfirmDelete(null);
   };
 
