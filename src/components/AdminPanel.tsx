@@ -317,8 +317,8 @@ function CategoryToolsView({ category, onBack, onSaveTool, onDeleteTool }: { cat
         </table>
       </div>
 
-      {(editingTool || isAdding) && <ToolFormModal tool={editingTool || undefined} onSave={saveTool} onClose={() => { setEditingTool(null); setIsAdding(false); }} />}
-      {confirmDelete && <ConfirmModal message={`Excluir a ferramenta "${tools.find(t => t.key === confirmDelete)?.name}"?`} onConfirm={() => deleteTool(confirmDelete)} onCancel={() => setConfirmDelete(null)} />}
+      {(editingTool || isAdding) && <ToolFormModal tool={editingTool || undefined} onSave={handleSaveTool} onClose={() => { setEditingTool(null); setIsAdding(false); }} />}
+      {confirmDelete && <ConfirmModal message={`Excluir a ferramenta "${tools.find(t => t.key === confirmDelete)?.name}"?`} onConfirm={() => handleDeleteTool(confirmDelete)} onCancel={() => setConfirmDelete(null)} />}
     </>
   );
 }
