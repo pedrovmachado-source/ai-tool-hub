@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CATEGORIES } from '@/data/tools-data';
+import { useCategories } from '@/hooks/useCategories';
 import Navbar from '@/components/Navbar';
 import CategoryTabs from '@/components/CategoryTabs';
 import ToolCard from '@/components/ToolCard';
@@ -14,13 +14,13 @@ import type { Tool, Category } from '@/data/tools-data';
 
 export default function Index() {
   const { user, isAdmin } = useAuth();
+  const { categories, loading, fetchCategories } = useCategories();
   const [page, setPage] = useState('home');
   const [activeCategory, setActiveCategory] = useState('texto');
   const [searchQuery, setSearchQuery] = useState('');
   const [ebookModal, setEbookModal] = useState<{ tool: Tool; category: Category } | null>(null);
-  const [categories, setCategories] = useState<Category[]>(CATEGORIES);
 
-  const category = categories.find(c => c.key === activeCategory)!;
+  const category = categories.find(c => c.key === activeCategory);
 
   const filteredTools = searchQuery
     ? categories.flatMap(c => c.tools.map(t => ({ tool: t, category: c }))).filter(({ tool }) =>
@@ -28,7 +28,7 @@ export default function Index() {
         tool.desc.toLowerCase().includes(searchQuery.toLowerCase()) ||
         tool.badge.toLowerCase().includes(searchQuery.toLowerCase())
       )
-    : category.tools.map(t => ({ tool: t, category }));
+    : category ? category.tools.map(t => ({ tool: t, category })) : [];
 
   const handleOpenEbook = (tool: Tool, cat: Category) => {
     const canAccess = isAdmin || (user && user.plano === 'Pro');
@@ -39,9 +39,17 @@ export default function Index() {
     setEbookModal({ tool, category: cat });
   };
 
-  if (page === 'admin' && isAdmin) return <AdminPanel onBack={() => setPage('home')} categories={categories} onUpdateCategories={setCategories} />;
+  if (page === 'admin' && isAdmin) return <AdminPanel onBack={() => setPage('home')} onCategoriesChanged={fetchCategories} />;
   if (page === 'pro') return <ProPage onBack={() => setPage('home')} onNavigate={setPage} />;
   if (page === 'profile') return <UserProfile onBack={() => setPage('home')} onNavigate={setPage} />;
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <div className="text-muted-foreground">Carregando...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -87,7 +95,7 @@ export default function Index() {
       {/* Content */}
       <div className="max-w-[1100px] mx-auto px-6 py-8 flex-1">
         {/* Intro Panel */}
-        {!searchQuery && (
+        {!searchQuery && category && (
           <div className="bg-card border border-border rounded-xl p-7 mb-7 flex justify-between items-start gap-8">
             <div>
               <h2 className="font-serif-display text-2xl mb-2">{category.introTitle}</h2>
@@ -121,7 +129,7 @@ export default function Index() {
         </div>
 
         {/* Prompts Section */}
-        {!searchQuery && (
+        {!searchQuery && category && (
           <PromptsLibrary category={category} />
         )}
       </div>

@@ -1,5 +1,7 @@
-import { useState } from 'react';
-import { USERS_DB, CATEGORIES as INITIAL_CATEGORIES, type Tool, type Category } from '@/data/tools-data';
+import { useState, useEffect } from 'react';
+import { type Tool, type Category } from '@/data/tools-data';
+import { useCategories } from '@/hooks/useCategories';
+import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, LayoutDashboard, Users, CreditCard, FileText, Settings, LogOut, Search, Download, Plus, Pencil, Trash2, X, Check, Palette, Eye, EyeOff, Globe, Bell, Shield, Database, Mail, Play, Video } from 'lucide-react';
 
 // ── Plan type ───────────────────────────────────────────────────────
@@ -246,7 +248,7 @@ function PlanFormModal({ plan, onSave, onClose }: { plan?: Plan; onSave: (p: Pla
 
 // ── Category Tools Detail ───────────────────────────────────────────
 
-function CategoryToolsView({ category, onBack, onUpdateCategory }: { category: Category; onBack: () => void; onUpdateCategory: (c: Category) => void }) {
+function CategoryToolsView({ category, onBack, onSaveTool, onDeleteTool }: { category: Category; onBack: () => void; onSaveTool: (tool: Tool, categoryKey: string, isNew: boolean) => Promise<void>; onDeleteTool: (toolKey: string) => Promise<void> }) {
   const [tools, setTools] = useState<Tool[]>(category.tools);
   const [editingTool, setEditingTool] = useState<Tool | null>(null);
   const [isAdding, setIsAdding] = useState(false);
@@ -255,24 +257,21 @@ function CategoryToolsView({ category, onBack, onUpdateCategory }: { category: C
 
   const filtered = tools.filter(t => t.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
-  const saveTool = (t: Tool) => {
+  const handleSaveTool = async (t: Tool) => {
+    const isNew = !editingTool;
+    await onSaveTool(t, category.key, isNew);
     if (editingTool) {
-      const updated = tools.map(old => old.key === editingTool.key ? t : old);
-      setTools(updated);
-      onUpdateCategory({ ...category, tools: updated });
+      setTools(prev => prev.map(old => old.key === editingTool.key ? t : old));
     } else {
-      const updated = [...tools, t];
-      setTools(updated);
-      onUpdateCategory({ ...category, tools: updated });
+      setTools(prev => [...prev, t]);
     }
     setEditingTool(null);
     setIsAdding(false);
   };
 
-  const deleteTool = (key: string) => {
-    const updated = tools.filter(t => t.key !== key);
-    setTools(updated);
-    onUpdateCategory({ ...category, tools: updated });
+  const handleDeleteTool = async (key: string) => {
+    await onDeleteTool(key);
+    setTools(prev => prev.filter(t => t.key !== key));
     setConfirmDelete(null);
   };
 
@@ -318,21 +317,38 @@ function CategoryToolsView({ category, onBack, onUpdateCategory }: { category: C
         </table>
       </div>
 
-      {(editingTool || isAdding) && <ToolFormModal tool={editingTool || undefined} onSave={saveTool} onClose={() => { setEditingTool(null); setIsAdding(false); }} />}
-      {confirmDelete && <ConfirmModal message={`Excluir a ferramenta "${tools.find(t => t.key === confirmDelete)?.name}"?`} onConfirm={() => deleteTool(confirmDelete)} onCancel={() => setConfirmDelete(null)} />}
+      {(editingTool || isAdding) && <ToolFormModal tool={editingTool || undefined} onSave={handleSaveTool} onClose={() => { setEditingTool(null); setIsAdding(false); }} />}
+      {confirmDelete && <ConfirmModal message={`Excluir a ferramenta "${tools.find(t => t.key === confirmDelete)?.name}"?`} onConfirm={() => handleDeleteTool(confirmDelete)} onCancel={() => setConfirmDelete(null)} />}
     </>
   );
 }
 
 // ── Main Admin Panel ────────────────────────────────────────────────
 
-export default function AdminPanel({ onBack, categories: externalCategories, onUpdateCategories }: { onBack: () => void; categories: Category[]; onUpdateCategories: (cats: Category[]) => void }) {
+interface DbUser {
+  id: string;
+  user_id: string;
+  nome: string;
+  sobre: string;
+  email: string;
+  plano: string;
+  created_at: string;
+}
+
+export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: () => void; onCategoriesChanged: () => Promise<void> }) {
+  const { categories, updateCategory: updateCategoryDb, saveTool: saveToolDb, deleteTool: deleteToolDb } = useCategories();
   const [section, setSection] = useState('dashboard');
-  const [users, setUsers] = useState(USERS_DB);
-  const [categories, setCategories] = useState<Category[]>(externalCategories);
+  const [users, setUsers] = useState<DbUser[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [viewingCategory, setViewingCategory] = useState<Category | null>(null);
+
+  // Fetch real users from profiles
+  useEffect(() => {
+    supabase.from('profiles').select('*').order('created_at', { ascending: false }).then(({ data }) => {
+      if (data) setUsers(data.map((p: any) => ({ id: p.id, user_id: p.user_id, nome: p.nome, sobre: p.sobre, email: p.email, plano: p.plano, created_at: p.created_at })));
+    });
+  }, []);
 
   // Settings state
   const [settingsSection, setSettingsSection] = useState('credentials');
@@ -366,16 +382,20 @@ export default function AdminPanel({ onBack, categories: externalCategories, onU
     { key: 'settings', label: 'Configurações', icon: Settings },
   ];
 
-  const togglePlan = (id: number) => {
-    setUsers(prev => prev.map(u => u.id === id ? { ...u, plano: u.plano === 'Pro' ? 'Grátis' : 'Pro' } : u));
+  const togglePlan = async (userId: string) => {
+    const user = users.find(u => u.id === userId);
+    if (!user) return;
+    const newPlano = user.plano === 'Pro' ? 'Free' : 'Pro';
+    await supabase.from('profiles').update({ plano: newPlano }).eq('id', userId);
+    setUsers(prev => prev.map(u => u.id === userId ? { ...u, plano: newPlano } : u));
   };
 
-  const deleteUser = (id: number) => {
+  const deleteUser = (id: string) => {
     setUsers(prev => prev.filter(u => u.id !== id));
   };
 
   const exportCSV = () => {
-    const csv = 'Nome,Sobrenome,Email,Plano,Último Acesso\n' + users.map(u => `${u.nome},${u.sobre},${u.email},${u.plano},${u.acesso}`).join('\n');
+    const csv = 'Nome,Sobrenome,Email,Plano,Criado em\n' + users.map(u => `${u.nome},${u.sobre},${u.email},${u.plano},${new Date(u.created_at).toLocaleDateString('pt-BR')}`).join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -384,11 +404,17 @@ export default function AdminPanel({ onBack, categories: externalCategories, onU
     a.click();
   };
 
-  const updateCategory = (updated: Category) => {
-    const newCats = categories.map(c => c.key === updated.key ? updated : c);
-    setCategories(newCats);
-    onUpdateCategories(newCats);
+  const handleUpdateCategory = async (updated: Category) => {
+    await updateCategoryDb(updated);
     setViewingCategory(updated);
+  };
+
+  const handleSaveTool = async (tool: Tool, categoryKey: string, isNew: boolean) => {
+    await saveToolDb(tool, categoryKey, isNew);
+  };
+
+  const handleDeleteTool = async (toolKey: string) => {
+    await deleteToolDb(toolKey);
   };
 
   const saveSettings = (label: string) => {
@@ -460,7 +486,7 @@ export default function AdminPanel({ onBack, categories: externalCategories, onU
                       <td className="px-5 py-3 text-[13px] text-primary-foreground/80">{u.nome} {u.sobre}</td>
                       <td className="px-5 py-3 text-[13px] text-muted-foreground/50">{u.email}</td>
                       <td className="px-5 py-3"><span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${u.plano === 'Pro' ? 'bg-brand-green/20 text-brand-green' : u.plano === 'Cancelado' ? 'bg-brand-red/20 text-brand-red' : 'bg-brand-amber/20 text-brand-amber'}`}>{u.plano}</span></td>
-                      <td className="px-5 py-3 text-[13px] text-muted-foreground/50">{u.acesso}</td>
+                      <td className="px-5 py-3 text-[13px] text-muted-foreground/50">{new Date(u.created_at).toLocaleDateString('pt-BR')}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -493,7 +519,7 @@ export default function AdminPanel({ onBack, categories: externalCategories, onU
                       <td className="px-5 py-3 text-[13px] text-primary-foreground/80">{u.sobre}</td>
                       <td className="px-5 py-3 text-[13px] text-muted-foreground/50">{u.email}</td>
                       <td className="px-5 py-3"><span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${u.plano === 'Pro' ? 'bg-brand-green/20 text-brand-green' : u.plano === 'Cancelado' ? 'bg-brand-red/20 text-brand-red' : 'bg-brand-amber/20 text-brand-amber'}`}>{u.plano}</span></td>
-                      <td className="px-5 py-3 text-[13px] text-muted-foreground/50">{u.acesso}</td>
+                      <td className="px-5 py-3 text-[13px] text-muted-foreground/50">{new Date(u.created_at).toLocaleDateString('pt-BR')}</td>
                       <td className="px-5 py-3">
                         <div className="flex gap-2">
                           <button onClick={() => togglePlan(u.id)} className="text-[11px] px-2 py-1 rounded bg-brand-blue/20 text-brand-blue-medium hover:bg-brand-blue/30">{u.plano === 'Pro' ? 'Rebaixar' : 'Upgrade'}</button>
@@ -593,7 +619,8 @@ export default function AdminPanel({ onBack, categories: externalCategories, onU
           <CategoryToolsView
             category={viewingCategory}
             onBack={() => setViewingCategory(null)}
-            onUpdateCategory={updateCategory}
+            onSaveTool={handleSaveTool}
+            onDeleteTool={handleDeleteTool}
           />
         )}
 
@@ -783,7 +810,7 @@ export default function AdminPanel({ onBack, categories: externalCategories, onU
       {editingCategory && (
         <CategoryFormModal
           category={editingCategory}
-          onSave={(c) => { const newCats = categories.map(old => old.key === c.key ? c : old); setCategories(newCats); onUpdateCategories(newCats); setEditingCategory(null); }}
+          onSave={(c) => { handleUpdateCategory(c); setEditingCategory(null); }}
           onClose={() => setEditingCategory(null)}
         />
       )}
