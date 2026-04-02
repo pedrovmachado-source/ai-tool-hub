@@ -619,7 +619,8 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
           <CategoryToolsView
             category={viewingCategory}
             onBack={() => setViewingCategory(null)}
-            onUpdateCategory={updateCategory}
+            onSaveTool={handleSaveTool}
+            onDeleteTool={handleDeleteTool}
           />
         )}
 
