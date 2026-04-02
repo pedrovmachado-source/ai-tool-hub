@@ -810,7 +810,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
       {editingCategory && (
         <CategoryFormModal
           category={editingCategory}
-          onSave={(c) => { const newCats = categories.map(old => old.key === c.key ? c : old); setCategories(newCats); onUpdateCategories(newCats); setEditingCategory(null); }}
+          onSave={(c) => { handleUpdateCategory(c); setEditingCategory(null); }}
           onClose={() => setEditingCategory(null)}
         />
       )}
