@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import type { User as SupaUser } from '@supabase/supabase-js';
+import type { Session, User as SupaUser } from '@supabase/supabase-js';
 
 interface Profile {
   nome: string;
@@ -16,6 +16,15 @@ interface SavedEbook {
   toolName: string;
   categoryKey: string;
   savedAt: string;
+}
+
+interface ProfileRecord {
+  nome: string;
+  sobre: string;
+  email: string;
+  plano: string;
+  telefone: string | null;
+  empresa: string | null;
 }
 
 interface AuthContextType {
@@ -40,79 +49,207 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [savedEbooks, setSavedEbooks] = useState<SavedEbook[]>([]);
   const [loading, setLoading] = useState(true);
+  const authSyncRef = useRef(0);
+
+  const buildUserFromProfile = useCallback((supaUser: SupaUser, profile?: ProfileRecord | Partial<Profile> | null): Profile & { id: string } => ({
+    id: supaUser.id,
+    nome: profile?.nome || (typeof supaUser.user_metadata?.nome === 'string' ? supaUser.user_metadata.nome : ''),
+    sobre: profile?.sobre || (typeof supaUser.user_metadata?.sobre === 'string' ? supaUser.user_metadata.sobre : ''),
+    email: profile?.email || supaUser.email || '',
+    plano: profile?.plano === 'Pro' ? 'Pro' : 'Free',
+    telefone: profile?.telefone || undefined,
+    empresa: profile?.empresa || undefined,
+  }), []);
+
+  const clearAuthState = useCallback(() => {
+    setUser(null);
+    setIsAdmin(false);
+    setSavedEbooks([]);
+    setLoading(false);
+  }, []);
 
   const checkAdminRole = useCallback(async (userId: string) => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('user_roles')
       .select('role')
       .eq('user_id', userId)
       .eq('role', 'admin')
       .maybeSingle();
-    setIsAdmin(!!data);
+
+    if (error) {
+      throw error;
+    }
+
+    return !!data;
   }, []);
 
   const fetchProfile = useCallback(async (supaUser: SupaUser) => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('profiles')
       .select('*')
       .eq('user_id', supaUser.id)
-      .single();
+      .maybeSingle();
+
+    if (error) {
+      throw error;
+    }
 
     if (data) {
-      setUser({
-        id: supaUser.id,
-        nome: data.nome,
-        sobre: data.sobre,
-        email: data.email,
-        plano: (data.plano as 'Free' | 'Pro') || 'Free',
-        telefone: data.telefone || undefined,
-        empresa: data.empresa || undefined,
-      });
+      return data;
     }
+
+    const payload = {
+      user_id: supaUser.id,
+      nome: typeof supaUser.user_metadata?.nome === 'string' ? supaUser.user_metadata.nome : '',
+      sobre: typeof supaUser.user_metadata?.sobre === 'string' ? supaUser.user_metadata.sobre : '',
+      email: supaUser.email || '',
+    };
+
+    const { error: insertError } = await supabase.from('profiles').insert(payload);
+
+    if (insertError) {
+      const { data: fallbackData, error: fallbackError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', supaUser.id)
+        .maybeSingle();
+
+      if (fallbackError) {
+        throw fallbackError;
+      }
+
+      if (fallbackData) {
+        return {
+          nome: fallbackData.nome,
+          sobre: fallbackData.sobre,
+          email: fallbackData.email,
+          plano: fallbackData.plano,
+          telefone: fallbackData.telefone,
+          empresa: fallbackData.empresa,
+        } satisfies ProfileRecord;
+      }
+
+      throw insertError;
+    }
+
+    const { data: createdData, error: createdError } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('user_id', supaUser.id)
+      .maybeSingle();
+
+    if (createdError) {
+      throw createdError;
+    }
+
+    return createdData
+      ? {
+          nome: createdData.nome,
+          sobre: createdData.sobre,
+          email: createdData.email,
+          plano: createdData.plano,
+          telefone: createdData.telefone,
+          empresa: createdData.empresa,
+        } satisfies ProfileRecord
+      : null;
   }, []);
 
   const fetchSavedEbooks = useCallback(async (userId: string) => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('saved_ebooks')
       .select('*')
       .eq('user_id', userId)
       .order('saved_at', { ascending: false });
 
-    if (data) {
-      setSavedEbooks(data.map(e => ({
+    if (error) {
+      throw error;
+    }
+
+    return (data || []).map(e => ({
         toolKey: e.tool_key,
         toolName: e.tool_name,
         categoryKey: e.category_key,
         savedAt: e.saved_at,
-      })));
-    }
+      }));
   }, []);
 
+  const syncSession = useCallback(async (session: Session | null) => {
+    const syncId = ++authSyncRef.current;
+
+    if (!session?.user) {
+      clearAuthState();
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const currentUser = session.user;
+      const [profileResult, adminResult, savedResult] = await Promise.allSettled([
+        fetchProfile(currentUser),
+        checkAdminRole(currentUser.id),
+        fetchSavedEbooks(currentUser.id),
+      ]);
+
+      if (authSyncRef.current !== syncId) {
+        return;
+      }
+
+      const profile = profileResult.status === 'fulfilled' ? profileResult.value : null;
+      setUser(buildUserFromProfile(currentUser, profile));
+      setIsAdmin(adminResult.status === 'fulfilled' ? adminResult.value : false);
+      setSavedEbooks(savedResult.status === 'fulfilled' ? savedResult.value : []);
+
+      if (profileResult.status === 'rejected') {
+        console.error('Falha ao sincronizar perfil do usuário', profileResult.reason);
+      }
+      if (adminResult.status === 'rejected') {
+        console.error('Falha ao verificar permissão administrativa', adminResult.reason);
+      }
+      if (savedResult.status === 'rejected') {
+        console.error('Falha ao carregar e-books salvos', savedResult.reason);
+      }
+    } catch (error) {
+      if (authSyncRef.current !== syncId) {
+        return;
+      }
+
+      console.error('Falha ao restaurar sessão', error);
+      setUser(buildUserFromProfile(session.user));
+      setIsAdmin(false);
+      setSavedEbooks([]);
+    } finally {
+      if (authSyncRef.current === syncId) {
+        setLoading(false);
+      }
+    }
+  }, [buildUserFromProfile, checkAdminRole, clearAuthState, fetchProfile, fetchSavedEbooks]);
+
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (session?.user) {
-        await fetchProfile(session.user);
-        await checkAdminRole(session.user.id);
-        await fetchSavedEbooks(session.user.id);
-      } else {
-        setUser(null);
-        setIsAdmin(false);
-        setSavedEbooks([]);
-      }
-      setLoading(false);
+    let active = true;
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!active) return;
+      void syncSession(session);
     });
 
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (session?.user) {
-        await fetchProfile(session.user);
-        await checkAdminRole(session.user.id);
-        await fetchSavedEbooks(session.user.id);
-      }
-      setLoading(false);
-    });
+    supabase.auth.getSession()
+      .then(({ data: { session } }) => {
+        if (!active) return;
+        void syncSession(session);
+      })
+      .catch((error) => {
+        console.error('Falha ao recuperar sessão inicial', error);
+        if (active) {
+          clearAuthState();
+        }
+      });
 
-    return () => subscription.unsubscribe();
-  }, [fetchProfile, checkAdminRole, fetchSavedEbooks]);
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+    };
+  }, [clearAuthState, syncSession]);
 
   const login = useCallback(async (email: string, password: string): Promise<string | null> => {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -137,14 +274,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const upgradeToPro = useCallback(async () => {
     if (!user) return;
-    await supabase.from('profiles').update({ plano: 'Pro' }).eq('user_id', user.id);
-    setUser(prev => prev ? { ...prev, plano: 'Pro' } : null);
+    const { error } = await supabase.from('profiles').update({ plano: 'Pro' }).eq('user_id', user.id);
+    if (!error) {
+      setUser(prev => prev ? { ...prev, plano: 'Pro' } : null);
+    }
   }, [user]);
 
   const updateUser = useCallback(async (data: Partial<Profile>) => {
     if (!user) return;
-    await supabase.from('profiles').update(data).eq('user_id', user.id);
-    setUser(prev => prev ? { ...prev, ...data } : null);
+    const { error } = await supabase.from('profiles').update(data).eq('user_id', user.id);
+    if (!error) {
+      setUser(prev => prev ? { ...prev, ...data } : null);
+    }
   }, [user]);
 
   const saveEbook = useCallback(async (toolKey: string, toolName: string, categoryKey: string) => {
@@ -158,15 +299,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!error) {
       setSavedEbooks(prev => [
         { toolKey, toolName, categoryKey, savedAt: new Date().toISOString() },
-        ...prev,
+        ...prev.filter(e => e.toolKey !== toolKey),
       ]);
     }
   }, [user]);
 
   const unsaveEbook = useCallback(async (toolKey: string) => {
     if (!user) return;
-    await supabase.from('saved_ebooks').delete().eq('user_id', user.id).eq('tool_key', toolKey);
-    setSavedEbooks(prev => prev.filter(e => e.toolKey !== toolKey));
+    const { error } = await supabase.from('saved_ebooks').delete().eq('user_id', user.id).eq('tool_key', toolKey);
+    if (!error) {
+      setSavedEbooks(prev => prev.filter(e => e.toolKey !== toolKey));
+    }
   }, [user]);
 
   const isEbookSaved = useCallback((toolKey: string) => {

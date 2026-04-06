@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCategories } from '@/hooks/useCategories';
 import Navbar from '@/components/Navbar';
 import CategoryTabs from '@/components/CategoryTabs';
@@ -14,11 +14,17 @@ import type { Tool, Category } from '@/data/tools-data';
 
 export default function Index() {
   const { user, isAdmin } = useAuth();
-  const { categories, loading, fetchCategories } = useCategories();
+  const { categories, loading, error, fetchCategories } = useCategories();
   const [page, setPage] = useState('home');
   const [activeCategory, setActiveCategory] = useState('texto');
   const [searchQuery, setSearchQuery] = useState('');
   const [ebookModal, setEbookModal] = useState<{ tool: Tool; category: Category } | null>(null);
+
+  useEffect(() => {
+    if (categories.length > 0 && !categories.some(c => c.key === activeCategory)) {
+      setActiveCategory(categories[0].key);
+    }
+  }, [activeCategory, categories]);
 
   const category = categories.find(c => c.key === activeCategory);
 
@@ -47,6 +53,23 @@ export default function Index() {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
         <div className="text-muted-foreground">Carregando...</div>
+      </div>
+    );
+  }
+
+  if (error && categories.length === 0) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background px-6">
+        <div className="max-w-md text-center">
+          <h1 className="font-serif-display text-3xl text-foreground mb-3">Não foi possível carregar o site</h1>
+          <p className="text-sm text-muted-foreground mb-5">{error}</p>
+          <button
+            onClick={() => void fetchCategories()}
+            className="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+          >
+            Tentar novamente
+          </button>
+        </div>
       </div>
     );
   }

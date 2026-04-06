@@ -1,5 +1,6 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { ArrowLeft, Check, X } from 'lucide-react';
+import { PRO_MONTHLY_PLAN, isStripeCheckoutReady } from '@/lib/billing';
 
 export default function ProPage({ onBack, onNavigate }: { onBack: () => void; onNavigate: (page: string) => void }) {
   const { user, upgradeToPro } = useAuth();
@@ -37,7 +38,7 @@ export default function ProPage({ onBack, onNavigate }: { onBack: () => void; on
         {/* Pro */}
         <div className="bg-brand-blue/12 border border-brand-blue rounded-2xl p-8 relative scale-[1.03]">
           <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-blue text-primary-foreground text-[11px] font-semibold px-4 py-1 rounded-full whitespace-nowrap">Mais Popular</div>
-          <div className="text-xs font-medium text-muted-foreground/50 uppercase tracking-wider mb-2">Pro Mensal</div>
+          <div className="text-xs font-medium text-muted-foreground/50 uppercase tracking-wider mb-2">{PRO_MONTHLY_PLAN.name}</div>
           <div className="text-[42px] font-bold text-primary-foreground">R$19<span className="text-2xl">,90</span></div>
           <div className="text-xs text-muted-foreground/40 mt-1 mb-6">por mês · cancele quando quiser</div>
           <ul className="space-y-2 mb-7">
@@ -46,6 +47,11 @@ export default function ProPage({ onBack, onNavigate }: { onBack: () => void; on
             ))}
           </ul>
           <button onClick={handleSubscribe} className="w-full py-2.5 rounded-lg text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity" style={{ background: 'linear-gradient(135deg, #F59E0B, #D97706)' }}>⚡ Assinar agora — R$19,90/mês</button>
+          {!isStripeCheckoutReady && (
+            <p className="mt-3 text-center text-[11px] text-muted-foreground/60">
+              Estrutura pronta para Stripe; falta apenas conectar o price_id do checkout.
+            </p>
+          )}
         </div>
       </div>
 
