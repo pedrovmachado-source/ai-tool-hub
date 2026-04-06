@@ -37,20 +37,31 @@ function mapDbCategoryToCategory(dbCat: any, tools: any[]): Category {
 export function useCategories() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchCategories = useCallback(async () => {
     setLoading(true);
-    const [catRes, toolRes] = await Promise.all([
-      supabase.from('categories').select('*').order('sort_order'),
-      supabase.from('tools').select('*').order('sort_order'),
-    ]);
+    setError(null);
 
-    if (catRes.data && toolRes.data) {
+    try {
+      const [catRes, toolRes] = await Promise.all([
+        supabase.from('categories').select('*').order('sort_order'),
+        supabase.from('tools').select('*').order('sort_order'),
+      ]);
+
+      if (catRes.error) throw catRes.error;
+      if (toolRes.error) throw toolRes.error;
+
       setCategories(
-        catRes.data.map((c: any) => mapDbCategoryToCategory(c, toolRes.data))
+        (catRes.data || []).map((c: any) => mapDbCategoryToCategory(c, toolRes.data || []))
       );
+    } catch (err) {
+      console.error('Falha ao carregar categorias e ferramentas', err);
+      setCategories([]);
+      setError(err instanceof Error ? err.message : 'Não foi possível carregar o conteúdo.');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -101,5 +112,5 @@ export function useCategories() {
     );
   }, []);
 
-  return { categories, loading, fetchCategories, updateCategory, saveTool, deleteTool, setCategories };
+  return { categories, loading, error, fetchCategories, updateCategory, saveTool, deleteTool, setCategories };
 }
