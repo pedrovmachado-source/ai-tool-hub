@@ -5,7 +5,7 @@ import AuthModal from './AuthModal';
 
 export default function Navbar({ onNavigate, onOpenSavedEbook }: { onNavigate: (page: string) => void; onOpenSavedEbook?: (toolKey: string, categoryKey: string) => void }) {
   const { user, isAdmin, logout, savedEbooks, unsaveEbook } = useAuth();
-  const [authModal, setAuthModal] = useState<{ open: boolean; mode: 'login' | 'register' | 'admin' }>({ open: false, mode: 'login' });
+  const [authModal, setAuthModal] = useState<{ open: boolean; mode: 'login' | 'register' }>({ open: false, mode: 'login' });
   const [showSaved, setShowSaved] = useState(false);
 
   return (

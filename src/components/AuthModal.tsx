@@ -3,19 +3,18 @@ import { useAuth } from '@/contexts/AuthContext';
 import { X, Loader2 } from 'lucide-react';
 
 interface AuthModalProps {
-  mode: 'login' | 'register' | 'admin';
+  mode: 'login' | 'register';
   isOpen: boolean;
   onClose: () => void;
-  onSwitch: (mode: 'login' | 'register' | 'admin') => void;
+  onSwitch: (mode: 'login' | 'register') => void;
 }
 
 export default function AuthModal({ mode, isOpen, onClose, onSwitch }: AuthModalProps) {
-  const { login, register, adminLogin } = useAuth();
+  const { login, register } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [nome, setNome] = useState('');
   const [sobre, setSobre] = useState('');
-  const [adminUser, setAdminUser] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState('');
@@ -45,16 +44,12 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch }: AuthModal
     }
   };
 
-  const handleAdmin = () => {
-    if (adminLogin(adminUser, password)) { onClose(); } else { setError('Credenciais de admin inválidas.'); }
-  };
-
   return (
     <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4" style={{ background: 'rgba(10,10,30,0.65)' }} onClick={onClose}>
       <div className="bg-card rounded-2xl w-full max-w-[440px] animate-slide-up overflow-hidden" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between p-6 pb-4 border-b border-border">
           <h2 className="text-lg font-medium">
-            {mode === 'login' ? 'Entrar na sua conta' : mode === 'register' ? 'Criar conta gratuita' : 'Acesso Administrador'}
+            {mode === 'login' ? 'Entrar na sua conta' : 'Criar conta gratuita'}
           </h2>
           <button onClick={onClose} className="text-muted-foreground hover:text-foreground p-1 rounded-md hover:bg-secondary"><X size={18} /></button>
         </div>
@@ -78,7 +73,6 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch }: AuthModal
               </button>
               <div className="flex items-center gap-3 my-4 text-muted-foreground text-xs"><div className="flex-1 border-t border-border" /><span>ou</span><div className="flex-1 border-t border-border" /></div>
               <p className="text-center text-sm text-muted-foreground">Não tem conta? <button onClick={() => { setError(''); setSuccess(''); onSwitch('register'); }} className="text-brand-blue underline">Cadastre-se grátis</button></p>
-              <p className="text-center text-xs text-muted-foreground mt-2"><button onClick={() => { setError(''); setSuccess(''); onSwitch('admin'); }} className="text-brand-blue underline">Acesso administrador</button></p>
             </>
           )}
 
@@ -103,14 +97,6 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch }: AuthModal
               <p className="text-sm text-muted-foreground mb-4">{success}</p>
               <button onClick={() => { setError(''); setSuccess(''); onSwitch('login'); }} className="text-brand-blue underline text-sm">Ir para login</button>
             </div>
-          )}
-
-          {mode === 'admin' && (
-            <>
-              <div className="mb-4"><label className="text-xs font-medium text-muted-foreground mb-1 block">Usuário admin</label><input value={adminUser} onChange={e => setAdminUser(e.target.value)} placeholder="admin" className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-card focus:outline-none focus:border-brand-blue" /></div>
-              <div className="mb-4"><label className="text-xs font-medium text-muted-foreground mb-1 block">Senha</label><input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-card focus:outline-none focus:border-brand-blue" /></div>
-              <button onClick={handleAdmin} className="w-full py-2.5 bg-navy text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 transition-opacity">Entrar como Admin</button>
-            </>
           )}
         </div>
       </div>
