@@ -25,7 +25,6 @@ interface AuthContextType {
   loading: boolean;
   login: (email: string, password: string) => Promise<string | null>;
   register: (nome: string, sobre: string, email: string, password: string) => Promise<string | null>;
-  adminLogin: (username: string, password: string) => boolean;
   logout: () => Promise<void>;
   upgradeToPro: () => Promise<void>;
   updateUser: (data: Partial<Profile>) => Promise<void>;
@@ -38,9 +37,19 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<(Profile & { id: string }) | null>(null);
-  const [isAdmin, setIsAdmin] = useState(() => localStorage.getItem('adai_admin') === 'true');
+  const [isAdmin, setIsAdmin] = useState(false);
   const [savedEbooks, setSavedEbooks] = useState<SavedEbook[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const checkAdminRole = useCallback(async (userId: string) => {
+    const { data } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', userId)
+      .eq('role', 'admin')
+      .maybeSingle();
+    setIsAdmin(!!data);
+  }, []);
 
   const fetchProfile = useCallback(async (supaUser: SupaUser) => {
     const { data } = await supabase
@@ -83,9 +92,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session?.user) {
         await fetchProfile(session.user);
+        await checkAdminRole(session.user.id);
         await fetchSavedEbooks(session.user.id);
       } else {
         setUser(null);
+        setIsAdmin(false);
         setSavedEbooks([]);
       }
       setLoading(false);
@@ -94,13 +105,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session?.user) {
         await fetchProfile(session.user);
+        await checkAdminRole(session.user.id);
         await fetchSavedEbooks(session.user.id);
       }
       setLoading(false);
     });
 
     return () => subscription.unsubscribe();
-  }, [fetchProfile, fetchSavedEbooks]);
+  }, [fetchProfile, checkAdminRole, fetchSavedEbooks]);
 
   const login = useCallback(async (email: string, password: string): Promise<string | null> => {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -116,32 +128,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return error ? error.message : null;
   }, []);
 
-  const adminLogin = useCallback((username: string, password: string) => {
-    const admins = [
-      { user: 'admin', pass: 'AdAI@2025!' },
-      { user: 'dono', pass: 'AdAI@Dono2025!' },
-    ];
-    const found = admins.find(a => a.user === username && a.pass === password);
-    if (found) {
-      setIsAdmin(true);
-      localStorage.setItem('adai_admin', 'true');
-      return true;
-    }
-    return false;
-  }, []);
-
   const logout = useCallback(async () => {
     await supabase.auth.signOut();
     setUser(null);
     setIsAdmin(false);
     setSavedEbooks([]);
-    localStorage.removeItem('adai_admin');
   }, []);
 
   const upgradeToPro = useCallback(async () => {
     if (!user) return;
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) return;
     await supabase.from('profiles').update({ plano: 'Pro' }).eq('user_id', user.id);
     setUser(prev => prev ? { ...prev, plano: 'Pro' } : null);
   }, [user]);
@@ -179,7 +174,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [savedEbooks]);
 
   return (
-    <AuthContext.Provider value={{ user, isAdmin, savedEbooks, loading, login, register, adminLogin, logout, upgradeToPro, updateUser, saveEbook, unsaveEbook, isEbookSaved }}>
+    <AuthContext.Provider value={{ user, isAdmin, savedEbooks, loading, login, register, logout, upgradeToPro, updateUser, saveEbook, unsaveEbook, isEbookSaved }}>
       {children}
     </AuthContext.Provider>
   );
