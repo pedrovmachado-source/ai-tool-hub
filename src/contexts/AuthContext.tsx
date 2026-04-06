@@ -18,6 +18,15 @@ interface SavedEbook {
   savedAt: string;
 }
 
+interface ProfileRecord {
+  nome: string;
+  sobre: string;
+  email: string;
+  plano: string;
+  telefone: string | null;
+  empresa: string | null;
+}
+
 interface AuthContextType {
   user: (Profile & { id: string }) | null;
   isAdmin: boolean;
@@ -42,7 +51,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const authSyncRef = useRef(0);
 
-  const buildUserFromProfile = useCallback((supaUser: SupaUser, profile?: Partial<Profile> | null) => ({
+  const buildUserFromProfile = useCallback((supaUser: SupaUser, profile?: ProfileRecord | Partial<Profile> | null): Profile & { id: string } => ({
     id: supaUser.id,
     nome: profile?.nome || (typeof supaUser.user_metadata?.nome === 'string' ? supaUser.user_metadata.nome : ''),
     sobre: profile?.sobre || (typeof supaUser.user_metadata?.sobre === 'string' ? supaUser.user_metadata.sobre : ''),
@@ -110,7 +119,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       if (fallbackData) {
-        return fallbackData;
+        return {
+          nome: fallbackData.nome,
+          sobre: fallbackData.sobre,
+          email: fallbackData.email,
+          plano: fallbackData.plano,
+          telefone: fallbackData.telefone,
+          empresa: fallbackData.empresa,
+        } satisfies ProfileRecord;
       }
 
       throw insertError;
@@ -126,7 +142,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       throw createdError;
     }
 
-    return createdData;
+    return createdData
+      ? {
+          nome: createdData.nome,
+          sobre: createdData.sobre,
+          email: createdData.email,
+          plano: createdData.plano,
+          telefone: createdData.telefone,
+          empresa: createdData.empresa,
+        } satisfies ProfileRecord
+      : null;
   }, []);
 
   const fetchSavedEbooks = useCallback(async (userId: string) => {
