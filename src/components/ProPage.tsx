@@ -1,13 +1,37 @@
+import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { ArrowLeft, Check, X } from 'lucide-react';
+import { Check, X, Loader2 } from 'lucide-react';
 import { PRO_MONTHLY_PLAN, isStripeCheckoutReady } from '@/lib/billing';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 export default function ProPage({ onBack, onNavigate }: { onBack: () => void; onNavigate: (page: string) => void }) {
-  const { user, upgradeToPro } = useAuth();
+  const { user } = useAuth();
+  const [loadingCheckout, setLoadingCheckout] = useState(false);
 
-  const handleSubscribe = () => {
-    upgradeToPro();
-    onNavigate('home');
+  const handleSubscribe = async () => {
+    if (!user) {
+      toast.error('Faça login para assinar o plano Pro.');
+      return;
+    }
+    if (!isStripeCheckoutReady) {
+      toast.info('Checkout ainda não configurado.');
+      return;
+    }
+    setLoadingCheckout(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('create-checkout');
+      if (error) throw error;
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      } else {
+        throw new Error('URL de checkout não retornada');
+      }
+    } catch (err: any) {
+      toast.error(err.message || 'Erro ao iniciar checkout');
+    } finally {
+      setLoadingCheckout(false);
+    }
   };
 
   return (
