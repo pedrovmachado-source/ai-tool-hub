@@ -273,10 +273,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const upgradeToPro = useCallback(async () => {
+    // Now handled by Stripe checkout + check-subscription sync
+    // This manually syncs by calling check-subscription
     if (!user) return;
-    const { error } = await supabase.from('profiles').update({ plano: 'Pro' }).eq('user_id', user.id);
-    if (!error) {
-      setUser(prev => prev ? { ...prev, plano: 'Pro' } : null);
+    try {
+      const { data, error } = await supabase.functions.invoke('check-subscription');
+      if (!error && data?.subscribed) {
+        setUser(prev => prev ? { ...prev, plano: 'Pro' } : null);
+      }
+    } catch (e) {
+      console.error('Falha ao verificar assinatura', e);
     }
   }, [user]);
 
