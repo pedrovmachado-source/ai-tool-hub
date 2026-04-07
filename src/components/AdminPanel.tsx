@@ -767,14 +767,23 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
                     {(editingPlan || isAddingPlan) && (
                       <PlanFormModal
                         plan={editingPlan || undefined}
-                        onSave={(p) => {
-                          if (editingPlan) {
-                            setPlans(ps => ps.map(old => old.id === editingPlan.id ? p : old));
-                          } else {
-                            setPlans(ps => [...ps, { ...p, id: Date.now().toString() }]);
+                        onSave={async (p) => {
+                          const updatedPlans = editingPlan
+                            ? plans.map(old => old.id === editingPlan.id ? p : old)
+                            : [...plans, { ...p, id: Date.now().toString() }];
+                          setPlans(updatedPlans);
+                          // Persist the highlighted/active plan to DB
+                          const activePlan = updatedPlans.find(pl => pl.highlight) || updatedPlans.find(pl => pl.active) || updatedPlans[0];
+                          if (activePlan) {
+                            await supabase.from('site_settings').upsert({
+                              key: 'pro_plan',
+                              value: { name: activePlan.name, price: activePlan.price, period: activePlan.period, checkoutUrl: activePlan.checkoutUrl || '', features: activePlan.features },
+                              updated_at: new Date().toISOString(),
+                            }, { onConflict: 'key' });
                           }
                           setEditingPlan(null);
                           setIsAddingPlan(false);
+                          saveSettings('plans');
                         }}
                         onClose={() => { setEditingPlan(null); setIsAddingPlan(false); }}
                       />
