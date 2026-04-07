@@ -179,7 +179,7 @@ function ConfirmModal({ message, onConfirm, onCancel }: { message: string; onCon
 }
 
 function PlanFormModal({ plan, onSave, onClose }: { plan?: Plan; onSave: (p: Plan) => void; onClose: () => void }) {
-  const [form, setForm] = useState<Plan>(plan || { id: '', name: '', period: 'mensal', price: '', active: true, features: [], highlight: false });
+  const [form, setForm] = useState<Plan>(plan || { id: '', name: '', period: 'vitalicio', price: '', active: true, features: [], highlight: false, checkoutUrl: '' });
   const [newFeature, setNewFeature] = useState('');
 
   const addFeature = () => {
