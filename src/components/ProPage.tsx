@@ -1,18 +1,31 @@
 import { useAuth } from '@/contexts/AuthContext';
-import { Check, X } from 'lucide-react';
-import { PRO_PLAN } from '@/lib/billing';
+import { Check, X, Loader2 } from 'lucide-react';
+import { usePlanConfig } from '@/hooks/usePlanConfig';
 import { toast } from 'sonner';
 
 export default function ProPage({ onBack, onNavigate }: { onBack: () => void; onNavigate: (page: string) => void }) {
   const { user } = useAuth();
+  const { plan, loading } = usePlanConfig();
 
   const handleSubscribe = () => {
     if (!user) {
       toast.error('Faça login para adquirir o plano Pro.');
       return;
     }
-    window.open(PRO_PLAN.checkoutUrl, '_blank');
+    window.open(plan.checkoutUrl, '_blank');
   };
+
+  const priceWhole = plan.price.split('.')[0] || plan.price.split(',')[0];
+  const priceCents = plan.price.includes('.') ? plan.price.split('.')[1] : plan.price.includes(',') ? plan.price.split(',')[1] : '00';
+  const periodLabel = plan.period === 'vitalicio' ? 'pagamento único · acesso vitalício' : plan.period === 'anual' ? '/ano' : plan.period === 'semanal' ? '/semana' : '/mês';
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-navy flex items-center justify-center">
+        <Loader2 className="animate-spin text-muted-foreground" size={32} />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-navy">
@@ -42,16 +55,16 @@ export default function ProPage({ onBack, onNavigate }: { onBack: () => void; on
         {/* Pro */}
         <div className="bg-brand-blue/12 border border-brand-blue rounded-2xl p-8 relative scale-[1.03]">
           <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-blue text-primary-foreground text-[11px] font-semibold px-4 py-1 rounded-full whitespace-nowrap">Mais Popular</div>
-          <div className="text-xs font-medium text-muted-foreground/50 uppercase tracking-wider mb-2">{PRO_PLAN.name}</div>
-          <div className="text-[42px] font-bold text-primary-foreground">R$19<span className="text-2xl">,90</span></div>
-          <div className="text-xs text-muted-foreground/40 mt-1 mb-6">pagamento único · acesso vitalício</div>
+          <div className="text-xs font-medium text-muted-foreground/50 uppercase tracking-wider mb-2">{plan.name}</div>
+          <div className="text-[42px] font-bold text-primary-foreground">R${priceWhole}<span className="text-2xl">,{priceCents}</span></div>
+          <div className="text-xs text-muted-foreground/40 mt-1 mb-6">{periodLabel}</div>
           <ul className="space-y-2 mb-7">
-            {['Tudo do plano gratuito', '24 e-books completos', '+200 prompts exclusivos', 'Guias passo a passo', 'Atualizações contínuas', 'Suporte prioritário'].map(f => (
+            {plan.features.map(f => (
               <li key={f} className="flex items-center gap-2 text-[13.5px] text-primary-foreground/80 py-1 border-b border-primary-foreground/5"><Check size={15} className="text-brand-green shrink-0" />{f}</li>
             ))}
           </ul>
           <button onClick={handleSubscribe} className="w-full py-2.5 rounded-lg text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity flex items-center justify-center gap-2" style={{ background: 'linear-gradient(135deg, #F59E0B, #D97706)' }}>
-            ⚡ Comprar agora — R$19,90
+            ⚡ Comprar agora — R${plan.price.replace('.', ',')}
           </button>
         </div>
       </div>
