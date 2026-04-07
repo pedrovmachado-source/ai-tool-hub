@@ -760,7 +760,17 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
                     <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-6">
                       <h3 className="text-sm font-medium text-primary-foreground mb-4">Configurações Gerais</h3>
                       <div className="mb-4"><label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Dias de teste grátis</label><input value={trialDays} onChange={e => setTrialDays(e.target.value)} className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" /></div>
-                      <button onClick={() => saveSettings('plans')} className="px-4 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 flex items-center gap-2">{showSaved === 'plans' ? <><Check size={14} /> Salvo!</> : 'Salvar'}</button>
+                      <button onClick={async () => {
+                        const activePlan = plans.find(pl => pl.highlight) || plans.find(pl => pl.active) || plans[0];
+                        if (activePlan) {
+                          await supabase.from('site_settings').upsert({
+                            key: 'pro_plan',
+                            value: { name: activePlan.name, price: activePlan.price, period: activePlan.period, checkoutUrl: activePlan.checkoutUrl || '', features: activePlan.features },
+                            updated_at: new Date().toISOString(),
+                          }, { onConflict: 'key' });
+                        }
+                        saveSettings('plans');
+                      }} className="px-4 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 flex items-center gap-2">{showSaved === 'plans' ? <><Check size={14} /> Salvo!</> : 'Salvar'}</button>
                     </div>
 
                     {/* Plan form modal */}
