@@ -369,6 +369,25 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
   const [isAddingPlan, setIsAddingPlan] = useState(false);
   const [confirmDeletePlan, setConfirmDeletePlan] = useState<string | null>(null);
 
+  // Load plans from DB
+  useEffect(() => {
+    supabase.from('site_settings').select('value').eq('key', 'pro_plan').maybeSingle().then(({ data }) => {
+      if (data?.value) {
+        const v = data.value as any;
+        setPlans([{
+          id: '1',
+          name: v.name || 'Pro Vitalício',
+          period: v.period || 'vitalicio',
+          price: v.price || '14.90',
+          active: true,
+          highlight: true,
+          checkoutUrl: v.checkoutUrl || '',
+          features: v.features || [],
+        }]);
+      }
+    });
+  }, []);
+
   const filteredUsers = users.filter(u =>
     `${u.nome} ${u.sobre} ${u.email}`.toLowerCase().includes(searchQuery.toLowerCase())
   );
