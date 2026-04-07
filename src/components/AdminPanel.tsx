@@ -13,13 +13,11 @@ interface Plan {
   active: boolean;
   features: string[];
   highlight?: boolean;
+  checkoutUrl?: string;
 }
 
 const DEFAULT_PLANS: Plan[] = [
-  { id: '1', name: 'Pro Semanal', period: 'semanal', price: '9.90', active: false, features: ['Acesso a e-books', 'Prompts prontos', 'Suporte básico'] },
-  { id: '2', name: 'Pro Mensal', period: 'mensal', price: '19.90', active: true, highlight: true, features: ['Acesso a e-books', 'Prompts prontos', 'Vídeos tutoriais', 'Suporte prioritário'] },
-  { id: '3', name: 'Pro Anual', period: 'anual', price: '178.80', active: true, features: ['Tudo do mensal', 'Economia de 25%', 'Acesso antecipado'] },
-  { id: '4', name: 'Pro Vitalício', period: 'vitalicio', price: '497.00', active: false, features: ['Acesso permanente', 'Todas as atualizações', 'Suporte VIP'] },
+  { id: '1', name: 'Pro Vitalício', period: 'vitalicio', price: '14.90', active: true, highlight: true, checkoutUrl: 'https://buy.stripe.com/test_fZubJ3ackg00ddJgi55wI00', features: ['Tudo do plano gratuito', '24 e-books completos', '+200 prompts exclusivos', 'Guias passo a passo', 'Atualizações contínuas', 'Suporte prioritário'] },
 ];
 
 // ── Modals ──────────────────────────────────────────────────────────
@@ -181,7 +179,7 @@ function ConfirmModal({ message, onConfirm, onCancel }: { message: string; onCon
 }
 
 function PlanFormModal({ plan, onSave, onClose }: { plan?: Plan; onSave: (p: Plan) => void; onClose: () => void }) {
-  const [form, setForm] = useState<Plan>(plan || { id: '', name: '', period: 'mensal', price: '', active: true, features: [], highlight: false });
+  const [form, setForm] = useState<Plan>(plan || { id: '', name: '', period: 'vitalicio', price: '', active: true, features: [], highlight: false, checkoutUrl: '' });
   const [newFeature, setNewFeature] = useState('');
 
   const addFeature = () => {
@@ -213,7 +211,11 @@ function PlanFormModal({ plan, onSave, onClose }: { plan?: Plan; onSave: (p: Pla
         </div>
         <div className="mb-3">
           <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Preço (R$)</label>
-          <input value={form.price} onChange={e => setForm(p => ({ ...p, price: e.target.value }))} placeholder="19.90" className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" />
+          <input value={form.price} onChange={e => setForm(p => ({ ...p, price: e.target.value }))} placeholder="14.90" className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" />
+        </div>
+        <div className="mb-3">
+          <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Link de Checkout (Stripe)</label>
+          <input value={form.checkoutUrl || ''} onChange={e => setForm(p => ({ ...p, checkoutUrl: e.target.value }))} placeholder="https://buy.stripe.com/..." className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" />
         </div>
         <div className="mb-3 flex gap-4">
           <label className="flex items-center gap-2 text-[12px] text-primary-foreground/70 cursor-pointer">
@@ -366,6 +368,25 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
   const [editingPlan, setEditingPlan] = useState<Plan | null>(null);
   const [isAddingPlan, setIsAddingPlan] = useState(false);
   const [confirmDeletePlan, setConfirmDeletePlan] = useState<string | null>(null);
+
+  // Load plans from DB
+  useEffect(() => {
+    supabase.from('site_settings').select('value').eq('key', 'pro_plan').maybeSingle().then(({ data }) => {
+      if (data?.value) {
+        const v = data.value as any;
+        setPlans([{
+          id: '1',
+          name: v.name || 'Pro Vitalício',
+          period: v.period || 'vitalicio',
+          price: v.price || '14.90',
+          active: true,
+          highlight: true,
+          checkoutUrl: v.checkoutUrl || '',
+          features: v.features || [],
+        }]);
+      }
+    });
+  }, []);
 
   const filteredUsers = users.filter(u =>
     `${u.nome} ${u.sobre} ${u.email}`.toLowerCase().includes(searchQuery.toLowerCase())
@@ -739,21 +760,40 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
                     <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-6">
                       <h3 className="text-sm font-medium text-primary-foreground mb-4">Configurações Gerais</h3>
                       <div className="mb-4"><label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Dias de teste grátis</label><input value={trialDays} onChange={e => setTrialDays(e.target.value)} className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" /></div>
-                      <button onClick={() => saveSettings('plans')} className="px-4 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 flex items-center gap-2">{showSaved === 'plans' ? <><Check size={14} /> Salvo!</> : 'Salvar'}</button>
+                      <button onClick={async () => {
+                        const activePlan = plans.find(pl => pl.highlight) || plans.find(pl => pl.active) || plans[0];
+                        if (activePlan) {
+                          await supabase.from('site_settings').upsert({
+                            key: 'pro_plan',
+                            value: { name: activePlan.name, price: activePlan.price, period: activePlan.period, checkoutUrl: activePlan.checkoutUrl || '', features: activePlan.features },
+                            updated_at: new Date().toISOString(),
+                          }, { onConflict: 'key' });
+                        }
+                        saveSettings('plans');
+                      }} className="px-4 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 flex items-center gap-2">{showSaved === 'plans' ? <><Check size={14} /> Salvo!</> : 'Salvar'}</button>
                     </div>
 
                     {/* Plan form modal */}
                     {(editingPlan || isAddingPlan) && (
                       <PlanFormModal
                         plan={editingPlan || undefined}
-                        onSave={(p) => {
-                          if (editingPlan) {
-                            setPlans(ps => ps.map(old => old.id === editingPlan.id ? p : old));
-                          } else {
-                            setPlans(ps => [...ps, { ...p, id: Date.now().toString() }]);
+                        onSave={async (p) => {
+                          const updatedPlans = editingPlan
+                            ? plans.map(old => old.id === editingPlan.id ? p : old)
+                            : [...plans, { ...p, id: Date.now().toString() }];
+                          setPlans(updatedPlans);
+                          // Persist the highlighted/active plan to DB
+                          const activePlan = updatedPlans.find(pl => pl.highlight) || updatedPlans.find(pl => pl.active) || updatedPlans[0];
+                          if (activePlan) {
+                            await supabase.from('site_settings').upsert({
+                              key: 'pro_plan',
+                              value: { name: activePlan.name, price: activePlan.price, period: activePlan.period, checkoutUrl: activePlan.checkoutUrl || '', features: activePlan.features },
+                              updated_at: new Date().toISOString(),
+                            }, { onConflict: 'key' });
                           }
                           setEditingPlan(null);
                           setIsAddingPlan(false);
+                          saveSettings('plans');
                         }}
                         onClose={() => { setEditingPlan(null); setIsAddingPlan(false); }}
                       />
