@@ -211,7 +211,11 @@ function PlanFormModal({ plan, onSave, onClose }: { plan?: Plan; onSave: (p: Pla
         </div>
         <div className="mb-3">
           <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Preço (R$)</label>
-          <input value={form.price} onChange={e => setForm(p => ({ ...p, price: e.target.value }))} placeholder="19.90" className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" />
+          <input value={form.price} onChange={e => setForm(p => ({ ...p, price: e.target.value }))} placeholder="14.90" className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" />
+        </div>
+        <div className="mb-3">
+          <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Link de Checkout (Stripe)</label>
+          <input value={form.checkoutUrl || ''} onChange={e => setForm(p => ({ ...p, checkoutUrl: e.target.value }))} placeholder="https://buy.stripe.com/..." className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" />
         </div>
         <div className="mb-3 flex gap-4">
           <label className="flex items-center gap-2 text-[12px] text-primary-foreground/70 cursor-pointer">
