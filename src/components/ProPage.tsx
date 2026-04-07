@@ -1,37 +1,17 @@
-import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { Check, X, Loader2 } from 'lucide-react';
-import { PRO_MONTHLY_PLAN, isStripeCheckoutReady } from '@/lib/billing';
-import { supabase } from '@/integrations/supabase/client';
+import { Check, X } from 'lucide-react';
+import { PRO_PLAN } from '@/lib/billing';
 import { toast } from 'sonner';
 
 export default function ProPage({ onBack, onNavigate }: { onBack: () => void; onNavigate: (page: string) => void }) {
   const { user } = useAuth();
-  const [loadingCheckout, setLoadingCheckout] = useState(false);
 
-  const handleSubscribe = async () => {
+  const handleSubscribe = () => {
     if (!user) {
-      toast.error('Faça login para assinar o plano Pro.');
+      toast.error('Faça login para adquirir o plano Pro.');
       return;
     }
-    if (!isStripeCheckoutReady) {
-      toast.info('Checkout ainda não configurado.');
-      return;
-    }
-    setLoadingCheckout(true);
-    try {
-      const { data, error } = await supabase.functions.invoke('create-checkout');
-      if (error) throw error;
-      if (data?.url) {
-        window.open(data.url, '_blank');
-      } else {
-        throw new Error('URL de checkout não retornada');
-      }
-    } catch (err: any) {
-      toast.error(err.message || 'Erro ao iniciar checkout');
-    } finally {
-      setLoadingCheckout(false);
-    }
+    window.open(PRO_PLAN.checkoutUrl, '_blank');
   };
 
   return (
@@ -39,7 +19,7 @@ export default function ProPage({ onBack, onNavigate }: { onBack: () => void; on
       <div className="py-16 px-8 text-center" style={{ background: 'linear-gradient(180deg, hsl(240,33%,14%) 0%, hsl(240,33%,18%) 100%)' }}>
         <div className="inline-flex items-center gap-2 bg-brand-amber/15 border border-brand-amber/30 text-brand-amber text-xs px-4 py-1.5 rounded-full mb-5">⚡ Desbloqueie tudo</div>
         <h1 className="font-serif-display text-[46px] text-primary-foreground mb-4 leading-tight">Turbine seu negócio com<br /><em className="text-brand-amber italic">AdAI Pro</em></h1>
-        <p className="text-base text-muted-foreground/50 max-w-[560px] mx-auto leading-relaxed">Acesso completo a todos os e-books, guias passo a passo, prompts prontos e muito mais. Cancele quando quiser.</p>
+        <p className="text-base text-muted-foreground/50 max-w-[560px] mx-auto leading-relaxed">Acesso vitalício a todos os e-books, guias passo a passo, prompts prontos e muito mais. Pague uma vez, use para sempre.</p>
       </div>
 
       <div className="grid grid-cols-2 gap-6 max-w-[700px] mx-auto px-8 pb-16">
@@ -52,7 +32,7 @@ export default function ProPage({ onBack, onNavigate }: { onBack: () => void; on
             {['Acesso às fichas de ferramentas', 'Links oficiais das plataformas', 'Prompts básicos'].map(f => (
               <li key={f} className="flex items-center gap-2 text-[13.5px] text-primary-foreground/70 py-1 border-b border-primary-foreground/5"><Check size={15} className="text-brand-green shrink-0" />{f}</li>
             ))}
-            {['E-books completos', 'Guias passo a passo', 'Atualizações mensais'].map(f => (
+            {['E-books completos', 'Guias passo a passo', 'Atualizações contínuas'].map(f => (
               <li key={f} className="flex items-center gap-2 text-[13.5px] text-muted-foreground/30 py-1 border-b border-primary-foreground/5"><X size={15} className="shrink-0" />{f}</li>
             ))}
           </ul>
@@ -62,16 +42,16 @@ export default function ProPage({ onBack, onNavigate }: { onBack: () => void; on
         {/* Pro */}
         <div className="bg-brand-blue/12 border border-brand-blue rounded-2xl p-8 relative scale-[1.03]">
           <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-blue text-primary-foreground text-[11px] font-semibold px-4 py-1 rounded-full whitespace-nowrap">Mais Popular</div>
-          <div className="text-xs font-medium text-muted-foreground/50 uppercase tracking-wider mb-2">{PRO_MONTHLY_PLAN.name}</div>
+          <div className="text-xs font-medium text-muted-foreground/50 uppercase tracking-wider mb-2">{PRO_PLAN.name}</div>
           <div className="text-[42px] font-bold text-primary-foreground">R$19<span className="text-2xl">,90</span></div>
-          <div className="text-xs text-muted-foreground/40 mt-1 mb-6">por mês · cancele quando quiser</div>
+          <div className="text-xs text-muted-foreground/40 mt-1 mb-6">pagamento único · acesso vitalício</div>
           <ul className="space-y-2 mb-7">
-            {['Tudo do plano gratuito', '24 e-books completos', '+200 prompts exclusivos', 'Guias passo a passo', 'Atualizações mensais', 'Suporte prioritário'].map(f => (
+            {['Tudo do plano gratuito', '24 e-books completos', '+200 prompts exclusivos', 'Guias passo a passo', 'Atualizações contínuas', 'Suporte prioritário'].map(f => (
               <li key={f} className="flex items-center gap-2 text-[13.5px] text-primary-foreground/80 py-1 border-b border-primary-foreground/5"><Check size={15} className="text-brand-green shrink-0" />{f}</li>
             ))}
           </ul>
-          <button onClick={handleSubscribe} disabled={loadingCheckout} className="w-full py-2.5 rounded-lg text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center justify-center gap-2" style={{ background: 'linear-gradient(135deg, #F59E0B, #D97706)' }}>
-            {loadingCheckout ? <><Loader2 size={16} className="animate-spin" /> Redirecionando...</> : '⚡ Assinar agora — R$19,90/mês'}
+          <button onClick={handleSubscribe} className="w-full py-2.5 rounded-lg text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity flex items-center justify-center gap-2" style={{ background: 'linear-gradient(135deg, #F59E0B, #D97706)' }}>
+            ⚡ Comprar agora — R$19,90
           </button>
         </div>
       </div>
@@ -83,7 +63,7 @@ export default function ProPage({ onBack, onNavigate }: { onBack: () => void; on
           {[
             { icon: '📘', title: '24 E-books Completos', desc: 'Guia dedicado para cada ferramenta, com passo a passo detalhado e prompts prontos.' },
             { icon: '✍️', title: '+200 Prompts Prontos', desc: 'Biblioteca com os melhores prompts para marketing, vendas, design e produtividade.' },
-            { icon: '⚡', title: 'Atualizações Mensais', desc: 'Todo mês novos guias, ferramentas e prompts para você se manter na frente.' },
+            { icon: '⚡', title: 'Atualizações Contínuas', desc: 'Novos guias, ferramentas e prompts para você se manter na frente.' },
           ].map(b => (
             <div key={b.title} className="bg-primary-foreground/[0.04] border border-primary-foreground/[0.07] rounded-xl p-6">
               <div className="text-2xl mb-3">{b.icon}</div>

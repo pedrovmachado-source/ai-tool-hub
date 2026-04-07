@@ -1,8 +1,5 @@
-export const PRO_MONTHLY_PLAN = {
-  name: 'Pro Mensal',
-  priceLabel: 'R$19,90/mês',
-  stripePriceId: 'price_1TJPm9QP3tL0cIWnWzswoc4l',
-  stripeProductId: 'prod_UHzlTXfiqT3Pbc',
+export const PRO_PLAN = {
+  name: 'Pro Vitalício',
+  priceLabel: 'R$19,90 (pagamento único)',
+  checkoutUrl: 'https://buy.stripe.com/test_fZubJ3ackg00ddJgi55wI00',
 } as const;
-
-export const isStripeCheckoutReady = PRO_MONTHLY_PLAN.stripePriceId.length > 0;
