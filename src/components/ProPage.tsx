@@ -70,12 +70,9 @@ export default function ProPage({ onBack, onNavigate }: { onBack: () => void; on
               <li key={f} className="flex items-center gap-2 text-[13.5px] text-primary-foreground/80 py-1 border-b border-primary-foreground/5"><Check size={15} className="text-brand-green shrink-0" />{f}</li>
             ))}
           </ul>
-          <button onClick={handleSubscribe} className="w-full py-2.5 rounded-lg text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity" style={{ background: 'linear-gradient(135deg, #F59E0B, #D97706)' }}>⚡ Assinar agora — R$19,90/mês</button>
-          {!isStripeCheckoutReady && (
-            <p className="mt-3 text-center text-[11px] text-muted-foreground/60">
-              Estrutura pronta para Stripe; falta apenas conectar o price_id do checkout.
-            </p>
-          )}
+          <button onClick={handleSubscribe} disabled={loadingCheckout} className="w-full py-2.5 rounded-lg text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center justify-center gap-2" style={{ background: 'linear-gradient(135deg, #F59E0B, #D97706)' }}>
+            {loadingCheckout ? <><Loader2 size={16} className="animate-spin" /> Redirecionando...</> : '⚡ Assinar agora — R$19,90/mês'}
+          </button>
         </div>
       </div>
 
