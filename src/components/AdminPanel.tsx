@@ -13,13 +13,11 @@ interface Plan {
   active: boolean;
   features: string[];
   highlight?: boolean;
+  checkoutUrl?: string;
 }
 
 const DEFAULT_PLANS: Plan[] = [
-  { id: '1', name: 'Pro Semanal', period: 'semanal', price: '9.90', active: false, features: ['Acesso a e-books', 'Prompts prontos', 'Suporte básico'] },
-  { id: '2', name: 'Pro Mensal', period: 'mensal', price: '19.90', active: true, highlight: true, features: ['Acesso a e-books', 'Prompts prontos', 'Vídeos tutoriais', 'Suporte prioritário'] },
-  { id: '3', name: 'Pro Anual', period: 'anual', price: '178.80', active: true, features: ['Tudo do mensal', 'Economia de 25%', 'Acesso antecipado'] },
-  { id: '4', name: 'Pro Vitalício', period: 'vitalicio', price: '497.00', active: false, features: ['Acesso permanente', 'Todas as atualizações', 'Suporte VIP'] },
+  { id: '1', name: 'Pro Vitalício', period: 'vitalicio', price: '14.90', active: true, highlight: true, checkoutUrl: 'https://buy.stripe.com/test_fZubJ3ackg00ddJgi55wI00', features: ['Tudo do plano gratuito', '24 e-books completos', '+200 prompts exclusivos', 'Guias passo a passo', 'Atualizações contínuas', 'Suporte prioritário'] },
 ];
 
 // ── Modals ──────────────────────────────────────────────────────────
