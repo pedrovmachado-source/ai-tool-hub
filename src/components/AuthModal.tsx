@@ -7,9 +7,10 @@ interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSwitch: (mode: 'login' | 'register') => void;
+  onRegistered?: () => void;
 }
 
-export default function AuthModal({ mode, isOpen, onClose, onSwitch }: AuthModalProps) {
+export default function AuthModal({ mode, isOpen, onClose, onSwitch, onRegistered }: AuthModalProps) {
   const { login, register } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -41,6 +42,7 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch }: AuthModal
       setError(err);
     } else {
       setSuccess('Conta criada! Verifique seu e-mail para confirmar o cadastro.');
+      onRegistered?.();
     }
   };
 
