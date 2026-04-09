@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Sparkles, Menu, Bookmark, X } from 'lucide-react';
 import AuthModal from './AuthModal';
+import QuizModal from './QuizModal';
 
 export default function Navbar({ onNavigate, onOpenSavedEbook }: { onNavigate: (page: string) => void; onOpenSavedEbook?: (toolKey: string, categoryKey: string) => void }) {
   const { user, isAdmin, logout, savedEbooks, unsaveEbook } = useAuth();
   const [authModal, setAuthModal] = useState<{ open: boolean; mode: 'login' | 'register' }>({ open: false, mode: 'login' });
   const [showSaved, setShowSaved] = useState(false);
+  const [showQuiz, setShowQuiz] = useState(false);
 
   return (
     <>
@@ -105,7 +107,23 @@ export default function Navbar({ onNavigate, onOpenSavedEbook }: { onNavigate: (
         </div>
       )}
 
-      <AuthModal isOpen={authModal.open} mode={authModal.mode} onClose={() => setAuthModal({ ...authModal, open: false })} onSwitch={mode => setAuthModal({ open: true, mode })} />
+      <AuthModal
+        isOpen={authModal.open}
+        mode={authModal.mode}
+        onClose={() => setAuthModal({ ...authModal, open: false })}
+        onSwitch={mode => setAuthModal({ open: true, mode })}
+        onRegistered={() => {
+          setTimeout(() => setShowQuiz(true), 500);
+        }}
+      />
+
+      <QuizModal
+        isOpen={showQuiz}
+        onClose={() => setShowQuiz(false)}
+        onRecommend={(toolKey, categoryKey) => {
+          onOpenSavedEbook?.(toolKey, categoryKey);
+        }}
+      />
     </>
   );
 }
