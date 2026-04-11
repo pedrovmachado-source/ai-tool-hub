@@ -60,9 +60,24 @@ function getEmbedUrl(url: string): string | null {
 
 export default function EbookModal({ tool, category, isOpen, onClose }: EbookModalProps) {
   const [activeTab, setActiveTab] = useState<'ebook' | 'videos' | 'pdf'>(tool.pdfDataUrl ? 'pdf' : 'ebook');
-  const { user, saveEbook, unsaveEbook, isEbookSaved } = useAuth();
+  const { user, isAdmin, saveEbook, unsaveEbook, isEbookSaved } = useAuth();
   const saved = isEbookSaved(tool.key);
   if (!isOpen) return null;
+
+  // Security: double-check access - only Pro users and admins can view ebook content
+  const canAccess = isAdmin || (user && user.plano === 'Pro');
+  if (!canAccess) {
+    return (
+      <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4" style={{ background: 'rgba(10,10,30,0.65)' }} onClick={onClose}>
+        <div className="bg-card rounded-2xl w-full max-w-[400px] p-8 text-center animate-slide-up" onClick={e => e.stopPropagation()}>
+          <div className="text-4xl mb-4">🔒</div>
+          <h2 className="text-lg font-semibold mb-2">Conteúdo exclusivo Pro</h2>
+          <p className="text-sm text-muted-foreground mb-6">Assine o plano Pro para acessar os e-books completos, prompts avançados e guias passo a passo.</p>
+          <button onClick={onClose} className="px-6 py-2 rounded-lg text-sm font-medium bg-secondary text-foreground hover:bg-secondary/80 transition-colors">Fechar</button>
+        </div>
+      </div>
+    );
+  }
 
   const beginnerPrompts = tool.prompts || [];
   const intermediatePrompts = tool.extraPrompts || [];
