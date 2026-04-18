@@ -44,16 +44,36 @@ export function useCategories() {
     setError(null);
 
     try {
-      const [catRes, toolRes] = await Promise.all([
+      // Try to fetch full data first (Pro/admin will succeed)
+      const [catFull, toolFull] = await Promise.all([
         supabase.from('categories').select('*').order('sort_order'),
         supabase.from('tools').select('*').order('sort_order'),
       ]);
 
-      if (catRes.error) throw catRes.error;
-      if (toolRes.error) throw toolRes.error;
+      let catData: any[] | null = null;
+      let toolData: any[] | null = null;
+
+      if (!catFull.error && catFull.data && catFull.data.length > 0) {
+        catData = catFull.data;
+      }
+      if (!toolFull.error && toolFull.data && toolFull.data.length > 0) {
+        toolData = toolFull.data;
+      }
+
+      // Fall back to public (safe-fields only) RPCs for Free / unauthenticated visitors
+      if (!catData) {
+        const { data, error } = await (supabase as any).rpc('list_categories_public');
+        if (error) throw error;
+        catData = data || [];
+      }
+      if (!toolData) {
+        const { data, error } = await (supabase as any).rpc('list_tools_public');
+        if (error) throw error;
+        toolData = data || [];
+      }
 
       setCategories(
-        (catRes.data || []).map((c: any) => mapDbCategoryToCategory(c, toolRes.data || []))
+        (catData || []).map((c: any) => mapDbCategoryToCategory(c, toolData || []))
       );
     } catch (err) {
       console.error('Falha ao carregar categorias e ferramentas', err);
