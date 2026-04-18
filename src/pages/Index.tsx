@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useCategories } from '@/hooks/useCategories';
 import Navbar from '@/components/Navbar';
 import CategoryTabs from '@/components/CategoryTabs';
@@ -14,14 +15,27 @@ import { Search, Lock } from 'lucide-react';
 import type { Tool, Category } from '@/data/tools-data';
 
 export default function Index() {
+  const navigate = useNavigate();
   const { user, isAdmin } = useAuth();
   const { categories, loading, error, fetchCategories } = useCategories();
   const [page, setPage] = useState('home');
-  const [activeCategory, setActiveCategory] = useState('texto');
+  const initialCat = typeof window !== 'undefined' ? sessionStorage.getItem('adai:initialCategory') : null;
+  const [activeCategory, setActiveCategory] = useState(initialCat || 'texto');
   const [searchQuery, setSearchQuery] = useState('');
   const [ebookModal, setEbookModal] = useState<{ tool: Tool; category: Category } | null>(null);
   const [serverAdminVerified, setServerAdminVerified] = useState<boolean | null>(null);
   const [verifyingAdmin, setVerifyingAdmin] = useState(false);
+
+  useEffect(() => {
+    if (initialCat) sessionStorage.removeItem('adai:initialCategory');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleNavigate = (target: string) => {
+    if (target === 'home') { navigate('/'); return; }
+    if (target === 'profile') { navigate('/perfil'); return; }
+    setPage(target);
+  };
 
   useEffect(() => {
     if (categories.length > 0 && !categories.some(c => c.key === activeCategory)) {
@@ -86,8 +100,7 @@ export default function Index() {
     if (page === 'admin') setPage('home');
     return null;
   }
-  if (page === 'pro') return <ProPage onBack={() => setPage('home')} onNavigate={setPage} />;
-  if (page === 'profile') return <UserProfile onBack={() => setPage('home')} onNavigate={setPage} />;
+  if (page === 'pro') return <ProPage onBack={() => setPage('home')} onNavigate={handleNavigate} />;
 
   if (loading) {
     return (
@@ -116,7 +129,7 @@ export default function Index() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar onNavigate={setPage} onOpenSavedEbook={(toolKey, categoryKey) => {
+      <Navbar onNavigate={handleNavigate} onOpenSavedEbook={(toolKey, categoryKey) => {
         const cat = categories.find(c => c.key === categoryKey);
         const tool = cat?.tools.find(t => t.key === toolKey);
         if (tool && cat) setEbookModal({ tool, category: cat });
