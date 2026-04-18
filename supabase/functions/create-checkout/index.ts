@@ -53,9 +53,12 @@ serve(async (req) => {
       status: 200,
     });
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error('[create-checkout] error:', errorMessage);
+    const isAuthError = errorMessage.toLowerCase().includes('auth');
+    return new Response(JSON.stringify({ error: isAuthError ? 'Unauthorized' : 'Internal server error' }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
+      status: isAuthError ? 401 : 500,
     });
   }
 });
