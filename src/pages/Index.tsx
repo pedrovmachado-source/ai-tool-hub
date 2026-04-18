@@ -100,8 +100,7 @@ export default function Index() {
     if (page === 'admin') setPage('home');
     return null;
   }
-  if (page === 'pro') return <ProPage onBack={() => setPage('home')} onNavigate={setPage} />;
-  if (page === 'profile') return <UserProfile onBack={() => setPage('home')} onNavigate={setPage} />;
+  if (page === 'pro') return <ProPage onBack={() => setPage('home')} onNavigate={handleNavigate} />;
 
   if (loading) {
     return (
@@ -130,7 +129,7 @@ export default function Index() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar onNavigate={setPage} onOpenSavedEbook={(toolKey, categoryKey) => {
+      <Navbar onNavigate={handleNavigate} onOpenSavedEbook={(toolKey, categoryKey) => {
         const cat = categories.find(c => c.key === categoryKey);
         const tool = cat?.tools.find(t => t.key === toolKey);
         if (tool && cat) setEbookModal({ tool, category: cat });
