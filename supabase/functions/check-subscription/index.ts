@@ -72,9 +72,11 @@ serve(async (req) => {
     });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    return new Response(JSON.stringify({ error: errorMessage }), {
+    console.error('[check-subscription] error:', errorMessage);
+    const isAuthError = errorMessage.toLowerCase().includes('auth');
+    return new Response(JSON.stringify({ error: isAuthError ? 'Unauthorized' : 'Internal server error' }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
+      status: isAuthError ? 401 : 500,
     });
   }
 });
