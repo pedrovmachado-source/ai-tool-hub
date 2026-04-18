@@ -9,6 +9,7 @@ import AdminPanel from '@/components/AdminPanel';
 import PromptsLibrary from '@/components/PromptsLibrary';
 import UserProfile from '@/components/UserProfile';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import { Search, Lock } from 'lucide-react';
 import type { Tool, Category } from '@/data/tools-data';
 
@@ -19,12 +20,37 @@ export default function Index() {
   const [activeCategory, setActiveCategory] = useState('texto');
   const [searchQuery, setSearchQuery] = useState('');
   const [ebookModal, setEbookModal] = useState<{ tool: Tool; category: Category } | null>(null);
+  const [serverAdminVerified, setServerAdminVerified] = useState<boolean | null>(null);
+  const [verifyingAdmin, setVerifyingAdmin] = useState(false);
 
   useEffect(() => {
     if (categories.length > 0 && !categories.some(c => c.key === activeCategory)) {
       setActiveCategory(categories[0].key);
     }
   }, [activeCategory, categories]);
+
+  // Server-side admin verification before rendering admin panel
+  useEffect(() => {
+    if (page !== 'admin') return;
+    if (!user) {
+      setServerAdminVerified(false);
+      return;
+    }
+    setVerifyingAdmin(true);
+    setServerAdminVerified(null);
+    (async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke('verify-admin');
+        if (error) throw error;
+        setServerAdminVerified(!!(data as any)?.isAdmin);
+      } catch (e) {
+        console.error('Admin verification failed', e);
+        setServerAdminVerified(false);
+      } finally {
+        setVerifyingAdmin(false);
+      }
+    })();
+  }, [page, user]);
 
   const category = categories.find(c => c.key === activeCategory);
 
@@ -45,7 +71,21 @@ export default function Index() {
     setEbookModal({ tool, category: cat });
   };
 
-  if (page === 'admin' && isAdmin) return <AdminPanel onBack={() => setPage('home')} onCategoriesChanged={fetchCategories} />;
+  if (page === 'admin') {
+    if (verifyingAdmin || serverAdminVerified === null) {
+      return (
+        <div className="flex items-center justify-center min-h-screen bg-background">
+          <div className="text-muted-foreground">Verificando permissões…</div>
+        </div>
+      );
+    }
+    if (serverAdminVerified && isAdmin) {
+      return <AdminPanel onBack={() => { setServerAdminVerified(null); setPage('home'); }} onCategoriesChanged={fetchCategories} />;
+    }
+    // Not an admin — bounce back home
+    if (page === 'admin') setPage('home');
+    return null;
+  }
   if (page === 'pro') return <ProPage onBack={() => setPage('home')} onNavigate={setPage} />;
   if (page === 'profile') return <UserProfile onBack={() => setPage('home')} onNavigate={setPage} />;
 

@@ -228,12 +228,48 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_tool_premium: { Args: { _tool_key: string }; Returns: Json }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
         Returns: boolean
+      }
+      list_categories_public: {
+        Args: never
+        Returns: {
+          accent: string
+          accent_dark: string
+          accent_light: string
+          created_at: string
+          id: string
+          intro_text: string
+          intro_title: string
+          key: string
+          label: string
+          sort_order: number
+          stats: Json
+          updated_at: string
+          when_tags: Json
+        }[]
+      }
+      list_tools_public: {
+        Args: never
+        Returns: {
+          badge: string
+          category_key: string
+          created_at: string
+          data: Json
+          description: string
+          id: string
+          key: string
+          name: string
+          sort_order: number
+          updated_at: string
+          url: string
+          url_label: string
+        }[]
       }
     }
     Enums: {

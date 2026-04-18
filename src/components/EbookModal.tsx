@@ -1,7 +1,8 @@
 import { X, Copy, Check, ExternalLink, Zap, DollarSign, CheckSquare, Image, Lightbulb, Play, Bookmark, BookmarkCheck, FileText } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { Tool, Category } from '@/data/tools-data';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 
 interface EbookModalProps {
   tool: Tool;
@@ -59,13 +60,39 @@ function getEmbedUrl(url: string): string | null {
 }
 
 export default function EbookModal({ tool, category, isOpen, onClose }: EbookModalProps) {
-  const [activeTab, setActiveTab] = useState<'ebook' | 'videos' | 'pdf'>(tool.pdfDataUrl ? 'pdf' : 'ebook');
   const { user, isAdmin, saveEbook, unsaveEbook, isEbookSaved } = useAuth();
+  const canAccess = isAdmin || (user && user.plano === 'Pro');
+  const [premium, setPremium] = useState<Partial<Tool> | null>(null);
+  const [loadingPremium, setLoadingPremium] = useState(false);
+  const [activeTab, setActiveTab] = useState<'ebook' | 'videos' | 'pdf'>('ebook');
+
+  useEffect(() => {
+    if (!isOpen || !canAccess) return;
+    let cancelled = false;
+    setLoadingPremium(true);
+    (async () => {
+      const { data, error } = await (supabase as any).rpc('get_tool_premium', { _tool_key: tool.key });
+      if (cancelled) return;
+      if (error) {
+        console.error('Failed to load premium content', error);
+        setPremium({});
+      } else {
+        setPremium((data as any) || {});
+      }
+      setLoadingPremium(false);
+    })();
+    return () => { cancelled = true; };
+  }, [isOpen, canAccess, tool.key]);
+
+  // Build a merged tool with premium fields fetched server-side (only for Pro/admin)
+  const fullTool: Tool = { ...tool, ...(premium || {}) } as Tool;
+  useEffect(() => {
+    if (premium?.pdfDataUrl) setActiveTab('pdf');
+  }, [premium]);
+
   const saved = isEbookSaved(tool.key);
   if (!isOpen) return null;
 
-  // Security: double-check access - only Pro users and admins can view ebook content
-  const canAccess = isAdmin || (user && user.plano === 'Pro');
   if (!canAccess) {
     return (
       <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4" style={{ background: 'rgba(10,10,30,0.65)' }} onClick={onClose}>
@@ -79,9 +106,9 @@ export default function EbookModal({ tool, category, isOpen, onClose }: EbookMod
     );
   }
 
-  const beginnerPrompts = tool.prompts || [];
-  const intermediatePrompts = tool.extraPrompts || [];
-  const advancedPrompts = tool.promptsAdvanced || [];
+  const beginnerPrompts = fullTool.prompts || [];
+  const intermediatePrompts = fullTool.extraPrompts || [];
+  const advancedPrompts = fullTool.promptsAdvanced || [];
   const allPrompts = [...beginnerPrompts, ...intermediatePrompts, ...advancedPrompts];
 
   const handleToggleSave = () => {
@@ -113,22 +140,22 @@ export default function EbookModal({ tool, category, isOpen, onClose }: EbookMod
             <button onClick={() => setActiveTab('ebook')} className={`px-4 py-2 text-[13px] font-medium rounded-t-lg transition-colors ${activeTab === 'ebook' ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
               📖 E-Book
             </button>
-            {tool.pdfDataUrl && (
+            {fullTool.pdfDataUrl && (
               <button onClick={() => setActiveTab('pdf')} className={`px-4 py-2 text-[13px] font-medium rounded-t-lg transition-colors flex items-center gap-1.5 ${activeTab === 'pdf' ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
                 <FileText size={13} /> PDF
               </button>
             )}
             <button onClick={() => setActiveTab('videos')} className={`px-4 py-2 text-[13px] font-medium rounded-t-lg transition-colors flex items-center gap-1.5 ${activeTab === 'videos' ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
-              <Play size={13} /> Vídeos {tool.videos && tool.videos.length > 0 && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-brand-blue/20 text-brand-blue-medium">{tool.videos.length}</span>}
+              <Play size={13} /> Vídeos {fullTool.videos && fullTool.videos.length > 0 && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-brand-blue/20 text-brand-blue-medium">{fullTool.videos.length}</span>}
             </button>
           </div>
         </div>
         <div className="p-6 overflow-y-auto flex-1 space-y-6">
 
-        {activeTab === 'pdf' && tool.pdfDataUrl && (
+        {activeTab === 'pdf' && fullTool.pdfDataUrl && (
           <div className="h-[70vh] -m-6 -mb-6">
             <iframe
-              src={`${tool.pdfDataUrl}#toolbar=0&navpanes=0&scrollbar=1&view=FitH`}
+              src={`${fullTool.pdfDataUrl}#toolbar=0&navpanes=0&scrollbar=1&view=FitH`}
               className="w-full h-full border-0"
               title={`PDF - ${tool.name}`}
               style={{ pointerEvents: 'auto' }}
@@ -144,13 +171,13 @@ export default function EbookModal({ tool, category, isOpen, onClose }: EbookMod
 
         {activeTab === 'videos' && (
           <div className="space-y-6">
-            {(!tool.videos || tool.videos.length === 0) ? (
+            {(!fullTool.videos || fullTool.videos.length === 0) ? (
               <div className="text-center py-16">
                 <Play size={40} className="mx-auto mb-3 text-muted-foreground/30" />
                 <p className="text-sm text-muted-foreground">Nenhum vídeo disponível para esta ferramenta ainda.</p>
               </div>
             ) : (
-              tool.videos.map((v, i) => {
+              fullTool.videos.map((v, i) => {
                 const embedUrl = getEmbedUrl(v.url);
                 return (
                   <div key={i} className="rounded-xl border border-border overflow-hidden">
@@ -223,10 +250,10 @@ export default function EbookModal({ tool, category, isOpen, onClose }: EbookMod
           )}
 
           {/* Steps */}
-          {tool.steps && tool.steps.length > 0 && (
+          {fullTool.steps && fullTool.steps.length > 0 && (
             <section>
               <SectionTitle icon="🚀">Guia passo a passo</SectionTitle>
-              {tool.steps.map((s, i) => (
+              {fullTool.steps.map((s, i) => (
                 <div key={i} className="flex gap-3.5 mb-5">
                   <div className="w-8 h-8 rounded-full flex items-center justify-center text-[13px] font-bold text-primary-foreground shrink-0" style={{ background: `linear-gradient(135deg, ${category.accentDark}, ${category.accent})` }}>{i + 1}</div>
                   <div>
@@ -282,10 +309,10 @@ export default function EbookModal({ tool, category, isOpen, onClose }: EbookMod
           )}
 
           {/* Use Cases */}
-          {tool.useCases && tool.useCases.length > 0 && (
+          {fullTool.useCases && fullTool.useCases.length > 0 && (
             <section>
               <SectionTitle icon="💼">Casos de uso reais</SectionTitle>
-              {tool.useCases.map((uc, i) => (
+              {fullTool.useCases.map((uc, i) => (
                 <div key={i} className="bg-secondary rounded-r-lg p-4 mb-3" style={{ borderLeft: `3px solid ${category.accent}` }}>
                   <div className="text-[13.5px] font-semibold mb-1">💼 {uc.title}</div>
                   <div className="text-[13px] text-muted-foreground leading-relaxed">{uc.text}</div>
@@ -296,10 +323,10 @@ export default function EbookModal({ tool, category, isOpen, onClose }: EbookMod
           )}
 
           {/* Common Errors */}
-          {tool.commonErrors && tool.commonErrors.length > 0 && (
+          {fullTool.commonErrors && fullTool.commonErrors.length > 0 && (
             <section>
               <SectionTitle icon="⚠️">Erros comuns e como evitar</SectionTitle>
-              {tool.commonErrors.map((e, i) => (
+              {fullTool.commonErrors.map((e, i) => (
                 <div key={i} className="flex gap-3 mb-3 rounded-lg p-3.5 bg-red-50/50 dark:bg-red-950/20">
                   <span className="text-lg shrink-0">❌</span>
                   <div>
@@ -312,11 +339,11 @@ export default function EbookModal({ tool, category, isOpen, onClose }: EbookMod
           )}
 
           {/* Monetization */}
-          {tool.monetization && tool.monetization.length > 0 && (
+          {fullTool.monetization && fullTool.monetization.length > 0 && (
             <section>
               <SectionTitle icon="💰">Formas de monetização</SectionTitle>
               <div className="rounded-xl p-4" style={{ background: `linear-gradient(135deg, ${category.accentLight}, transparent)` }}>
-                {tool.monetization.map((m, i) => (
+                {fullTool.monetization.map((m, i) => (
                   <div key={i} className="flex items-start gap-2.5 mb-2.5 last:mb-0">
                     <DollarSign size={14} className="shrink-0 mt-0.5" style={{ color: category.accent }} />
                     <span className="text-[13px] leading-relaxed">{m}</span>
@@ -327,11 +354,11 @@ export default function EbookModal({ tool, category, isOpen, onClose }: EbookMod
           )}
 
           {/* Automations */}
-          {tool.automations && tool.automations.length > 0 && (
+          {fullTool.automations && fullTool.automations.length > 0 && (
             <section>
               <SectionTitle icon="⚡">Automações e combinações com outras IAs</SectionTitle>
               <div className="grid gap-2">
-                {tool.automations.map((a, i) => (
+                {fullTool.automations.map((a, i) => (
                   <div key={i} className="flex items-start gap-2.5 bg-secondary rounded-lg p-3">
                     <Zap size={14} className="shrink-0 mt-0.5" style={{ color: category.accent }} />
                     <span className="text-[13px] leading-relaxed">{a}</span>
@@ -342,11 +369,11 @@ export default function EbookModal({ tool, category, isOpen, onClose }: EbookMod
           )}
 
           {/* Image Descriptions */}
-          {tool.imageDescriptions && tool.imageDescriptions.length > 0 && (
+          {fullTool.imageDescriptions && fullTool.imageDescriptions.length > 0 && (
             <section>
               <SectionTitle icon="🖼️">Imagens do e-book</SectionTitle>
               <div className="grid gap-2">
-                {tool.imageDescriptions.map((img, i) => (
+                {fullTool.imageDescriptions.map((img, i) => (
                   <div key={i} className="flex items-start gap-2.5 border border-dashed rounded-lg p-3" style={{ borderColor: category.accent + '40' }}>
                     <Image size={14} className="shrink-0 mt-0.5" style={{ color: category.accent }} />
                     <div>
@@ -360,11 +387,11 @@ export default function EbookModal({ tool, category, isOpen, onClose }: EbookMod
           )}
 
           {/* Checklist */}
-          {tool.checklist && tool.checklist.length > 0 && (
+          {fullTool.checklist && fullTool.checklist.length > 0 && (
             <section>
               <SectionTitle icon="✅">Checklist final</SectionTitle>
               <div className="rounded-xl border-2 p-4" style={{ borderColor: category.accent + '30' }}>
-                {tool.checklist.map((item, i) => (
+                {fullTool.checklist.map((item, i) => (
                   <div key={i} className="flex items-center gap-2.5 mb-2 last:mb-0">
                     <CheckSquare size={14} style={{ color: category.accent }} />
                     <span className="text-[13px]">{item}</span>
