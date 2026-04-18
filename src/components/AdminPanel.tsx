@@ -416,7 +416,13 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
   };
 
   const exportCSV = () => {
-    const csv = 'Nome,Sobrenome,Email,Plano,Criado em\n' + users.map(u => `${u.nome},${u.sobre},${u.email},${u.plano},${new Date(u.created_at).toLocaleDateString('pt-BR')}`).join('\n');
+    const sanitizeCell = (v: string) => {
+      const s = String(v ?? '');
+      const dangerous = ['=', '+', '-', '@', '\t', '\r'];
+      const safe = dangerous.some(c => s.startsWith(c)) ? `'${s}` : s;
+      return `"${safe.replace(/"/g, '""')}"`;
+    };
+    const csv = 'Nome,Sobrenome,Email,Plano,Criado em\n' + users.map(u => [u.nome, u.sobre, u.email, u.plano, new Date(u.created_at).toLocaleDateString('pt-BR')].map(sanitizeCell).join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
