@@ -60,13 +60,39 @@ function getEmbedUrl(url: string): string | null {
 }
 
 export default function EbookModal({ tool, category, isOpen, onClose }: EbookModalProps) {
-  const [activeTab, setActiveTab] = useState<'ebook' | 'videos' | 'pdf'>(tool.pdfDataUrl ? 'pdf' : 'ebook');
   const { user, isAdmin, saveEbook, unsaveEbook, isEbookSaved } = useAuth();
+  const canAccess = isAdmin || (user && user.plano === 'Pro');
+  const [premium, setPremium] = useState<Partial<Tool> | null>(null);
+  const [loadingPremium, setLoadingPremium] = useState(false);
+  const [activeTab, setActiveTab] = useState<'ebook' | 'videos' | 'pdf'>('ebook');
+
+  useEffect(() => {
+    if (!isOpen || !canAccess) return;
+    let cancelled = false;
+    setLoadingPremium(true);
+    (async () => {
+      const { data, error } = await (supabase as any).rpc('get_tool_premium', { _tool_key: tool.key });
+      if (cancelled) return;
+      if (error) {
+        console.error('Failed to load premium content', error);
+        setPremium({});
+      } else {
+        setPremium((data as any) || {});
+      }
+      setLoadingPremium(false);
+    })();
+    return () => { cancelled = true; };
+  }, [isOpen, canAccess, tool.key]);
+
+  // Build a merged tool with premium fields fetched server-side (only for Pro/admin)
+  const fullTool: Tool = { ...tool, ...(premium || {}) } as Tool;
+  useEffect(() => {
+    if (premium?.pdfDataUrl) setActiveTab('pdf');
+  }, [premium]);
+
   const saved = isEbookSaved(tool.key);
   if (!isOpen) return null;
 
-  // Security: double-check access - only Pro users and admins can view ebook content
-  const canAccess = isAdmin || (user && user.plano === 'Pro');
   if (!canAccess) {
     return (
       <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4" style={{ background: 'rgba(10,10,30,0.65)' }} onClick={onClose}>
