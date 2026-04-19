@@ -138,7 +138,7 @@ export default function Index() {
       {/* Hero */}
       <div className="bg-navy py-14 px-8 text-center">
         <div className="inline-flex items-center gap-2 bg-brand-blue/15 border border-brand-blue/30 text-brand-blue-medium text-xs px-4 py-1.5 rounded-full mb-5">
-          ✨ Curadoria atualizada em 2025
+          ✨ Curadoria atualizada em 2026
         </div>
         <h1 className="font-serif-display text-4xl leading-tight text-primary-foreground tracking-tight mb-3">
           Descubra as melhores <em className="text-brand-blue-medium italic">IAs</em> para<br />turbinar seu negócio
