@@ -177,9 +177,21 @@ function ToolFormModal({ tool, onSave, onClose }: { tool?: Tool; onSave: (t: Too
           </div>
         </div>
 
+        {/* Visual prompts editors */}
+        <PromptsEditor
+          title="📝 Prompts Básicos"
+          prompts={((form as any).prompts) || []}
+          onChange={(p) => set('prompts' as any, p)}
+        />
+        <PromptsEditor
+          title="🚀 Prompts Avançados"
+          prompts={((form as any).promptsAdvanced) || []}
+          onChange={(p) => set('promptsAdvanced' as any, p)}
+        />
+
         <div className="flex gap-2 justify-end mt-4">
           <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm text-muted-foreground/60 hover:text-primary-foreground">Cancelar</button>
-          <button onClick={() => { if (form.name && form.key) onSave(form); }} className="px-4 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90">Salvar</button>
+          <button onClick={validateAndSave} className="px-4 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90">Salvar</button>
         </div>
       </div>
     </div>
