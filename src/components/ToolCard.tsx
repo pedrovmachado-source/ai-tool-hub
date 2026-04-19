@@ -8,15 +8,25 @@ interface ToolCardProps {
 }
 
 export default function ToolCard({ tool, category, onOpenEbook }: ToolCardProps) {
+  const badgeLower = (tool.badge || '').toLowerCase();
+  const isFree = badgeLower.includes('grát') || badgeLower.includes('grat') || badgeLower === 'free' || badgeLower.includes('100%') || badgeLower.includes('gratuit');
+
   return (
     <div
-      className="bg-card border border-border rounded-xl overflow-hidden transition-all hover:shadow-brand-sm group"
+      className={`bg-card border rounded-xl overflow-hidden transition-all hover:shadow-brand-sm group relative ${isFree ? 'border-brand-green/60 ring-1 ring-brand-green/20' : 'border-border'}`}
       style={{ '--card-accent': category.accent } as React.CSSProperties}
     >
+      {isFree && (
+        <div className="absolute top-2 right-2 z-10 inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-green text-primary-foreground shadow-brand-sm">
+          🆓 100% Grátis
+        </div>
+      )}
       <div className="p-4 pb-3.5">
         <div className="flex items-start justify-between mb-2">
           <span className="text-[15px] font-medium">{tool.name}</span>
-          <span className="text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ background: category.accentLight, color: category.accentDark }}>{tool.badge}</span>
+          {!isFree && (
+            <span className="text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ background: category.accentLight, color: category.accentDark }}>{tool.badge}</span>
+          )}
         </div>
         <a href={tool.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs font-medium mb-2 hover:underline" style={{ color: category.accent }}>
           <ExternalLink size={11} /> {tool.urlLabel}
