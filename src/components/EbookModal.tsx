@@ -313,13 +313,20 @@ export default function EbookModal({ tool, category, isOpen, onClose }: EbookMod
           {fullTool.useCases && fullTool.useCases.length > 0 && (
             <section>
               <SectionTitle icon="💼">Casos de uso reais</SectionTitle>
-              {fullTool.useCases.map((uc, i) => (
-                <div key={i} className="bg-secondary rounded-r-lg p-4 mb-3" style={{ borderLeft: `3px solid ${category.accent}` }}>
-                  <div className="text-[13.5px] font-semibold mb-1">💼 {uc.title}</div>
-                  <div className="text-[13px] text-muted-foreground leading-relaxed">{uc.text}</div>
-                  {uc.result && <div className="mt-2 text-xs font-semibold" style={{ color: category.accent }}>📈 Resultado: {uc.result}</div>}
-                </div>
-              ))}
+              {fullTool.useCases.map((uc: any, i) => {
+                const item = typeof uc === 'string' ? { title: uc, text: '', result: undefined } : (uc || {});
+                const title = item.title || item.name || '';
+                const text = item.text || item.description || item.desc || '';
+                const result = item.result;
+                if (!title && !text) return null;
+                return (
+                  <div key={i} className="bg-secondary rounded-r-lg p-4 mb-3" style={{ borderLeft: `3px solid ${category.accent}` }}>
+                    {title && <div className="text-[13.5px] font-semibold mb-1">💼 {title}</div>}
+                    {text && <div className="text-[13px] text-muted-foreground leading-relaxed">{text}</div>}
+                    {result && <div className="mt-2 text-xs font-semibold" style={{ color: category.accent }}>📈 Resultado: {result}</div>}
+                  </div>
+                );
+              })}
             </section>
           )}
 
