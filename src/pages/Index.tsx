@@ -22,6 +22,7 @@ export default function Index() {
   const initialCat = typeof window !== 'undefined' ? sessionStorage.getItem('adai:initialCategory') : null;
   const [activeCategory, setActiveCategory] = useState(initialCat || 'texto');
   const [searchQuery, setSearchQuery] = useState('');
+  const [freeOnly, setFreeOnly] = useState(false);
   const [ebookModal, setEbookModal] = useState<{ tool: Tool; category: Category } | null>(null);
   const [serverAdminVerified, setServerAdminVerified] = useState<boolean | null>(null);
   const [verifyingAdmin, setVerifyingAdmin] = useState(false);
@@ -68,13 +69,20 @@ export default function Index() {
 
   const category = categories.find(c => c.key === activeCategory);
 
-  const filteredTools = searchQuery
+  const isFreeTool = (t: Tool) => {
+    const b = (t.badge || '').toLowerCase();
+    return b.includes('grát') || b.includes('grat') || b === 'free' || b.includes('100%') || b.includes('gratuit');
+  };
+
+  const baseTools = searchQuery
     ? categories.flatMap(c => c.tools.map(t => ({ tool: t, category: c }))).filter(({ tool }) =>
         tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         tool.desc.toLowerCase().includes(searchQuery.toLowerCase()) ||
         tool.badge.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : category ? category.tools.map(t => ({ tool: t, category })) : [];
+
+  const filteredTools = freeOnly ? baseTools.filter(({ tool }) => isFreeTool(tool)) : baseTools;
 
   const handleOpenEbook = (tool: Tool, cat: Category) => {
     const canAccess = isAdmin || (user && user.plano === 'Pro');
@@ -156,6 +164,20 @@ export default function Index() {
             placeholder="Buscar ferramentas de IA..."
             className="w-full pl-10 pr-4 py-2.5 rounded-lg text-sm bg-primary-foreground/10 text-primary-foreground placeholder:text-muted-foreground/40 border border-primary-foreground/10 focus:outline-none focus:border-brand-blue"
           />
+        </div>
+
+        {/* Free filter toggle */}
+        <div className="flex items-center justify-center gap-2 mt-4">
+          <button
+            onClick={() => setFreeOnly(v => !v)}
+            className={`inline-flex items-center gap-1.5 text-xs px-3.5 py-1.5 rounded-full border transition-all ${
+              freeOnly
+                ? 'bg-brand-green text-primary-foreground border-brand-green shadow-brand-sm'
+                : 'bg-primary-foreground/5 text-muted-foreground border-primary-foreground/15 hover:border-brand-green/50 hover:text-brand-green'
+            }`}
+          >
+            🆓 {freeOnly ? 'Mostrando só IAs 100% gratuitas' : 'Filtrar IAs 100% gratuitas'}
+          </button>
         </div>
 
         {!user && (

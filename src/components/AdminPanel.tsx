@@ -23,10 +23,76 @@ const DEFAULT_PLANS: Plan[] = [
 
 // ── Modals ──────────────────────────────────────────────────────────
 
+function PromptsEditor({ title, prompts, onChange }: { title: string; prompts: { label: string; text: string }[]; onChange: (p: { label: string; text: string }[]) => void }) {
+  const update = (i: number, field: 'label' | 'text', value: string) => {
+    onChange(prompts.map((p, idx) => idx === i ? { ...p, [field]: value } : p));
+  };
+  const remove = (i: number) => onChange(prompts.filter((_, idx) => idx !== i));
+  const add = () => onChange([...prompts, { label: '', text: '' }]);
+
+  return (
+    <div className="mb-3 border-t border-primary-foreground/[0.07] pt-4 mt-4">
+      <div className="flex items-center justify-between mb-2">
+        <label className="text-[11px] font-medium text-muted-foreground/40 block">{title}</label>
+        <button type="button" onClick={add} className="flex items-center gap-1 px-2 py-1 rounded text-[10px] font-medium bg-brand-blue/20 text-brand-blue-medium hover:bg-brand-blue/30">
+          <Plus size={10} /> Adicionar
+        </button>
+      </div>
+      {prompts.length === 0 && (
+        <p className="text-[11px] text-muted-foreground/40 italic py-2">Nenhum prompt. Clique em "Adicionar" para criar.</p>
+      )}
+      {prompts.map((p, i) => {
+        const labelMissing = !p.label?.trim();
+        const textMissing = !p.text?.trim();
+        return (
+          <div key={i} className="bg-primary-foreground/5 rounded-lg p-2.5 mb-2 border border-primary-foreground/10">
+            <div className="flex items-start gap-2 mb-1.5">
+              <span className="text-[10px] font-medium text-muted-foreground/40 mt-2">#{i + 1}</span>
+              <input
+                value={p.label || ''}
+                onChange={e => update(i, 'label', e.target.value)}
+                placeholder="Label (ex: 🟢 Iniciante — Criar copy)"
+                className={`flex-1 px-2 py-1.5 rounded text-[12px] bg-primary-foreground/5 border text-primary-foreground focus:outline-none focus:border-brand-blue ${labelMissing ? 'border-brand-red/50' : 'border-primary-foreground/10'}`}
+              />
+              <button type="button" onClick={() => remove(i)} className="text-brand-red/60 hover:text-brand-red shrink-0 mt-1.5"><Trash2 size={12} /></button>
+            </div>
+            <textarea
+              value={p.text || ''}
+              onChange={e => update(i, 'text', e.target.value)}
+              placeholder="Texto do prompt..."
+              rows={3}
+              className={`w-full px-2 py-1.5 rounded text-[12px] bg-primary-foreground/5 border text-primary-foreground focus:outline-none focus:border-brand-blue resize-none ${textMissing ? 'border-brand-red/50' : 'border-primary-foreground/10'}`}
+            />
+            {(labelMissing || textMissing) && (
+              <p className="text-[10px] text-brand-red mt-1">⚠ Label e texto são obrigatórios.</p>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function ToolFormModal({ tool, onSave, onClose }: { tool?: Tool; onSave: (t: Tool) => void; onClose: () => void }) {
-  const [form, setForm] = useState<Tool>(tool || { key: '', name: '', url: '', urlLabel: 'Acessar', badge: 'Grátis', desc: '', videos: [] });
+  const [form, setForm] = useState<Tool>(tool || { key: '', name: '', url: '', urlLabel: 'Acessar', badge: 'Grátis', desc: '', videos: [], prompts: [], promptsAdvanced: [] });
   const [newVideo, setNewVideo] = useState({ title: '', url: '', desc: '' });
   const set = (k: keyof Tool, v: any) => setForm(p => ({ ...p, [k]: v }));
+
+  const validateAndSave = () => {
+    if (!form.name || !form.key) return;
+    const checkPrompts = (arr: any[] | undefined, label: string) => {
+      if (!Array.isArray(arr)) return true;
+      const bad = arr.findIndex((p: any) => !p?.label?.trim() || !p?.text?.trim());
+      if (bad !== -1) {
+        toast({ title: `${label}: prompt #${bad + 1} inválido`, description: 'Label e texto são obrigatórios.', variant: 'destructive' });
+        return false;
+      }
+      return true;
+    };
+    if (!checkPrompts((form as any).prompts, 'Prompts básicos')) return;
+    if (!checkPrompts((form as any).promptsAdvanced, 'Prompts avançados')) return;
+    onSave(form);
+  };
 
   const handlePdfUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -111,9 +177,21 @@ function ToolFormModal({ tool, onSave, onClose }: { tool?: Tool; onSave: (t: Too
           </div>
         </div>
 
+        {/* Visual prompts editors */}
+        <PromptsEditor
+          title="📝 Prompts Básicos"
+          prompts={((form as any).prompts) || []}
+          onChange={(p) => set('prompts' as any, p)}
+        />
+        <PromptsEditor
+          title="🚀 Prompts Avançados"
+          prompts={((form as any).promptsAdvanced) || []}
+          onChange={(p) => set('promptsAdvanced' as any, p)}
+        />
+
         <div className="flex gap-2 justify-end mt-4">
           <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm text-muted-foreground/60 hover:text-primary-foreground">Cancelar</button>
-          <button onClick={() => { if (form.name && form.key) onSave(form); }} className="px-4 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90">Salvar</button>
+          <button onClick={validateAndSave} className="px-4 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90">Salvar</button>
         </div>
       </div>
     </div>
