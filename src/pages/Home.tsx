@@ -5,7 +5,7 @@ import { useCategories } from '@/hooks/useCategories';
 import Navbar from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Sparkles, Search, BookOpen, Rocket, ArrowRight, Zap, Shield, Library } from 'lucide-react';
+import { Sparkles, Search, BookOpen, Rocket, ArrowRight, Zap, Shield, Library, Users, Star, TrendingUp, CheckCircle2, MessageSquare, HelpCircle } from 'lucide-react';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -62,7 +62,7 @@ export default function Home() {
         />
         <div className="relative max-w-[1100px] mx-auto px-6 py-24 md:py-32 text-center">
           <div className="inline-flex items-center gap-2 bg-brand-blue/15 border border-brand-blue/30 text-brand-blue-medium text-xs px-4 py-1.5 rounded-full mb-6">
-            <Sparkles size={12} /> Curadoria atualizada em 2025
+            <Sparkles size={12} /> Curadoria atualizada em 2026
           </div>
           <h1 className="font-serif-display text-5xl md:text-6xl leading-[1.05] text-primary-foreground tracking-tight mb-5">
             Domine as <em className="text-brand-blue-medium italic">IAs</em> certas<br />para o seu negócio
@@ -156,13 +156,40 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Números */}
+      <section className="max-w-[1100px] mx-auto px-6 py-16 w-full">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {[
+            { icon: Library, n: '24+', l: 'Ferramentas curadas' },
+            { icon: BookOpen, n: '24', l: 'E-books completos' },
+            { icon: MessageSquare, n: '200+', l: 'Prompts prontos' },
+            { icon: Users, n: '1.500+', l: 'Empreendedores ativos' },
+          ].map((s) => (
+            <div key={s.l} className="text-center p-5 rounded-xl bg-secondary/40 border border-border">
+              <div className="w-10 h-10 mx-auto rounded-lg bg-brand-blue/10 text-brand-blue flex items-center justify-center mb-3">
+                <s.icon size={18} />
+              </div>
+              <div className="font-serif-display text-2xl md:text-3xl mb-1">{s.n}</div>
+              <p className="text-xs text-muted-foreground">{s.l}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Benefícios */}
       <section className="max-w-[1100px] mx-auto px-6 py-20 w-full">
+        <div className="text-center mb-12">
+          <p className="text-xs font-medium uppercase tracking-widest text-brand-blue mb-2">Por que AdAI</p>
+          <h2 className="font-serif-display text-3xl md:text-4xl tracking-tight">Pensado para quem aplica, não só lê</h2>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
-            { icon: Zap, t: 'Curadoria atualizada', d: 'Só as IAs que realmente entregam resultado, revisadas mensalmente.' },
+            { icon: Zap, t: 'Curadoria atualizada', d: 'Só as IAs que realmente entregam resultado, revisadas mensalmente em 2026.' },
             { icon: BookOpen, t: 'E-books completos', d: 'Guia prático com casos reais e prompts testados, prontos para usar.' },
             { icon: Shield, t: 'Sem ruído', d: 'Sem hype — recomendações honestas e direcionadas ao seu negócio.' },
+            { icon: TrendingUp, t: 'Resultados reais', d: 'Fluxos prontos para marketing, vendas, conteúdo e operação.' },
+            { icon: CheckCircle2, t: 'Passo a passo', d: 'Cada ferramenta vem com tutorial claro — do zero ao primeiro resultado.' },
+            { icon: Star, t: 'Acesso vitalício', d: 'Pague uma vez no Pro e receba todas as atualizações futuras sem mensalidades.' },
           ].map((b) => (
             <div key={b.t}>
               <div className="w-10 h-10 rounded-lg bg-brand-teal/10 text-brand-teal flex items-center justify-center mb-3">
@@ -172,6 +199,76 @@ export default function Home() {
               <p className="text-sm text-muted-foreground leading-relaxed">{b.d}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Para quem é */}
+      <section className="bg-secondary/40 border-y border-border">
+        <div className="max-w-[1100px] mx-auto px-6 py-20">
+          <div className="text-center mb-12">
+            <p className="text-xs font-medium uppercase tracking-widest text-brand-blue mb-2">Para quem é</p>
+            <h2 className="font-serif-display text-3xl md:text-4xl tracking-tight">Feito para empreendedores ocupados</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {[
+              { t: 'Donos de pequenos negócios', d: 'Automatize tarefas repetitivas e ganhe horas na semana com IAs certas.' },
+              { t: 'Profissionais de marketing', d: 'Crie conteúdo, anúncios e copies em escala mantendo a qualidade.' },
+              { t: 'Criadores e freelancers', d: 'Entregue mais projetos com menos esforço usando fluxos com IA.' },
+            ].map((p) => (
+              <Card key={p.t} className="p-6 rounded-xl border border-border">
+                <div className="w-9 h-9 rounded-lg bg-brand-blue/10 text-brand-blue flex items-center justify-center mb-3">
+                  <CheckCircle2 size={16} />
+                </div>
+                <h3 className="font-serif-display text-lg mb-1.5">{p.t}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{p.d}</p>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Depoimento */}
+      <section className="max-w-[900px] mx-auto px-6 py-20 w-full">
+        <Card className="p-8 md:p-10 rounded-2xl border border-border bg-card">
+          <div className="flex items-center gap-1 mb-4 text-brand-blue">
+            {Array.from({ length: 5 }).map((_, i) => <Star key={i} size={16} fill="currentColor" />)}
+          </div>
+          <p className="font-serif-display text-xl md:text-2xl leading-relaxed mb-5">
+            "Em duas semanas refiz todo o meu fluxo de marketing usando os e-books da AdAI. Economizo cerca de 10 horas por semana e meus anúncios performam melhor."
+          </p>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-brand-blue/15 text-brand-blue flex items-center justify-center font-semibold text-sm">MR</div>
+            <div>
+              <p className="text-sm font-semibold">Marina R.</p>
+              <p className="text-xs text-muted-foreground">Fundadora · agência de conteúdo</p>
+            </div>
+          </div>
+        </Card>
+      </section>
+
+      {/* FAQ */}
+      <section className="bg-secondary/40 border-y border-border">
+        <div className="max-w-[800px] mx-auto px-6 py-20">
+          <div className="text-center mb-10">
+            <p className="text-xs font-medium uppercase tracking-widest text-brand-blue mb-2">Dúvidas frequentes</p>
+            <h2 className="font-serif-display text-3xl md:text-4xl tracking-tight">Perguntas comuns</h2>
+          </div>
+          <div className="space-y-4">
+            {[
+              { q: 'Preciso saber programar para usar?', a: 'Não. Todas as ferramentas e e-books são pensados para quem não tem background técnico — basta seguir o passo a passo.' },
+              { q: 'O acesso é mensal ou vitalício?', a: 'O plano Pro é pagamento único e vitalício — você recebe todas as atualizações futuras sem mensalidades.' },
+              { q: 'Os e-books são atualizados?', a: 'Sim. Revisamos a curadoria mensalmente em 2026 para incluir novas IAs e remover ferramentas obsoletas.' },
+              { q: 'Posso cancelar?', a: 'Como o plano é vitalício e único, não há recorrência. Se mudar de ideia em até 7 dias, devolvemos 100% do valor.' },
+            ].map((f) => (
+              <Card key={f.q} className="p-5 rounded-xl border border-border">
+                <div className="flex items-start gap-3 mb-2">
+                  <HelpCircle size={16} className="text-brand-blue mt-1 shrink-0" />
+                  <h3 className="text-base font-semibold">{f.q}</h3>
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed pl-7">{f.a}</p>
+              </Card>
+            ))}
+          </div>
         </div>
       </section>
 
