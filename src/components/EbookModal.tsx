@@ -26,7 +26,8 @@ function SectionTitle({ icon, children }: { icon: string; children: React.ReactN
 }
 
 function PromptCard({ prompt, accentLight, accentDark }: { prompt: { label: string; text: string }; accentLight: string; accentDark: string }) {
-  const level = prompt.label.startsWith('🟢') ? 'beginner' : prompt.label.startsWith('🟡') ? 'intermediate' : prompt.label.startsWith('🔴') ? 'advanced' : 'default';
+  const label = prompt?.label ?? '';
+  const level = label.startsWith('🟢') ? 'beginner' : label.startsWith('🟡') ? 'intermediate' : label.startsWith('🔴') ? 'advanced' : 'default';
   const levelColors = {
     beginner: { bg: '#E8F5E9', border: '#4CAF50', text: '#2E7D32' },
     intermediate: { bg: '#FFF8E1', border: '#FFC107', text: '#F57F17' },
