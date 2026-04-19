@@ -22,6 +22,7 @@ export default function Index() {
   const initialCat = typeof window !== 'undefined' ? sessionStorage.getItem('adai:initialCategory') : null;
   const [activeCategory, setActiveCategory] = useState(initialCat || 'texto');
   const [searchQuery, setSearchQuery] = useState('');
+  const [freeOnly, setFreeOnly] = useState(false);
   const [ebookModal, setEbookModal] = useState<{ tool: Tool; category: Category } | null>(null);
   const [serverAdminVerified, setServerAdminVerified] = useState<boolean | null>(null);
   const [verifyingAdmin, setVerifyingAdmin] = useState(false);
