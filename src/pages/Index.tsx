@@ -69,13 +69,20 @@ export default function Index() {
 
   const category = categories.find(c => c.key === activeCategory);
 
-  const filteredTools = searchQuery
+  const isFreeTool = (t: Tool) => {
+    const b = (t.badge || '').toLowerCase();
+    return b.includes('grát') || b.includes('grat') || b === 'free' || b.includes('100%') || b.includes('gratuit');
+  };
+
+  const baseTools = searchQuery
     ? categories.flatMap(c => c.tools.map(t => ({ tool: t, category: c }))).filter(({ tool }) =>
         tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         tool.desc.toLowerCase().includes(searchQuery.toLowerCase()) ||
         tool.badge.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : category ? category.tools.map(t => ({ tool: t, category })) : [];
+
+  const filteredTools = freeOnly ? baseTools.filter(({ tool }) => isFreeTool(tool)) : baseTools;
 
   const handleOpenEbook = (tool: Tool, cat: Category) => {
     const canAccess = isAdmin || (user && user.plano === 'Pro');
