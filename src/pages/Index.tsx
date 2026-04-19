@@ -166,6 +166,20 @@ export default function Index() {
           />
         </div>
 
+        {/* Free filter toggle */}
+        <div className="flex items-center justify-center gap-2 mt-4">
+          <button
+            onClick={() => setFreeOnly(v => !v)}
+            className={`inline-flex items-center gap-1.5 text-xs px-3.5 py-1.5 rounded-full border transition-all ${
+              freeOnly
+                ? 'bg-brand-green text-primary-foreground border-brand-green shadow-brand-sm'
+                : 'bg-primary-foreground/5 text-muted-foreground border-primary-foreground/15 hover:border-brand-green/50 hover:text-brand-green'
+            }`}
+          >
+            🆓 {freeOnly ? 'Mostrando só IAs 100% gratuitas' : 'Filtrar IAs 100% gratuitas'}
+          </button>
+        </div>
+
         {!user && (
           <div className="flex items-center justify-center gap-2 mt-5 text-[13px] text-muted-foreground/40">
             <Lock size={14} /> E-books completos exclusivos para assinantes Pro
