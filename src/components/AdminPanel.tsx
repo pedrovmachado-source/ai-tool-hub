@@ -437,6 +437,21 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
   };
 
   const handleSaveTool = async (tool: Tool, categoryKey: string, isNew: boolean) => {
+    // Validate prompts: every prompt must have label and text
+    const prompts = (tool as any).prompts;
+    if (Array.isArray(prompts)) {
+      const invalid = prompts.findIndex(
+        (p: any) => !p || typeof p.label !== 'string' || !p.label.trim() || typeof p.text !== 'string' || !p.text.trim()
+      );
+      if (invalid !== -1) {
+        toast({
+          title: 'Prompt inválido',
+          description: `O prompt #${invalid + 1} está sem "label" ou "text". Ambos são obrigatórios.`,
+          variant: 'destructive',
+        });
+        throw new Error('Invalid prompt: label and text are required');
+      }
+    }
     await saveToolDb(tool, categoryKey, isNew);
   };
 
