@@ -13,7 +13,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook }: { onNavigate: (
 
   return (
     <>
-      <nav className="bg-brand-blue h-[72px] px-8 grid grid-cols-[1fr_auto_1fr] items-center sticky top-0 z-[200]">
+      <nav className="bg-navy h-[72px] px-8 grid grid-cols-[1fr_auto_1fr] items-center sticky top-0 z-[200]">
         <button onClick={() => onNavigate('home')} className="flex items-center gap-3 text-white text-xl font-semibold tracking-tight justify-self-start">
           <div className="w-10 h-10 rounded-[10px] overflow-hidden flex items-center justify-center bg-navy">
             <img src={logoAdai} alt="AdAI" className="w-full h-full object-cover" />
