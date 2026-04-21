@@ -13,7 +13,7 @@ const DEFAULT_PLAN: PlanConfig = {
   name: 'Pro Vitalício',
   price: '14.90',
   period: 'vitalicio',
-  checkoutUrl: 'https://buy.stripe.com/test_fZubJ3ackg00ddJgi55wI00',
+  checkoutUrl: 'https://buy.stripe.com/eVqdRb2JS5lmflRc1P5wI01',
   features: ['Tudo do plano gratuito', '24 e-books completos', '+200 prompts exclusivos', 'Guias passo a passo', 'Atualizações contínuas', 'Suporte prioritário'],
 };
 

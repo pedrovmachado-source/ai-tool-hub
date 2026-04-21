@@ -18,7 +18,7 @@ interface Plan {
 }
 
 const DEFAULT_PLANS: Plan[] = [
-  { id: '1', name: 'Pro Vitalício', period: 'vitalicio', price: '14.90', active: true, highlight: true, checkoutUrl: 'https://buy.stripe.com/test_fZubJ3ackg00ddJgi55wI00', features: ['Tudo do plano gratuito', '24 e-books completos', '+200 prompts exclusivos', 'Guias passo a passo', 'Atualizações contínuas', 'Suporte prioritário'] },
+  { id: '1', name: 'Pro Vitalício', period: 'vitalicio', price: '14.90', active: true, highlight: true, checkoutUrl: 'https://buy.stripe.com/eVqdRb2JS5lmflRc1P5wI01', features: ['Tudo do plano gratuito', '24 e-books completos', '+200 prompts exclusivos', 'Guias passo a passo', 'Atualizações contínuas', 'Suporte prioritário'] },
 ];
 
 // ── Modals ──────────────────────────────────────────────────────────
