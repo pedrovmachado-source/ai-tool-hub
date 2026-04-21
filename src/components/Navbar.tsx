@@ -25,7 +25,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook }: { onNavigate: (
           <span className="block text-[11px] font-normal text-white leading-none mt-1">Guia de IAs para Empreendedores</span>
         </button>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 justify-self-end">
           {user && (
             <button
               onClick={() => setShowSaved(true)}
