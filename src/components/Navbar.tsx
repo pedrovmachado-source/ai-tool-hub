@@ -4,6 +4,7 @@ import { Menu, Bookmark, X } from 'lucide-react';
 import AuthModal from './AuthModal';
 import QuizModal from './QuizModal';
 import logoAdai from '@/assets/logo.png';
+import { PRO_PLAN } from '@/lib/billing';
 
 export default function Navbar({ onNavigate, onOpenSavedEbook }: { onNavigate: (page: string) => void; onOpenSavedEbook?: (toolKey: string, categoryKey: string) => void }) {
   const { user, isAdmin, logout, savedEbooks, unsaveEbook } = useAuth();
@@ -46,7 +47,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook }: { onNavigate: (
           ) : (
             <>
               {user.plano === 'Free' && (
-                <button onClick={() => onNavigate('pro')} className="px-4 py-1.5 rounded-lg text-[13px] font-medium text-white bg-gradient-to-r from-brand-amber to-brand-amber/80 hover:opacity-90 transition-opacity">⚡ Seja Pro</button>
+                <button onClick={() => window.open(PRO_PLAN.checkoutUrl, '_blank')} className="px-4 py-1.5 rounded-lg text-[13px] font-medium text-white bg-gradient-to-r from-brand-amber to-brand-amber/80 hover:opacity-90 transition-opacity">⚡ Seja Pro</button>
               )}
               <button onClick={() => onNavigate('profile')} className="flex items-center gap-2 bg-white/15 hover:bg-white/25 pl-1.5 pr-3 py-1 rounded-full transition-colors">
                 <div className="w-7 h-7 rounded-full bg-navy flex items-center justify-center text-[11px] font-medium text-white">{user.nome[0]}</div>
