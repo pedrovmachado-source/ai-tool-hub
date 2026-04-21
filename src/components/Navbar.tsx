@@ -14,13 +14,13 @@ export default function Navbar({ onNavigate, onOpenSavedEbook }: { onNavigate: (
   return (
     <>
       <nav className="bg-brand-blue h-[72px] px-8 flex items-center justify-between sticky top-0 z-[200]">
-        <button onClick={() => onNavigate('home')} className="flex items-center gap-3 text-primary-foreground text-xl font-semibold tracking-tight">
+        <button onClick={() => onNavigate('home')} className="flex items-center gap-3 text-white text-xl font-semibold tracking-tight">
           <div className="w-10 h-10 rounded-[10px] overflow-hidden flex items-center justify-center bg-navy">
             <img src={logoAdai} alt="AdAI" className="w-full h-full object-cover" />
           </div>
           <div>
             <span>AdAI</span>
-            <span className="block text-[11px] font-normal text-muted-foreground/60 leading-none mt-0.5">Guia de IAs para Empreendedores</span>
+            <span className="block text-[11px] font-normal text-white/80 leading-none mt-0.5">Guia de IAs para Empreendedores</span>
           </div>
         </button>
 
@@ -28,31 +28,31 @@ export default function Navbar({ onNavigate, onOpenSavedEbook }: { onNavigate: (
           {user && (
             <button
               onClick={() => setShowSaved(true)}
-              className="relative px-2.5 py-1.5 rounded-lg text-primary-foreground/70 hover:text-primary-foreground hover:bg-primary-foreground/[0.08] transition-colors"
+              className="relative px-2.5 py-1.5 rounded-lg text-white/90 hover:text-white hover:bg-white/15 transition-colors"
               title="E-books salvos"
             >
               <Bookmark size={18} />
               {savedEbooks.length > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-brand-amber text-[9px] font-bold text-primary-foreground flex items-center justify-center">{savedEbooks.length}</span>
+                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-brand-amber text-[9px] font-bold text-white flex items-center justify-center">{savedEbooks.length}</span>
               )}
             </button>
           )}
           {!user ? (
             <>
-              <button onClick={() => setAuthModal({ open: true, mode: 'login' })} className="px-4 py-1.5 rounded-lg text-[13px] font-medium text-primary-foreground/80 bg-primary-foreground/[0.08] hover:bg-primary-foreground/[0.15] transition-colors">Entrar</button>
-              <button onClick={() => setAuthModal({ open: true, mode: 'register' })} className="px-4 py-1.5 rounded-lg text-[13px] font-medium text-primary-foreground bg-brand-blue hover:opacity-90 transition-opacity">Cadastrar</button>
+              <button onClick={() => setAuthModal({ open: true, mode: 'login' })} className="px-4 py-1.5 rounded-lg text-[13px] font-medium text-white bg-white/15 hover:bg-white/25 transition-colors">Entrar</button>
+              <button onClick={() => setAuthModal({ open: true, mode: 'register' })} className="px-4 py-1.5 rounded-lg text-[13px] font-medium text-navy bg-white hover:bg-white/90 transition-colors">Cadastrar</button>
             </>
           ) : (
             <>
               {user.plano === 'Free' && (
-                <button onClick={() => onNavigate('pro')} className="px-4 py-1.5 rounded-lg text-[13px] font-medium text-primary-foreground bg-gradient-to-r from-brand-amber to-brand-amber/80 hover:opacity-90 transition-opacity">⚡ Seja Pro</button>
+                <button onClick={() => onNavigate('pro')} className="px-4 py-1.5 rounded-lg text-[13px] font-medium text-white bg-gradient-to-r from-brand-amber to-brand-amber/80 hover:opacity-90 transition-opacity">⚡ Seja Pro</button>
               )}
-              <button onClick={() => onNavigate('profile')} className="flex items-center gap-2 bg-primary-foreground/[0.08] hover:bg-primary-foreground/[0.15] pl-1.5 pr-3 py-1 rounded-full transition-colors">
-                <div className="w-7 h-7 rounded-full bg-brand-blue flex items-center justify-center text-[11px] font-medium text-primary-foreground">{user.nome[0]}</div>
-                <span className="text-[13px] text-primary-foreground">{user.nome}</span>
-                <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${user.plano === 'Pro' ? 'bg-brand-amber text-primary-foreground' : 'bg-primary-foreground/[0.15] text-muted-foreground/60'}`}>{user.plano === 'Pro' ? 'PRO' : 'FREE'}</span>
+              <button onClick={() => onNavigate('profile')} className="flex items-center gap-2 bg-white/15 hover:bg-white/25 pl-1.5 pr-3 py-1 rounded-full transition-colors">
+                <div className="w-7 h-7 rounded-full bg-navy flex items-center justify-center text-[11px] font-medium text-white">{user.nome[0]}</div>
+                <span className="text-[13px] text-white">{user.nome}</span>
+                <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${user.plano === 'Pro' ? 'bg-brand-amber text-white' : 'bg-white/25 text-white'}`}>{user.plano === 'Pro' ? 'PRO' : 'FREE'}</span>
               </button>
-              <button onClick={logout} className="px-3 py-1.5 rounded-lg text-[13px] text-primary-foreground/60 hover:text-primary-foreground/80 transition-colors">Sair</button>
+              <button onClick={logout} className="px-3 py-1.5 rounded-lg text-[13px] text-white/85 hover:text-white hover:bg-white/10 transition-colors">Sair</button>
             </>
           )}
         </div>
