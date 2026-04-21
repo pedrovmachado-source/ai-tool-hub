@@ -1,0 +1,1 @@
+UPDATE public.site_settings SET value = jsonb_set(value, '{checkoutUrl}', '"https://buy.stripe.com/eVqdRb2JS5lmflRc1P5wI01"'::jsonb) WHERE key = 'pro_plan';
