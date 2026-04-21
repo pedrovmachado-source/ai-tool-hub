@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { Sparkles, Menu, Bookmark, X } from 'lucide-react';
+import { Menu, Bookmark, X } from 'lucide-react';
 import AuthModal from './AuthModal';
 import QuizModal from './QuizModal';
+import logoAdai from '@/assets/logo.png';
 
 export default function Navbar({ onNavigate, onOpenSavedEbook }: { onNavigate: (page: string) => void; onOpenSavedEbook?: (toolKey: string, categoryKey: string) => void }) {
   const { user, isAdmin, logout, savedEbooks, unsaveEbook } = useAuth();
@@ -14,8 +15,8 @@ export default function Navbar({ onNavigate, onOpenSavedEbook }: { onNavigate: (
     <>
       <nav className="bg-navy h-[72px] px-8 flex items-center justify-between sticky top-0 z-[200]">
         <button onClick={() => onNavigate('home')} className="flex items-center gap-3 text-primary-foreground text-xl font-semibold tracking-tight">
-          <div className="w-10 h-10 bg-brand-blue rounded-[10px] flex items-center justify-center">
-            <Sparkles size={20} className="text-primary-foreground" />
+          <div className="w-10 h-10 rounded-[10px] overflow-hidden flex items-center justify-center bg-navy">
+            <img src={logoAdai} alt="AdAI" className="w-full h-full object-cover" />
           </div>
           <div>
             <span>AdAI</span>
