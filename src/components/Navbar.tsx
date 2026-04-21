@@ -13,15 +13,16 @@ export default function Navbar({ onNavigate, onOpenSavedEbook }: { onNavigate: (
 
   return (
     <>
-      <nav className="bg-brand-blue h-[72px] px-8 flex items-center justify-between sticky top-0 z-[200]">
-        <button onClick={() => onNavigate('home')} className="flex items-center gap-3 text-white text-xl font-semibold tracking-tight">
+      <nav className="bg-brand-blue h-[72px] px-8 grid grid-cols-[1fr_auto_1fr] items-center sticky top-0 z-[200]">
+        <button onClick={() => onNavigate('home')} className="flex items-center gap-3 text-white text-xl font-semibold tracking-tight justify-self-start">
           <div className="w-10 h-10 rounded-[10px] overflow-hidden flex items-center justify-center bg-navy">
             <img src={logoAdai} alt="AdAI" className="w-full h-full object-cover" />
           </div>
-          <div>
-            <span>AdAI</span>
-            <span className="block text-[11px] font-normal text-white/80 leading-none mt-0.5">Guia de IAs para Empreendedores</span>
-          </div>
+        </button>
+
+        <button onClick={() => onNavigate('home')} className="text-center justify-self-center text-white">
+          <span className="block text-xl font-semibold tracking-tight leading-none">AdAI</span>
+          <span className="block text-[11px] font-normal text-white leading-none mt-1">Guia de IAs para Empreendedores</span>
         </button>
 
         <div className="flex items-center gap-2">
