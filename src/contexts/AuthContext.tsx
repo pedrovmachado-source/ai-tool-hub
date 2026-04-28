@@ -253,7 +253,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = useCallback(async (email: string, password: string): Promise<string | null> => {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
-    return error ? error.message : null;
+    return error ? translateAuthError(error.message) : null;
   }, []);
 
   const translateAuthError = (msg: string): string => {
