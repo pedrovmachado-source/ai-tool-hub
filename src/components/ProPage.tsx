@@ -1,15 +1,19 @@
+import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { Check, X, Loader2 } from 'lucide-react';
+import { Check, X, Loader2, LogIn, UserPlus } from 'lucide-react';
 import { usePlanConfig } from '@/hooks/usePlanConfig';
 import { toast } from 'sonner';
+import AuthModal from './AuthModal';
 
 export default function ProPage({ onBack, onNavigate }: { onBack: () => void; onNavigate: (page: string) => void }) {
   const { user } = useAuth();
   const { plan, loading } = usePlanConfig();
+  const [authModal, setAuthModal] = useState<{ open: boolean; mode: 'login' | 'register' }>({ open: false, mode: 'login' });
 
   const handleSubscribe = () => {
     if (!user) {
-      toast.error('Faça login para adquirir o plano Pro.');
+      toast.error('Faça login ou crie uma conta para adquirir o plano Pro.');
+      setAuthModal({ open: true, mode: 'register' });
       return;
     }
     window.open(plan.checkoutUrl, '_blank');
