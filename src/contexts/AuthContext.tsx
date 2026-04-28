@@ -256,13 +256,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return error ? error.message : null;
   }, []);
 
+  const translateAuthError = (msg: string): string => {
+    const m = msg.toLowerCase();
+    if (m.includes('password is known to be weak') || m.includes('pwned') || m.includes('weak') && m.includes('password')) {
+      return 'Esta senha é considerada fraca ou já vazada em outros sites. Escolha uma senha mais forte (use letras, números e símbolos).';
+    }
+    if (m.includes('password should be at least')) return 'A senha deve ter no mínimo 8 caracteres.';
+    if (m.includes('user already registered') || m.includes('already registered') || m.includes('already exists')) {
+      return 'Este e-mail já está cadastrado. Tente fazer login.';
+    }
+    if (m.includes('invalid login credentials')) return 'E-mail ou senha incorretos.';
+    if (m.includes('email not confirmed')) return 'Confirme seu e-mail antes de entrar. Verifique sua caixa de entrada.';
+    if (m.includes('invalid email')) return 'E-mail inválido.';
+    if (m.includes('rate limit') || m.includes('too many')) return 'Muitas tentativas. Aguarde um momento e tente novamente.';
+    if (m.includes('network')) return 'Erro de conexão. Verifique sua internet e tente novamente.';
+    return msg;
+  };
+
   const register = useCallback(async (nome: string, sobre: string, email: string, password: string): Promise<string | null> => {
+    const redirectUrl = `${window.location.origin}/`;
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { nome, sobre } },
+      options: { data: { nome, sobre }, emailRedirectTo: redirectUrl },
     });
-    return error ? error.message : null;
+    return error ? translateAuthError(error.message) : null;
   }, []);
 
   const logout = useCallback(async () => {
