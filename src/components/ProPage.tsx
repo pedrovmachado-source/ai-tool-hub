@@ -1,15 +1,19 @@
+import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { Check, X, Loader2 } from 'lucide-react';
+import { Check, X, Loader2, LogIn, UserPlus } from 'lucide-react';
 import { usePlanConfig } from '@/hooks/usePlanConfig';
 import { toast } from 'sonner';
+import AuthModal from './AuthModal';
 
 export default function ProPage({ onBack, onNavigate }: { onBack: () => void; onNavigate: (page: string) => void }) {
   const { user } = useAuth();
   const { plan, loading } = usePlanConfig();
+  const [authModal, setAuthModal] = useState<{ open: boolean; mode: 'login' | 'register' }>({ open: false, mode: 'login' });
 
   const handleSubscribe = () => {
     if (!user) {
-      toast.error('Faça login para adquirir o plano Pro.');
+      toast.error('Faça login ou crie uma conta para adquirir o plano Pro.');
+      setAuthModal({ open: true, mode: 'register' });
       return;
     }
     window.open(plan.checkoutUrl, '_blank');
@@ -35,7 +39,31 @@ export default function ProPage({ onBack, onNavigate }: { onBack: () => void; on
         <p className="text-base text-muted-foreground/50 max-w-[560px] mx-auto leading-relaxed">Acesso vitalício a todos os e-books, guias passo a passo, prompts prontos e muito mais. Pague uma vez, use para sempre.</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-6 max-w-[700px] mx-auto px-8 pb-16">
+      {!user && (
+        <div className="max-w-[700px] mx-auto px-8 pt-8">
+          <div className="bg-brand-amber/10 border border-brand-amber/30 rounded-2xl p-5 flex flex-col sm:flex-row items-center gap-4 justify-between">
+            <p className="text-sm text-primary-foreground/90 text-center sm:text-left">
+              Você precisa de uma conta para comprar o plano Pro. Entre ou cadastre-se gratuitamente.
+            </p>
+            <div className="flex gap-2 shrink-0">
+              <button
+                onClick={() => setAuthModal({ open: true, mode: 'login' })}
+                className="px-4 py-2 rounded-lg text-[13px] font-semibold text-primary-foreground bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors flex items-center gap-1.5"
+              >
+                <LogIn size={14} /> Entrar
+              </button>
+              <button
+                onClick={() => setAuthModal({ open: true, mode: 'register' })}
+                className="px-4 py-2 rounded-lg text-[13px] font-semibold text-navy bg-brand-amber hover:opacity-90 transition-opacity flex items-center gap-1.5"
+              >
+                <UserPlus size={14} /> Criar conta grátis
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="grid grid-cols-2 gap-6 max-w-[700px] mx-auto px-8 pb-16 pt-8">
         {/* Free */}
         <div className="bg-primary-foreground/5 border border-primary-foreground/10 rounded-2xl p-8">
           <div className="text-xs font-medium text-muted-foreground/50 uppercase tracking-wider mb-2">Gratuito</div>
@@ -90,6 +118,13 @@ export default function ProPage({ onBack, onNavigate }: { onBack: () => void; on
       <div className="text-center pb-12">
         <button onClick={onBack} className="px-6 py-2 rounded-lg text-sm bg-primary-foreground/[0.08] text-muted-foreground/50 border border-primary-foreground/10 hover:bg-primary-foreground/[0.15] transition-colors">← Voltar às ferramentas</button>
       </div>
+
+      <AuthModal
+        mode={authModal.mode}
+        isOpen={authModal.open}
+        onClose={() => setAuthModal({ ...authModal, open: false })}
+        onSwitch={mode => setAuthModal({ open: true, mode })}
+      />
     </div>
   );
 }
