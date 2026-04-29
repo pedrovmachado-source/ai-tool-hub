@@ -747,6 +747,8 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
           />
         )}
 
+        {section === 'lessons' && <AdminLessons />}
+
         {section === 'settings' && (
           <>
             <h1 className="text-xl font-medium text-primary-foreground mb-6">Configurações</h1>
