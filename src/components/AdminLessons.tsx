@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Plus, Pencil, Trash2, X, Folder, Play, FileText, ArrowLeft, Upload } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { logActivity } from '@/lib/activity-log';
 
 interface Module {
   id: string;
@@ -56,9 +57,11 @@ export default function AdminLessons() {
     if (moduleForm.id) {
       const { error } = await supabase.from('modules').update(payload).eq('id', moduleForm.id);
       if (error) { toast({ title: 'Erro ao salvar', description: error.message, variant: 'destructive' }); return; }
+      void logActivity({ action: 'update', entity_type: 'module', entity_id: moduleForm.id, entity_label: payload.title });
     } else {
-      const { error } = await supabase.from('modules').insert(payload);
+      const { data, error } = await supabase.from('modules').insert(payload).select('id').maybeSingle();
       if (error) { toast({ title: 'Erro ao criar', description: error.message, variant: 'destructive' }); return; }
+      void logActivity({ action: 'create', entity_type: 'module', entity_id: data?.id, entity_label: payload.title });
     }
     toast({ title: 'Módulo salvo' });
     setModuleForm(null);
@@ -67,13 +70,14 @@ export default function AdminLessons() {
 
   const deleteModule = async (id: string) => {
     if (!confirm('Excluir este módulo e todas as aulas?')) return;
-    // Best-effort: delete PDFs from storage
+    const mod = modules.find(m => m.id === id);
     const moduleLessons = lessons.filter(l => l.module_id === id && l.pdf_path);
     if (moduleLessons.length) {
       await supabase.storage.from('lesson-pdfs').remove(moduleLessons.map(l => l.pdf_path!));
     }
     const { error } = await supabase.from('modules').delete().eq('id', id);
     if (error) { toast({ title: 'Erro', description: error.message, variant: 'destructive' }); return; }
+    void logActivity({ action: 'delete', entity_type: 'module', entity_id: id, entity_label: mod?.title, metadata: { lessons_removed: moduleLessons.length } });
     toast({ title: 'Módulo excluído' });
     await reload();
   };
@@ -86,6 +90,7 @@ export default function AdminLessons() {
       const path = `${openModule?.id || 'misc'}/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
       const { error } = await supabase.storage.from('lesson-pdfs').upload(path, file, { contentType: 'application/pdf' });
       if (error) { toast({ title: 'Falha no upload', description: error.message, variant: 'destructive' }); return null; }
+      void logActivity({ action: 'upload', entity_type: 'lesson_pdf', entity_id: path, entity_label: file.name, metadata: { size: file.size, module_id: openModule?.id } });
       return path;
     } finally {
       setUploadingPdf(false);
@@ -114,9 +119,11 @@ export default function AdminLessons() {
     if (lessonForm.id) {
       const { error } = await supabase.from('lessons').update(payload).eq('id', lessonForm.id);
       if (error) { toast({ title: 'Erro', description: error.message, variant: 'destructive' }); return; }
+      void logActivity({ action: 'update', entity_type: 'lesson', entity_id: lessonForm.id, entity_label: payload.title, metadata: { kind } });
     } else {
-      const { error } = await supabase.from('lessons').insert(payload);
+      const { data, error } = await supabase.from('lessons').insert(payload).select('id').maybeSingle();
       if (error) { toast({ title: 'Erro', description: error.message, variant: 'destructive' }); return; }
+      void logActivity({ action: 'create', entity_type: 'lesson', entity_id: data?.id, entity_label: payload.title, metadata: { kind, module_id: openModule.id } });
     }
     toast({ title: 'Aula salva' });
     setLessonForm(null);
@@ -128,6 +135,7 @@ export default function AdminLessons() {
     if (l.pdf_path) await supabase.storage.from('lesson-pdfs').remove([l.pdf_path]);
     const { error } = await supabase.from('lessons').delete().eq('id', l.id);
     if (error) { toast({ title: 'Erro', description: error.message, variant: 'destructive' }); return; }
+    void logActivity({ action: 'delete', entity_type: 'lesson', entity_id: l.id, entity_label: l.title, metadata: { kind: l.kind } });
     toast({ title: 'Aula excluída' });
     await reload();
   };
