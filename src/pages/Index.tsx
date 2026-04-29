@@ -104,7 +104,7 @@ export default function Index() {
         </div>
       );
     }
-    if (serverAdminVerified && isAdmin) {
+    if (isAdmin || serverAdminVerified) {
       return <AdminPanel onBack={() => { setServerAdminVerified(null); setPage('home'); }} onCategoriesChanged={fetchCategories} />;
     }
     // Not an admin — bounce back home
