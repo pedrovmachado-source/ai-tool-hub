@@ -72,9 +72,23 @@ export default function LessonsPage({ onBack }: { onBack: () => void }) {
   }, [canAccess]);
 
   const openPdf = async (path: string) => {
-    const { data, error } = await supabase.storage.from('lesson-pdfs').createSignedUrl(path, 3600);
-    if (!error && data?.signedUrl) setPdfUrl(data.signedUrl);
+    try {
+      const { data, error } = await supabase.storage.from('lesson-pdfs').download(path);
+      if (error || !data) {
+        console.error('PDF download error:', error);
+        return;
+      }
+      const blob = new Blob([await data.arrayBuffer()], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      setPdfUrl(url);
+    } catch (e) {
+      console.error('PDF load failed:', e);
+    }
   };
+
+  useEffect(() => {
+    return () => { if (pdfUrl) URL.revokeObjectURL(pdfUrl); };
+  }, [pdfUrl]);
 
   if (!canAccess) {
     return (
