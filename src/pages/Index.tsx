@@ -7,6 +7,7 @@ import ToolCard from '@/components/ToolCard';
 import EbookModal from '@/components/EbookModal';
 import ProPage from '@/components/ProPage';
 import AdminPanel from '@/components/AdminPanel';
+import LessonsPage from '@/components/LessonsPage';
 import PromptsLibrary from '@/components/PromptsLibrary';
 import UserProfile from '@/components/UserProfile';
 import { useAuth } from '@/contexts/AuthContext';
@@ -109,6 +110,7 @@ export default function Index() {
     return null;
   }
   if (page === 'pro') return <ProPage onBack={() => setPage('home')} onNavigate={handleNavigate} />;
+  if (page === 'lessons') return <LessonsPage onBack={() => setPage('home')} />;
 
   if (loading) {
     return (
