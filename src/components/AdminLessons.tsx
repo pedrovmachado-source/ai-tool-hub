@@ -155,9 +155,43 @@ export default function AdminLessons() {
             <h1 className="text-xl font-medium text-primary-foreground">{openModule.title}</h1>
             <p className="text-[12px] text-muted-foreground/50">{openModule.description}</p>
           </div>
-          <button onClick={() => setLessonForm({ kind: 'video' })} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-[12px] bg-brand-blue text-primary-foreground">
-            <Plus size={14} /> Nova aula
-          </button>
+          <div className="flex items-center gap-2">
+            <label className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-[12px] cursor-pointer transition-colors ${uploadingPdf ? 'bg-primary-foreground/10 text-muted-foreground/50' : 'bg-brand-green/20 text-brand-green hover:bg-brand-green/30'}`}>
+              <Upload size={14} /> {uploadingPdf ? 'Enviando…' : 'Subir transcrição (PDF)'}
+              <input
+                type="file"
+                accept="application/pdf"
+                disabled={uploadingPdf}
+                className="hidden"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  e.target.value = '';
+                  if (!file) return;
+                  const path = await handlePdfUpload(file);
+                  if (!path) return;
+                  const title = file.name.replace(/\.pdf$/i, '');
+                  const payload = {
+                    module_id: openModule.id,
+                    title,
+                    description: '',
+                    kind: 'transcript' as const,
+                    video_url: null,
+                    pdf_path: path,
+                    duration_min: null,
+                    sort_order: lessons.filter(l => l.module_id === openModule.id).length,
+                  };
+                  const { data, error } = await supabase.from('lessons').insert(payload).select('id').maybeSingle();
+                  if (error) { toast({ title: 'Erro ao criar aula', description: error.message, variant: 'destructive' }); return; }
+                  void logActivity({ action: 'create', entity_type: 'lesson', entity_id: data?.id, entity_label: title, metadata: { kind: 'transcript', module_id: openModule.id, via: 'quick_upload' } });
+                  toast({ title: 'Transcrição adicionada', description: title });
+                  await reload();
+                }}
+              />
+            </label>
+            <button onClick={() => setLessonForm({ kind: 'video' })} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-[12px] bg-brand-blue text-primary-foreground">
+              <Plus size={14} /> Nova aula
+            </button>
+          </div>
         </div>
 
         <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl overflow-hidden">
