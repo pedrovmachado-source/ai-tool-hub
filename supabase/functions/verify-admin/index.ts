@@ -35,12 +35,16 @@ serve(async (req) => {
       });
     }
 
-    const { data: roleRow } = await supabaseClient
+    const { data: roleRow, error: roleError } = await supabaseClient
       .from("user_roles")
       .select("role")
       .eq("user_id", userData.user.id)
       .eq("role", "admin")
       .maybeSingle();
+
+    if (roleError) {
+      console.error("[verify-admin] role lookup error:", roleError);
+    }
 
     return new Response(JSON.stringify({ isAdmin: !!roleRow }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

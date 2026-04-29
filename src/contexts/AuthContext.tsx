@@ -76,11 +76,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       .eq('role', 'admin')
       .maybeSingle();
 
-    if (error) {
-      throw error;
+    if (!error) {
+      return !!data;
     }
 
-    return !!data;
+    const { data: fallbackData, error: fallbackError } = await supabase.functions.invoke('verify-admin');
+
+    if (fallbackError) {
+      throw fallbackError;
+    }
+
+    return !!(fallbackData as { isAdmin?: boolean } | null)?.isAdmin;
   }, []);
 
   const fetchProfile = useCallback(async (supaUser: SupaUser) => {
