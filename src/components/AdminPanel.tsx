@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react';
 import { type Tool, type Category } from '@/data/tools-data';
 import { useCategories } from '@/hooks/useCategories';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, LayoutDashboard, Users, CreditCard, FileText, Settings, LogOut, Search, Download, Plus, Pencil, Trash2, X, Check, Palette, Eye, EyeOff, Globe, Bell, Shield, Database, Mail, Play, Video, GraduationCap } from 'lucide-react';
+import { ArrowLeft, LayoutDashboard, Users, CreditCard, FileText, Settings, LogOut, Search, Download, Plus, Pencil, Trash2, X, Check, Palette, Eye, EyeOff, Globe, Bell, Shield, Database, Mail, Play, Video, GraduationCap, Activity } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import AdminLessons from './AdminLessons';
+import ActivityLogView from './ActivityLogView';
+import { logActivity } from '@/lib/activity-log';
 
 // ── Plan type ───────────────────────────────────────────────────────
 interface Plan {
@@ -481,6 +483,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'payments', label: 'Pagamentos', icon: CreditCard },
     { key: 'content', label: 'Conteúdo', icon: FileText },
     { key: 'lessons', label: 'Aulas', icon: GraduationCap },
+    { key: 'activity', label: 'Atividade', icon: Activity },
     { key: 'settings', label: 'Configurações', icon: Settings },
   ];
 
@@ -488,8 +491,17 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     const user = users.find(u => u.id === userId);
     if (!user) return;
     const newPlano = user.plano === 'Pro' ? 'Free' : 'Pro';
-    await supabase.from('profiles').update({ plano: newPlano }).eq('id', userId);
+    const { error } = await supabase.from('profiles').update({ plano: newPlano }).eq('id', userId);
+    if (error) { toast({ title: 'Erro', description: error.message, variant: 'destructive' }); return; }
     setUsers(prev => prev.map(u => u.id === userId ? { ...u, plano: newPlano } : u));
+    void logActivity({
+      action: 'plan_change',
+      entity_type: 'profile',
+      entity_id: user.user_id,
+      entity_label: `${user.nome} (${user.email})`,
+      metadata: { from: user.plano, to: newPlano },
+    });
+    toast({ title: `Plano alterado para ${newPlano}` });
   };
 
   const deleteUser = (id: string) => {
@@ -515,10 +527,10 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
   const handleUpdateCategory = async (updated: Category) => {
     await updateCategoryDb(updated);
     setViewingCategory(updated);
+    void logActivity({ action: 'update', entity_type: 'category', entity_id: updated.key, entity_label: updated.label });
   };
 
   const handleSaveTool = async (tool: Tool, categoryKey: string, isNew: boolean) => {
-    // Validate prompts: every prompt must have label and text
     const prompts = (tool as any).prompts;
     if (Array.isArray(prompts)) {
       const invalid = prompts.findIndex(
@@ -534,10 +546,18 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
       }
     }
     await saveToolDb(tool, categoryKey, isNew);
+    void logActivity({
+      action: isNew ? 'create' : 'update',
+      entity_type: 'tool',
+      entity_id: tool.key,
+      entity_label: tool.name,
+      metadata: { category: categoryKey },
+    });
   };
 
   const handleDeleteTool = async (toolKey: string) => {
     await deleteToolDb(toolKey);
+    void logActivity({ action: 'delete', entity_type: 'tool', entity_id: toolKey, entity_label: toolKey });
   };
 
   const saveSettings = (label: string) => {
@@ -748,6 +768,8 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
         )}
 
         {section === 'lessons' && <AdminLessons />}
+
+        {section === 'activity' && <ActivityLogView />}
 
         {section === 'settings' && (
           <>
