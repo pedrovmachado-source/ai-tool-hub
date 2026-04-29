@@ -19,7 +19,8 @@ export default function Index() {
   const navigate = useNavigate();
   const { user, isAdmin } = useAuth();
   const { categories, loading, error, fetchCategories } = useCategories();
-  const [page, setPage] = useState('home');
+  const initialPage = typeof window !== 'undefined' ? sessionStorage.getItem('adai:initialPage') : null;
+  const [page, setPage] = useState(initialPage || 'home');
   const initialCat = typeof window !== 'undefined' ? sessionStorage.getItem('adai:initialCategory') : null;
   const [activeCategory, setActiveCategory] = useState(initialCat || 'texto');
   const [searchQuery, setSearchQuery] = useState('');
@@ -30,6 +31,7 @@ export default function Index() {
 
   useEffect(() => {
     if (initialCat) sessionStorage.removeItem('adai:initialCategory');
+    if (initialPage) sessionStorage.removeItem('adai:initialPage');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
