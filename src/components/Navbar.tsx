@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { Menu, Bookmark, X } from 'lucide-react';
+import { Menu, Bookmark, X, GraduationCap } from 'lucide-react';
 import AuthModal from './AuthModal';
 import QuizModal from './QuizModal';
 import logoAdai from '@/assets/logo.png';
 import { PRO_PLAN } from '@/lib/billing';
 
 export default function Navbar({ onNavigate, onOpenSavedEbook }: { onNavigate: (page: string) => void; onOpenSavedEbook?: (toolKey: string, categoryKey: string) => void }) {
+  const handleLessonsClick = () => onNavigate('lessons');
   const { user, isAdmin, logout, savedEbooks, unsaveEbook } = useAuth();
   const [authModal, setAuthModal] = useState<{ open: boolean; mode: 'login' | 'register' }>({ open: false, mode: 'login' });
   const [showSaved, setShowSaved] = useState(false);
@@ -37,6 +38,16 @@ export default function Navbar({ onNavigate, onOpenSavedEbook }: { onNavigate: (
               {savedEbooks.length > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-brand-amber text-[9px] font-bold text-white flex items-center justify-center">{savedEbooks.length}</span>
               )}
+            </button>
+          )}
+          {user && (
+            <button
+              onClick={handleLessonsClick}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-white/90 hover:text-white hover:bg-white/15 transition-colors text-[13px]"
+              title="Aulas e Transcrições"
+            >
+              <GraduationCap size={18} />
+              <span className="hidden sm:inline">Aulas</span>
             </button>
           )}
           {!user ? (
