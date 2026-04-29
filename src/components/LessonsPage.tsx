@@ -220,7 +220,7 @@ export default function LessonsPage({ onBack }: { onBack: () => void }) {
               <h3 className="font-medium text-sm flex items-center gap-2"><FileText size={16} /> Transcrição</h3>
               <button onClick={() => setPdfUrl(null)} className="text-muted-foreground hover:text-foreground"><X size={18} /></button>
             </div>
-            <iframe src={pdfUrl} className="flex-1 w-full" sandbox="allow-same-origin allow-scripts" />
+            <iframe src={pdfUrl} className="flex-1 w-full" title="Transcrição PDF" />
           </div>
         </div>
       )}
