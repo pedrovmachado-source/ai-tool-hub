@@ -26,6 +26,11 @@ export default function Profile() {
   const { user, updateUser, savedEbooks, logout } = useAuth();
   const [tab, setTab] = useState<Tab>('dados');
 
+  const openEmbeddedPage = (page: string) => {
+    sessionStorage.setItem('adai:initialPage', page);
+    navigate('/ferramentas');
+  };
+
   useEffect(() => {
     document.title = 'Perfil — AdAI';
     if (!user) navigate('/');
@@ -40,7 +45,7 @@ export default function Profile() {
           if (page === 'home') navigate('/');
           else if (page === 'profile') navigate('/perfil');
           else if (page === 'pro') navigate('/pro');
-          else if (page === 'admin') navigate('/admin');
+          else if (page === 'admin' || page === 'lessons') openEmbeddedPage(page);
         }}
         onOpenSavedEbook={(toolKey, categoryKey) => navigate(`/ferramentas?tool=${toolKey}&cat=${categoryKey}`)}
       />
