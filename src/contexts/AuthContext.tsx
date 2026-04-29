@@ -68,19 +68,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setLoading(false);
   }, []);
 
-  const checkAdminRole = useCallback(async (userId: string) => {
-    const { data, error } = await supabase
-      .from('user_roles')
-      .select('role')
-      .eq('user_id', userId)
-      .eq('role', 'admin')
-      .maybeSingle();
+  const checkAdminRole = useCallback(async (_userId: string) => {
+    const { data, error } = await supabase.functions.invoke('verify-admin');
 
     if (error) {
       throw error;
     }
 
-    return !!data;
+    return !!(data as { isAdmin?: boolean } | null)?.isAdmin;
   }, []);
 
   const fetchProfile = useCallback(async (supaUser: SupaUser) => {
