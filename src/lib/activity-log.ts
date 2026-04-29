@@ -26,7 +26,7 @@ export async function logActivity(params: LogParams): Promise<void> {
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
-    const { error } = await supabase.from('activity_logs').insert({
+    const { error } = await (supabase as any).from('activity_logs').insert({
       actor_id: user.id,
       actor_email: user.email ?? '',
       action: params.action,
