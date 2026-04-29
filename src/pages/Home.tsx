@@ -12,6 +12,11 @@ export default function Home() {
   const { user } = useAuth();
   const { categories } = useCategories();
 
+  const openEmbeddedPage = (page: string) => {
+    sessionStorage.setItem('adai:initialPage', page);
+    navigate('/ferramentas');
+  };
+
   useEffect(() => {
     document.title = 'AdAI — Guia de IAs para empreendedores';
     const desc = document.querySelector('meta[name="description"]');
@@ -43,7 +48,7 @@ export default function Home() {
           if (page === 'home') navigate('/');
           else if (page === 'profile') navigate('/perfil');
           else if (page === 'pro') navigate('/pro');
-          else if (page === 'admin') navigate('/admin');
+          else if (page === 'admin' || page === 'lessons') openEmbeddedPage(page);
         }}
         onOpenSavedEbook={(toolKey, categoryKey) => {
           navigate(`/ferramentas?tool=${toolKey}&cat=${categoryKey}`);

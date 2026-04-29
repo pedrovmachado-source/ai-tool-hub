@@ -1,8 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { ArrowLeft, Play, FileText, Lock, Folder, X } from 'lucide-react';
+import { ArrowLeft, Play, FileText, Lock, Folder, X, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Document, Page, pdfjs } from 'react-pdf';
+import pdfWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
+
+pdfjs.GlobalWorkerOptions.workerSrc = pdfWorker;
 
 interface Module {
   id: string;
@@ -52,8 +58,15 @@ export default function LessonsPage({ onBack }: { onBack: () => void }) {
   const [openModule, setOpenModule] = useState<Module | null>(null);
   const [playingLesson, setPlayingLesson] = useState<Lesson | null>(null);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [pdfTitle, setPdfTitle] = useState('Transcrição');
+  const [pdfPages, setPdfPages] = useState(0);
+  const [pdfPage, setPdfPage] = useState(1);
+  const [pdfLoading, setPdfLoading] = useState(false);
 
   const canAccess = isAdmin || user?.plano === 'Pro';
+  const pdfCanGoPrev = pdfPage > 1;
+  const pdfCanGoNext = pdfPage < pdfPages;
+  const pdfScale = useMemo(() => (typeof window !== 'undefined' && window.innerWidth < 768 ? 0.8 : 1.2), []);
 
   useEffect(() => {
     if (!canAccess) { setLoading(false); return; }
@@ -71,8 +84,20 @@ export default function LessonsPage({ onBack }: { onBack: () => void }) {
     })();
   }, [canAccess]);
 
-  const openPdf = async (path: string) => {
+  const closePdf = () => {
+    if (pdfUrl) URL.revokeObjectURL(pdfUrl);
+    setPdfUrl(null);
+    setPdfPages(0);
+    setPdfPage(1);
+    setPdfTitle('Transcrição');
+  };
+
+  const openPdf = async (path: string, title: string) => {
     try {
+      setPdfLoading(true);
+      setPdfTitle(title);
+      setPdfPages(0);
+      setPdfPage(1);
       const { data, error } = await supabase.storage.from('lesson-pdfs').download(path);
       if (error || !data) {
         console.error('PDF download error:', error);
@@ -80,14 +105,19 @@ export default function LessonsPage({ onBack }: { onBack: () => void }) {
       }
       const blob = new Blob([await data.arrayBuffer()], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
+      if (pdfUrl) URL.revokeObjectURL(pdfUrl);
       setPdfUrl(url);
     } catch (e) {
       console.error('PDF load failed:', e);
+    } finally {
+      setPdfLoading(false);
     }
   };
 
   useEffect(() => {
-    return () => { if (pdfUrl) URL.revokeObjectURL(pdfUrl); };
+    return () => {
+      if (pdfUrl) URL.revokeObjectURL(pdfUrl);
+    };
   }, [pdfUrl]);
 
   if (!canAccess) {
@@ -176,12 +206,13 @@ export default function LessonsPage({ onBack }: { onBack: () => void }) {
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {transcriptLessons.map(l => (
-                    <button key={l.id} onClick={() => l.pdf_path && openPdf(l.pdf_path)} className="text-left bg-card border border-border rounded-xl p-4 hover:border-brand-blue transition-colors">
+                    <button key={l.id} onClick={() => l.pdf_path && openPdf(l.pdf_path, l.title)} className="text-left bg-card border border-border rounded-xl p-4 hover:border-brand-blue transition-colors disabled:opacity-70" disabled={pdfLoading}>
                       <div className="flex items-center gap-2 mb-1">
                         <FileText size={16} className="text-brand-green" />
                         <h4 className="font-medium text-sm">{l.title}</h4>
                       </div>
                       {l.description && <p className="text-xs text-muted-foreground line-clamp-2">{l.description}</p>}
+                      {pdfLoading && <p className="text-[11px] text-muted-foreground/70 mt-2">Abrindo PDF…</p>}
                     </button>
                   ))}
                 </div>
@@ -213,14 +244,51 @@ export default function LessonsPage({ onBack }: { onBack: () => void }) {
       )}
 
       {/* PDF viewer modal */}
-      {pdfUrl && (
-        <div className="fixed inset-0 z-[400] bg-black/80 flex items-center justify-center p-4" onClick={() => setPdfUrl(null)}>
+      {(pdfUrl || pdfLoading) && (
+        <div className="fixed inset-0 z-[400] bg-black/80 flex items-center justify-center p-4" onClick={closePdf}>
           <div className="bg-card rounded-xl w-full max-w-5xl h-[85vh] flex flex-col overflow-hidden" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between p-4 border-b border-border">
-              <h3 className="font-medium text-sm flex items-center gap-2"><FileText size={16} /> Transcrição</h3>
-              <button onClick={() => setPdfUrl(null)} className="text-muted-foreground hover:text-foreground"><X size={18} /></button>
+              <div className="min-w-0">
+                <h3 className="font-medium text-sm flex items-center gap-2"><FileText size={16} /> {pdfTitle}</h3>
+                {pdfPages > 0 && <p className="text-xs text-muted-foreground mt-1">Página {pdfPage} de {pdfPages}</p>}
+              </div>
+              <div className="flex items-center gap-2">
+                <button onClick={() => setPdfPage(p => Math.max(1, p - 1))} disabled={!pdfCanGoPrev} className="inline-flex items-center justify-center h-8 w-8 rounded-md border border-border text-muted-foreground hover:text-foreground disabled:opacity-40 disabled:cursor-not-allowed">
+                  <ChevronLeft size={16} />
+                </button>
+                <button onClick={() => setPdfPage(p => Math.min(pdfPages, p + 1))} disabled={!pdfCanGoNext} className="inline-flex items-center justify-center h-8 w-8 rounded-md border border-border text-muted-foreground hover:text-foreground disabled:opacity-40 disabled:cursor-not-allowed">
+                  <ChevronRight size={16} />
+                </button>
+                <button onClick={closePdf} className="text-muted-foreground hover:text-foreground"><X size={18} /></button>
+              </div>
             </div>
-            <iframe src={pdfUrl} className="flex-1 w-full" title="Transcrição PDF" />
+            <div className="flex-1 overflow-auto bg-muted/30 p-4 md:p-6">
+              {pdfLoading || !pdfUrl ? (
+                <div className="h-full flex items-center justify-center text-muted-foreground gap-2 text-sm">
+                  <Loader2 size={18} className="animate-spin" /> Carregando PDF…
+                </div>
+              ) : (
+                <div className="min-h-full flex justify-center">
+                  <Document
+                    file={pdfUrl}
+                    loading={<div className="h-full flex items-center justify-center text-muted-foreground gap-2 text-sm"><Loader2 size={18} className="animate-spin" /> Renderizando PDF…</div>}
+                    error={<div className="text-sm text-muted-foreground">Não foi possível renderizar este PDF.</div>}
+                    onLoadSuccess={({ numPages }) => {
+                      setPdfPages(numPages);
+                      setPdfPage(1);
+                    }}
+                  >
+                    <Page
+                      pageNumber={pdfPage}
+                      scale={pdfScale}
+                      renderAnnotationLayer
+                      renderTextLayer
+                      className="shadow-lg"
+                    />
+                  </Document>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
