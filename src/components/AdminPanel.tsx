@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import { type Tool, type Category } from '@/data/tools-data';
 import { useCategories } from '@/hooks/useCategories';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, LayoutDashboard, Users, CreditCard, FileText, Settings, LogOut, Search, Download, Plus, Pencil, Trash2, X, Check, Palette, Eye, EyeOff, Globe, Bell, Shield, Database, Mail, Play, Video } from 'lucide-react';
+import { ArrowLeft, LayoutDashboard, Users, CreditCard, FileText, Settings, LogOut, Search, Download, Plus, Pencil, Trash2, X, Check, Palette, Eye, EyeOff, Globe, Bell, Shield, Database, Mail, Play, Video, GraduationCap } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import AdminLessons from './AdminLessons';
 
 // ── Plan type ───────────────────────────────────────────────────────
 interface Plan {
@@ -479,6 +480,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'users', label: 'Usuários', icon: Users },
     { key: 'payments', label: 'Pagamentos', icon: CreditCard },
     { key: 'content', label: 'Conteúdo', icon: FileText },
+    { key: 'lessons', label: 'Aulas', icon: GraduationCap },
     { key: 'settings', label: 'Configurações', icon: Settings },
   ];
 
