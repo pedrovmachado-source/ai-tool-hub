@@ -18,6 +18,7 @@ import type { Tool, Category } from '@/data/tools-data';
 
 export default function Index() {
   const navigate = useNavigate();
+  const { plan } = usePlanConfig();
   const { user, isAdmin } = useAuth();
   const { categories, loading, error, fetchCategories } = useCategories();
   const initialPage = typeof window !== 'undefined' ? sessionStorage.getItem('adai:initialPage') : null;
