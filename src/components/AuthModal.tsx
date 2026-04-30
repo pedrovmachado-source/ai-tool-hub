@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { X, Loader2 } from 'lucide-react';
+import { X, Loader2, Mail, CheckCircle2 } from 'lucide-react';
 
 interface AuthModalProps {
   mode: 'login' | 'register';
@@ -95,9 +95,29 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch, onRegistere
           )}
 
           {mode === 'register' && success && (
-            <div className="text-center py-4">
-              <p className="text-sm text-muted-foreground mb-4">{success}</p>
-              <button onClick={() => { setError(''); setSuccess(''); onSwitch('login'); }} className="text-brand-blue underline text-sm">Ir para login</button>
+            <div className="flex flex-col items-center text-center py-6 px-2">
+              <div className="w-16 h-16 rounded-full bg-brand-blue/10 flex items-center justify-center mb-4 animate-fade-in">
+                <Mail size={32} className="text-brand-blue" />
+              </div>
+              <h3 className="text-xl font-semibold text-foreground mb-2">Verifique seu e-mail</h3>
+              <p className="text-sm text-muted-foreground mb-3">
+                Enviamos um link de confirmação para:
+              </p>
+              <p className="text-sm font-semibold text-foreground bg-secondary px-4 py-2 rounded-lg mb-4 break-all">
+                {email}
+              </p>
+              <div className="flex items-start gap-2 bg-secondary/50 rounded-lg p-3 mb-5 w-full">
+                <CheckCircle2 size={16} className="text-brand-teal mt-0.5 shrink-0" />
+                <p className="text-xs text-muted-foreground text-left">
+                  Clique no link enviado para ativar sua conta. Verifique também a <span className="font-medium text-foreground">caixa de spam</span> caso não encontre o e-mail.
+                </p>
+              </div>
+              <button
+                onClick={() => { setError(''); setSuccess(''); onSwitch('login'); }}
+                className="w-full py-2.5 bg-navy text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
+              >
+                Ir para login
+              </button>
             </div>
           )}
         </div>
