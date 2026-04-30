@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { X, Loader2 } from 'lucide-react';
+import { X, Loader2, Mail, CheckCircle2 } from 'lucide-react';
 
 interface AuthModalProps {
   mode: 'login' | 'register';
