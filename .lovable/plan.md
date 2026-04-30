@@ -1,21 +1,18 @@
 
-## Popup de Verificação de Email após Cadastro
+## O que será feito
 
-Atualmente, após o cadastro, aparece apenas uma mensagem de texto simples dentro do modal de autenticação. Vou criar um popup visualmente destacado que informa o usuário para verificar o email.
+Adicionar um banner/CTA discreto na hero section da página de ferramentas (`/ferramentas`) que mostra o preço do plano Pro e um botão para acessar a página Pro.
 
-### O que será feito
+## Mudanças técnicas
 
-**Modificar `src/components/AuthModal.tsx`:**
-- Após o registro bem-sucedido, em vez da mensagem simples atual (linhas 97-102), exibir um popup/overlay dedicado com:
-  - Ícone de email (envelope) grande e animado
-  - Título: "Verifique seu e-mail"
-  - Mensagem clara explicando que um link de confirmação foi enviado
-  - O email do usuário destacado em negrito
-  - Instrução para verificar a caixa de spam
-  - Botão "Ir para login" para fechar o popup e abrir o login
+### `src/pages/Index.tsx`
 
-O design seguirá a identidade visual do projeto (Navy/Azul/Teal, DM Sans).
+Abaixo do texto "E-books completos exclusivos para assinantes Pro" (linha ~191), adicionar um pequeno banner discreto com:
 
-### Resultado esperado
+- Texto: "Acesso vitalício por apenas **R$14,90**" (usando `usePlanConfig` para pegar o preço dinâmico)
+- Botão pequeno "Seja Pro" que navega para `setPage('pro')`
+- Estilo sutil: fundo semi-transparente com borda, cores da paleta (amber/teal), tipografia pequena
+- Visível para todos os usuários não-Pro (logados ou não)
+- Posicionado dentro da hero, logo abaixo do aviso de conteúdo exclusivo
 
-Ao criar a conta, o usuário verá um popup grande e claro com instruções de verificação de email, impossível de ignorar.
+O hook `usePlanConfig` já existe e fornece preço e período dinamicamente do banco.
