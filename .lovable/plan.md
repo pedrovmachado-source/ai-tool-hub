@@ -1,86 +1,41 @@
-## Objetivo
+## Problem Diagnosis
 
-Resolver as 4 falhas de segurança detectadas (incluindo "Public Can Execute SECURITY DEFINER Function") **sem bloquear o acesso público** a categorias e ferramentas públicas, e sem quebrar nada para usuários Free.
+The app is completely broken because `authenticated` users cannot execute either `public.has_role` or `private.has_role`. Every table with an admin-related RLS policy fails because PostgreSQL throws an error (not just false) when evaluating a policy that calls a function the role can't execute.
 
-## Diagnóstico
+### Root Cause
 
-Há 3 funções `SECURITY DEFINER` no schema `public` expostas via PostgREST:
+Previous security migrations revoked EXECUTE from `authenticated` on `public.has_role` and never granted EXECUTE on `private.has_role`. Since RLS policies on nearly every table reference one of these functions, ALL queries fail for authenticated users.
 
-| Função | Uso atual | Deve ser pública? |
-|---|---|---|
-| `list_categories_public()` | Catálogo público (home) | Sim — manter |
-| `list_tools_public()` | Catálogo público (home) | Sim — manter |
-| `has_role(uuid, app_role)` | Helper interno de RLS | **Não** — revogar |
-| `get_tool_premium(text)` | Detalhes Pro de uma tool | Apenas autenticados Pro/admin |
+### Specific Issues Found
 
-A última migração (`20260429015936`) reabriu `has_role` para `anon` e `authenticated`, permitindo que qualquer um descubra quem é admin chamando a RPC. Isso também é a origem do alerta do linter Supabase.
+1. **`private.has_role`** — EXECUTE granted only to `postgres` and `service_role`. Missing: `authenticated`.
+2. **`public.has_role`** — EXECUTE revoked from `authenticated` and `anon`. Still referenced by the "Pro users and admins can view categories" policy (unqualified call).
+3. **Categories policy** — "Pro users and admins can view categories" calls `has_role(...)` without schema prefix, resolving to `public.has_role` instead of `private.has_role`.
+4. **Duplicate `guard_plano_update` triggers** — Two triggers (`protect_plano_update` and `guard_plano_update_trg`) running the same function on `profiles`.
+5. **Storage policies** — Use `private.has_role`, which `authenticated` can't call, so admin uploads and Pro user PDF reads fail.
 
-Além disso, o scan revelou duas brechas críticas relacionadas:
-1. **Escalada de plano**: política UPDATE em `profiles` permite usuário Free setar `plano = 'Pro'` sozinho.
-2. **Escalada de privilégio**: `user_roles` não tem política INSERT/DELETE restritiva — qualquer autenticado pode se tornar admin.
+### Plan
 
-Já existe um trigger `guard_plano_update` no código mas **não está anexado** à tabela `profiles` (a seção `db-triggers` está vazia). Vamos garantir que ele exista.
+**Single SQL migration** to fix all issues:
 
-## Plano de correção (1 migração SQL)
+1. **Grant EXECUTE on `private.has_role`** to `authenticated` — this is safe because the function is SECURITY DEFINER and only checks role membership (read-only). It must be callable from RLS policies.
 
-### 1. Revogar `has_role` do acesso público
-```sql
-REVOKE EXECUTE ON FUNCTION public.has_role(uuid, public.app_role)
-  FROM PUBLIC, anon, authenticated;
-```
-RLS continua funcionando: políticas e triggers que chamam `has_role` rodam em contexto `SECURITY DEFINER` próprio e não dependem do GRANT externo.
+2. **Drop and recreate the broken categories policy** — Replace "Pro users and admins can view categories" to use `private.has_role(...)` instead of unqualified `has_role(...)`.
 
-### 2. Bloquear escalada de plano em `profiles`
-Substituir a política UPDATE por uma versão com `WITH CHECK` que impede mudança de `plano` por não-admin, e (re)criar o trigger `guard_plano_update` como cinto-e-suspensório:
-```sql
-DROP POLICY "Users can update own profile" ON public.profiles;
-CREATE POLICY "Users can update own profile"
-  ON public.profiles FOR UPDATE
-  USING (auth.uid() = user_id)
-  WITH CHECK (
-    auth.uid() = user_id
-    AND plano = (SELECT plano FROM public.profiles WHERE user_id = auth.uid())
-  );
+3. **Drop the duplicate trigger** on `profiles` (`guard_plano_update_trg` or `protect_plano_update` — keep only one).
 
-DROP TRIGGER IF EXISTS guard_plano_update_trg ON public.profiles;
-CREATE TRIGGER guard_plano_update_trg
-  BEFORE UPDATE ON public.profiles
-  FOR EACH ROW EXECUTE FUNCTION public.guard_plano_update();
-```
-Admin continua podendo alterar plano via política "Admins can update any profile".
+4. **Keep `public.has_role` locked down** — No EXECUTE for `authenticated`/`anon` since all policies should use the private version.
 
-### 3. Bloquear auto-promoção em `user_roles`
-Adicionar políticas explícitas de INSERT/UPDATE/DELETE restritas a admin (a política `ALL` para admins já existe, mas a ausência de política específica para INSERT em `authenticated` deixa brecha — vamos formalizar negação):
-```sql
-CREATE POLICY "Only admins can insert roles"
-  ON public.user_roles FOR INSERT TO authenticated
-  WITH CHECK (public.has_role(auth.uid(), 'admin'::app_role));
+### Impact
 
-CREATE POLICY "Only admins can delete roles"
-  ON public.user_roles FOR DELETE TO authenticated
-  USING (public.has_role(auth.uid(), 'admin'::app_role));
+- All authenticated users will be able to load categories, tools, profiles, lessons, modules, and site_settings again.
+- Admin functionality (uploads, CRUD) will work via the edge function and RLS policies.
+- No security downgrade — `private.has_role` is SECURITY DEFINER (runs as owner) and only performs a read check.
+- The `anon` role already has direct SELECT policies on `categories` and `tools` (with `USING (true)`), so public visitors are unaffected.
 
-CREATE POLICY "Only admins can update roles"
-  ON public.user_roles FOR UPDATE TO authenticated
-  USING (public.has_role(auth.uid(), 'admin'::app_role));
-```
+### What will NOT be changed without your approval
 
-### 4. Confirmar grants das RPCs públicas legítimas
-```sql
-GRANT EXECUTE ON FUNCTION public.list_categories_public() TO anon, authenticated;
-GRANT EXECUTE ON FUNCTION public.list_tools_public() TO anon, authenticated;
-REVOKE EXECUTE ON FUNCTION public.get_tool_premium(text) FROM anon;
-GRANT EXECUTE ON FUNCTION public.get_tool_premium(text) TO authenticated;
-```
-
-## Impacto para usuários
-
-- **Visitantes (anon)**: continuam vendo o catálogo público (Home, lista de ferramentas/categorias) — `list_*_public` permanecem abertas.
-- **Free autenticados**: sem mudança visível; não conseguem mais (corretamente) se promover a Pro/admin via API.
-- **Pro**: sem mudança.
-- **Admin (`pedruu1236@hotmail.com`)**: sem mudança — política admin cobre tudo; `has_role` continua chamável internamente pelas policies.
-
-## Pós-deploy
-
-- Rodar o linter Supabase para confirmar que os 4 findings sumiram.
-- Marcar findings como `mark_as_fixed` no scanner.
+- No RLS policies will be removed (only the broken one replaced)
+- No tables altered
+- No storage buckets modified
+- RLS stays enabled everywhere
