@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { usePlanConfig } from '@/hooks/usePlanConfig';
 import { useNavigate } from 'react-router-dom';
 import { useCategories } from '@/hooks/useCategories';
 import Navbar from '@/components/Navbar';
@@ -17,6 +18,7 @@ import type { Tool, Category } from '@/data/tools-data';
 
 export default function Index() {
   const navigate = useNavigate();
+  const { plan } = usePlanConfig();
   const { user, isAdmin } = useAuth();
   const { categories, loading, error, fetchCategories } = useCategories();
   const initialPage = typeof window !== 'undefined' ? sessionStorage.getItem('adai:initialPage') : null;
@@ -184,9 +186,17 @@ export default function Index() {
           </button>
         </div>
 
-        {!user && (
-          <div className="flex items-center justify-center gap-2 mt-5 text-[13px] text-muted-foreground/40">
-            <Lock size={14} /> E-books completos exclusivos para assinantes Pro
+        {(!user || user.plano !== 'Pro') && (
+          <div className="flex flex-col items-center gap-3 mt-5">
+            <div className="flex items-center justify-center gap-2 text-[13px] text-muted-foreground/40">
+              <Lock size={14} /> E-books completos exclusivos para assinantes Pro
+            </div>
+            <button
+              onClick={() => setPage('pro')}
+              className="inline-flex items-center gap-2 text-xs px-4 py-2 rounded-full bg-brand-amber/10 border border-brand-amber/25 text-brand-amber hover:bg-brand-amber/20 transition-all"
+            >
+              ⚡ Seja Pro · R${plan.price} {plan.period === 'vitalicio' ? '(acesso vitalício)' : ''}
+            </button>
           </div>
         )}
       </div>
