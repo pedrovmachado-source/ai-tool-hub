@@ -44,6 +44,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Navbar
+        hideAuth
         onNavigate={(page) => {
           if (page === 'home') navigate('/');
           else if (page === 'profile') navigate('/perfil');
@@ -75,9 +76,13 @@ export default function Home() {
           <p className="text-base md:text-lg text-muted-foreground/70 max-w-[620px] mx-auto leading-relaxed mb-8">
             Curadoria, e-books e prompts prontos das melhores ferramentas de IA — organizados por categoria, com passo a passo para empreendedores.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Button size="lg" onClick={goTools} className="bg-brand-blue hover:bg-brand-blue/90 text-primary-foreground gap-2 h-12 px-6 rounded-xl text-sm">
-              Acessar ferramentas <ArrowRight size={16} />
+          <div className="flex flex-col items-center justify-center gap-4">
+            <Button
+              size="lg"
+              onClick={goTools}
+              className="bg-brand-blue hover:bg-brand-blue/90 hover:scale-[1.03] text-primary-foreground gap-3 h-16 px-10 rounded-2xl text-lg font-semibold shadow-lg shadow-brand-blue/25 transition-all duration-200"
+            >
+              Acessar ferramentas <ArrowRight size={20} />
             </Button>
             <Button
               size="lg"
