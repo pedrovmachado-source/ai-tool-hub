@@ -6,7 +6,7 @@ import QuizModal from './QuizModal';
 import logoAdai from '@/assets/logo.png';
 import { PRO_PLAN } from '@/lib/billing';
 
-export default function Navbar({ onNavigate, onOpenSavedEbook }: { onNavigate: (page: string) => void; onOpenSavedEbook?: (toolKey: string, categoryKey: string) => void }) {
+export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onNavigate: (page: string) => void; onOpenSavedEbook?: (toolKey: string, categoryKey: string) => void; hideAuth?: boolean }) {
   const handleLessonsClick = () => onNavigate('lessons');
   const { user, isAdmin, logout, savedEbooks, unsaveEbook } = useAuth();
   const [authModal, setAuthModal] = useState<{ open: boolean; mode: 'login' | 'register' }>({ open: false, mode: 'login' });
@@ -50,12 +50,12 @@ export default function Navbar({ onNavigate, onOpenSavedEbook }: { onNavigate: (
               <span className="hidden sm:inline">Aulas</span>
             </button>
           )}
-          {!user ? (
+          {!user && !hideAuth ? (
             <>
               <button onClick={() => setAuthModal({ open: true, mode: 'login' })} className="px-4 py-1.5 rounded-lg text-[13px] font-medium text-white bg-white/15 hover:bg-white/25 transition-colors">Entrar</button>
               <button onClick={() => setAuthModal({ open: true, mode: 'register' })} className="px-4 py-1.5 rounded-lg text-[13px] font-medium text-navy bg-white hover:bg-white/90 transition-colors">Cadastrar</button>
             </>
-          ) : (
+          ) : !user ? null : (
             <>
               {user.plano === 'Free' && (
                 <button onClick={() => window.open(PRO_PLAN.checkoutUrl, '_blank')} className="px-4 py-1.5 rounded-lg text-[13px] font-medium text-white bg-gradient-to-r from-brand-amber to-brand-amber/80 hover:opacity-90 transition-opacity">⚡ Seja Pro</button>
