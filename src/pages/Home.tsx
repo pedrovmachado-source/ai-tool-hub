@@ -41,6 +41,32 @@ export default function Home() {
   const goTools = () => navigate('/ferramentas');
   const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
+  // Reveal-on-scroll
+  const Reveal = ({ children, className = '', as: As = 'section' as any, delay = 0, ...rest }: any) => {
+    const ref = useRef<HTMLElement | null>(null);
+    const [shown, setShown] = useState(false);
+    useEffect(() => {
+      const el = ref.current;
+      if (!el) return;
+      const io = new IntersectionObserver(
+        ([e]) => { if (e.isIntersecting) { setShown(true); io.disconnect(); } },
+        { threshold: 0.12 }
+      );
+      io.observe(el);
+      return () => io.disconnect();
+    }, []);
+    return (
+      <As
+        ref={ref as any}
+        {...rest}
+        className={`${className} transition-all duration-700 ease-out ${shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+        style={{ transitionDelay: `${delay}ms`, ...(rest.style || {}) }}
+      >
+        {children}
+      </As>
+    );
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Navbar
