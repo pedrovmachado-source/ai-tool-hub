@@ -351,23 +351,31 @@ export default function Home() {
       </section>
 
       {/* CTA final */}
-      <section className="bg-navy">
-        <div className="max-w-[800px] mx-auto px-6 py-20 text-center">
-          <h2 className="font-serif-display text-3xl md:text-4xl text-primary-foreground tracking-tight mb-3">
-            Pronto para começar?
+      <Reveal as="section" className="bg-navy relative overflow-hidden">
+        <div
+          aria-hidden
+          className="absolute inset-0 opacity-30"
+          style={{
+            background:
+              'radial-gradient(700px 350px at 50% 100%, hsl(var(--blue) / 0.25), transparent 60%)',
+          }}
+        />
+        <div className="relative max-w-[800px] mx-auto px-6 py-24 text-center">
+          <h2 className="font-serif-display text-3xl md:text-5xl text-primary-foreground tracking-tight mb-4">
+            Pare de deixar dinheiro na mesa.
           </h2>
-          <p className="text-sm text-muted-foreground/70 mb-7 max-w-md mx-auto">
-            Acesse a curadoria completa e comece a aplicar IA no seu negócio hoje mesmo.
+          <p className="text-base md:text-lg text-muted-foreground/80 mb-8 max-w-lg mx-auto">
+            Seu concorrente já está usando IA. Você vai ficar pra trás?
           </p>
           <Button
             size="lg"
             onClick={goTools}
-            className="bg-brand-blue hover:bg-brand-blue/90 text-primary-foreground h-12 px-7 rounded-xl gap-2"
+            className="bg-brand-blue hover:bg-brand-blue/90 hover:scale-[1.03] text-primary-foreground h-16 px-10 rounded-2xl gap-3 text-base md:text-lg font-semibold shadow-lg shadow-brand-blue/25 transition-all duration-200"
           >
-            {user ? 'Explorar ferramentas' : 'Começar agora'} <ArrowRight size={16} />
+            Começar agora — é gratuito <ArrowRight size={20} />
           </Button>
         </div>
-      </section>
+      </Reveal>
 
       {/* Footer */}
       <footer className="bg-navy border-t border-primary-foreground/5 py-8 text-center">
