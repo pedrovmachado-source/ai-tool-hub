@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCategories } from '@/hooks/useCategories';
 import Navbar from '@/components/Navbar';
@@ -41,6 +41,32 @@ export default function Home() {
   const goTools = () => navigate('/ferramentas');
   const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
+  // Reveal-on-scroll
+  const Reveal = ({ children, className = '', as: As = 'section' as any, delay = 0, ...rest }: any) => {
+    const ref = useRef<HTMLElement | null>(null);
+    const [shown, setShown] = useState(false);
+    useEffect(() => {
+      const el = ref.current;
+      if (!el) return;
+      const io = new IntersectionObserver(
+        ([e]) => { if (e.isIntersecting) { setShown(true); io.disconnect(); } },
+        { threshold: 0.12 }
+      );
+      io.observe(el);
+      return () => io.disconnect();
+    }, []);
+    return (
+      <As
+        ref={ref as any}
+        {...rest}
+        className={`${className} transition-all duration-700 ease-out ${shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+        style={{ transitionDelay: `${delay}ms`, ...(rest.style || {}) }}
+      >
+        {children}
+      </As>
+    );
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Navbar
@@ -68,26 +94,26 @@ export default function Home() {
         />
         <div className="relative max-w-[1100px] mx-auto px-6 py-24 md:py-32 text-center">
           <div className="inline-flex items-center gap-2 bg-brand-blue/15 border border-brand-blue/30 text-brand-blue-medium text-xs px-4 py-1.5 rounded-full mb-6">
-            <Sparkles size={12} /> Curadoria atualizada em 2026
+            🎯 Feito para infoprodutores, lançadores e gestores de tráfego
           </div>
-          <h1 className="font-serif-display text-5xl md:text-6xl leading-[1.05] text-primary-foreground tracking-tight mb-5">
-            Domine as <em className="text-brand-blue-medium italic">IAs</em> certas<br />para o seu negócio
+          <h1 className="font-serif-display text-4xl md:text-6xl leading-[1.07] text-primary-foreground tracking-tight mb-5">
+            A IA que escreve seus <em className="text-brand-blue-medium italic">anúncios</em> e multiplica seu faturamento — no piloto automático.
           </h1>
-          <p className="text-base md:text-lg text-muted-foreground/70 max-w-[620px] mx-auto leading-relaxed mb-8">
-            Curadoria, e-books e prompts prontos das melhores ferramentas de IA — organizados por categoria, com passo a passo para empreendedores.
+          <p className="text-base md:text-lg text-muted-foreground/70 max-w-[680px] mx-auto leading-relaxed mb-8">
+            Feito para infoprodutores que querem parar de perder tempo com copy ruim e vender mais todos os dias.
           </p>
           <div className="flex flex-col items-center justify-center gap-4">
             <Button
               size="lg"
               onClick={goTools}
-              className="bg-brand-blue hover:bg-brand-blue/90 hover:scale-[1.03] text-primary-foreground gap-3 h-16 px-10 rounded-2xl text-lg font-semibold shadow-lg shadow-brand-blue/25 transition-all duration-200"
+              className="bg-brand-blue hover:bg-brand-blue/90 hover:scale-[1.03] text-primary-foreground gap-3 h-16 px-10 rounded-2xl text-base md:text-lg font-semibold shadow-lg shadow-brand-blue/25 transition-all duration-200"
             >
-              Acessar ferramentas <ArrowRight size={20} />
+              Quero escalar meu infoproduto agora <ArrowRight size={20} />
             </Button>
             <Button
               size="lg"
               variant="ghost"
-              onClick={() => scrollTo('como-funciona')}
+              onClick={() => scrollTo('o-que-muda')}
               className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10 h-12 px-6 rounded-xl text-sm"
             >
               Saiba mais
@@ -96,8 +122,51 @@ export default function Home() {
         </div>
       </section>
 
+      {/* O que muda quando você usa o AdAi */}
+      <Reveal id="o-que-muda" className="max-w-[1100px] mx-auto px-6 py-20 w-full">
+        <div className="text-center mb-12">
+          <p className="text-xs font-medium uppercase tracking-widest text-brand-blue mb-2">Resultados reais</p>
+          <h2 className="font-serif-display text-3xl md:text-4xl tracking-tight">O que muda quando você usa o AdAi</h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {[
+            { i: '⚡', t: 'Copies em segundos', d: 'Gere anúncios, headlines e VSLs completos em segundos. Sem agência. Sem espera.' },
+            { i: '📈', t: 'Escala sem equipe', d: 'A IA trabalha 24h por você. Crie variações, teste criativos e otimize campanhas sozinho.' },
+            { i: '🎯', t: 'Anúncios que convertem', d: 'Prompts treinados para infoprodutos. Linguagem que fala direto com quem vai comprar.' },
+            { i: '💰', t: 'Mais lucro, menos custo', d: 'Reduza o custo por lead e aumente o ROAS com a copy certa no tráfego.' },
+            { i: '🔄', t: 'Lançamentos no automático', d: 'E-mails, stories, scripts e páginas de vendas gerados em minutos.' },
+            { i: '🌍', t: 'Venda para qualquer mercado', d: 'Copies adaptadas para Brasil, Portugal, Reino Unido e mercados europeus.' },
+          ].map((c) => (
+            <Card key={c.t} className="p-7 border border-border hover:border-brand-blue/40 hover:-translate-y-0.5 transition-all rounded-xl">
+              <div className="text-3xl mb-3" aria-hidden>{c.i}</div>
+              <h3 className="font-serif-display text-xl mb-1.5">{c.t}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{c.d}</p>
+            </Card>
+          ))}
+        </div>
+      </Reveal>
+
+      {/* Faixa de métricas */}
+      <Reveal as="section" className="bg-navy border-y border-primary-foreground/5">
+        <div className="max-w-[1100px] mx-auto px-6 py-14">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            {[
+              { n: '10x', l: 'mais variações de anúncios' },
+              { n: '-60%', l: 'no custo por criativo' },
+              { n: '3min', l: 'para gerar uma VSL' },
+              { n: '0', l: 'copywriters necessários' },
+            ].map((m) => (
+              <div key={m.l}>
+                <div className="font-serif-display text-4xl md:text-5xl text-brand-blue-medium mb-2">{m.n}</div>
+                <p className="text-xs md:text-sm text-muted-foreground/80 leading-snug">{m.l}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Reveal>
+
       {/* Como funciona */}
-      <section id="como-funciona" className="max-w-[1100px] mx-auto px-6 py-20 w-full">
+      <Reveal id="como-funciona" className="max-w-[1100px] mx-auto px-6 py-20 w-full">
         <div className="text-center mb-12">
           <p className="text-xs font-medium uppercase tracking-widest text-brand-blue mb-2">Como funciona</p>
           <h2 className="font-serif-display text-3xl md:text-4xl tracking-tight">Três passos para começar</h2>
@@ -120,8 +189,7 @@ export default function Home() {
             </Card>
           ))}
         </div>
-      </section>
-
+      </Reveal>
       {/* Categorias em destaque */}
       <section className="bg-secondary/40 border-y border-border">
         <div className="max-w-[1100px] mx-auto px-6 py-20">
@@ -283,23 +351,31 @@ export default function Home() {
       </section>
 
       {/* CTA final */}
-      <section className="bg-navy">
-        <div className="max-w-[800px] mx-auto px-6 py-20 text-center">
-          <h2 className="font-serif-display text-3xl md:text-4xl text-primary-foreground tracking-tight mb-3">
-            Pronto para começar?
+      <Reveal as="section" className="bg-navy relative overflow-hidden">
+        <div
+          aria-hidden
+          className="absolute inset-0 opacity-30"
+          style={{
+            background:
+              'radial-gradient(700px 350px at 50% 100%, hsl(var(--blue) / 0.25), transparent 60%)',
+          }}
+        />
+        <div className="relative max-w-[800px] mx-auto px-6 py-24 text-center">
+          <h2 className="font-serif-display text-3xl md:text-5xl text-primary-foreground tracking-tight mb-4">
+            Pare de deixar dinheiro na mesa.
           </h2>
-          <p className="text-sm text-muted-foreground/70 mb-7 max-w-md mx-auto">
-            Acesse a curadoria completa e comece a aplicar IA no seu negócio hoje mesmo.
+          <p className="text-base md:text-lg text-muted-foreground/80 mb-8 max-w-lg mx-auto">
+            Seu concorrente já está usando IA. Você vai ficar pra trás?
           </p>
           <Button
             size="lg"
             onClick={goTools}
-            className="bg-brand-blue hover:bg-brand-blue/90 text-primary-foreground h-12 px-7 rounded-xl gap-2"
+            className="bg-brand-blue hover:bg-brand-blue/90 hover:scale-[1.03] text-primary-foreground h-16 px-10 rounded-2xl gap-3 text-base md:text-lg font-semibold shadow-lg shadow-brand-blue/25 transition-all duration-200"
           >
-            {user ? 'Explorar ferramentas' : 'Começar agora'} <ArrowRight size={16} />
+            Começar agora — é gratuito <ArrowRight size={20} />
           </Button>
         </div>
-      </section>
+      </Reveal>
 
       {/* Footer */}
       <footer className="bg-navy border-t border-primary-foreground/5 py-8 text-center">
