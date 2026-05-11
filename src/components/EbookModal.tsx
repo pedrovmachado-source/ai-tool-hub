@@ -376,23 +376,6 @@ export default function EbookModal({ tool, category, isOpen, onClose }: EbookMod
             </section>
           )}
 
-          {/* Image Descriptions */}
-          {fullTool.imageDescriptions && fullTool.imageDescriptions.length > 0 && (
-            <section>
-              <SectionTitle icon="🖼️">Imagens do e-book</SectionTitle>
-              <div className="grid gap-2">
-                {fullTool.imageDescriptions.map((img, i) => (
-                  <div key={i} className="flex items-start gap-2.5 border border-dashed rounded-lg p-3" style={{ borderColor: category.accent + '40' }}>
-                    <Image size={14} className="shrink-0 mt-0.5" style={{ color: category.accent }} />
-                    <div>
-                      <div className="text-[12px] font-semibold mb-0.5">{img.title}</div>
-                      <div className="text-[12px] text-muted-foreground leading-relaxed">{img.desc}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
 
           {/* Checklist */}
           {fullTool.checklist && fullTool.checklist.length > 0 && (
