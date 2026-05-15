@@ -853,19 +853,19 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
 
         {section === 'settings' && (
           <>
-            <h1 className="text-xl font-medium text-primary-foreground mb-6">Configurações</h1>
-            <div className="flex gap-6">
+            <h1 className="text-lg sm:text-xl font-medium text-primary-foreground mb-4 sm:mb-6">Configurações</h1>
+            <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
               {/* Settings sidebar */}
-              <div className="w-[200px] shrink-0 space-y-1">
+              <div className="w-full lg:w-[200px] shrink-0 flex lg:block gap-1 overflow-x-auto scrollbar-hide lg:space-y-1 -mx-1 px-1 lg:mx-0 lg:px-0">
                 {settingsTabs.map(t => (
-                  <button key={t.key} onClick={() => setSettingsSection(t.key)} className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] transition-colors ${settingsSection === t.key ? 'text-brand-blue-medium bg-brand-blue/15' : 'text-muted-foreground/50 hover:text-primary-foreground hover:bg-primary-foreground/5'}`}>
+                  <button key={t.key} onClick={() => setSettingsSection(t.key)} className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[12px] sm:text-[13px] transition-colors whitespace-nowrap shrink-0 lg:w-full ${settingsSection === t.key ? 'text-brand-blue-medium bg-brand-blue/15' : 'text-muted-foreground/50 hover:text-primary-foreground hover:bg-primary-foreground/5'}`}>
                     <t.icon size={14} /> {t.label}
                   </button>
                 ))}
               </div>
 
               {/* Settings content */}
-              <div className="flex-1 max-w-lg">
+              <div className="flex-1 lg:max-w-lg min-w-0">
                 {settingsSection === 'credentials' && (
                   <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-6">
                     <h3 className="text-sm font-medium text-primary-foreground mb-4">Credenciais de Acesso</h3>
