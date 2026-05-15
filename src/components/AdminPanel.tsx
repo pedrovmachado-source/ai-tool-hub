@@ -117,8 +117,8 @@ function ToolFormModal({ tool, onSave, onClose }: { tool?: Tool; onSave: (t: Too
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={onClose}>
-      <div className="bg-navy border border-primary-foreground/10 rounded-xl p-6 w-[520px] max-h-[85vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-3 sm:p-0" onClick={onClose}>
+      <div className="bg-navy border border-primary-foreground/10 rounded-xl p-6 w-[95vw] sm:w-[520px] max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-medium text-primary-foreground">{tool ? 'Editar Ferramenta' : 'Nova Ferramenta'}</h3>
           <button onClick={onClose} className="text-muted-foreground/40 hover:text-primary-foreground"><X size={16} /></button>
@@ -204,8 +204,8 @@ function ToolFormModal({ tool, onSave, onClose }: { tool?: Tool; onSave: (t: Too
 function CategoryFormModal({ category, onSave, onClose }: { category: Category; onSave: (c: Category) => void; onClose: () => void }) {
   const [form, setForm] = useState({ label: category.label, accent: category.accent, accentLight: category.accentLight, accentDark: category.accentDark, introTitle: category.introTitle, introText: category.introText });
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={onClose}>
-      <div className="bg-navy border border-primary-foreground/10 rounded-xl p-6 w-[480px] max-h-[80vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-3 sm:p-0" onClick={onClose}>
+      <div className="bg-navy border border-primary-foreground/10 rounded-xl p-6 w-[95vw] sm:w-[480px] max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-medium text-primary-foreground">Editar Categoria</h3>
           <button onClick={onClose} className="text-muted-foreground/40 hover:text-primary-foreground"><X size={16} /></button>
@@ -248,8 +248,8 @@ function CategoryFormModal({ category, onSave, onClose }: { category: Category; 
 
 function ConfirmModal({ message, onConfirm, onCancel }: { message: string; onConfirm: () => void; onCancel: () => void }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={onCancel}>
-      <div className="bg-navy border border-primary-foreground/10 rounded-xl p-6 w-[380px]" onClick={e => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-3 sm:p-0" onClick={onCancel}>
+      <div className="bg-navy border border-primary-foreground/10 rounded-xl p-5 sm:p-6 w-[95vw] sm:w-[380px]" onClick={e => e.stopPropagation()}>
         <p className="text-sm text-primary-foreground mb-4">{message}</p>
         <div className="flex gap-2 justify-end">
           <button onClick={onCancel} className="px-4 py-2 rounded-lg text-sm text-muted-foreground/60 hover:text-primary-foreground">Cancelar</button>
@@ -272,8 +272,8 @@ function PlanFormModal({ plan, onSave, onClose }: { plan?: Plan; onSave: (p: Pla
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={onClose}>
-      <div className="bg-navy border border-primary-foreground/10 rounded-xl p-6 w-[480px] max-h-[80vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-3 sm:p-0" onClick={onClose}>
+      <div className="bg-navy border border-primary-foreground/10 rounded-xl p-6 w-[95vw] sm:w-[480px] max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-medium text-primary-foreground">{plan ? 'Editar Plano' : 'Novo Plano'}</h3>
           <button onClick={onClose} className="text-muted-foreground/40 hover:text-primary-foreground"><X size={16} /></button>
