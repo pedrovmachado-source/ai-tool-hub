@@ -574,7 +574,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'data', label: 'Dados & Backup', icon: Database },
   ];
 
-  const [mobileNavOpen, setMobileNavOpen] = [sidebarOpen, setSidebarOpen] as any;
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const currentSectionLabel = navItems.find(n => n.key === section)?.label || 'Admin';
 
   return (
