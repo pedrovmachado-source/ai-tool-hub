@@ -663,32 +663,33 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
 
         {section === 'users' && (
           <>
-            <div className="flex items-center justify-between mb-6">
-              <h1 className="text-xl font-medium text-primary-foreground">Usuários</h1>
-              <div className="flex gap-3">
-                <div className="relative">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-3">
+              <h1 className="text-lg sm:text-xl font-medium text-primary-foreground">Usuários</h1>
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
+                <div className="relative flex-1 sm:flex-initial">
                   <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/40" />
-                  <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Buscar..." className="pl-8 pr-4 py-2 rounded-lg text-sm bg-navy border border-primary-foreground/10 text-primary-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:border-brand-blue w-[260px]" />
+                  <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Buscar..." className="pl-8 pr-4 py-2 rounded-lg text-sm bg-navy border border-primary-foreground/10 text-primary-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:border-brand-blue w-full sm:w-[260px]" />
                 </div>
-                <button onClick={exportCSV} className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium bg-brand-blue text-primary-foreground hover:opacity-90"><Download size={14} /> CSV</button>
+                <button onClick={exportCSV} className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-medium bg-brand-blue text-primary-foreground hover:opacity-90"><Download size={14} /> CSV</button>
               </div>
             </div>
             <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl overflow-hidden">
+              <div className="overflow-x-auto">
               <table className="w-full">
                 <thead><tr className="border-b border-primary-foreground/[0.07]">
-                  {['Nome', 'Sobrenome', 'E-mail', 'Plano', 'Acesso', 'Ações'].map(h => <th key={h} className="px-5 py-3 text-left text-[11px] font-semibold text-muted-foreground/40 uppercase tracking-wider">{h}</th>)}
+                  {['Nome', 'Sobrenome', 'E-mail', 'Plano', 'Acesso', 'Ações'].map(h => <th key={h} className="px-3 sm:px-5 py-3 text-left text-[11px] font-semibold text-muted-foreground/40 uppercase tracking-wider whitespace-nowrap">{h}</th>)}
                 </tr></thead>
                 <tbody>
                   {filteredUsers.map(u => (
                     <tr key={u.id} className="border-b border-primary-foreground/[0.04] hover:bg-primary-foreground/[0.02]">
-                      <td className="px-5 py-3 text-[13px] text-primary-foreground/80">{u.nome}</td>
-                      <td className="px-5 py-3 text-[13px] text-primary-foreground/80">{u.sobre}</td>
-                      <td className="px-5 py-3 text-[13px] text-muted-foreground/50">{u.email}</td>
-                      <td className="px-5 py-3"><span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${u.plano === 'Pro' ? 'bg-brand-green/20 text-brand-green' : u.plano === 'Cancelado' ? 'bg-brand-red/20 text-brand-red' : 'bg-brand-amber/20 text-brand-amber'}`}>{u.plano}</span></td>
-                      <td className="px-5 py-3 text-[13px] text-muted-foreground/50">{new Date(u.created_at).toLocaleDateString('pt-BR')}</td>
-                      <td className="px-5 py-3">
+                      <td className="px-3 sm:px-5 py-3 text-[13px] text-primary-foreground/80 whitespace-nowrap">{u.nome}</td>
+                      <td className="px-3 sm:px-5 py-3 text-[13px] text-primary-foreground/80 whitespace-nowrap">{u.sobre}</td>
+                      <td className="px-3 sm:px-5 py-3 text-[13px] text-muted-foreground/50 whitespace-nowrap">{u.email}</td>
+                      <td className="px-3 sm:px-5 py-3"><span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${u.plano === 'Pro' ? 'bg-brand-green/20 text-brand-green' : u.plano === 'Cancelado' ? 'bg-brand-red/20 text-brand-red' : 'bg-brand-amber/20 text-brand-amber'}`}>{u.plano}</span></td>
+                      <td className="px-3 sm:px-5 py-3 text-[13px] text-muted-foreground/50 whitespace-nowrap">{new Date(u.created_at).toLocaleDateString('pt-BR')}</td>
+                      <td className="px-3 sm:px-5 py-3">
                         <div className="flex gap-2">
-                          <button onClick={() => togglePlan(u.id)} className="text-[11px] px-2 py-1 rounded bg-brand-blue/20 text-brand-blue-medium hover:bg-brand-blue/30">{u.plano === 'Pro' ? 'Rebaixar' : 'Upgrade'}</button>
+                          <button onClick={() => togglePlan(u.id)} className="text-[11px] px-2 py-1 rounded bg-brand-blue/20 text-brand-blue-medium hover:bg-brand-blue/30 whitespace-nowrap">{u.plano === 'Pro' ? 'Rebaixar' : 'Upgrade'}</button>
                           <button onClick={() => deleteUser(u.id)} className="text-[11px] px-2 py-1 rounded bg-brand-red/20 text-brand-red hover:bg-brand-red/30">Excluir</button>
                         </div>
                       </td>
@@ -696,6 +697,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
                   ))}
                 </tbody>
               </table>
+              </div>
             </div>
           </>
         )}
