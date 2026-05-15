@@ -704,11 +704,12 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
 
         {section === 'payments' && (
           <>
-            <h1 className="text-xl font-medium text-primary-foreground mb-6">Pagamentos</h1>
+            <h1 className="text-lg sm:text-xl font-medium text-primary-foreground mb-4 sm:mb-6">Pagamentos</h1>
             <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl overflow-hidden">
+              <div className="overflow-x-auto">
               <table className="w-full">
                 <thead><tr className="border-b border-primary-foreground/[0.07]">
-                  {['Usuário', 'Plano', 'Valor', 'Data', 'Status'].map(h => <th key={h} className="px-5 py-3 text-left text-[11px] font-semibold text-muted-foreground/40 uppercase tracking-wider">{h}</th>)}
+                  {['Usuário', 'Plano', 'Valor', 'Data', 'Status'].map(h => <th key={h} className="px-3 sm:px-5 py-3 text-left text-[11px] font-semibold text-muted-foreground/40 uppercase tracking-wider whitespace-nowrap">{h}</th>)}
                 </tr></thead>
                 <tbody>
                   {[
@@ -719,15 +720,69 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
                     { user: 'Mariana Ferreira', plan: 'Pro Mensal', value: 'R$19,90', date: 'Dez/2024', status: 'Cancelado' },
                   ].map((p, i) => (
                     <tr key={i} className="border-b border-primary-foreground/[0.04]">
-                      <td className="px-5 py-3 text-[13px] text-primary-foreground/80">{p.user}</td>
-                      <td className="px-5 py-3 text-[13px] text-muted-foreground/50">{p.plan}</td>
-                      <td className="px-5 py-3 text-[13px] text-primary-foreground/80">{p.value}</td>
-                      <td className="px-5 py-3 text-[13px] text-muted-foreground/50">{p.date}</td>
-                      <td className="px-5 py-3"><span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${p.status === 'Pago' ? 'bg-brand-green/20 text-brand-green' : 'bg-brand-red/20 text-brand-red'}`}>{p.status}</span></td>
+                      <td className="px-3 sm:px-5 py-3 text-[13px] text-primary-foreground/80 whitespace-nowrap">{p.user}</td>
+                      <td className="px-3 sm:px-5 py-3 text-[13px] text-muted-foreground/50 whitespace-nowrap">{p.plan}</td>
+                      <td className="px-3 sm:px-5 py-3 text-[13px] text-primary-foreground/80 whitespace-nowrap">{p.value}</td>
+                      <td className="px-3 sm:px-5 py-3 text-[13px] text-muted-foreground/50 whitespace-nowrap">{p.date}</td>
+                      <td className="px-3 sm:px-5 py-3"><span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${p.status === 'Pago' ? 'bg-brand-green/20 text-brand-green' : 'bg-brand-red/20 text-brand-red'}`}>{p.status}</span></td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+              </div>
+            </div>
+          </>
+        )}
+
+        {section === 'content' && !viewingCategory && (
+          <>
+            <h1 className="text-lg sm:text-xl font-medium text-primary-foreground mb-4 sm:mb-6">Conteúdo</h1>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
+              <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-4 sm:p-5">
+                <div className="text-[11px] text-muted-foreground/40 uppercase tracking-wider mb-2">Ferramentas de IA</div>
+                <div className="text-2xl sm:text-[28px] font-medium text-primary-foreground">{totalTools}</div>
+              </div>
+              <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-4 sm:p-5">
+                <div className="text-[11px] text-muted-foreground/40 uppercase tracking-wider mb-2">Categorias</div>
+                <div className="text-2xl sm:text-[28px] font-medium text-primary-foreground">{categories.length}</div>
+              </div>
+              <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-4 sm:p-5">
+                <div className="text-[11px] text-muted-foreground/40 uppercase tracking-wider mb-2">E-books</div>
+                <div className="text-2xl sm:text-[28px] font-medium text-primary-foreground">{totalTools}</div>
+              </div>
+            </div>
+
+            <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl overflow-hidden">
+              <div className="flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 border-b border-primary-foreground/[0.07] gap-2 flex-wrap">
+                <h3 className="text-sm font-medium text-primary-foreground">Ferramentas por Categoria</h3>
+                <div className="flex gap-2">
+                  <button onClick={() => {/* could add new category */}} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium bg-brand-green/20 text-brand-green hover:bg-brand-green/30 whitespace-nowrap">
+                    <Plus size={12} /> Nova Categoria
+                  </button>
+                </div>
+              </div>
+              <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead><tr className="border-b border-primary-foreground/[0.07]">
+                  {['Categoria', 'Ferramentas', 'Cor', 'Ações'].map(h => <th key={h} className="px-3 sm:px-5 py-3 text-left text-[11px] font-semibold text-muted-foreground/40 uppercase tracking-wider whitespace-nowrap">{h}</th>)}
+                </tr></thead>
+                <tbody>
+                  {categories.map(c => (
+                    <tr key={c.key} className="border-b border-primary-foreground/[0.04] hover:bg-primary-foreground/[0.02]">
+                      <td className="px-3 sm:px-5 py-3 text-[13px] text-primary-foreground/80 whitespace-nowrap">{c.label}</td>
+                      <td className="px-3 sm:px-5 py-3 text-[13px] text-muted-foreground/50 whitespace-nowrap">{c.tools.length} ferramentas</td>
+                      <td className="px-3 sm:px-5 py-3"><div className="w-4 h-4 rounded" style={{ background: c.accent }} /></td>
+                      <td className="px-3 sm:px-5 py-3">
+                        <div className="flex gap-2">
+                          <button onClick={() => setViewingCategory(c)} className="text-[11px] px-2 py-1 rounded bg-brand-blue/20 text-brand-blue-medium hover:bg-brand-blue/30 flex items-center gap-1 whitespace-nowrap"><Eye size={11} /> Ver</button>
+                          <button onClick={() => setEditingCategory(c)} className="text-[11px] px-2 py-1 rounded bg-brand-amber/20 text-brand-amber hover:bg-brand-amber/30 flex items-center gap-1 whitespace-nowrap"><Palette size={11} /> Editar</button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              </div>
             </div>
           </>
         )}
