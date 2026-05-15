@@ -656,6 +656,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
                   ))}
                 </tbody>
               </table>
+              </div>
             </div>
           </>
         )}
