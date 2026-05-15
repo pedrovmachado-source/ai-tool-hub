@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { type Tool, type Category } from '@/data/tools-data';
 import { useCategories } from '@/hooks/useCategories';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, LayoutDashboard, Users, CreditCard, FileText, Settings, LogOut, Search, Download, Plus, Pencil, Trash2, X, Check, Palette, Eye, EyeOff, Globe, Bell, Shield, Database, Mail, Play, Video, GraduationCap, Activity } from 'lucide-react';
+import { ArrowLeft, LayoutDashboard, Users, CreditCard, FileText, Settings, LogOut, Search, Download, Plus, Pencil, Trash2, X, Check, Palette, Eye, EyeOff, Globe, Bell, Shield, Database, Mail, Play, Video, GraduationCap, Activity, Menu } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import AdminLessons from './AdminLessons';
 import ActivityLogView from './ActivityLogView';
@@ -574,17 +574,38 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'data', label: 'Dados & Backup', icon: Database },
   ];
 
+  const [mobileNavOpen, setMobileNavOpen] = [sidebarOpen, setSidebarOpen] as any;
+  const currentSectionLabel = navItems.find(n => n.key === section)?.label || 'Admin';
+
   return (
     <div className="min-h-screen flex" style={{ background: '#0F0F1A' }}>
+      {/* Mobile top bar */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-navy border-b border-primary-foreground/[0.07] h-12 flex items-center px-3 gap-2">
+        <button onClick={() => setSidebarOpen(true)} className="p-1.5 rounded-lg text-primary-foreground hover:bg-primary-foreground/10">
+          <Menu size={20} />
+        </button>
+        <div className="text-[13px] font-medium text-primary-foreground truncate">AdAI Admin · {currentSectionLabel}</div>
+      </div>
+
+      {/* Mobile backdrop */}
+      {sidebarOpen && (
+        <div className="lg:hidden fixed inset-0 bg-black/60 z-40" onClick={() => setSidebarOpen(false)} />
+      )}
+
       {/* Sidebar */}
-      <div className="w-[220px] bg-navy flex flex-col shrink-0">
-        <div className="px-5 py-6 border-b border-primary-foreground/[0.07]">
-          <div className="text-[15px] font-medium text-primary-foreground">AdAI Admin</div>
-          <div className="text-[11px] text-muted-foreground/40">Painel de administração</div>
+      <div className={`fixed lg:relative top-0 left-0 z-50 w-[240px] lg:w-[220px] h-full lg:h-auto bg-navy flex flex-col shrink-0 transition-transform duration-200 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}>
+        <div className="px-5 py-6 border-b border-primary-foreground/[0.07] flex items-start justify-between gap-2">
+          <div>
+            <div className="text-[15px] font-medium text-primary-foreground">AdAI Admin</div>
+            <div className="text-[11px] text-muted-foreground/40">Painel de administração</div>
+          </div>
+          <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-muted-foreground hover:text-primary-foreground p-1">
+            <X size={16} />
+          </button>
         </div>
-        <div className="py-3 flex-1">
+        <div className="py-3 flex-1 overflow-y-auto">
           {navItems.map(item => (
-            <button key={item.key} onClick={() => { setSection(item.key); setViewingCategory(null); }} className={`w-full flex items-center gap-2.5 px-5 py-2.5 text-[13px] transition-colors ${section === item.key ? 'text-brand-blue-medium bg-brand-blue/15' : 'text-muted-foreground/50 hover:text-primary-foreground hover:bg-primary-foreground/5'}`}>
+            <button key={item.key} onClick={() => { setSection(item.key); setViewingCategory(null); setSidebarOpen(false); }} className={`w-full flex items-center gap-2.5 px-5 py-2.5 text-[13px] transition-colors ${section === item.key ? 'text-brand-blue-medium bg-brand-blue/15' : 'text-muted-foreground/50 hover:text-primary-foreground hover:bg-primary-foreground/5'}`}>
               <item.icon size={15} /> {item.label}
             </button>
           ))}
@@ -596,7 +617,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
       </div>
 
       {/* Main */}
-      <div className="flex-1 overflow-y-auto p-8">
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 pt-16 lg:pt-8 w-full min-w-0">
         {section === 'dashboard' && (
           <>
             <h1 className="text-xl font-medium text-primary-foreground mb-6">Dashboard</h1>
