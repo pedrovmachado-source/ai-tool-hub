@@ -150,19 +150,19 @@ export default function Index() {
       }} />
 
       {/* Hero */}
-      <div className="bg-navy py-14 px-8 text-center">
-        <div className="inline-flex items-center gap-2 bg-brand-blue/15 border border-brand-blue/30 text-brand-blue-medium text-xs px-4 py-1.5 rounded-full mb-5">
+      <div className="bg-navy py-10 sm:py-14 px-4 sm:px-8 text-center">
+        <div className="inline-flex items-center gap-2 bg-brand-blue/15 border border-brand-blue/30 text-brand-blue-medium text-[10px] sm:text-xs px-3 sm:px-4 py-1 sm:py-1.5 rounded-full mb-4 sm:mb-5">
           ✨ Curadoria atualizada em 2026
         </div>
-        <h1 className="font-serif-display text-4xl leading-tight text-primary-foreground tracking-tight mb-3">
-          Descubra as melhores <em className="text-brand-blue-medium italic">IAs</em> para<br />turbinar seu negócio
+        <h1 className="font-serif-display text-2xl sm:text-3xl md:text-4xl leading-tight text-primary-foreground tracking-tight mb-3">
+          Descubra as melhores <em className="text-brand-blue-medium italic">IAs</em> para<br className="hidden sm:inline" /> turbinar seu negócio
         </h1>
-        <p className="text-[15px] text-muted-foreground/60 max-w-[520px] mx-auto leading-relaxed">
+        <p className="text-[13px] sm:text-[15px] text-muted-foreground/60 max-w-[520px] mx-auto leading-relaxed">
           Guia completo com as ferramentas de inteligência artificial mais poderosas para empreendedores. Com e-books, prompts prontos e passo a passo.
         </p>
 
         {/* Search */}
-        <div className="max-w-md mx-auto mt-6 relative">
+        <div className="max-w-md mx-auto mt-5 sm:mt-6 relative">
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
             value={searchQuery}
@@ -176,7 +176,7 @@ export default function Index() {
         <div className="flex items-center justify-center gap-2 mt-4">
           <button
             onClick={() => setFreeOnly(v => !v)}
-            className={`inline-flex items-center gap-1.5 text-xs px-3.5 py-1.5 rounded-full border transition-all ${
+            className={`inline-flex items-center gap-1.5 text-[11px] sm:text-xs px-3 sm:px-3.5 py-1.5 rounded-full border transition-all ${
               freeOnly
                 ? 'bg-brand-green text-primary-foreground border-brand-green shadow-brand-sm'
                 : 'bg-primary-foreground/5 text-muted-foreground border-primary-foreground/15 hover:border-brand-green/50 hover:text-brand-green'
@@ -188,8 +188,8 @@ export default function Index() {
 
         {(!user || user.plano !== 'Pro') && (
           <div className="flex flex-col items-center gap-3 mt-5">
-            <div className="flex items-center justify-center gap-2 text-[13px] text-muted-foreground/40">
-              <Lock size={14} /> E-books completos exclusivos para assinantes Pro
+            <div className="flex items-center justify-center gap-2 text-[12px] sm:text-[13px] text-muted-foreground/40 text-center px-2">
+              <Lock size={14} className="shrink-0" /> E-books completos exclusivos para assinantes Pro
             </div>
             <button
               onClick={() => setPage('pro')}
@@ -205,24 +205,24 @@ export default function Index() {
       {!searchQuery && <CategoryTabs activeCategory={activeCategory} onSelect={setActiveCategory} categories={categories} />}
 
       {/* Content */}
-      <div className="max-w-[1100px] mx-auto px-6 py-8 flex-1">
+      <div className="max-w-[1100px] mx-auto px-4 sm:px-6 py-6 sm:py-8 flex-1 w-full">
         {/* Intro Panel */}
         {!searchQuery && category && (
-          <div className="bg-card border border-border rounded-xl p-7 mb-7 flex justify-between items-start gap-8">
-            <div>
-              <h2 className="font-serif-display text-2xl mb-2">{category.introTitle}</h2>
-              <p className="text-sm text-muted-foreground leading-7 max-w-[580px]">{category.introText}</p>
+          <div className="bg-card border border-border rounded-xl p-5 sm:p-7 mb-6 sm:mb-7 flex flex-col md:flex-row justify-between md:items-start gap-5 md:gap-8">
+            <div className="min-w-0">
+              <h2 className="font-serif-display text-xl sm:text-2xl mb-2">{category.introTitle}</h2>
+              <p className="text-[13px] sm:text-sm text-muted-foreground leading-6 sm:leading-7 max-w-[580px]">{category.introText}</p>
               <div className="flex flex-wrap gap-1.5 mt-3">
                 {category.whenTags.map(tag => (
-                  <span key={tag} className="text-xs px-3 py-1 rounded-full border border-border text-muted-foreground">{tag}</span>
+                  <span key={tag} className="text-[11px] sm:text-xs px-2.5 sm:px-3 py-1 rounded-full border border-border text-muted-foreground">{tag}</span>
                 ))}
               </div>
             </div>
-            <div className="flex flex-col gap-2 shrink-0">
+            <div className="flex md:flex-col gap-2 md:shrink-0 overflow-x-auto md:overflow-visible -mx-1 px-1 md:mx-0 md:px-0">
               {category.stats.map((s, i) => (
-                <div key={i} className="bg-secondary rounded-lg px-4 py-2.5 text-center min-w-[100px]">
-                  <div className="text-xl font-medium">{s.num}</div>
-                  <div className="text-[11px] text-muted-foreground mt-0.5">{s.lbl}</div>
+                <div key={i} className="bg-secondary rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-center min-w-[90px] sm:min-w-[100px] shrink-0">
+                  <div className="text-base sm:text-xl font-medium">{s.num}</div>
+                  <div className="text-[10px] sm:text-[11px] text-muted-foreground mt-0.5">{s.lbl}</div>
                 </div>
               ))}
             </div>
@@ -234,7 +234,7 @@ export default function Index() {
         )}
 
         {/* Tools Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           {filteredTools.map(({ tool, category: cat }) => (
             <ToolCard key={tool.key} tool={tool} category={cat} onOpenEbook={() => handleOpenEbook(tool, cat)} />
           ))}
