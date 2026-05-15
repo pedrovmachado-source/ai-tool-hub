@@ -15,26 +15,27 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
 
   return (
     <>
-      <nav className="bg-navy h-[72px] px-8 grid grid-cols-[1fr_auto_1fr] items-center sticky top-0 z-[200]">
+      <nav className="bg-navy h-[64px] sm:h-[72px] px-3 sm:px-8 grid grid-cols-[auto_1fr_auto] sm:grid-cols-[1fr_auto_1fr] items-center sticky top-0 z-[200] gap-2">
         <button onClick={() => onNavigate('home')} className="flex items-center gap-3 text-white text-xl font-semibold tracking-tight justify-self-start">
-          <div className="w-10 h-10 rounded-[10px] overflow-hidden flex items-center justify-center bg-navy">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-[10px] overflow-hidden flex items-center justify-center bg-navy">
             <img src={logoAdai} alt="AdAI" className="w-full h-full object-cover" />
           </div>
         </button>
 
-        <button onClick={() => onNavigate('home')} className="text-center justify-self-center text-white">
-          <span className="block text-xl font-semibold tracking-tight leading-none">AdAI</span>
-          <span className="block text-[11px] font-normal text-white leading-none mt-1">Guia de IAs para Empreendedores</span>
+        <button onClick={() => onNavigate('home')} className="text-center justify-self-center text-white min-w-0">
+          <span className="block text-base sm:text-xl font-semibold tracking-tight leading-none">AdAI</span>
+          <span className="hidden sm:block text-[11px] font-normal text-white leading-none mt-1">Guia de IAs para Empreendedores</span>
         </button>
 
-        <div className="flex items-center gap-2 justify-self-end">
+        <div className="flex items-center gap-1 sm:gap-2 justify-self-end">
           {user && (
             <button
               onClick={() => setShowSaved(true)}
-              className="relative px-2.5 py-1.5 rounded-lg text-white/90 hover:text-white hover:bg-white/15 transition-colors"
+              className="relative p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg text-white/90 hover:text-white hover:bg-white/15 transition-colors"
               title="E-books salvos"
             >
-              <Bookmark size={18} />
+              <Bookmark size={16} className="sm:hidden" />
+              <Bookmark size={18} className="hidden sm:inline" />
               {savedEbooks.length > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-brand-amber text-[9px] font-bold text-white flex items-center justify-center">{savedEbooks.length}</span>
               )}
@@ -43,29 +44,30 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
           {user && (
             <button
               onClick={handleLessonsClick}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-white/90 hover:text-white hover:bg-white/15 transition-colors text-[13px]"
+              className="flex items-center gap-1.5 p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg text-white/90 hover:text-white hover:bg-white/15 transition-colors text-[13px]"
               title="Aulas e Transcrições"
             >
-              <GraduationCap size={18} />
+              <GraduationCap size={16} className="sm:hidden" />
+              <GraduationCap size={18} className="hidden sm:inline" />
               <span className="hidden sm:inline">Aulas</span>
             </button>
           )}
           {!user && !hideAuth ? (
             <>
-              <button onClick={() => setAuthModal({ open: true, mode: 'login' })} className="px-4 py-1.5 rounded-lg text-[13px] font-medium text-white bg-white/15 hover:bg-white/25 transition-colors">Entrar</button>
-              <button onClick={() => setAuthModal({ open: true, mode: 'register' })} className="px-4 py-1.5 rounded-lg text-[13px] font-medium text-navy bg-white hover:bg-white/90 transition-colors">Cadastrar</button>
+              <button onClick={() => setAuthModal({ open: true, mode: 'login' })} className="px-2.5 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-white bg-white/15 hover:bg-white/25 transition-colors">Entrar</button>
+              <button onClick={() => setAuthModal({ open: true, mode: 'register' })} className="px-2.5 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-navy bg-white hover:bg-white/90 transition-colors">Cadastrar</button>
             </>
           ) : !user ? null : (
             <>
               {user.plano === 'Free' && (
-                <button onClick={() => window.open(PRO_PLAN.checkoutUrl, '_blank')} className="px-4 py-1.5 rounded-lg text-[13px] font-medium text-white bg-gradient-to-r from-brand-amber to-brand-amber/80 hover:opacity-90 transition-opacity">⚡ Seja Pro</button>
+                <button onClick={() => window.open(PRO_PLAN.checkoutUrl, '_blank')} className="px-2.5 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-white bg-gradient-to-r from-brand-amber to-brand-amber/80 hover:opacity-90 transition-opacity whitespace-nowrap">⚡<span className="hidden sm:inline"> Seja</span> Pro</button>
               )}
-              <button onClick={() => onNavigate('profile')} className="flex items-center gap-2 bg-white/15 hover:bg-white/25 pl-1.5 pr-3 py-1 rounded-full transition-colors">
-                <div className="w-7 h-7 rounded-full bg-navy flex items-center justify-center text-[11px] font-medium text-white">{user.nome[0]}</div>
-                <span className="text-[13px] text-white">{user.nome}</span>
-                <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${user.plano === 'Pro' ? 'bg-brand-amber text-white' : 'bg-white/25 text-white'}`}>{user.plano === 'Pro' ? 'PRO' : 'FREE'}</span>
+              <button onClick={() => onNavigate('profile')} className="flex items-center gap-1.5 sm:gap-2 bg-white/15 hover:bg-white/25 pl-1 sm:pl-1.5 pr-2 sm:pr-3 py-1 rounded-full transition-colors max-w-[140px] sm:max-w-none">
+                <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-navy flex items-center justify-center text-[11px] font-medium text-white shrink-0">{user.nome[0]}</div>
+                <span className="text-[12px] sm:text-[13px] text-white truncate hidden xs:inline sm:inline">{user.nome}</span>
+                <span className={`text-[9px] sm:text-[10px] font-medium px-1.5 sm:px-2 py-0.5 rounded-full shrink-0 ${user.plano === 'Pro' ? 'bg-brand-amber text-white' : 'bg-white/25 text-white'}`}>{user.plano === 'Pro' ? 'PRO' : 'FREE'}</span>
               </button>
-              <button onClick={logout} className="px-3 py-1.5 rounded-lg text-[13px] text-white/85 hover:text-white hover:bg-white/10 transition-colors">Sair</button>
+              <button onClick={logout} className="hidden sm:block px-3 py-1.5 rounded-lg text-[13px] text-white/85 hover:text-white hover:bg-white/10 transition-colors">Sair</button>
             </>
           )}
         </div>

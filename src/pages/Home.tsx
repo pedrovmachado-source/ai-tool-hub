@@ -92,29 +92,29 @@ export default function Home() {
               'radial-gradient(800px 400px at 20% 0%, hsl(var(--blue) / 0.25), transparent 60%), radial-gradient(600px 300px at 80% 20%, hsl(var(--teal) / 0.18), transparent 60%)',
           }}
         />
-        <div className="relative max-w-[1100px] mx-auto px-6 py-24 md:py-32 text-center">
-          <div className="inline-flex items-center gap-2 bg-brand-blue/15 border border-brand-blue/30 text-brand-blue-medium text-xs px-4 py-1.5 rounded-full mb-6">
-            🎯 Feito para infoprodutores, lançadores e gestores de tráfego
+        <div className="relative max-w-[1100px] mx-auto px-4 sm:px-6 py-16 sm:py-24 md:py-32 text-center">
+          <div className="inline-flex items-center gap-2 bg-brand-blue/15 border border-brand-blue/30 text-brand-blue-medium text-[10px] sm:text-xs px-3 sm:px-4 py-1 sm:py-1.5 rounded-full mb-4 sm:mb-6 max-w-full">
+            <span className="truncate">🎯 Feito para infoprodutores, lançadores e gestores de tráfego</span>
           </div>
-          <h1 className="font-serif-display text-4xl md:text-6xl leading-[1.07] text-primary-foreground tracking-tight mb-5">
+          <h1 className="font-serif-display text-[26px] sm:text-4xl md:text-6xl leading-[1.12] sm:leading-[1.07] text-primary-foreground tracking-tight mb-4 sm:mb-5">
             A IA que escreve seus <em className="text-brand-blue-medium italic">anúncios</em> e multiplica seu faturamento — no piloto automático.
           </h1>
-          <p className="text-base md:text-lg text-muted-foreground/70 max-w-[680px] mx-auto leading-relaxed mb-8">
+          <p className="text-sm sm:text-base md:text-lg text-muted-foreground/70 max-w-[680px] mx-auto leading-relaxed mb-6 sm:mb-8">
             Feito para infoprodutores que querem parar de perder tempo com copy ruim e vender mais todos os dias.
           </p>
-          <div className="flex flex-col items-center justify-center gap-4">
+          <div className="flex flex-col items-center justify-center gap-3 sm:gap-4">
             <Button
               size="lg"
               onClick={goTools}
-              className="bg-brand-blue hover:bg-brand-blue/90 hover:scale-[1.03] text-primary-foreground gap-3 h-16 px-10 rounded-2xl text-base md:text-lg font-semibold shadow-lg shadow-brand-blue/25 transition-all duration-200"
+              className="bg-brand-blue hover:bg-brand-blue/90 hover:scale-[1.03] text-primary-foreground gap-2 sm:gap-3 h-12 sm:h-16 px-5 sm:px-10 rounded-2xl text-sm sm:text-base md:text-lg font-semibold shadow-lg shadow-brand-blue/25 transition-all duration-200 w-full sm:w-auto max-w-full whitespace-normal"
             >
-              Quero escalar meu infoproduto agora <ArrowRight size={20} />
+              <span className="truncate">Quero escalar meu infoproduto agora</span> <ArrowRight size={18} className="shrink-0" />
             </Button>
             <Button
               size="lg"
               variant="ghost"
               onClick={() => scrollTo('o-que-muda')}
-              className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10 h-12 px-6 rounded-xl text-sm"
+              className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10 h-10 sm:h-12 px-5 sm:px-6 rounded-xl text-sm"
             >
               Saiba mais
             </Button>
@@ -123,12 +123,12 @@ export default function Home() {
       </section>
 
       {/* O que muda quando você usa o AdAi */}
-      <Reveal id="o-que-muda" className="max-w-[1100px] mx-auto px-6 py-20 w-full">
-        <div className="text-center mb-12">
-          <p className="text-xs font-medium uppercase tracking-widest text-brand-blue mb-2">Resultados reais</p>
-          <h2 className="font-serif-display text-3xl md:text-4xl tracking-tight">O que muda quando você usa o AdAi</h2>
+      <Reveal id="o-que-muda" className="max-w-[1100px] mx-auto px-4 sm:px-6 py-12 sm:py-20 w-full">
+        <div className="text-center mb-8 sm:mb-12">
+          <p className="text-[11px] sm:text-xs font-medium uppercase tracking-widest text-brand-blue mb-2">Resultados reais</p>
+          <h2 className="font-serif-display text-2xl sm:text-3xl md:text-4xl tracking-tight">O que muda quando você usa o AdAi</h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {[
             { i: '⚡', t: 'Copies em segundos', d: 'Gere anúncios, headlines e VSLs completos em segundos. Sem agência. Sem espera.' },
             { i: '📈', t: 'Escala sem equipe', d: 'A IA trabalha 24h por você. Crie variações, teste criativos e otimize campanhas sozinho.' },
@@ -137,10 +137,10 @@ export default function Home() {
             { i: '🔄', t: 'Lançamentos no automático', d: 'E-mails, stories, scripts e páginas de vendas gerados em minutos.' },
             { i: '🌍', t: 'Venda para qualquer mercado', d: 'Copies adaptadas para Brasil, Portugal, Reino Unido e mercados europeus.' },
           ].map((c) => (
-            <Card key={c.t} className="p-7 border border-border hover:border-brand-blue/40 hover:-translate-y-0.5 transition-all rounded-xl">
-              <div className="text-3xl mb-3" aria-hidden>{c.i}</div>
-              <h3 className="font-serif-display text-xl mb-1.5">{c.t}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">{c.d}</p>
+            <Card key={c.t} className="p-5 sm:p-7 border border-border hover:border-brand-blue/40 hover:-translate-y-0.5 transition-all rounded-xl">
+              <div className="text-2xl sm:text-3xl mb-2 sm:mb-3" aria-hidden>{c.i}</div>
+              <h3 className="font-serif-display text-lg sm:text-xl mb-1.5">{c.t}</h3>
+              <p className="text-[13px] sm:text-sm text-muted-foreground leading-relaxed">{c.d}</p>
             </Card>
           ))}
         </div>
@@ -148,8 +148,8 @@ export default function Home() {
 
       {/* Faixa de métricas */}
       <Reveal as="section" className="bg-navy border-y border-primary-foreground/5">
-        <div className="max-w-[1100px] mx-auto px-6 py-14">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        <div className="max-w-[1100px] mx-auto px-4 sm:px-6 py-10 sm:py-14">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-5 sm:gap-6 text-center">
             {[
               { n: '10x', l: 'mais variações de anúncios' },
               { n: '-60%', l: 'no custo por criativo' },
@@ -157,8 +157,8 @@ export default function Home() {
               { n: '0', l: 'copywriters necessários' },
             ].map((m) => (
               <div key={m.l}>
-                <div className="font-serif-display text-4xl md:text-5xl text-brand-blue-medium mb-2">{m.n}</div>
-                <p className="text-xs md:text-sm text-muted-foreground/80 leading-snug">{m.l}</p>
+                <div className="font-serif-display text-3xl sm:text-4xl md:text-5xl text-brand-blue-medium mb-1 sm:mb-2">{m.n}</div>
+                <p className="text-[11px] sm:text-xs md:text-sm text-muted-foreground/80 leading-snug">{m.l}</p>
               </div>
             ))}
           </div>
@@ -166,12 +166,12 @@ export default function Home() {
       </Reveal>
 
       {/* Como funciona */}
-      <Reveal id="como-funciona" className="max-w-[1100px] mx-auto px-6 py-20 w-full">
-        <div className="text-center mb-12">
-          <p className="text-xs font-medium uppercase tracking-widest text-brand-blue mb-2">Como funciona</p>
-          <h2 className="font-serif-display text-3xl md:text-4xl tracking-tight">Três passos para começar</h2>
+      <Reveal id="como-funciona" className="max-w-[1100px] mx-auto px-4 sm:px-6 py-12 sm:py-20 w-full">
+        <div className="text-center mb-8 sm:mb-12">
+          <p className="text-[11px] sm:text-xs font-medium uppercase tracking-widest text-brand-blue mb-2">Como funciona</p>
+          <h2 className="font-serif-display text-2xl sm:text-3xl md:text-4xl tracking-tight">Três passos para começar</h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
           {[
             { n: '01', icon: Search, t: 'Escolha a ferramenta', d: 'Navegue por categorias curadas — texto, imagem, vídeo, automação e muito mais.' },
             { n: '02', icon: BookOpen, t: 'Aprenda com o e-book', d: 'Cada IA vem com guia completo, prompts prontos e passo a passo de uso.' },
@@ -192,18 +192,18 @@ export default function Home() {
       </Reveal>
       {/* Categorias em destaque */}
       <section className="bg-secondary/40 border-y border-border">
-        <div className="max-w-[1100px] mx-auto px-6 py-20">
-          <div className="flex items-end justify-between mb-10 gap-4 flex-wrap">
+        <div className="max-w-[1100px] mx-auto px-4 sm:px-6 py-12 sm:py-20">
+          <div className="flex items-end justify-between mb-6 sm:mb-10 gap-3 sm:gap-4 flex-wrap">
             <div>
-              <p className="text-xs font-medium uppercase tracking-widest text-brand-blue mb-2">Catálogo</p>
-              <h2 className="font-serif-display text-3xl md:text-4xl tracking-tight">Categorias disponíveis</h2>
+              <p className="text-[11px] sm:text-xs font-medium uppercase tracking-widest text-brand-blue mb-2">Catálogo</p>
+              <h2 className="font-serif-display text-2xl sm:text-3xl md:text-4xl tracking-tight">Categorias disponíveis</h2>
             </div>
-            <Button variant="outline" onClick={goTools} className="gap-2 rounded-xl">
+            <Button variant="outline" onClick={goTools} className="gap-2 rounded-xl text-xs sm:text-sm h-9 sm:h-10">
               Ver todas <ArrowRight size={14} />
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {featured.length === 0 ? (
               Array.from({ length: 6 }).map((_, i) => (
                 <Card key={i} className="p-6 rounded-xl animate-pulse h-32 bg-card" />
@@ -235,8 +235,8 @@ export default function Home() {
       </section>
 
       {/* Números */}
-      <section className="max-w-[1100px] mx-auto px-6 py-16 w-full">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <section className="max-w-[1100px] mx-auto px-4 sm:px-6 py-10 sm:py-16 w-full">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
           {[
             { icon: Library, n: '24+', l: 'Ferramentas curadas' },
             { icon: BookOpen, n: '24', l: 'E-books completos' },
@@ -255,12 +255,12 @@ export default function Home() {
       </section>
 
       {/* Benefícios */}
-      <section className="max-w-[1100px] mx-auto px-6 py-20 w-full">
-        <div className="text-center mb-12">
-          <p className="text-xs font-medium uppercase tracking-widest text-brand-blue mb-2">Por que AdAI</p>
-          <h2 className="font-serif-display text-3xl md:text-4xl tracking-tight">Pensado para quem aplica, não só lê</h2>
+      <section className="max-w-[1100px] mx-auto px-4 sm:px-6 py-12 sm:py-20 w-full">
+        <div className="text-center mb-8 sm:mb-12">
+          <p className="text-[11px] sm:text-xs font-medium uppercase tracking-widest text-brand-blue mb-2">Por que AdAI</p>
+          <h2 className="font-serif-display text-2xl sm:text-3xl md:text-4xl tracking-tight">Pensado para quem aplica, não só lê</h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
           {[
             { icon: Zap, t: 'Curadoria atualizada', d: 'Só as IAs que realmente entregam resultado, revisadas mensalmente em 2026.' },
             { icon: BookOpen, t: 'E-books completos', d: 'Guia prático com casos reais e prompts testados, prontos para usar.' },
@@ -282,12 +282,12 @@ export default function Home() {
 
       {/* Para quem é */}
       <section className="bg-secondary/40 border-y border-border">
-        <div className="max-w-[1100px] mx-auto px-6 py-20">
-          <div className="text-center mb-12">
-            <p className="text-xs font-medium uppercase tracking-widest text-brand-blue mb-2">Para quem é</p>
-            <h2 className="font-serif-display text-3xl md:text-4xl tracking-tight">Feito para empreendedores ocupados</h2>
+        <div className="max-w-[1100px] mx-auto px-4 sm:px-6 py-12 sm:py-20">
+          <div className="text-center mb-8 sm:mb-12">
+            <p className="text-[11px] sm:text-xs font-medium uppercase tracking-widest text-brand-blue mb-2">Para quem é</p>
+            <h2 className="font-serif-display text-2xl sm:text-3xl md:text-4xl tracking-tight">Feito para empreendedores ocupados</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5">
             {[
               { t: 'Donos de pequenos negócios', d: 'Automatize tarefas repetitivas e ganhe horas na semana com IAs certas.' },
               { t: 'Profissionais de marketing', d: 'Crie conteúdo, anúncios e copies em escala mantendo a qualidade.' },
@@ -306,12 +306,12 @@ export default function Home() {
       </section>
 
       {/* Depoimento */}
-      <section className="max-w-[900px] mx-auto px-6 py-20 w-full">
-        <Card className="p-8 md:p-10 rounded-2xl border border-border bg-card">
+      <section className="max-w-[900px] mx-auto px-4 sm:px-6 py-12 sm:py-20 w-full">
+        <Card className="p-6 sm:p-8 md:p-10 rounded-2xl border border-border bg-card">
           <div className="flex items-center gap-1 mb-4 text-brand-blue">
             {Array.from({ length: 5 }).map((_, i) => <Star key={i} size={16} fill="currentColor" />)}
           </div>
-          <p className="font-serif-display text-xl md:text-2xl leading-relaxed mb-5">
+          <p className="font-serif-display text-lg sm:text-xl md:text-2xl leading-relaxed mb-5">
             "Em duas semanas refiz todo o meu fluxo de marketing usando os e-books da AdAI. Economizo cerca de 10 horas por semana e meus anúncios performam melhor."
           </p>
           <div className="flex items-center gap-3">
@@ -326,10 +326,10 @@ export default function Home() {
 
       {/* FAQ */}
       <section className="bg-secondary/40 border-y border-border">
-        <div className="max-w-[800px] mx-auto px-6 py-20">
-          <div className="text-center mb-10">
-            <p className="text-xs font-medium uppercase tracking-widest text-brand-blue mb-2">Dúvidas frequentes</p>
-            <h2 className="font-serif-display text-3xl md:text-4xl tracking-tight">Perguntas comuns</h2>
+        <div className="max-w-[800px] mx-auto px-4 sm:px-6 py-12 sm:py-20">
+          <div className="text-center mb-6 sm:mb-10">
+            <p className="text-[11px] sm:text-xs font-medium uppercase tracking-widest text-brand-blue mb-2">Dúvidas frequentes</p>
+            <h2 className="font-serif-display text-2xl sm:text-3xl md:text-4xl tracking-tight">Perguntas comuns</h2>
           </div>
           <div className="space-y-4">
             {[
@@ -360,19 +360,19 @@ export default function Home() {
               'radial-gradient(700px 350px at 50% 100%, hsl(var(--blue) / 0.25), transparent 60%)',
           }}
         />
-        <div className="relative max-w-[800px] mx-auto px-6 py-24 text-center">
-          <h2 className="font-serif-display text-3xl md:text-5xl text-primary-foreground tracking-tight mb-4">
+        <div className="relative max-w-[800px] mx-auto px-4 sm:px-6 py-16 sm:py-24 text-center">
+          <h2 className="font-serif-display text-2xl sm:text-3xl md:text-5xl text-primary-foreground tracking-tight mb-3 sm:mb-4">
             Pare de deixar dinheiro na mesa.
           </h2>
-          <p className="text-base md:text-lg text-muted-foreground/80 mb-8 max-w-lg mx-auto">
+          <p className="text-sm sm:text-base md:text-lg text-muted-foreground/80 mb-6 sm:mb-8 max-w-lg mx-auto">
             Seu concorrente já está usando IA. Você vai ficar pra trás?
           </p>
           <Button
             size="lg"
             onClick={goTools}
-            className="bg-brand-blue hover:bg-brand-blue/90 hover:scale-[1.03] text-primary-foreground h-16 px-10 rounded-2xl gap-3 text-base md:text-lg font-semibold shadow-lg shadow-brand-blue/25 transition-all duration-200"
+            className="bg-brand-blue hover:bg-brand-blue/90 hover:scale-[1.03] text-primary-foreground h-12 sm:h-16 px-5 sm:px-10 rounded-2xl gap-2 sm:gap-3 text-sm sm:text-base md:text-lg font-semibold shadow-lg shadow-brand-blue/25 transition-all duration-200 w-full sm:w-auto max-w-full whitespace-normal"
           >
-            Começar agora — é gratuito <ArrowRight size={20} />
+            <span className="truncate">Começar agora — é gratuito</span> <ArrowRight size={18} className="shrink-0" />
           </Button>
         </div>
       </Reveal>

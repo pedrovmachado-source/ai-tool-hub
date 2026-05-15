@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { type Tool, type Category } from '@/data/tools-data';
 import { useCategories } from '@/hooks/useCategories';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, LayoutDashboard, Users, CreditCard, FileText, Settings, LogOut, Search, Download, Plus, Pencil, Trash2, X, Check, Palette, Eye, EyeOff, Globe, Bell, Shield, Database, Mail, Play, Video, GraduationCap, Activity } from 'lucide-react';
+import { ArrowLeft, LayoutDashboard, Users, CreditCard, FileText, Settings, LogOut, Search, Download, Plus, Pencil, Trash2, X, Check, Palette, Eye, EyeOff, Globe, Bell, Shield, Database, Mail, Play, Video, GraduationCap, Activity, Menu } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import AdminLessons from './AdminLessons';
 import ActivityLogView from './ActivityLogView';
@@ -117,8 +117,8 @@ function ToolFormModal({ tool, onSave, onClose }: { tool?: Tool; onSave: (t: Too
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={onClose}>
-      <div className="bg-navy border border-primary-foreground/10 rounded-xl p-6 w-[520px] max-h-[85vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-3 sm:p-0" onClick={onClose}>
+      <div className="bg-navy border border-primary-foreground/10 rounded-xl p-6 w-[95vw] sm:w-[520px] max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-medium text-primary-foreground">{tool ? 'Editar Ferramenta' : 'Nova Ferramenta'}</h3>
           <button onClick={onClose} className="text-muted-foreground/40 hover:text-primary-foreground"><X size={16} /></button>
@@ -204,8 +204,8 @@ function ToolFormModal({ tool, onSave, onClose }: { tool?: Tool; onSave: (t: Too
 function CategoryFormModal({ category, onSave, onClose }: { category: Category; onSave: (c: Category) => void; onClose: () => void }) {
   const [form, setForm] = useState({ label: category.label, accent: category.accent, accentLight: category.accentLight, accentDark: category.accentDark, introTitle: category.introTitle, introText: category.introText });
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={onClose}>
-      <div className="bg-navy border border-primary-foreground/10 rounded-xl p-6 w-[480px] max-h-[80vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-3 sm:p-0" onClick={onClose}>
+      <div className="bg-navy border border-primary-foreground/10 rounded-xl p-6 w-[95vw] sm:w-[480px] max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-medium text-primary-foreground">Editar Categoria</h3>
           <button onClick={onClose} className="text-muted-foreground/40 hover:text-primary-foreground"><X size={16} /></button>
@@ -248,8 +248,8 @@ function CategoryFormModal({ category, onSave, onClose }: { category: Category; 
 
 function ConfirmModal({ message, onConfirm, onCancel }: { message: string; onConfirm: () => void; onCancel: () => void }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={onCancel}>
-      <div className="bg-navy border border-primary-foreground/10 rounded-xl p-6 w-[380px]" onClick={e => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-3 sm:p-0" onClick={onCancel}>
+      <div className="bg-navy border border-primary-foreground/10 rounded-xl p-5 sm:p-6 w-[95vw] sm:w-[380px]" onClick={e => e.stopPropagation()}>
         <p className="text-sm text-primary-foreground mb-4">{message}</p>
         <div className="flex gap-2 justify-end">
           <button onClick={onCancel} className="px-4 py-2 rounded-lg text-sm text-muted-foreground/60 hover:text-primary-foreground">Cancelar</button>
@@ -272,8 +272,8 @@ function PlanFormModal({ plan, onSave, onClose }: { plan?: Plan; onSave: (p: Pla
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={onClose}>
-      <div className="bg-navy border border-primary-foreground/10 rounded-xl p-6 w-[480px] max-h-[80vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-3 sm:p-0" onClick={onClose}>
+      <div className="bg-navy border border-primary-foreground/10 rounded-xl p-6 w-[95vw] sm:w-[480px] max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-medium text-primary-foreground">{plan ? 'Editar Plano' : 'Novo Plano'}</h3>
           <button onClick={onClose} className="text-muted-foreground/40 hover:text-primary-foreground"><X size={16} /></button>
@@ -574,17 +574,38 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'data', label: 'Dados & Backup', icon: Database },
   ];
 
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const currentSectionLabel = navItems.find(n => n.key === section)?.label || 'Admin';
+
   return (
     <div className="min-h-screen flex" style={{ background: '#0F0F1A' }}>
+      {/* Mobile top bar */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-navy border-b border-primary-foreground/[0.07] h-12 flex items-center px-3 gap-2">
+        <button onClick={() => setSidebarOpen(true)} className="p-1.5 rounded-lg text-primary-foreground hover:bg-primary-foreground/10">
+          <Menu size={20} />
+        </button>
+        <div className="text-[13px] font-medium text-primary-foreground truncate">AdAI Admin · {currentSectionLabel}</div>
+      </div>
+
+      {/* Mobile backdrop */}
+      {sidebarOpen && (
+        <div className="lg:hidden fixed inset-0 bg-black/60 z-40" onClick={() => setSidebarOpen(false)} />
+      )}
+
       {/* Sidebar */}
-      <div className="w-[220px] bg-navy flex flex-col shrink-0">
-        <div className="px-5 py-6 border-b border-primary-foreground/[0.07]">
-          <div className="text-[15px] font-medium text-primary-foreground">AdAI Admin</div>
-          <div className="text-[11px] text-muted-foreground/40">Painel de administração</div>
+      <div className={`fixed lg:relative top-0 left-0 z-50 w-[240px] lg:w-[220px] h-full lg:h-auto bg-navy flex flex-col shrink-0 transition-transform duration-200 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}>
+        <div className="px-5 py-6 border-b border-primary-foreground/[0.07] flex items-start justify-between gap-2">
+          <div>
+            <div className="text-[15px] font-medium text-primary-foreground">AdAI Admin</div>
+            <div className="text-[11px] text-muted-foreground/40">Painel de administração</div>
+          </div>
+          <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-muted-foreground hover:text-primary-foreground p-1">
+            <X size={16} />
+          </button>
         </div>
-        <div className="py-3 flex-1">
+        <div className="py-3 flex-1 overflow-y-auto">
           {navItems.map(item => (
-            <button key={item.key} onClick={() => { setSection(item.key); setViewingCategory(null); }} className={`w-full flex items-center gap-2.5 px-5 py-2.5 text-[13px] transition-colors ${section === item.key ? 'text-brand-blue-medium bg-brand-blue/15' : 'text-muted-foreground/50 hover:text-primary-foreground hover:bg-primary-foreground/5'}`}>
+            <button key={item.key} onClick={() => { setSection(item.key); setViewingCategory(null); setSidebarOpen(false); }} className={`w-full flex items-center gap-2.5 px-5 py-2.5 text-[13px] transition-colors ${section === item.key ? 'text-brand-blue-medium bg-brand-blue/15' : 'text-muted-foreground/50 hover:text-primary-foreground hover:bg-primary-foreground/5'}`}>
               <item.icon size={15} /> {item.label}
             </button>
           ))}
@@ -596,29 +617,30 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
       </div>
 
       {/* Main */}
-      <div className="flex-1 overflow-y-auto p-8">
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 pt-16 lg:pt-8 w-full min-w-0">
         {section === 'dashboard' && (
           <>
-            <h1 className="text-xl font-medium text-primary-foreground mb-6">Dashboard</h1>
-            <div className="grid grid-cols-4 gap-4 mb-8">
+            <h1 className="text-lg sm:text-xl font-medium text-primary-foreground mb-4 sm:mb-6">Dashboard</h1>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
               {[
                 { label: 'Total de Usuários', value: users.length, change: '↑ +2 essa semana' },
                 { label: 'Assinantes Pro', value: proUsers, change: '↑ +1 esse mês' },
                 { label: 'Receita Mensal', value: `R$${(proUsers * 19.9).toFixed(0)}`, change: '↑ +R$19,90 vs mês anterior' },
                 { label: 'Ferramentas', value: totalTools, change: `${categories.length} categorias` },
               ].map((s, i) => (
-                <div key={i} className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-5">
+                <div key={i} className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-4 sm:p-5">
                   <div className="text-[11px] text-muted-foreground/40 uppercase tracking-wider mb-2">{s.label}</div>
-                  <div className="text-[28px] font-medium text-primary-foreground">{s.value}</div>
+                  <div className="text-2xl sm:text-[28px] font-medium text-primary-foreground">{s.value}</div>
                   <div className="text-xs text-brand-green mt-1">{s.change}</div>
                 </div>
               ))}
             </div>
             <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl overflow-hidden">
-              <div className="flex items-center justify-between px-5 py-4 border-b border-primary-foreground/[0.07]">
+              <div className="flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 border-b border-primary-foreground/[0.07]">
                 <h3 className="text-sm font-medium text-primary-foreground">Usuários Recentes</h3>
                 <button onClick={() => setSection('users')} className="text-xs text-brand-blue-medium hover:underline">Ver todos</button>
               </div>
+              <div className="overflow-x-auto">
               <table className="w-full">
                 <thead><tr className="border-b border-primary-foreground/[0.07]">
                   {['Nome', 'E-mail', 'Plano', 'Acesso'].map(h => <th key={h} className="px-5 py-3 text-left text-[11px] font-semibold text-muted-foreground/40 uppercase tracking-wider">{h}</th>)}
@@ -634,38 +656,40 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
                   ))}
                 </tbody>
               </table>
+              </div>
             </div>
           </>
         )}
 
         {section === 'users' && (
           <>
-            <div className="flex items-center justify-between mb-6">
-              <h1 className="text-xl font-medium text-primary-foreground">Usuários</h1>
-              <div className="flex gap-3">
-                <div className="relative">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-3">
+              <h1 className="text-lg sm:text-xl font-medium text-primary-foreground">Usuários</h1>
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
+                <div className="relative flex-1 sm:flex-initial">
                   <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/40" />
-                  <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Buscar..." className="pl-8 pr-4 py-2 rounded-lg text-sm bg-navy border border-primary-foreground/10 text-primary-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:border-brand-blue w-[260px]" />
+                  <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Buscar..." className="pl-8 pr-4 py-2 rounded-lg text-sm bg-navy border border-primary-foreground/10 text-primary-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:border-brand-blue w-full sm:w-[260px]" />
                 </div>
-                <button onClick={exportCSV} className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium bg-brand-blue text-primary-foreground hover:opacity-90"><Download size={14} /> CSV</button>
+                <button onClick={exportCSV} className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-medium bg-brand-blue text-primary-foreground hover:opacity-90"><Download size={14} /> CSV</button>
               </div>
             </div>
             <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl overflow-hidden">
+              <div className="overflow-x-auto">
               <table className="w-full">
                 <thead><tr className="border-b border-primary-foreground/[0.07]">
-                  {['Nome', 'Sobrenome', 'E-mail', 'Plano', 'Acesso', 'Ações'].map(h => <th key={h} className="px-5 py-3 text-left text-[11px] font-semibold text-muted-foreground/40 uppercase tracking-wider">{h}</th>)}
+                  {['Nome', 'Sobrenome', 'E-mail', 'Plano', 'Acesso', 'Ações'].map(h => <th key={h} className="px-3 sm:px-5 py-3 text-left text-[11px] font-semibold text-muted-foreground/40 uppercase tracking-wider whitespace-nowrap">{h}</th>)}
                 </tr></thead>
                 <tbody>
                   {filteredUsers.map(u => (
                     <tr key={u.id} className="border-b border-primary-foreground/[0.04] hover:bg-primary-foreground/[0.02]">
-                      <td className="px-5 py-3 text-[13px] text-primary-foreground/80">{u.nome}</td>
-                      <td className="px-5 py-3 text-[13px] text-primary-foreground/80">{u.sobre}</td>
-                      <td className="px-5 py-3 text-[13px] text-muted-foreground/50">{u.email}</td>
-                      <td className="px-5 py-3"><span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${u.plano === 'Pro' ? 'bg-brand-green/20 text-brand-green' : u.plano === 'Cancelado' ? 'bg-brand-red/20 text-brand-red' : 'bg-brand-amber/20 text-brand-amber'}`}>{u.plano}</span></td>
-                      <td className="px-5 py-3 text-[13px] text-muted-foreground/50">{new Date(u.created_at).toLocaleDateString('pt-BR')}</td>
-                      <td className="px-5 py-3">
+                      <td className="px-3 sm:px-5 py-3 text-[13px] text-primary-foreground/80 whitespace-nowrap">{u.nome}</td>
+                      <td className="px-3 sm:px-5 py-3 text-[13px] text-primary-foreground/80 whitespace-nowrap">{u.sobre}</td>
+                      <td className="px-3 sm:px-5 py-3 text-[13px] text-muted-foreground/50 whitespace-nowrap">{u.email}</td>
+                      <td className="px-3 sm:px-5 py-3"><span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${u.plano === 'Pro' ? 'bg-brand-green/20 text-brand-green' : u.plano === 'Cancelado' ? 'bg-brand-red/20 text-brand-red' : 'bg-brand-amber/20 text-brand-amber'}`}>{u.plano}</span></td>
+                      <td className="px-3 sm:px-5 py-3 text-[13px] text-muted-foreground/50 whitespace-nowrap">{new Date(u.created_at).toLocaleDateString('pt-BR')}</td>
+                      <td className="px-3 sm:px-5 py-3">
                         <div className="flex gap-2">
-                          <button onClick={() => togglePlan(u.id)} className="text-[11px] px-2 py-1 rounded bg-brand-blue/20 text-brand-blue-medium hover:bg-brand-blue/30">{u.plano === 'Pro' ? 'Rebaixar' : 'Upgrade'}</button>
+                          <button onClick={() => togglePlan(u.id)} className="text-[11px] px-2 py-1 rounded bg-brand-blue/20 text-brand-blue-medium hover:bg-brand-blue/30 whitespace-nowrap">{u.plano === 'Pro' ? 'Rebaixar' : 'Upgrade'}</button>
                           <button onClick={() => deleteUser(u.id)} className="text-[11px] px-2 py-1 rounded bg-brand-red/20 text-brand-red hover:bg-brand-red/30">Excluir</button>
                         </div>
                       </td>
@@ -673,17 +697,19 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
                   ))}
                 </tbody>
               </table>
+              </div>
             </div>
           </>
         )}
 
         {section === 'payments' && (
           <>
-            <h1 className="text-xl font-medium text-primary-foreground mb-6">Pagamentos</h1>
+            <h1 className="text-lg sm:text-xl font-medium text-primary-foreground mb-4 sm:mb-6">Pagamentos</h1>
             <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl overflow-hidden">
+              <div className="overflow-x-auto">
               <table className="w-full">
                 <thead><tr className="border-b border-primary-foreground/[0.07]">
-                  {['Usuário', 'Plano', 'Valor', 'Data', 'Status'].map(h => <th key={h} className="px-5 py-3 text-left text-[11px] font-semibold text-muted-foreground/40 uppercase tracking-wider">{h}</th>)}
+                  {['Usuário', 'Plano', 'Valor', 'Data', 'Status'].map(h => <th key={h} className="px-3 sm:px-5 py-3 text-left text-[11px] font-semibold text-muted-foreground/40 uppercase tracking-wider whitespace-nowrap">{h}</th>)}
                 </tr></thead>
                 <tbody>
                   {[
@@ -694,15 +720,69 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
                     { user: 'Mariana Ferreira', plan: 'Pro Mensal', value: 'R$19,90', date: 'Dez/2024', status: 'Cancelado' },
                   ].map((p, i) => (
                     <tr key={i} className="border-b border-primary-foreground/[0.04]">
-                      <td className="px-5 py-3 text-[13px] text-primary-foreground/80">{p.user}</td>
-                      <td className="px-5 py-3 text-[13px] text-muted-foreground/50">{p.plan}</td>
-                      <td className="px-5 py-3 text-[13px] text-primary-foreground/80">{p.value}</td>
-                      <td className="px-5 py-3 text-[13px] text-muted-foreground/50">{p.date}</td>
-                      <td className="px-5 py-3"><span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${p.status === 'Pago' ? 'bg-brand-green/20 text-brand-green' : 'bg-brand-red/20 text-brand-red'}`}>{p.status}</span></td>
+                      <td className="px-3 sm:px-5 py-3 text-[13px] text-primary-foreground/80 whitespace-nowrap">{p.user}</td>
+                      <td className="px-3 sm:px-5 py-3 text-[13px] text-muted-foreground/50 whitespace-nowrap">{p.plan}</td>
+                      <td className="px-3 sm:px-5 py-3 text-[13px] text-primary-foreground/80 whitespace-nowrap">{p.value}</td>
+                      <td className="px-3 sm:px-5 py-3 text-[13px] text-muted-foreground/50 whitespace-nowrap">{p.date}</td>
+                      <td className="px-3 sm:px-5 py-3"><span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${p.status === 'Pago' ? 'bg-brand-green/20 text-brand-green' : 'bg-brand-red/20 text-brand-red'}`}>{p.status}</span></td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+              </div>
+            </div>
+          </>
+        )}
+
+        {section === 'content' && !viewingCategory && (
+          <>
+            <h1 className="text-lg sm:text-xl font-medium text-primary-foreground mb-4 sm:mb-6">Conteúdo</h1>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
+              <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-4 sm:p-5">
+                <div className="text-[11px] text-muted-foreground/40 uppercase tracking-wider mb-2">Ferramentas de IA</div>
+                <div className="text-2xl sm:text-[28px] font-medium text-primary-foreground">{totalTools}</div>
+              </div>
+              <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-4 sm:p-5">
+                <div className="text-[11px] text-muted-foreground/40 uppercase tracking-wider mb-2">Categorias</div>
+                <div className="text-2xl sm:text-[28px] font-medium text-primary-foreground">{categories.length}</div>
+              </div>
+              <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-4 sm:p-5">
+                <div className="text-[11px] text-muted-foreground/40 uppercase tracking-wider mb-2">E-books</div>
+                <div className="text-2xl sm:text-[28px] font-medium text-primary-foreground">{totalTools}</div>
+              </div>
+            </div>
+
+            <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl overflow-hidden">
+              <div className="flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 border-b border-primary-foreground/[0.07] gap-2 flex-wrap">
+                <h3 className="text-sm font-medium text-primary-foreground">Ferramentas por Categoria</h3>
+                <div className="flex gap-2">
+                  <button onClick={() => {/* could add new category */}} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium bg-brand-green/20 text-brand-green hover:bg-brand-green/30 whitespace-nowrap">
+                    <Plus size={12} /> Nova Categoria
+                  </button>
+                </div>
+              </div>
+              <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead><tr className="border-b border-primary-foreground/[0.07]">
+                  {['Categoria', 'Ferramentas', 'Cor', 'Ações'].map(h => <th key={h} className="px-3 sm:px-5 py-3 text-left text-[11px] font-semibold text-muted-foreground/40 uppercase tracking-wider whitespace-nowrap">{h}</th>)}
+                </tr></thead>
+                <tbody>
+                  {categories.map(c => (
+                    <tr key={c.key} className="border-b border-primary-foreground/[0.04] hover:bg-primary-foreground/[0.02]">
+                      <td className="px-3 sm:px-5 py-3 text-[13px] text-primary-foreground/80 whitespace-nowrap">{c.label}</td>
+                      <td className="px-3 sm:px-5 py-3 text-[13px] text-muted-foreground/50 whitespace-nowrap">{c.tools.length} ferramentas</td>
+                      <td className="px-3 sm:px-5 py-3"><div className="w-4 h-4 rounded" style={{ background: c.accent }} /></td>
+                      <td className="px-3 sm:px-5 py-3">
+                        <div className="flex gap-2">
+                          <button onClick={() => setViewingCategory(c)} className="text-[11px] px-2 py-1 rounded bg-brand-blue/20 text-brand-blue-medium hover:bg-brand-blue/30 flex items-center gap-1 whitespace-nowrap"><Eye size={11} /> Ver</button>
+                          <button onClick={() => setEditingCategory(c)} className="text-[11px] px-2 py-1 rounded bg-brand-amber/20 text-brand-amber hover:bg-brand-amber/30 flex items-center gap-1 whitespace-nowrap"><Palette size={11} /> Editar</button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              </div>
             </div>
           </>
         )}
@@ -773,19 +853,19 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
 
         {section === 'settings' && (
           <>
-            <h1 className="text-xl font-medium text-primary-foreground mb-6">Configurações</h1>
-            <div className="flex gap-6">
+            <h1 className="text-lg sm:text-xl font-medium text-primary-foreground mb-4 sm:mb-6">Configurações</h1>
+            <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
               {/* Settings sidebar */}
-              <div className="w-[200px] shrink-0 space-y-1">
+              <div className="w-full lg:w-[200px] shrink-0 flex lg:block gap-1 overflow-x-auto scrollbar-hide lg:space-y-1 -mx-1 px-1 lg:mx-0 lg:px-0">
                 {settingsTabs.map(t => (
-                  <button key={t.key} onClick={() => setSettingsSection(t.key)} className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] transition-colors ${settingsSection === t.key ? 'text-brand-blue-medium bg-brand-blue/15' : 'text-muted-foreground/50 hover:text-primary-foreground hover:bg-primary-foreground/5'}`}>
+                  <button key={t.key} onClick={() => setSettingsSection(t.key)} className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[12px] sm:text-[13px] transition-colors whitespace-nowrap shrink-0 lg:w-full ${settingsSection === t.key ? 'text-brand-blue-medium bg-brand-blue/15' : 'text-muted-foreground/50 hover:text-primary-foreground hover:bg-primary-foreground/5'}`}>
                     <t.icon size={14} /> {t.label}
                   </button>
                 ))}
               </div>
 
               {/* Settings content */}
-              <div className="flex-1 max-w-lg">
+              <div className="flex-1 lg:max-w-lg min-w-0">
                 {settingsSection === 'credentials' && (
                   <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-6">
                     <h3 className="text-sm font-medium text-primary-foreground mb-4">Credenciais de Acesso</h3>
