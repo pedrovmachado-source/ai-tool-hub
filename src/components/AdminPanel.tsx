@@ -620,26 +620,27 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
       <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 pt-16 lg:pt-8 w-full min-w-0">
         {section === 'dashboard' && (
           <>
-            <h1 className="text-xl font-medium text-primary-foreground mb-6">Dashboard</h1>
-            <div className="grid grid-cols-4 gap-4 mb-8">
+            <h1 className="text-lg sm:text-xl font-medium text-primary-foreground mb-4 sm:mb-6">Dashboard</h1>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
               {[
                 { label: 'Total de Usuários', value: users.length, change: '↑ +2 essa semana' },
                 { label: 'Assinantes Pro', value: proUsers, change: '↑ +1 esse mês' },
                 { label: 'Receita Mensal', value: `R$${(proUsers * 19.9).toFixed(0)}`, change: '↑ +R$19,90 vs mês anterior' },
                 { label: 'Ferramentas', value: totalTools, change: `${categories.length} categorias` },
               ].map((s, i) => (
-                <div key={i} className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-5">
+                <div key={i} className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-4 sm:p-5">
                   <div className="text-[11px] text-muted-foreground/40 uppercase tracking-wider mb-2">{s.label}</div>
-                  <div className="text-[28px] font-medium text-primary-foreground">{s.value}</div>
+                  <div className="text-2xl sm:text-[28px] font-medium text-primary-foreground">{s.value}</div>
                   <div className="text-xs text-brand-green mt-1">{s.change}</div>
                 </div>
               ))}
             </div>
             <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl overflow-hidden">
-              <div className="flex items-center justify-between px-5 py-4 border-b border-primary-foreground/[0.07]">
+              <div className="flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 border-b border-primary-foreground/[0.07]">
                 <h3 className="text-sm font-medium text-primary-foreground">Usuários Recentes</h3>
                 <button onClick={() => setSection('users')} className="text-xs text-brand-blue-medium hover:underline">Ver todos</button>
               </div>
+              <div className="overflow-x-auto">
               <table className="w-full">
                 <thead><tr className="border-b border-primary-foreground/[0.07]">
                   {['Nome', 'E-mail', 'Plano', 'Acesso'].map(h => <th key={h} className="px-5 py-3 text-left text-[11px] font-semibold text-muted-foreground/40 uppercase tracking-wider">{h}</th>)}
