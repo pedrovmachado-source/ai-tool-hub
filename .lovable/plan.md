@@ -1,65 +1,50 @@
-## Ajustes de responsividade no mobile (incluindo Admin)
+# Plano: Planos Max + Assinaturas + Gating
 
-Foco: deixar o site visualmente equilibrado em telas <768px sem alterar nada no desktop.
+## 1. Banco de dados (migration)
+- Atualizar coluna `profiles.plano` para aceitar `'Free' | 'Pro' | 'Max'` (texto livre, sem CHECK rígido — apenas atualizar defaults e RLS).
+- Atualizar RLS de `lessons`, `modules`, `tools`, `categories`:
+  - `tools`/`categories`: continuam liberados para **Pro ou Max** (e admin).
+  - `lessons`/`modules`: passam a exigir **Max ou admin** (vídeos/aulas exclusivos).
+- Atualizar função `get_tool_premium` para aceitar `plano IN ('Pro','Max')`.
+- Seed em `site_settings` chave `plans` com array dos 3 planos pagos (mensal/trimestral/vitalício) × 2 tiers (Pro/Max) — preços conforme abaixo.
 
-### Áreas que serão revisadas
+## 2. Stripe (preços novos)
+Criar produtos/preços no Stripe via tool:
+- **Pro Mensal** R$19,90 (recurring monthly)
+- **Pro Trimestral** R$49,90 (recurring every 3 months)
+- **Pro Vitalício** R$127,90 (one-time)
+- **Max Mensal**, **Max Trimestral**, **Max Vitalício** — pedir preços ao usuário (não informados). *Pergunta abaixo.*
 
-1. **Home (`src/pages/Home.tsx`)**
-   - Hero: headline escalável (`text-3xl sm:text-4xl md:text-6xl`), badge `text-xs`, subheadline `text-sm sm:text-base`, padding vertical menor.
-   - CTAs: empilhar (`flex-col sm:flex-row`), botões `w-full sm:w-auto`.
-   - Seção "O que muda quando você usa o AdAi": padding/ícones reduzidos no mobile.
-   - Faixa de métricas: números (`text-4xl sm:text-5xl md:text-6xl`), legendas `text-xs sm:text-sm`.
-   - Demais seções (Como funciona, Categorias, Para quem é, Depoimento, FAQ, CTA final): títulos e padding escaláveis.
+Guardar os `price_id` em `site_settings.plans` (JSON), lidos pelo frontend e pela edge function `create-checkout`.
 
-2. **Navbar (`src/components/Navbar.tsx`)**
-   - Logo, ícones e hambúrguer proporcionais; padding reduzido em mobile.
+## 3. Edge functions
+- `create-checkout`: receber `{ priceId, mode }` do cliente, validar contra lista de preços permitidos em `site_settings`, criar sessão Stripe (`mode: 'subscription'` ou `'payment'`).
+- `check-subscription`: detectar tier (Pro/Max) pelo `price.product` e gravar `profiles.plano` correspondente; expirar assinaturas canceladas.
+- `customer-portal`: já existe, mantém.
 
-3. **Catálogo (`src/pages/Index.tsx`, `CategoryTabs.tsx`, `ToolCard.tsx`)**
-   - Abas com scroll horizontal suave, fontes menores.
-   - Busca + filtro empilhados em mobile.
-   - Cards com padding interno menor e tipografia adaptativa.
+## 4. Frontend — copy e UI de planos
+- `src/lib/billing.ts` e `src/hooks/usePlanConfig.ts`: substituir constante única por lista (Pro/Max × 3 períodos).
+- `Home.tsx`: refazer seção de pricing com **6 cards** (ou 2 colunas Pro/Max com toggle Mensal/Trimestral/Vitalício). Atualizar FAQ (remover "vitalício único", explicar 3 opções).
+- `ProPage.tsx`: novo layout comparando Pro vs Max, com seletor de período. Botão chama `create-checkout` com o `priceId` certo.
+- `AuthContext`: tipo `plano: 'Free' | 'Pro' | 'Max'`.
 
-4. **Modais (`EbookModal.tsx`, `AuthModal.tsx`, `QuizModal.tsx`)**
-   - `w-[95vw] max-w-2xl`, `max-h-[90vh] overflow-y-auto`, padding interno reduzido, tabs com scroll horizontal no mobile.
+## 5. Gating de conteúdo
+- `EbookModal.tsx`: e-books continuam Pro+ (Pro ou Max). **Aba/seção de vídeos do e-book** passa a exigir Max — mostrar bloqueio "Disponível no plano Max" para usuários Pro.
+- `LessonsPage.tsx`: `canAccess = isAdmin || plano === 'Max'`. Tela de upsell direciona para Max.
+- `Navbar`: badge do plano mostra Free/Pro/Max com cores distintas.
 
-5. **Páginas adicionais (`ProPage.tsx`, `LessonsPage.tsx`, `Profile.tsx`, `PromptsLibrary.tsx`, `UserProfile.tsx`)**
-   - Títulos escaláveis, grids `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`, botões `w-full sm:w-auto`.
+## 6. Admin Panel (`AdminPanel.tsx`)
+- Tabela de usuários: substituir botão "Rebaixar/Upgrade" por **select** com opções `Free | Pro | Max` (atualiza `profiles.plano` direto, com log em `activity_logs`).
+- Métricas: cards separados "Assinantes Pro" e "Assinantes Max".
+- Editor de planos (CRUD `site_settings.plans`): permitir editar preço, `price_id` Stripe, período e tier de cada plano.
 
-6. **Painel Admin (mobile-only)** — `AdminPanel.tsx`, `AdminLessons.tsx`, `ActivityLogView.tsx`
-   - **Sidebar**: vira drawer/off-canvas no mobile (botão hambúrguer no header). No desktop continua fixa lateral, idêntico ao atual.
-   - **Header da seção**: título e botões "Adicionar" empilham no mobile (`flex-col sm:flex-row`), botões `w-full sm:w-auto`.
-   - **Cards de métricas (Dashboard)**: empilham em 1 coluna em <640px (`grid-cols-1 sm:grid-cols-2 lg:grid-cols-4`), fontes dos números reduzidas (`text-2xl sm:text-3xl`).
-   - **Tabelas (Usuários, Pagamentos, Atividade)**: encapsular em `overflow-x-auto` para scroll horizontal; em telas muito pequenas, esconder colunas secundárias com `hidden sm:table-cell`.
-   - **Modais de edição** (`ToolFormModal`, etc.): `w-[95vw] max-h-[90vh] overflow-y-auto`, padding e fontes reduzidos.
-   - **Configurações/Conteúdo**: campos full-width no mobile, gaps menores.
-   - Apenas classes Tailwind responsivas — desktop permanece **idêntico** ao print enviado.
+## 7. Responsivo (mobile + desktop)
+- Cards de preço: `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`, toggle período em pílulas full-width no mobile.
+- Tabela admin de usuários: select de plano em `w-full sm:w-auto`, colunas secundárias com `hidden md:table-cell`.
+- ProPage e seção de Home revisadas em 390px / 768px / 1280px.
 
-### Como vamos fazer
+## Arquivos a alterar
+`supabase/migrations/*` (nova), `supabase/functions/create-checkout/index.ts`, `supabase/functions/check-subscription/index.ts`, `src/lib/billing.ts`, `src/hooks/usePlanConfig.ts`, `src/contexts/AuthContext.tsx`, `src/pages/Home.tsx`, `src/components/ProPage.tsx`, `src/components/EbookModal.tsx`, `src/components/LessonsPage.tsx`, `src/components/Navbar.tsx`, `src/components/AdminPanel.tsx`.
 
-- Edições puramente de classes Tailwind (mobile-first com `sm:`, `md:`, `lg:`).
-- Nenhuma mudança em lógica, backend, autenticação ou Supabase.
-- Validação visual no preview em 390px (mobile) e ≥1024px (desktop).
-
-### Arquivos que serão tocados
-
-- `src/pages/Home.tsx`
-- `src/pages/Index.tsx`
-- `src/pages/Profile.tsx`
-- `src/components/Navbar.tsx`
-- `src/components/CategoryTabs.tsx`
-- `src/components/ToolCard.tsx`
-- `src/components/EbookModal.tsx`
-- `src/components/AuthModal.tsx`
-- `src/components/QuizModal.tsx`
-- `src/components/ProPage.tsx`
-- `src/components/LessonsPage.tsx`
-- `src/components/PromptsLibrary.tsx`
-- `src/components/UserProfile.tsx`
-- `src/components/AdminPanel.tsx`
-- `src/components/AdminLessons.tsx`
-- `src/components/ActivityLogView.tsx`
-
-### Não tocaremos
-
-- Backend, Supabase, edge functions, auth.
-- Layout desktop de qualquer página (apenas adições mobile-first).
+## Pergunta antes de implementar
+Quais os preços do plano **Max** (mensal / trimestral / vitalício)? Sem isso, uso placeholders e você ajusta depois no admin.
