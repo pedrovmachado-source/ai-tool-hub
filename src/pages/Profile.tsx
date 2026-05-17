@@ -11,6 +11,7 @@ import { Switch } from '@/components/ui/switch';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { User, Settings, History, ShieldCheck, Loader2, LogOut, Bookmark } from 'lucide-react';
 import { toast } from 'sonner';
+import { planLabel, planBadgeClass } from '@/lib/plan';
 
 type Tab = 'dados' | 'preferencias' | 'historico' | 'seguranca';
 
@@ -71,14 +72,8 @@ export default function Profile() {
                   <div className="text-xs text-muted-foreground truncate">{user.email}</div>
                 </div>
               </div>
-              <span
-                className={`inline-block text-[10px] font-semibold px-2.5 py-0.5 rounded-full ${
-                  user.plano === 'Pro'
-                    ? 'bg-gradient-to-r from-brand-amber to-brand-amber/80 text-primary-foreground'
-                    : 'bg-secondary text-muted-foreground'
-                }`}
-              >
-                {user.plano === 'Pro' ? 'PRO' : 'FREE'}
+              <span className={`inline-block text-[10px] font-semibold px-2.5 py-0.5 rounded-full ${planBadgeClass(user.plano)}`}>
+                {planLabel(user.plano)}
               </span>
             </Card>
 
