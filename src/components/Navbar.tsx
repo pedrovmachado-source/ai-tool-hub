@@ -4,7 +4,7 @@ import { Menu, Bookmark, X, GraduationCap } from 'lucide-react';
 import AuthModal from './AuthModal';
 import QuizModal from './QuizModal';
 import logoAdai from '@/assets/logo.png';
-import { PRO_PLAN } from '@/lib/billing';
+import { planLabel, planBadgeClass, isPaid } from '@/lib/plan';
 
 export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onNavigate: (page: string) => void; onOpenSavedEbook?: (toolKey: string, categoryKey: string) => void; hideAuth?: boolean }) {
   const handleLessonsClick = () => onNavigate('lessons');
@@ -59,13 +59,13 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
             </>
           ) : !user ? null : (
             <>
-              {user.plano === 'Free' && (
-                <button onClick={() => window.open(PRO_PLAN.checkoutUrl, '_blank')} className="px-2.5 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-white bg-gradient-to-r from-brand-amber to-brand-amber/80 hover:opacity-90 transition-opacity whitespace-nowrap">⚡<span className="hidden sm:inline"> Seja</span> Pro</button>
+              {!isPaid(user.plano) && (
+                <button onClick={() => onNavigate('pro')} className="px-2.5 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-white bg-gradient-to-r from-brand-amber to-brand-amber/80 hover:opacity-90 transition-opacity whitespace-nowrap">⚡<span className="hidden sm:inline"> Assinar</span></button>
               )}
               <button onClick={() => onNavigate('profile')} className="flex items-center gap-1.5 sm:gap-2 bg-white/15 hover:bg-white/25 pl-1 sm:pl-1.5 pr-2 sm:pr-3 py-1 rounded-full transition-colors max-w-[140px] sm:max-w-none">
                 <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-navy flex items-center justify-center text-[11px] font-medium text-white shrink-0">{user.nome[0]}</div>
                 <span className="text-[12px] sm:text-[13px] text-white truncate hidden xs:inline sm:inline">{user.nome}</span>
-                <span className={`text-[9px] sm:text-[10px] font-medium px-1.5 sm:px-2 py-0.5 rounded-full shrink-0 ${user.plano === 'Pro' ? 'bg-brand-amber text-white' : 'bg-white/25 text-white'}`}>{user.plano === 'Pro' ? 'PRO' : 'FREE'}</span>
+                <span className={`text-[9px] sm:text-[10px] font-medium px-1.5 sm:px-2 py-0.5 rounded-full shrink-0 ${planBadgeClass(user.plano)}`}>{planLabel(user.plano)}</span>
               </button>
               <button onClick={logout} className="hidden sm:block px-3 py-1.5 rounded-lg text-[13px] text-white/85 hover:text-white hover:bg-white/10 transition-colors">Sair</button>
             </>

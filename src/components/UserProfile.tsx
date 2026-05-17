@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { planLabel, planBadgeClass, isPaid, isMax } from '@/lib/plan';
 
 export default function UserProfile({ onBack, onNavigate }: { onBack: () => void; onNavigate: (page: string) => void }) {
   const { user, updateUser, logout } = useAuth();
@@ -51,7 +52,7 @@ export default function UserProfile({ onBack, onNavigate }: { onBack: () => void
             <div className="text-lg font-medium">{user.nome} {user.sobre}</div>
             <div className="text-sm text-muted-foreground">{user.email}</div>
             <div className="mt-1">
-              <span className={`text-[11px] font-semibold px-3 py-0.5 rounded-full ${user.plano === 'Pro' ? 'bg-gradient-to-r from-brand-amber to-brand-amber/80 text-primary-foreground' : 'bg-border text-muted-foreground'}`}>{user.plano === 'Pro' ? 'PRO' : 'FREE'}</span>
+              <span className={`text-[11px] font-semibold px-3 py-0.5 rounded-full ${planBadgeClass(user.plano)}`}>{planLabel(user.plano)}</span>
             </div>
           </div>
         </div>
@@ -94,16 +95,25 @@ export default function UserProfile({ onBack, onNavigate }: { onBack: () => void
 
         {tab === 'plano' && (
           <div>
-            {user.plano === 'Pro' ? (
-              <div className="bg-brand-amber/10 border border-brand-amber/30 rounded-xl p-6 text-center">
-                <div className="text-2xl mb-2">⚡</div>
-                <div className="text-base font-semibold mb-1">Você é assinante Pro!</div>
-                <p className="text-sm text-muted-foreground">Acesso completo a todos os e-books, prompts e atualizações mensais.</p>
+            {isPaid(user.plano) ? (
+              <div className={`border rounded-xl p-6 text-center ${isMax(user.plano) ? 'bg-brand-blue/10 border-brand-blue/30' : 'bg-brand-amber/10 border-brand-amber/30'}`}>
+                <div className="text-2xl mb-2">{isMax(user.plano) ? '👑' : '⚡'}</div>
+                <div className="text-base font-semibold mb-1">Você é assinante {planLabel(user.plano)}!</div>
+                <p className="text-sm text-muted-foreground">
+                  {isMax(user.plano)
+                    ? 'Acesso completo: e-books, prompts, vídeos dos e-books e aulas exclusivas.'
+                    : 'Acesso completo a e-books, prompts e guias. Faça upgrade para Max e libere vídeos e aulas.'}
+                </p>
+                {!isMax(user.plano) && (
+                  <button onClick={() => onNavigate('pro')} className="mt-4 px-5 py-2 rounded-lg text-[13px] font-semibold text-white bg-gradient-to-r from-brand-blue to-brand-teal hover:opacity-90">
+                    👑 Fazer upgrade para Max
+                  </button>
+                )}
               </div>
             ) : (
               <div className="text-center">
-                <p className="text-sm text-muted-foreground mb-4">Você está no plano gratuito. Desbloqueie todos os conteúdos com o Pro.</p>
-                <button onClick={() => onNavigate('pro')} className="px-6 py-2.5 rounded-lg text-sm font-semibold text-primary-foreground hover:opacity-90" style={{ background: 'linear-gradient(135deg, #F59E0B, #D97706)' }}>⚡ Assinar Pro — R$19,90/mês</button>
+                <p className="text-sm text-muted-foreground mb-4">Você está no plano gratuito. Desbloqueie todos os conteúdos com Pro ou Max.</p>
+                <button onClick={() => onNavigate('pro')} className="px-6 py-2.5 rounded-lg text-sm font-semibold text-primary-foreground hover:opacity-90" style={{ background: 'linear-gradient(135deg, #F59E0B, #D97706)' }}>⚡ Ver planos</button>
               </div>
             )}
 

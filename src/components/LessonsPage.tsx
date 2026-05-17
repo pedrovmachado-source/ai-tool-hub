@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { isMax } from '@/lib/plan';
 import { ArrowLeft, Play, FileText, Lock, Folder, X, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Document, Page, pdfjs } from 'react-pdf';
@@ -63,7 +64,7 @@ export default function LessonsPage({ onBack }: { onBack: () => void }) {
   const [pdfPage, setPdfPage] = useState(1);
   const [pdfLoading, setPdfLoading] = useState(false);
 
-  const canAccess = isAdmin || user?.plano === 'Pro';
+  const canAccess = isAdmin || isMax(user?.plano);
   const pdfCanGoPrev = pdfPage > 1;
   const pdfCanGoNext = pdfPage < pdfPages;
   const pdfScale = useMemo(() => (typeof window !== 'undefined' && window.innerWidth < 768 ? 0.8 : 1.2), []);
@@ -126,7 +127,7 @@ export default function LessonsPage({ onBack }: { onBack: () => void }) {
         <div className="max-w-3xl mx-auto py-20 px-6 text-center">
           <Lock size={42} className="mx-auto mb-4 text-muted-foreground/50" />
           <h1 className="font-serif-display text-3xl mb-3">Aulas e Transcrições</h1>
-          <p className="text-muted-foreground mb-6">Conteúdo exclusivo para assinantes Pro.</p>
+          <p className="text-muted-foreground mb-6">Conteúdo exclusivo para assinantes <strong>Max</strong>.</p>
           <button onClick={onBack} className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm">Voltar</button>
         </div>
       </div>

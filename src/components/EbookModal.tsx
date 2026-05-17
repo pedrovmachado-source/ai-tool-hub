@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import type { Tool, Category } from '@/data/tools-data';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import { isPaid } from '@/lib/plan';
 
 interface EbookModalProps {
   tool: Tool;
@@ -62,7 +63,7 @@ function getEmbedUrl(url: string): string | null {
 
 export default function EbookModal({ tool, category, isOpen, onClose }: EbookModalProps) {
   const { user, isAdmin, saveEbook, unsaveEbook, isEbookSaved } = useAuth();
-  const canAccess = isAdmin || (user && user.plano === 'Pro');
+  const canAccess = isAdmin || isPaid(user?.plano);
   const [premium, setPremium] = useState<Partial<Tool> | null>(null);
   const [loadingPremium, setLoadingPremium] = useState(false);
   const [activeTab, setActiveTab] = useState<'ebook' | 'videos' | 'pdf'>('ebook');
@@ -99,8 +100,8 @@ export default function EbookModal({ tool, category, isOpen, onClose }: EbookMod
       <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4" style={{ background: 'rgba(10,10,30,0.65)' }} onClick={onClose}>
         <div className="bg-card rounded-2xl w-full max-w-[400px] p-8 text-center animate-slide-up" onClick={e => e.stopPropagation()}>
           <div className="text-4xl mb-4">🔒</div>
-          <h2 className="text-lg font-semibold mb-2">Conteúdo exclusivo Pro</h2>
-          <p className="text-sm text-muted-foreground mb-6">Assine o plano Pro para acessar os e-books completos, prompts avançados e guias passo a passo.</p>
+          <h2 className="text-lg font-semibold mb-2">Conteúdo exclusivo</h2>
+          <p className="text-sm text-muted-foreground mb-6">Assine um plano Pro ou Max para acessar os e-books completos, prompts avançados e guias passo a passo.</p>
           <button onClick={onClose} className="px-6 py-2 rounded-lg text-sm font-medium bg-secondary text-foreground hover:bg-secondary/80 transition-colors">Fechar</button>
         </div>
       </div>

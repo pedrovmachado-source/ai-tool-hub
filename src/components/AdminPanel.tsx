@@ -475,6 +475,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
   );
 
   const proUsers = users.filter(u => u.plano === 'Pro').length;
+  const maxUsers = users.filter(u => u.plano === 'Max').length;
   const totalTools = categories.reduce((sum, c) => sum + c.tools.length, 0);
 
   const navItems = [
@@ -487,10 +488,9 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'settings', label: 'Configurações', icon: Settings },
   ];
 
-  const togglePlan = async (userId: string) => {
+  const setUserPlan = async (userId: string, newPlano: 'Free' | 'Pro' | 'Max') => {
     const user = users.find(u => u.id === userId);
-    if (!user) return;
-    const newPlano = user.plano === 'Pro' ? 'Free' : 'Pro';
+    if (!user || user.plano === newPlano) return;
     const { error } = await supabase.from('profiles').update({ plano: newPlano }).eq('id', userId);
     if (error) { toast({ title: 'Erro', description: error.message, variant: 'destructive' }); return; }
     setUsers(prev => prev.map(u => u.id === userId ? { ...u, plano: newPlano } : u));
@@ -623,9 +623,9 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
             <h1 className="text-lg sm:text-xl font-medium text-primary-foreground mb-4 sm:mb-6">Dashboard</h1>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
               {[
-                { label: 'Total de Usuários', value: users.length, change: '↑ +2 essa semana' },
-                { label: 'Assinantes Pro', value: proUsers, change: '↑ +1 esse mês' },
-                { label: 'Receita Mensal', value: `R$${(proUsers * 19.9).toFixed(0)}`, change: '↑ +R$19,90 vs mês anterior' },
+                { label: 'Total de Usuários', value: users.length, change: `${proUsers + maxUsers} pagantes` },
+                { label: 'Assinantes Pro', value: proUsers, change: 'plano intermediário' },
+                { label: 'Assinantes Max', value: maxUsers, change: 'plano premium' },
                 { label: 'Ferramentas', value: totalTools, change: `${categories.length} categorias` },
               ].map((s, i) => (
                 <div key={i} className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-4 sm:p-5">
@@ -650,7 +650,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
                     <tr key={u.id} className="border-b border-primary-foreground/[0.04] hover:bg-primary-foreground/[0.02]">
                       <td className="px-5 py-3 text-[13px] text-primary-foreground/80">{u.nome} {u.sobre}</td>
                       <td className="px-5 py-3 text-[13px] text-muted-foreground/50">{u.email}</td>
-                      <td className="px-5 py-3"><span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${u.plano === 'Pro' ? 'bg-brand-green/20 text-brand-green' : u.plano === 'Cancelado' ? 'bg-brand-red/20 text-brand-red' : 'bg-brand-amber/20 text-brand-amber'}`}>{u.plano}</span></td>
+                      <td className="px-5 py-3"><span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${u.plano === 'Max' ? 'bg-brand-blue/20 text-brand-blue-medium' : u.plano === 'Pro' ? 'bg-brand-green/20 text-brand-green' : u.plano === 'Cancelado' ? 'bg-brand-red/20 text-brand-red' : 'bg-brand-amber/20 text-brand-amber'}`}>{u.plano}</span></td>
                       <td className="px-5 py-3 text-[13px] text-muted-foreground/50">{new Date(u.created_at).toLocaleDateString('pt-BR')}</td>
                     </tr>
                   ))}
@@ -685,11 +685,21 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
                       <td className="px-3 sm:px-5 py-3 text-[13px] text-primary-foreground/80 whitespace-nowrap">{u.nome}</td>
                       <td className="px-3 sm:px-5 py-3 text-[13px] text-primary-foreground/80 whitespace-nowrap">{u.sobre}</td>
                       <td className="px-3 sm:px-5 py-3 text-[13px] text-muted-foreground/50 whitespace-nowrap">{u.email}</td>
-                      <td className="px-3 sm:px-5 py-3"><span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${u.plano === 'Pro' ? 'bg-brand-green/20 text-brand-green' : u.plano === 'Cancelado' ? 'bg-brand-red/20 text-brand-red' : 'bg-brand-amber/20 text-brand-amber'}`}>{u.plano}</span></td>
+                      <td className="px-3 sm:px-5 py-3">
+                        <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${u.plano === 'Max' ? 'bg-brand-blue/20 text-brand-blue-medium' : u.plano === 'Pro' ? 'bg-brand-green/20 text-brand-green' : u.plano === 'Cancelado' ? 'bg-brand-red/20 text-brand-red' : 'bg-brand-amber/20 text-brand-amber'}`}>{u.plano}</span>
+                      </td>
                       <td className="px-3 sm:px-5 py-3 text-[13px] text-muted-foreground/50 whitespace-nowrap">{new Date(u.created_at).toLocaleDateString('pt-BR')}</td>
                       <td className="px-3 sm:px-5 py-3">
-                        <div className="flex gap-2">
-                          <button onClick={() => togglePlan(u.id)} className="text-[11px] px-2 py-1 rounded bg-brand-blue/20 text-brand-blue-medium hover:bg-brand-blue/30 whitespace-nowrap">{u.plano === 'Pro' ? 'Rebaixar' : 'Upgrade'}</button>
+                        <div className="flex flex-wrap gap-2 items-center">
+                          <select
+                            value={u.plano === 'Max' || u.plano === 'Pro' ? u.plano : 'Free'}
+                            onChange={e => setUserPlan(u.id, e.target.value as 'Free' | 'Pro' | 'Max')}
+                            className="text-[11px] px-2 py-1 rounded bg-primary-foreground/10 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue"
+                          >
+                            <option value="Free">Free</option>
+                            <option value="Pro">Pro</option>
+                            <option value="Max">Max</option>
+                          </select>
                           <button onClick={() => deleteUser(u.id)} className="text-[11px] px-2 py-1 rounded bg-brand-red/20 text-brand-red hover:bg-brand-red/30">Excluir</button>
                         </div>
                       </td>

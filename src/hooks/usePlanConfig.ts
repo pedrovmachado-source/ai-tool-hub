@@ -1,6 +1,37 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { DEFAULT_PLANS_CONFIG, type PlansConfig } from '@/lib/plan';
 
+export function usePlansConfig() {
+  const [plans, setPlans] = useState<PlansConfig>(DEFAULT_PLANS_CONFIG);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    supabase
+      .from('site_settings')
+      .select('value')
+      .eq('key', 'plans_config')
+      .maybeSingle()
+      .then(({ data }) => {
+        if (cancelled) return;
+        if (data?.value) {
+          // Shallow-merge with defaults to tolerate partial configs
+          const v = data.value as Partial<PlansConfig>;
+          setPlans({
+            pro: { ...DEFAULT_PLANS_CONFIG.pro, ...(v.pro || {}) },
+            max: { ...DEFAULT_PLANS_CONFIG.max, ...(v.max || {}) },
+          });
+        }
+        setLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, []);
+
+  return { plans, loading, setPlans };
+}
+
+// Back-compat: keep the old hook so older imports don't break.
 export interface PlanConfig {
   name: string;
   price: string;
@@ -9,31 +40,15 @@ export interface PlanConfig {
   features: string[];
 }
 
-const DEFAULT_PLAN: PlanConfig = {
+const LEGACY_DEFAULT: PlanConfig = {
   name: 'Pro Vitalício',
-  price: '14.90',
+  price: '127.90',
   period: 'vitalicio',
-  checkoutUrl: 'https://buy.stripe.com/eVqdRb2JS5lmflRc1P5wI01',
+  checkoutUrl: DEFAULT_PLANS_CONFIG.pro.vitalicio.checkoutUrl,
   features: ['Tudo do plano gratuito', '24 e-books completos', '+200 prompts exclusivos', 'Guias passo a passo', 'Atualizações contínuas', 'Suporte prioritário'],
 };
 
 export function usePlanConfig() {
-  const [plan, setPlan] = useState<PlanConfig>(DEFAULT_PLAN);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    supabase
-      .from('site_settings')
-      .select('value')
-      .eq('key', 'pro_plan')
-      .maybeSingle()
-      .then(({ data }) => {
-        if (data?.value) {
-          setPlan(data.value as unknown as PlanConfig);
-        }
-        setLoading(false);
-      });
-  }, []);
-
-  return { plan, loading };
+  const [plan] = useState<PlanConfig>(LEGACY_DEFAULT);
+  return { plan, loading: false };
 }

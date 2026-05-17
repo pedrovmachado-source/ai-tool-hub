@@ -6,7 +6,7 @@ interface Profile {
   nome: string;
   sobre: string;
   email: string;
-  plano: 'Free' | 'Pro';
+  plano: 'Free' | 'Pro' | 'Max';
   telefone?: string;
   empresa?: string;
 }
@@ -56,7 +56,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     nome: profile?.nome || (typeof supaUser.user_metadata?.nome === 'string' ? supaUser.user_metadata.nome : ''),
     sobre: profile?.sobre || (typeof supaUser.user_metadata?.sobre === 'string' ? supaUser.user_metadata.sobre : ''),
     email: profile?.email || supaUser.email || '',
-    plano: profile?.plano === 'Pro' ? 'Pro' : 'Free',
+    plano: profile?.plano === 'Max' ? 'Max' : profile?.plano === 'Pro' ? 'Pro' : 'Free',
     telefone: profile?.telefone || undefined,
     empresa: profile?.empresa || undefined,
   }), []);
