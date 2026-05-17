@@ -475,6 +475,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
   );
 
   const proUsers = users.filter(u => u.plano === 'Pro').length;
+  const maxUsers = users.filter(u => u.plano === 'Max').length;
   const totalTools = categories.reduce((sum, c) => sum + c.tools.length, 0);
 
   const navItems = [
@@ -487,10 +488,9 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'settings', label: 'Configurações', icon: Settings },
   ];
 
-  const togglePlan = async (userId: string) => {
+  const setUserPlan = async (userId: string, newPlano: 'Free' | 'Pro' | 'Max') => {
     const user = users.find(u => u.id === userId);
-    if (!user) return;
-    const newPlano = user.plano === 'Pro' ? 'Free' : 'Pro';
+    if (!user || user.plano === newPlano) return;
     const { error } = await supabase.from('profiles').update({ plano: newPlano }).eq('id', userId);
     if (error) { toast({ title: 'Erro', description: error.message, variant: 'destructive' }); return; }
     setUsers(prev => prev.map(u => u.id === userId ? { ...u, plano: newPlano } : u));
