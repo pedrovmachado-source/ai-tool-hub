@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { type Tool, type Category } from '@/data/tools-data';
 import { useCategories } from '@/hooks/useCategories';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, LayoutDashboard, Users, CreditCard, FileText, Settings, LogOut, Search, Download, Plus, Pencil, Trash2, X, Check, Palette, Eye, EyeOff, Globe, Bell, Shield, Database, Mail, Play, Video, GraduationCap, Activity, Menu } from 'lucide-react';
+import { ArrowLeft, LayoutDashboard, Users, CreditCard, FileText, Settings, LogOut, Search, Download, Plus, Pencil, Trash2, X, Check, Palette, Eye, EyeOff, Globe, Bell, Shield, Database, Mail, Play, Video, GraduationCap, Activity, Menu, Folder } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import AdminLessons from './AdminLessons';
 import AdminContentSections from './AdminContentSections';
