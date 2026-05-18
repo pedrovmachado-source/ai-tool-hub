@@ -434,8 +434,10 @@ export type Database = {
           description: string
           id: string
           product_slug: string
+          read_at: string | null
           ref_link_1: string
           ref_link_2: string
+          status: string
           user_id: string
           whatsapp: string
         }
@@ -444,8 +446,10 @@ export type Database = {
           description: string
           id?: string
           product_slug: string
+          read_at?: string | null
           ref_link_1: string
           ref_link_2: string
+          status?: string
           user_id: string
           whatsapp: string
         }
@@ -454,8 +458,10 @@ export type Database = {
           description?: string
           id?: string
           product_slug?: string
+          read_at?: string | null
           ref_link_1?: string
           ref_link_2?: string
+          status?: string
           user_id?: string
           whatsapp?: string
         }
@@ -469,8 +475,10 @@ export type Database = {
           created_at: string
           example_url: string | null
           id: string
+          kind: string
           name: string
           price: string
+          row_key: string | null
           short_desc: string
           slug: string
           sort_order: number
@@ -483,8 +491,10 @@ export type Database = {
           created_at?: string
           example_url?: string | null
           id?: string
+          kind?: string
           name: string
           price: string
+          row_key?: string | null
           short_desc?: string
           slug: string
           sort_order?: number
@@ -497,8 +507,10 @@ export type Database = {
           created_at?: string
           example_url?: string | null
           id?: string
+          kind?: string
           name?: string
           price?: string
+          row_key?: string | null
           short_desc?: string
           slug?: string
           sort_order?: number
