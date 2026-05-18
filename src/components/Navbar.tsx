@@ -12,14 +12,19 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
   const [showSaved, setShowSaved] = useState(false);
   const [showQuiz, setShowQuiz] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const [showNiche, setShowNiche] = useState(false);
 
-  const go = (target: string) => { setShowMenu(false); onNavigate(target); };
+  const go = (target: string) => {
+    setShowMenu(false);
+    if (target === 'niche-lessons') { setShowNiche(true); return; }
+    onNavigate(target);
+  };
 
   const menuItems = [
     { key: 'offers', label: 'Ofertas validadas', icon: Sparkles, color: 'text-brand-amber' },
     { key: 'site-creation', label: 'Criação de site', icon: Globe2, color: 'text-brand-blue-medium' },
     { key: 'creative-edit', label: 'Edição de criativo', icon: Wand2, color: 'text-brand-teal' },
-    { key: 'topic-lessons', label: 'Aulas por assunto', icon: BookOpen, color: 'text-brand-green' },
+    { key: 'niche-lessons', label: 'Aulas por nicho', icon: BookOpen, color: 'text-brand-green' },
     { key: 'lessons', label: 'Aulas em grupo', icon: GraduationCap, color: 'text-brand-blue-medium' },
   ];
 
