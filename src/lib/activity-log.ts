@@ -8,6 +8,7 @@ export type ActivityAction =
 export type ActivityEntity =
   | 'user' | 'profile' | 'plan' | 'category' | 'tool'
   | 'module' | 'lesson' | 'lesson_pdf' | 'lesson_video'
+  | 'content_section' | 'content_item'
   | 'site_settings' | 'role';
 
 interface LogParams {

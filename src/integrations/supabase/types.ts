@@ -101,6 +101,101 @@ export type Database = {
         }
         Relationships: []
       }
+      content_items: {
+        Row: {
+          body: string | null
+          created_at: string
+          description: string
+          id: string
+          image_url: string | null
+          kind: string
+          pdf_path: string | null
+          section_slug: string
+          sort_order: number
+          title: string
+          topic: string | null
+          updated_at: string
+          video_url: string | null
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          image_url?: string | null
+          kind: string
+          pdf_path?: string | null
+          section_slug: string
+          sort_order?: number
+          title: string
+          topic?: string | null
+          updated_at?: string
+          video_url?: string | null
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          image_url?: string | null
+          kind?: string
+          pdf_path?: string | null
+          section_slug?: string
+          sort_order?: number
+          title?: string
+          topic?: string | null
+          updated_at?: string
+          video_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_items_section_slug_fkey"
+            columns: ["section_slug"]
+            isOneToOne: false
+            referencedRelation: "content_sections"
+            referencedColumns: ["slug"]
+          },
+        ]
+      }
+      content_sections: {
+        Row: {
+          cover_url: string | null
+          created_at: string
+          description: string
+          id: string
+          intro: string
+          min_plan: string
+          slug: string
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          cover_url?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          intro?: string
+          min_plan?: string
+          slug: string
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          cover_url?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          intro?: string
+          min_plan?: string
+          slug?: string
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       lessons: {
         Row: {
           created_at: string
