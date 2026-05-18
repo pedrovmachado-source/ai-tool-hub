@@ -1,71 +1,98 @@
-# Plano
+## Visão geral
 
-## 1. Atualizar links de pagamento (Stripe)
+Cinco frentes integradas, reaproveitando o padrão já existente (módulos/aulas, `content_sections/items`, `site_settings`, painel admin com abas).
 
-Atualizar `DEFAULT_PLANS_CONFIG` em `src/lib/plan.ts` e a linha equivalente em `plans_config` no `site_settings` com os 6 links live:
+---
 
-| Plano | Preço | Link |
-|---|---|---|
-| Pro Mensal | 19,90 | `bJe8wR2JSg00ehN2rf5wI07` |
-| Pro Trimestral | 49,90 | `8x2eVf1FO156flR5Dr5wI06` |
-| Pro Vitalício | 127,90 | `9B614pbgo156c9F5Dr5wI03` |
-| Max Mensal | 29,90 | `5kQbJ384cbJK1v19TH5wI08` |
-| Max Trimestral | 79,90 | `00w9AV5W47tuflRd5T5wI05` |
-| Max Vitalício | 197,90 | `14AfZjfwE8xy3D99TH5wI02` |
+## 1. Botão "Assinar Max" no bloqueio de Aulas em Grupo
 
-Substituir os URLs `test_…` por `https://buy.stripe.com/<id>` e rodar uma migration para atualizar `site_settings.plans_config`.
+- Em `LessonsPage.tsx`, na tela de bloqueio (`!canAccess`), adicionar botão **"⚡ Assinar Max"** ao lado do "Voltar".
+- O link vem de `site_settings.key = 'max_subscribe_url'` (com fallback para o link Stripe vitalício do Max já no `DEFAULT_PLANS_CONFIG`).
+- Abre em nova aba (`target="_blank" rel="noopener"`).
+- No admin (aba **Configurações** já existente), criar campo editável **"Link do botão Assinar Max"**.
 
-## 2. Botão hambúrguer + drawer lateral
+---
 
-Em `src/components/Navbar.tsx`:
-- Adicionar botão `Menu` (lucide) à esquerda da navbar (visível para todos os usuários logados) — substituindo o hambúrguer flutuante de admin, que vira um item dentro do drawer.
-- Drawer lateral (mesmo padrão do drawer de "E-books salvos") com seções:
-  - **Aulas em grupo** → chama `onNavigate('lessons')` (move o botão "Aulas" que hoje fica no canto direito para dentro do drawer e remove do header).
-  - **Ofertas validadas** → nova rota `offers`.
-  - **Criação de site** → nova rota `site-creation`.
-  - **Edição de criativo** → nova rota `creative-edit`.
-  - **Aulas por assunto** (mineração de produtos, copy, criação de sites, etc.) → nova rota `topic-lessons`.
-  - Se admin: link "Painel Administrativo".
+## 2. Aulas por Nicho (renomeação + módulos próprios + popup)
 
-## 3. Conteúdo dinâmico para as novas seções
+- Renomear no `Navbar.tsx` o item de menu de **"Aulas por assunto" → "Aulas por nicho"**.
+- Criar tabelas **`niche_modules`** e **`niche_lessons`** espelhando exatamente a estrutura de `modules`/`lessons` (título, descrição, capa, vídeo URL, PDF, ordem). RLS: leitura para Pro e Max; escrita só admin.
+- No admin, nova aba **"Aulas por Nicho"** → componente `AdminNicheLessons.tsx` clonado de `AdminLessons.tsx`, apontando para as novas tabelas e usando o bucket `lesson-pdfs` (pasta `niche/`).
+- No frontend, clicar em **"Aulas por nicho"** no menu hambúrguer abre um **popup modal** (overlay com botão X), não navega para outra página. Componente `NicheLessonsModal.tsx`: lista módulos → ao clicar abre lista de aulas com vídeo (modal interno) e PDF (PdfModal já existente). Substitui a rota atual `topic-lessons` em `Index.tsx`.
 
-Cada uma das 4 novas seções (Ofertas validadas, Criação de site, Edição de criativo, Aulas por assunto) usa o **mesmo modelo de conteúdo**: descrição, vídeos (URL), PDFs e imagens — totalmente controlado pelo admin.
+---
 
-### Banco (migration)
-- Nova tabela `content_sections`:
-  - `id uuid pk`, `slug text unique` (`offers`, `site-creation`, `creative-edit`, `topic-lessons`),
-  - `title text`, `description text`, `intro text`, `cover_url text`, `updated_at`.
-- Nova tabela `content_items`:
-  - `id uuid pk`, `section_slug text references content_sections(slug)`,
-  - `topic text` (para "Aulas por assunto": ex. "Mineração", "Copy", "Sites"), nullable nas outras seções,
-  - `title text`, `description text`,
-  - `kind text check in ('video','pdf','image','text')`,
-  - `video_url text`, `pdf_path text` (no bucket `lesson-pdfs`), `image_url text`,
-  - `sort_order int`, `created_at`, `updated_at`.
-- RLS: leitura para `Pro` ou `Max` (configurável por seção via coluna `min_plan` — default `Pro`; "Aulas por assunto" e "Edição de criativo" podem ficar `Max`). Escrita só admin.
-- Seed das 4 seções com slugs.
+## 3. Ofertas Validadas — popup + admin
 
-### Frontend
-- Novo componente `src/components/ContentSectionPage.tsx` parametrizado por `slug`. Renderiza intro + grid de itens. Vídeos abrem em modal (reaproveitando `getEmbedUrl` de `LessonsPage`). PDFs abrem no visor PDF (reaproveitar lógica de `LessonsPage`). Imagens em lightbox simples. Para `topic-lessons`, agrupa por `topic` com tabs.
-- Em `src/pages/Index.tsx`, adicionar rotas `offers`, `site-creation`, `creative-edit`, `topic-lessons` que renderizam `<ContentSectionPage slug=... />`. Gating: bloqueio amigável + CTA para `pro` se o usuário não tem plano suficiente.
+- Aumentar `content_items` com colunas opcionais:
+  - `example_url text` (link de exemplo)
+  - `buy_url text` (link Stripe / botão "Comprar")
+- No `AdminContentSections.tsx`, adicionar esses dois campos no formulário do item (sempre visíveis, opcionais).
+- No `ContentSectionPage.tsx`, ao clicar em qualquer item da seção `offers`, abrir um **`OfferModal`** mostrando título, descrição, botões "Ver exemplo" (`example_url`) e "Comprar" (`buy_url`), ambos em nova aba. Botão X para fechar.
 
-### Admin
-- Novo componente `src/components/AdminContentSections.tsx` (espelhando `AdminLessons.tsx`):
-  - Lista as 4 seções; ao abrir uma, mostra editor do header (título/intro/cover) + CRUD de itens (título, descrição, tipo, upload de PDF/imagem, link de vídeo, tópico, ordem).
-  - Upload de PDF reusa bucket `lesson-pdfs`; imagens vão para novo bucket público `content-images` (criado na migration).
-- Adicionar aba "Conteúdos" em `AdminPanel.tsx`.
+---
 
-## 4. Remover hambúrguer flutuante antigo
+## 4. Criação de Site — página dedicada
 
-Mover o acesso ao admin para dentro do novo drawer e remover o botão `fixed top-[80px] left-3` do `Navbar`.
+- Nova tabela **`site_products`**:
+  - `id, slug, column ('ia'|'manual'), name, price text, short_desc text, example_url text, buy_url text, sort_order, active boolean`
+  - RLS: leitura para qualquer autenticado; escrita só admin.
+- Seed dos 8 produtos listados (Landing/Quiz/Advertorial/Type Bot × IA/Manual com os preços especificados).
+- Nova tabela **`site_orders`**:
+  - `id, user_id, product_slug, description, ref_link_1, ref_link_2, whatsapp, created_at`
+  - RLS: usuário pode inserir o próprio; admin lê todos.
+- Substituir a rota `site-creation` em `Index.tsx`: deixar de usar `ContentSectionPage` e renderizar um novo **`SiteCreationPage.tsx`** com layout em 2 colunas (Copy de IA / Copy à Mão), cada card com nome, preço, descrição, **"Ver exemplo"** (nova aba) e **"Comprar"** (abre modal de pedido).
+- **`SiteOrderModal.tsx`**: 4 campos obrigatórios (descrição, ref 1, ref 2, WhatsApp) validados com zod (limites de tamanho, WhatsApp numérico). Ao confirmar: grava em `site_orders`, redireciona para `buy_url` em nova aba e fecha o modal. Botão X para fechar.
+- Nova aba **"Criação de Site"** no admin → CRUD de `site_products` (igual padrão dos demais admin pages) + lista das `site_orders` recebidas (somente leitura, com filtro).
+
+---
+
+## 5. Painel admin — controle total (resumo das adições)
+
+Novas abas/seções em `AdminPanel.tsx`:
+
+| Aba | O que faz |
+|---|---|
+| Configurações (existente) | + campo "Link Assinar Max" |
+| Aulas por Nicho (nova) | CRUD de módulos e aulas (`AdminNicheLessons`) |
+| Conteúdos (existente) | + campos `example_url` e `buy_url` nos itens (afeta Ofertas) |
+| Criação de Site (nova) | CRUD de produtos + lista de pedidos |
+
+---
 
 ## Detalhes técnicos
 
-- Reutilizar componentes/utilitários: `getEmbedUrl`, fluxo PDF (`pdfjs`, blob/URL), `logActivity`, `inputCls`/`Field` do `AdminLessons`. Considerar extrair `getEmbedUrl` e o `PDFViewerModal` para `src/components/lessons/` para reuso entre `LessonsPage` e `ContentSectionPage`.
-- Manter padrão de estado central em `Index.tsx` (page string) e drawer controlado dentro do `Navbar`.
-- Plan gating via helpers existentes `isPaid`, `isMax` em `src/lib/plan.ts`.
-- Migration única cobrindo: `content_sections`, `content_items`, bucket `content-images`, RLS, seed, update de `plans_config`.
+```text
+src/
+├── components/
+│   ├── AdminNicheLessons.tsx          (novo, clone de AdminLessons)
+│   ├── AdminSiteCreation.tsx          (novo)
+│   ├── NicheLessonsModal.tsx          (novo — popup)
+│   ├── OfferModal.tsx                 (novo — popup ofertas)
+│   ├── SiteCreationPage.tsx           (novo)
+│   ├── SiteOrderModal.tsx             (novo + zod)
+│   ├── AdminContentSections.tsx       (+ example_url, buy_url)
+│   ├── AdminPanel.tsx                 (+ 2 abas + campo max_url)
+│   ├── ContentSectionPage.tsx         (offers → OfferModal)
+│   ├── LessonsPage.tsx                (+ botão Assinar Max)
+│   └── Navbar.tsx                     (label "Aulas por nicho")
+└── pages/Index.tsx                    (rotas: niche-lessons modal, site-creation custom)
+```
 
-## Fora do escopo
-- Mudanças de design system / tokens.
-- Novas integrações de pagamento — só atualização dos URLs.
+Migrações (uma única chamada):
+1. `ALTER TABLE content_items ADD COLUMN example_url text, ADD COLUMN buy_url text`
+2. `CREATE TABLE niche_modules` e `niche_lessons` (mesma estrutura de `modules`/`lessons`)
+3. `CREATE TABLE site_products` + seed dos 8 produtos
+4. `CREATE TABLE site_orders` + RLS
+5. `INSERT INTO site_settings (key, value) VALUES ('max_subscribe_url', ...)` se não existir
+
+Regras gerais respeitadas: todos os popups com X; todos os links externos com `target="_blank" rel="noopener noreferrer"`; validação zod nos formulários de pedido; design tokens existentes (sem cores hardcoded).
+
+---
+
+## Pontos a confirmar
+
+1. **Aulas por Nicho** — acesso é para **Pro + Max** (igual Ofertas/Conteúdos) ou só **Max** (igual Aulas em Grupo)?
+2. **Pedidos de Criação de Site** — basta gravar no banco para o admin ver, ou também notificar (ex.: abrir WhatsApp pré-preenchido em paralelo)?
+
+Se preferir que eu assuma defaults (Pro+Max + só gravar no banco), posso seguir direto.
