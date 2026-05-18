@@ -17,6 +17,7 @@ export interface SiteOrderProduct {
   name: string;
   price: string;
   buy_url?: string | null;
+  kind?: 'site' | 'criativo';
 }
 
 export default function SiteOrderModal({ product, onClose }: { product: SiteOrderProduct; onClose: () => void }) {
@@ -59,7 +60,9 @@ export default function SiteOrderModal({ product, onClose }: { product: SiteOrde
         <div className="flex items-center justify-between p-4 border-b border-border">
           <div className="min-w-0">
             <h3 className="font-serif-display text-lg truncate">Pedido — {product.name}</h3>
-            <p className="text-xs text-muted-foreground">R$ {product.price}</p>
+            <p className="text-xs text-muted-foreground">
+              {product.kind === 'criativo' ? 'Criativo' : 'Site Pronto'} · R$ {product.price}
+            </p>
           </div>
           <button onClick={onClose} className="text-muted-foreground hover:text-foreground p-1 rounded hover:bg-secondary"><X size={18} /></button>
         </div>
