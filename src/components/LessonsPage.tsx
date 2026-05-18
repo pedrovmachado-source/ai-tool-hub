@@ -128,7 +128,10 @@ export default function LessonsPage({ onBack }: { onBack: () => void }) {
           <Lock size={42} className="mx-auto mb-4 text-muted-foreground/50" />
           <h1 className="font-serif-display text-3xl mb-3">Aulas e Transcrições</h1>
           <p className="text-muted-foreground mb-6">Conteúdo exclusivo para assinantes <strong>Max</strong>.</p>
-          <button onClick={onBack} className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm">Voltar</button>
+          <div className="flex gap-2 justify-center flex-wrap">
+            <button onClick={onBack} className="px-4 py-2 rounded-lg border border-border text-sm">Voltar</button>
+            <MaxSubscribeButton />
+          </div>
         </div>
       </div>
     );
@@ -294,5 +297,20 @@ export default function LessonsPage({ onBack }: { onBack: () => void }) {
         </div>
       )}
     </div>
+  );
+}
+
+function MaxSubscribeButton() {
+  const [url, setUrl] = useState<string>('https://buy.stripe.com/14AfZjfwE8xy3D99TH5wI02');
+  useEffect(() => {
+    supabase.from('site_settings').select('value').eq('key', 'max_subscribe_url').maybeSingle().then(({ data }) => {
+      if (data?.value && typeof data.value === 'string') setUrl(data.value);
+    });
+  }, []);
+  return (
+    <a href={url} target="_blank" rel="noopener noreferrer"
+      className="px-5 py-2 rounded-lg bg-gradient-to-r from-brand-blue to-brand-teal text-white text-sm font-medium hover:opacity-90 inline-flex items-center gap-1.5">
+      ⚡ Assinar Max
+    </a>
   );
 }

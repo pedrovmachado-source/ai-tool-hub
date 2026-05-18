@@ -104,8 +104,10 @@ export type Database = {
       content_items: {
         Row: {
           body: string | null
+          buy_url: string | null
           created_at: string
           description: string
+          example_url: string | null
           id: string
           image_url: string | null
           kind: string
@@ -119,8 +121,10 @@ export type Database = {
         }
         Insert: {
           body?: string | null
+          buy_url?: string | null
           created_at?: string
           description?: string
+          example_url?: string | null
           id?: string
           image_url?: string | null
           kind: string
@@ -134,8 +138,10 @@ export type Database = {
         }
         Update: {
           body?: string | null
+          buy_url?: string | null
           created_at?: string
           description?: string
+          example_url?: string | null
           id?: string
           image_url?: string | null
           kind?: string
@@ -276,6 +282,86 @@ export type Database = {
         }
         Relationships: []
       }
+      niche_lessons: {
+        Row: {
+          created_at: string
+          description: string
+          duration_min: number | null
+          id: string
+          kind: string
+          module_id: string
+          pdf_path: string | null
+          sort_order: number
+          title: string
+          updated_at: string
+          video_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          duration_min?: number | null
+          id?: string
+          kind?: string
+          module_id: string
+          pdf_path?: string | null
+          sort_order?: number
+          title: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          duration_min?: number | null
+          id?: string
+          kind?: string
+          module_id?: string
+          pdf_path?: string | null
+          sort_order?: number
+          title?: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "niche_lessons_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "niche_modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      niche_modules: {
+        Row: {
+          cover_url: string | null
+          created_at: string
+          description: string
+          id: string
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          cover_url?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          cover_url?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -339,6 +425,84 @@ export type Database = {
           tool_key?: string
           tool_name?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      site_orders: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          product_slug: string
+          ref_link_1: string
+          ref_link_2: string
+          user_id: string
+          whatsapp: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          product_slug: string
+          ref_link_1: string
+          ref_link_2: string
+          user_id: string
+          whatsapp: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          product_slug?: string
+          ref_link_1?: string
+          ref_link_2?: string
+          user_id?: string
+          whatsapp?: string
+        }
+        Relationships: []
+      }
+      site_products: {
+        Row: {
+          active: boolean
+          buy_url: string | null
+          col: string
+          created_at: string
+          example_url: string | null
+          id: string
+          name: string
+          price: string
+          short_desc: string
+          slug: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          buy_url?: string | null
+          col: string
+          created_at?: string
+          example_url?: string | null
+          id?: string
+          name: string
+          price: string
+          short_desc?: string
+          slug: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          buy_url?: string | null
+          col?: string
+          created_at?: string
+          example_url?: string | null
+          id?: string
+          name?: string
+          price?: string
+          short_desc?: string
+          slug?: string
+          sort_order?: number
+          updated_at?: string
         }
         Relationships: []
       }
