@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Plus, Pencil, Trash2, X, Inbox, Package } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Inbox, Package, Eye, EyeOff } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 interface Product {
   id: string;
   slug: string;
   col: 'ia' | 'manual';
+  kind: 'site' | 'criativo';
+  row_key: string | null;
   name: string;
   price: string;
   short_desc: string;
@@ -25,7 +27,20 @@ interface Order {
   ref_link_2: string;
   whatsapp: string;
   created_at: string;
+  status: 'novo' | 'em_andamento' | 'concluido';
+  read_at: string | null;
 }
+
+const STATUS_LABELS: Record<Order['status'], string> = {
+  novo: 'Novo',
+  em_andamento: 'Em andamento',
+  concluido: 'Concluído',
+};
+const STATUS_CLS: Record<Order['status'], string> = {
+  novo: 'bg-brand-blue/20 text-brand-blue-medium',
+  em_andamento: 'bg-brand-amber/20 text-brand-amber',
+  concluido: 'bg-brand-green/20 text-brand-green',
+};
 
 const inputCls = 'w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue';
 
@@ -47,24 +62,35 @@ export default function AdminSiteCreation() {
 
   const reload = async () => {
     setLoading(true);
-    const [p, o] = await Promise.all([
-      supabase.from('site_products' as any).select('*').order('col').order('sort_order'),
-      supabase.from('site_orders' as any).select('*').order('created_at', { ascending: false }).limit(200),
-    ]);
-    if (p.data) setProducts(p.data as unknown as Product[]);
-    if (o.data) setOrders(o.data as unknown as Order[]);
-    setLoading(false);
+    try {
+      const [p, o] = await Promise.all([
+        supabase.from('site_products' as any).select('*').order('kind').order('sort_order'),
+        supabase.from('site_orders' as any).select('*').order('created_at', { ascending: false }).limit(300),
+      ]);
+      if (p.data) setProducts(p.data as unknown as Product[]);
+      if (o.data) setOrders(o.data as unknown as Order[]);
+    } finally { setLoading(false); }
   };
 
   useEffect(() => { void reload(); }, []);
 
+  const productsBySlug = useMemo(() => {
+    const m = new Map<string, Product>();
+    products.forEach(p => m.set(p.slug, p));
+    return m;
+  }, [products]);
+
+  const unreadCount = useMemo(() => orders.filter(o => !o.read_at).length, [orders]);
+
   const save = async () => {
-    if (!form?.slug || !form.name || !form.price || !form.col) {
-      toast({ title: 'Slug, nome, coluna e preço obrigatórios', variant: 'destructive' }); return;
+    if (!form?.slug || !form.name || !form.price || !form.col || !form.kind) {
+      toast({ title: 'Slug, nome, tipo, coluna e preço obrigatórios', variant: 'destructive' }); return;
     }
     const payload = {
       slug: form.slug,
       col: form.col,
+      kind: form.kind,
+      row_key: form.row_key || null,
       name: form.name,
       price: form.price,
       short_desc: form.short_desc || '',
@@ -73,13 +99,11 @@ export default function AdminSiteCreation() {
       sort_order: form.sort_order ?? 0,
       active: form.active ?? true,
     };
-    if (form.id) {
-      const { error } = await supabase.from('site_products' as any).update(payload).eq('id', form.id);
-      if (error) { toast({ title: 'Erro', description: error.message, variant: 'destructive' }); return; }
-    } else {
-      const { error } = await supabase.from('site_products' as any).insert(payload);
-      if (error) { toast({ title: 'Erro', description: error.message, variant: 'destructive' }); return; }
-    }
+    const op = form.id
+      ? supabase.from('site_products' as any).update(payload).eq('id', form.id)
+      : supabase.from('site_products' as any).insert(payload);
+    const { error } = await op;
+    if (error) { toast({ title: 'Erro', description: error.message, variant: 'destructive' }); return; }
     toast({ title: 'Produto salvo' });
     setForm(null);
     await reload();
@@ -92,6 +116,15 @@ export default function AdminSiteCreation() {
     await reload();
   };
 
+  const updateOrder = async (id: string, patch: Partial<Order>) => {
+    setOrders(prev => prev.map(o => o.id === id ? { ...o, ...patch } : o));
+    const { error } = await supabase.from('site_orders' as any).update(patch).eq('id', id);
+    if (error) { toast({ title: 'Erro', description: error.message, variant: 'destructive' }); await reload(); }
+  };
+
+  const toggleRead = (o: Order) => updateOrder(o.id, { read_at: o.read_at ? null : new Date().toISOString() });
+  const setStatus = (o: Order, status: Order['status']) => updateOrder(o.id, { status });
+
   if (loading) return <p className="text-muted-foreground/60">Carregando…</p>;
 
   return (
@@ -99,14 +132,17 @@ export default function AdminSiteCreation() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-xl font-medium text-primary-foreground">Criação de Site</h1>
-          <p className="text-[12px] text-muted-foreground/50">Gerencie produtos e pedidos.</p>
+          <p className="text-[12px] text-muted-foreground/50">Gerencie produtos e pedidos recebidos.</p>
         </div>
         <div className="flex gap-2">
           <button onClick={() => setTab('products')} className={`px-3 py-1.5 rounded-lg text-[12px] ${tab === 'products' ? 'bg-brand-blue text-primary-foreground' : 'bg-primary-foreground/5 text-muted-foreground/60'}`}>
             <Package size={13} className="inline mr-1" /> Produtos ({products.length})
           </button>
-          <button onClick={() => setTab('orders')} className={`px-3 py-1.5 rounded-lg text-[12px] ${tab === 'orders' ? 'bg-brand-blue text-primary-foreground' : 'bg-primary-foreground/5 text-muted-foreground/60'}`}>
+          <button onClick={() => setTab('orders')} className={`relative px-3 py-1.5 rounded-lg text-[12px] ${tab === 'orders' ? 'bg-brand-blue text-primary-foreground' : 'bg-primary-foreground/5 text-muted-foreground/60'}`}>
             <Inbox size={13} className="inline mr-1" /> Pedidos ({orders.length})
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-brand-red text-white text-[10px] font-semibold rounded-full min-w-[18px] h-[18px] px-1 inline-flex items-center justify-center">{unreadCount}</span>
+            )}
           </button>
         </div>
       </div>
@@ -114,20 +150,22 @@ export default function AdminSiteCreation() {
       {tab === 'products' && (
         <>
           <div className="mb-4 flex justify-end">
-            <button onClick={() => setForm({ col: 'ia', active: true, sort_order: products.length })} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-[12px] bg-brand-blue text-primary-foreground">
+            <button onClick={() => setForm({ kind: 'site', col: 'ia', active: true, sort_order: products.length })} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-[12px] bg-brand-blue text-primary-foreground">
               <Plus size={14} /> Novo produto
             </button>
           </div>
           <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl overflow-hidden">
             <table className="w-full">
               <thead><tr className="border-b border-primary-foreground/[0.07]">
-                {['Nome', 'Coluna', 'Preço', 'Ativo', 'Ações'].map(h => <th key={h} className="px-5 py-3 text-left text-[11px] font-semibold text-muted-foreground/40 uppercase tracking-wider">{h}</th>)}
+                {['Nome', 'Tipo', 'Coluna', 'Linha', 'Preço', 'Ativo', 'Ações'].map(h => <th key={h} className="px-5 py-3 text-left text-[11px] font-semibold text-muted-foreground/40 uppercase tracking-wider">{h}</th>)}
               </tr></thead>
               <tbody>
                 {products.map(p => (
                   <tr key={p.id} className="border-b border-primary-foreground/[0.04]">
                     <td className="px-5 py-3 text-[13px] text-primary-foreground/80">{p.name}<div className="text-[10px] text-muted-foreground/40">/{p.slug}</div></td>
-                    <td className="px-5 py-3 text-[12px] text-muted-foreground/60">{p.col === 'ia' ? 'Copy IA' : 'Copy Manual'}</td>
+                    <td className="px-5 py-3 text-[12px] text-muted-foreground/60">{p.kind === 'criativo' ? 'Criativo' : 'Site'}</td>
+                    <td className="px-5 py-3 text-[12px] text-muted-foreground/60">{p.col === 'ia' ? 'IA' : 'Manual'}</td>
+                    <td className="px-5 py-3 text-[12px] text-muted-foreground/60">{p.row_key || '—'}</td>
                     <td className="px-5 py-3 text-[13px]">R${p.price}</td>
                     <td className="px-5 py-3"><span className={`text-[10px] px-2 py-0.5 rounded-full ${p.active ? 'bg-brand-green/20 text-brand-green' : 'bg-muted-foreground/10 text-muted-foreground/50'}`}>{p.active ? 'Ativo' : 'Inativo'}</span></td>
                     <td className="px-5 py-3 flex gap-2">
@@ -149,21 +187,50 @@ export default function AdminSiteCreation() {
           ) : (
             <table className="w-full">
               <thead><tr className="border-b border-primary-foreground/[0.07]">
-                {['Data', 'Produto', 'WhatsApp', 'Descrição', 'Refs'].map(h => <th key={h} className="px-5 py-3 text-left text-[11px] font-semibold text-muted-foreground/40 uppercase tracking-wider">{h}</th>)}
+                {['', 'Data', 'Tipo / Produto', 'Preço', 'WhatsApp', 'Descrição', 'Refs', 'Status', 'Ações'].map(h => <th key={h} className="px-3 py-3 text-left text-[11px] font-semibold text-muted-foreground/40 uppercase tracking-wider">{h}</th>)}
               </tr></thead>
               <tbody>
-                {orders.map(o => (
-                  <tr key={o.id} className="border-b border-primary-foreground/[0.04] align-top">
-                    <td className="px-5 py-3 text-[12px] text-muted-foreground/60 whitespace-nowrap">{new Date(o.created_at).toLocaleString('pt-BR')}</td>
-                    <td className="px-5 py-3 text-[12px] text-primary-foreground/80 whitespace-nowrap">{o.product_slug}</td>
-                    <td className="px-5 py-3 text-[12px] text-primary-foreground/80 whitespace-nowrap">{o.whatsapp}</td>
-                    <td className="px-5 py-3 text-[12px] text-muted-foreground/70 max-w-md"><div className="line-clamp-3">{o.description}</div></td>
-                    <td className="px-5 py-3 text-[11px] text-brand-blue-medium space-y-1">
-                      <a href={o.ref_link_1} target="_blank" rel="noopener noreferrer" className="block truncate max-w-[200px] underline">ref1</a>
-                      <a href={o.ref_link_2} target="_blank" rel="noopener noreferrer" className="block truncate max-w-[200px] underline">ref2</a>
-                    </td>
-                  </tr>
-                ))}
+                {orders.map(o => {
+                  const prod = productsBySlug.get(o.product_slug);
+                  const unread = !o.read_at;
+                  return (
+                    <tr key={o.id} className={`border-b border-primary-foreground/[0.04] align-top ${unread ? 'bg-brand-blue/[0.05]' : ''}`}>
+                      <td className="px-3 py-3">
+                        {unread && <span className="inline-block w-2 h-2 rounded-full bg-brand-blue" title="Não lido" />}
+                      </td>
+                      <td className="px-3 py-3 text-[12px] text-muted-foreground/60 whitespace-nowrap">{new Date(o.created_at).toLocaleString('pt-BR')}</td>
+                      <td className="px-3 py-3 text-[12px] text-primary-foreground/80 whitespace-nowrap">
+                        <span className={`text-[10px] px-2 py-0.5 rounded-full mr-1 ${prod?.kind === 'criativo' ? 'bg-brand-teal/20 text-brand-teal' : 'bg-brand-blue/20 text-brand-blue-medium'}`}>
+                          {prod?.kind === 'criativo' ? 'Criativo' : 'Site'}
+                        </span>
+                        {prod?.name || o.product_slug}
+                      </td>
+                      <td className="px-3 py-3 text-[12px] text-primary-foreground/80 whitespace-nowrap">{prod ? `R$${prod.price}` : '—'}</td>
+                      <td className="px-3 py-3 text-[12px] text-primary-foreground/80 whitespace-nowrap">{o.whatsapp}</td>
+                      <td className="px-3 py-3 text-[12px] text-muted-foreground/70 max-w-xs"><div className="line-clamp-3">{o.description}</div></td>
+                      <td className="px-3 py-3 text-[11px] text-brand-blue-medium space-y-1">
+                        <a href={o.ref_link_1} target="_blank" rel="noopener noreferrer" className="block truncate max-w-[140px] underline">ref1</a>
+                        <a href={o.ref_link_2} target="_blank" rel="noopener noreferrer" className="block truncate max-w-[140px] underline">ref2</a>
+                      </td>
+                      <td className="px-3 py-3">
+                        <select
+                          value={o.status}
+                          onChange={e => setStatus(o, e.target.value as Order['status'])}
+                          className={`text-[11px] px-2 py-1 rounded-md border-0 outline-none cursor-pointer ${STATUS_CLS[o.status]}`}
+                        >
+                          {(Object.keys(STATUS_LABELS) as Order['status'][]).map(s => (
+                            <option key={s} value={s} className="bg-navy text-primary-foreground">{STATUS_LABELS[s]}</option>
+                          ))}
+                        </select>
+                      </td>
+                      <td className="px-3 py-3">
+                        <button onClick={() => toggleRead(o)} className="text-muted-foreground/60 hover:text-primary-foreground" title={unread ? 'Marcar como lido' : 'Marcar como não lido'}>
+                          {unread ? <Eye size={14} /> : <EyeOff size={14} />}
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           )}
@@ -178,12 +245,19 @@ export default function AdminSiteCreation() {
               <button onClick={() => setForm(null)} className="text-muted-foreground/40"><X size={16} /></button>
             </div>
             <Field label="Slug (único)"><input value={form.slug || ''} onChange={e => setForm({ ...form, slug: e.target.value })} placeholder="ex: ia-landing" className={inputCls} /></Field>
-            <Field label="Coluna">
+            <Field label="Tipo">
+              <select value={form.kind || 'site'} onChange={e => setForm({ ...form, kind: e.target.value as 'site' | 'criativo' })} className={inputCls}>
+                <option value="site">Site (Comprar Site Pronto)</option>
+                <option value="criativo">Criativo (Comprar Criativo)</option>
+              </select>
+            </Field>
+            <Field label="Coluna (só para sites)">
               <select value={form.col || 'ia'} onChange={e => setForm({ ...form, col: e.target.value as 'ia' | 'manual' })} className={inputCls}>
                 <option value="ia">Copy com IA</option>
                 <option value="manual">Copy à Mão</option>
               </select>
             </Field>
+            <Field label="Linha (row_key — agrupa IA + Manual)"><input value={form.row_key || ''} onChange={e => setForm({ ...form, row_key: e.target.value })} placeholder="ex: landing, quiz, advertorial" className={inputCls} /></Field>
             <Field label="Nome"><input value={form.name || ''} onChange={e => setForm({ ...form, name: e.target.value })} className={inputCls} /></Field>
             <Field label="Preço (R$)"><input value={form.price || ''} onChange={e => setForm({ ...form, price: e.target.value })} placeholder="200" className={inputCls} /></Field>
             <Field label="Descrição curta"><textarea value={form.short_desc || ''} onChange={e => setForm({ ...form, short_desc: e.target.value })} rows={3} className={inputCls + ' resize-none'} /></Field>
