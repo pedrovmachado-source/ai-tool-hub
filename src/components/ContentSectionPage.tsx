@@ -167,13 +167,16 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
   );
 }
 
-function ItemCard({ item, onVideo, onPdf, onImage }: {
+function ItemCard({ item, isOffers, onVideo, onPdf, onImage, onOffer }: {
   item: Item;
+  isOffers?: boolean;
   onVideo: () => void;
   onPdf: () => void;
   onImage: () => void;
+  onOffer?: () => void;
 }) {
   const handleClick = () => {
+    if (isOffers && onOffer) return onOffer();
     if (item.kind === 'video') return onVideo();
     if (item.kind === 'pdf') return onPdf();
     if (item.kind === 'image') return onImage();
