@@ -1,21 +1,41 @@
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { Menu, Bookmark, X, GraduationCap } from 'lucide-react';
+import { Menu, Bookmark, X, GraduationCap, Sparkles, Globe2, Wand2, BookOpen, Shield, ChevronRight, LogOut } from 'lucide-react';
 import AuthModal from './AuthModal';
 import QuizModal from './QuizModal';
 import logoAdai from '@/assets/logo.png';
 import { planLabel, planBadgeClass, isPaid } from '@/lib/plan';
 
 export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onNavigate: (page: string) => void; onOpenSavedEbook?: (toolKey: string, categoryKey: string) => void; hideAuth?: boolean }) {
-  const handleLessonsClick = () => onNavigate('lessons');
   const { user, isAdmin, logout, savedEbooks, unsaveEbook } = useAuth();
   const [authModal, setAuthModal] = useState<{ open: boolean; mode: 'login' | 'register' }>({ open: false, mode: 'login' });
   const [showSaved, setShowSaved] = useState(false);
   const [showQuiz, setShowQuiz] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
+
+  const go = (target: string) => { setShowMenu(false); onNavigate(target); };
+
+  const menuItems = [
+    { key: 'offers', label: 'Ofertas validadas', icon: Sparkles, color: 'text-brand-amber' },
+    { key: 'site-creation', label: 'Criação de site', icon: Globe2, color: 'text-brand-blue-medium' },
+    { key: 'creative-edit', label: 'Edição de criativo', icon: Wand2, color: 'text-brand-teal' },
+    { key: 'topic-lessons', label: 'Aulas por assunto', icon: BookOpen, color: 'text-brand-green' },
+    { key: 'lessons', label: 'Aulas em grupo', icon: GraduationCap, color: 'text-brand-blue-medium' },
+  ];
 
   return (
     <>
-      <nav className="bg-navy h-[64px] sm:h-[72px] px-3 sm:px-8 grid grid-cols-[auto_1fr_auto] sm:grid-cols-[1fr_auto_1fr] items-center sticky top-0 z-[200] gap-2">
+      <nav className="bg-navy h-[64px] sm:h-[72px] px-3 sm:px-8 grid grid-cols-[auto_auto_1fr_auto] sm:grid-cols-[auto_1fr_auto_1fr] items-center sticky top-0 z-[200] gap-2">
+        {user && (
+          <button
+            onClick={() => setShowMenu(true)}
+            className="p-2 rounded-lg text-white/90 hover:text-white hover:bg-white/15 transition-colors justify-self-start"
+            title="Menu"
+          >
+            <Menu size={20} />
+          </button>
+        )}
+
         <button onClick={() => onNavigate('home')} className="flex items-center gap-3 text-white text-xl font-semibold tracking-tight justify-self-start">
           <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-[10px] overflow-hidden flex items-center justify-center bg-navy">
             <img src={logoAdai} alt="AdAI" className="w-full h-full object-cover" />
@@ -41,17 +61,6 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
               )}
             </button>
           )}
-          {user && (
-            <button
-              onClick={handleLessonsClick}
-              className="flex items-center gap-1.5 p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg text-white/90 hover:text-white hover:bg-white/15 transition-colors text-[13px]"
-              title="Aulas e Transcrições"
-            >
-              <GraduationCap size={16} className="sm:hidden" />
-              <GraduationCap size={18} className="hidden sm:inline" />
-              <span className="hidden sm:inline">Aulas</span>
-            </button>
-          )}
           {!user && !hideAuth ? (
             <>
               <button onClick={() => setAuthModal({ open: true, mode: 'login' })} className="px-2.5 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-white bg-white/15 hover:bg-white/25 transition-colors">Entrar</button>
@@ -67,21 +76,49 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
                 <span className="text-[12px] sm:text-[13px] text-white truncate hidden xs:inline sm:inline">{user.nome}</span>
                 <span className={`text-[9px] sm:text-[10px] font-medium px-1.5 sm:px-2 py-0.5 rounded-full shrink-0 ${planBadgeClass(user.plano)}`}>{planLabel(user.plano)}</span>
               </button>
-              <button onClick={logout} className="hidden sm:block px-3 py-1.5 rounded-lg text-[13px] text-white/85 hover:text-white hover:bg-white/10 transition-colors">Sair</button>
             </>
           )}
         </div>
       </nav>
 
-      {/* Admin hamburger */}
-      {isAdmin && (
-        <button
-          onClick={() => onNavigate('admin')}
-          className="fixed top-[80px] left-3 z-[199] w-10 h-10 rounded-lg bg-navy border border-primary-foreground/10 hover:bg-primary-foreground/[0.15] flex items-center justify-center transition-colors shadow-lg"
-          title="Painel Administrativo"
-        >
-          <Menu size={20} className="text-primary-foreground" />
-        </button>
+      {/* Side Menu Drawer */}
+      {showMenu && (
+        <div className="fixed inset-0 z-[300]" onClick={() => setShowMenu(false)}>
+          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute left-0 top-0 h-full w-full max-w-[320px] bg-card shadow-2xl flex flex-col" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between p-5 border-b border-border">
+              <h3 className="text-base font-semibold">Menu</h3>
+              <button onClick={() => setShowMenu(false)} className="text-muted-foreground hover:text-foreground p-1 rounded-md hover:bg-secondary"><X size={18} /></button>
+            </div>
+            <div className="flex-1 overflow-y-auto py-2">
+              {menuItems.map(({ key, label, icon: Icon, color }) => (
+                <button key={key} onClick={() => go(key)} className="w-full flex items-center justify-between px-5 py-3 hover:bg-secondary transition-colors text-left">
+                  <span className="flex items-center gap-3">
+                    <Icon size={18} className={color} />
+                    <span className="text-sm">{label}</span>
+                  </span>
+                  <ChevronRight size={16} className="text-muted-foreground/40" />
+                </button>
+              ))}
+              {isAdmin && (
+                <>
+                  <div className="my-2 border-t border-border" />
+                  <button onClick={() => go('admin')} className="w-full flex items-center justify-between px-5 py-3 hover:bg-secondary transition-colors text-left">
+                    <span className="flex items-center gap-3">
+                      <Shield size={18} className="text-brand-red" />
+                      <span className="text-sm">Painel administrativo</span>
+                    </span>
+                    <ChevronRight size={16} className="text-muted-foreground/40" />
+                  </button>
+                </>
+              )}
+              <div className="my-2 border-t border-border" />
+              <button onClick={() => { setShowMenu(false); logout(); }} className="w-full flex items-center gap-3 px-5 py-3 hover:bg-secondary transition-colors text-left text-sm text-muted-foreground">
+                <LogOut size={18} /> Sair
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Saved Ebooks Drawer */}

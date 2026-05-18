@@ -5,6 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, LayoutDashboard, Users, CreditCard, FileText, Settings, LogOut, Search, Download, Plus, Pencil, Trash2, X, Check, Palette, Eye, EyeOff, Globe, Bell, Shield, Database, Mail, Play, Video, GraduationCap, Activity, Menu } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import AdminLessons from './AdminLessons';
+import AdminContentSections from './AdminContentSections';
 import ActivityLogView from './ActivityLogView';
 import { logActivity } from '@/lib/activity-log';
 
@@ -484,6 +485,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'payments', label: 'Pagamentos', icon: CreditCard },
     { key: 'content', label: 'Conteúdo', icon: FileText },
     { key: 'lessons', label: 'Aulas', icon: GraduationCap },
+    { key: 'sections', label: 'Conteúdos', icon: Folder },
     { key: 'activity', label: 'Atividade', icon: Activity },
     { key: 'settings', label: 'Configurações', icon: Settings },
   ];
@@ -858,6 +860,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
         )}
 
         {section === 'lessons' && <AdminLessons />}
+        {section === 'sections' && <AdminContentSections />}
 
         {section === 'activity' && <ActivityLogView />}
 
