@@ -2,9 +2,10 @@ import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { meetsMinPlan } from '@/lib/plan';
-import { ArrowLeft, Play, FileText, Image as ImageIcon, Lock, FileText as TextIcon } from 'lucide-react';
+import { ArrowLeft, Play, FileText, Image as ImageIcon, Lock, FileText as TextIcon, ShoppingCart } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { PdfModal, VideoModal, ImageModal } from '@/lib/lessonViewers';
+import OfferModal from './OfferModal';
 
 interface Section {
   slug: string;
@@ -26,6 +27,8 @@ interface Item {
   pdf_path: string | null;
   image_url: string | null;
   body: string | null;
+  example_url: string | null;
+  buy_url: string | null;
   sort_order: number;
 }
 
@@ -37,6 +40,8 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
   const [video, setVideo] = useState<Item | null>(null);
   const [pdf, setPdf] = useState<Item | null>(null);
   const [image, setImage] = useState<Item | null>(null);
+  const [offer, setOffer] = useState<Item | null>(null);
+  const isOffers = slug === 'offers';
 
   useEffect(() => {
     let active = true;
@@ -104,9 +109,11 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {list.map(i => (
         <ItemCard key={i.id} item={i}
+          isOffers={isOffers}
           onVideo={() => setVideo(i)}
           onPdf={() => setPdf(i)}
           onImage={() => setImage(i)}
+          onOffer={() => setOffer(i)}
         />
       ))}
     </div>

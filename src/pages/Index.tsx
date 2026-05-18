@@ -10,6 +10,7 @@ import ProPage from '@/components/ProPage';
 import AdminPanel from '@/components/AdminPanel';
 import LessonsPage from '@/components/LessonsPage';
 import ContentSectionPage from '@/components/ContentSectionPage';
+import SiteCreationPage from '@/components/SiteCreationPage';
 import PromptsLibrary from '@/components/PromptsLibrary';
 import UserProfile from '@/components/UserProfile';
 import { useAuth } from '@/contexts/AuthContext';
@@ -116,7 +117,8 @@ export default function Index() {
   }
   if (page === 'pro') return <ProPage onBack={() => setPage('home')} onNavigate={handleNavigate} />;
   if (page === 'lessons') return <LessonsPage onBack={() => setPage('home')} />;
-  if (page === 'offers' || page === 'site-creation' || page === 'creative-edit' || page === 'topic-lessons') {
+  if (page === 'site-creation') return <SiteCreationPage onBack={() => setPage('home')} />;
+  if (page === 'offers' || page === 'creative-edit') {
     return <ContentSectionPage slug={page} onBack={() => setPage('home')} onUpgrade={() => setPage('pro')} />;
   }
 

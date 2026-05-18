@@ -26,6 +26,8 @@ interface Item {
   pdf_path: string | null;
   image_url: string | null;
   body: string | null;
+  example_url: string | null;
+  buy_url: string | null;
   sort_order: number;
 }
 
@@ -139,6 +141,8 @@ export default function AdminContentSections() {
       pdf_path: kind === 'pdf' ? itemForm.pdf_path || null : null,
       image_url: kind === 'image' ? itemForm.image_url || null : null,
       body: kind === 'text' ? itemForm.body || null : null,
+      example_url: itemForm.example_url || null,
+      buy_url: itemForm.buy_url || null,
       sort_order: itemForm.sort_order ?? items.filter(i => i.section_slug === openSection.slug).length,
     };
     if (itemForm.id) {
@@ -264,6 +268,8 @@ export default function AdminContentSections() {
               {itemForm.kind === 'text' && (
                 <Field label="Conteúdo"><textarea value={itemForm.body || ''} onChange={e => setItemForm({ ...itemForm, body: e.target.value })} rows={6} className={inputCls + ' resize-none'} /></Field>
               )}
+              <Field label="Link de exemplo (opcional — usado em Ofertas)"><input value={itemForm.example_url || ''} onChange={e => setItemForm({ ...itemForm, example_url: e.target.value })} placeholder="https://..." className={inputCls} /></Field>
+              <Field label="Link de compra Stripe (opcional — botão Comprar)"><input value={itemForm.buy_url || ''} onChange={e => setItemForm({ ...itemForm, buy_url: e.target.value })} placeholder="https://buy.stripe.com/..." className={inputCls} /></Field>
               <Field label="Ordem"><input type="number" value={itemForm.sort_order ?? 0} onChange={e => setItemForm({ ...itemForm, sort_order: Number(e.target.value) })} className={inputCls} /></Field>
               <div className="flex justify-end gap-2 mt-4">
                 <button onClick={() => setItemForm(null)} className="px-4 py-2 text-sm text-muted-foreground/60">Cancelar</button>
