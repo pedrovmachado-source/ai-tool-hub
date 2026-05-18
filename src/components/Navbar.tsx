@@ -183,6 +183,10 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
           onOpenSavedEbook?.(toolKey, categoryKey);
         }}
       />
+
+      {showNiche && (
+        <NicheLessonsModal onClose={() => setShowNiche(false)} onUpgrade={() => { setShowNiche(false); onNavigate('pro'); }} />
+      )}
     </>
   );
 }
