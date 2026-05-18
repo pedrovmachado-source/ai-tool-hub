@@ -3,6 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Menu, Bookmark, X, GraduationCap, Sparkles, Globe2, Wand2, BookOpen, Shield, ChevronRight, LogOut } from 'lucide-react';
 import AuthModal from './AuthModal';
 import QuizModal from './QuizModal';
+import NicheLessonsModal from './NicheLessonsModal';
 import logoAdai from '@/assets/logo.png';
 import { planLabel, planBadgeClass, isPaid } from '@/lib/plan';
 
