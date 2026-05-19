@@ -27,7 +27,7 @@ const TARGET_OPTIONS = [
   { value: 'site-creation', label: 'Criação de site' },
   { value: 'creative-edit', label: 'Edição de criativo' },
   { value: 'niche-lessons', label: 'Aulas por nicho' },
-  { value: 'lessons', label: 'Aulas em grupo' },
+  { value: 'lessons', label: 'Aulas gravadas' },
   { value: 'pro', label: 'Página Pro' },
   { value: 'profile', label: 'Perfil' },
 ];

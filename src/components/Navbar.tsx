@@ -19,7 +19,7 @@ const DEFAULT_ITEMS: NavItem[] = [
   { key: 'site-creation', label: 'Criação de site', icon: 'Globe2', color: 'text-brand-blue-medium', target: 'site-creation', enabled: true, sort_order: 2 },
   { key: 'creative-edit', label: 'Edição de criativo', icon: 'Wand2', color: 'text-brand-teal', target: 'creative-edit', enabled: true, sort_order: 3 },
   { key: 'niche-lessons', label: 'Aulas por nicho', icon: 'BookOpen', color: 'text-brand-green', target: 'niche-lessons', enabled: true, sort_order: 4 },
-  { key: 'lessons', label: 'Aulas em grupo', icon: 'GraduationCap', color: 'text-brand-blue-medium', target: 'lessons', enabled: true, sort_order: 5 },
+  { key: 'lessons', label: 'Aulas gravadas', icon: 'GraduationCap', color: 'text-brand-blue-medium', target: 'lessons', enabled: true, sort_order: 5 },
 ];
 
 export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onNavigate: (page: string) => void; onOpenSavedEbook?: (toolKey: string, categoryKey: string) => void; hideAuth?: boolean }) {

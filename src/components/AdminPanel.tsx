@@ -487,7 +487,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'users', label: 'Usuários', icon: Users },
     { key: 'payments', label: 'Pagamentos', icon: CreditCard },
     { key: 'content', label: 'Conteúdo', icon: FileText },
-    { key: 'lessons', label: 'Aulas em grupo', icon: GraduationCap },
+    { key: 'lessons', label: 'Aulas gravadas', icon: GraduationCap },
     { key: 'niche-lessons', label: 'Aulas por nicho', icon: Video },
     { key: 'site-creation', label: 'Criação de Site', icon: Folder },
     { key: 'sections', label: 'Conteúdos', icon: Folder },
