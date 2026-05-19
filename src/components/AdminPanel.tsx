@@ -6,6 +6,9 @@ import { ArrowLeft, LayoutDashboard, Users, CreditCard, FileText, Settings, LogO
 import { toast } from '@/hooks/use-toast';
 import AdminLessons from './AdminLessons';
 import AdminContentSections from './AdminContentSections';
+import AdminNicheLessons from './AdminNicheLessons';
+import AdminSiteCreation from './AdminSiteCreation';
+import AdminMenu from './AdminMenu';
 import ActivityLogView from './ActivityLogView';
 import { logActivity } from '@/lib/activity-log';
 
@@ -484,8 +487,11 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'users', label: 'Usuários', icon: Users },
     { key: 'payments', label: 'Pagamentos', icon: CreditCard },
     { key: 'content', label: 'Conteúdo', icon: FileText },
-    { key: 'lessons', label: 'Aulas', icon: GraduationCap },
+    { key: 'lessons', label: 'Aulas em grupo', icon: GraduationCap },
+    { key: 'niche-lessons', label: 'Aulas por nicho', icon: Video },
+    { key: 'site-creation', label: 'Criação de Site', icon: Folder },
     { key: 'sections', label: 'Conteúdos', icon: Folder },
+    { key: 'menu', label: 'Menu Lateral', icon: Menu },
     { key: 'activity', label: 'Atividade', icon: Activity },
     { key: 'settings', label: 'Configurações', icon: Settings },
   ];
@@ -861,6 +867,9 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
 
         {section === 'lessons' && <AdminLessons />}
         {section === 'sections' && <AdminContentSections />}
+        {section === 'niche-lessons' && <AdminNicheLessons />}
+        {section === 'site-creation' && <AdminSiteCreation />}
+        {section === 'menu' && <AdminMenu />}
 
         {section === 'activity' && <ActivityLogView />}
 

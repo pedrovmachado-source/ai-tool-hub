@@ -1,11 +1,26 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { Menu, Bookmark, X, GraduationCap, Sparkles, Globe2, Wand2, BookOpen, Shield, ChevronRight, LogOut } from 'lucide-react';
+import { Menu, Bookmark, X, GraduationCap, Sparkles, Globe2, Wand2, BookOpen, Shield, ChevronRight, LogOut, Video, CreditCard, Star, Zap, Rocket } from 'lucide-react';
 import AuthModal from './AuthModal';
 import QuizModal from './QuizModal';
 import NicheLessonsModal from './NicheLessonsModal';
+import { supabase } from '@/integrations/supabase/client';
 import logoAdai from '@/assets/logo.png';
 import { planLabel, planBadgeClass, isPaid } from '@/lib/plan';
+
+const ICON_MAP: Record<string, typeof Sparkles> = {
+  Sparkles, Globe2, Wand2, BookOpen, GraduationCap, Shield, Video, CreditCard, Star, Zap, Rocket,
+};
+
+interface NavItem { key: string; label: string; icon: string; color: string; target: string; enabled: boolean; sort_order: number; }
+
+const DEFAULT_ITEMS: NavItem[] = [
+  { key: 'offers', label: 'Ofertas validadas', icon: 'Sparkles', color: 'text-brand-amber', target: 'offers', enabled: true, sort_order: 1 },
+  { key: 'site-creation', label: 'Criação de site', icon: 'Globe2', color: 'text-brand-blue-medium', target: 'site-creation', enabled: true, sort_order: 2 },
+  { key: 'creative-edit', label: 'Edição de criativo', icon: 'Wand2', color: 'text-brand-teal', target: 'creative-edit', enabled: true, sort_order: 3 },
+  { key: 'niche-lessons', label: 'Aulas por nicho', icon: 'BookOpen', color: 'text-brand-green', target: 'niche-lessons', enabled: true, sort_order: 4 },
+  { key: 'lessons', label: 'Aulas em grupo', icon: 'GraduationCap', color: 'text-brand-blue-medium', target: 'lessons', enabled: true, sort_order: 5 },
+];
 
 export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onNavigate: (page: string) => void; onOpenSavedEbook?: (toolKey: string, categoryKey: string) => void; hideAuth?: boolean }) {
   const { user, isAdmin, logout, savedEbooks, unsaveEbook } = useAuth();
@@ -14,20 +29,23 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
   const [showQuiz, setShowQuiz] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [showNiche, setShowNiche] = useState(false);
+  const [menuItems, setMenuItems] = useState<NavItem[]>(DEFAULT_ITEMS);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase.from('site_settings').select('value').eq('key', 'nav_menu_items').maybeSingle();
+      const arr = (data?.value as any);
+      if (Array.isArray(arr) && arr.length) {
+        setMenuItems(arr.filter((i: NavItem) => i.enabled).sort((a: NavItem, b: NavItem) => a.sort_order - b.sort_order));
+      }
+    })();
+  }, []);
 
   const go = (target: string) => {
     setShowMenu(false);
     if (target === 'niche-lessons') { setShowNiche(true); return; }
     onNavigate(target);
   };
-
-  const menuItems = [
-    { key: 'offers', label: 'Ofertas validadas', icon: Sparkles, color: 'text-brand-amber' },
-    { key: 'site-creation', label: 'Criação de site', icon: Globe2, color: 'text-brand-blue-medium' },
-    { key: 'creative-edit', label: 'Edição de criativo', icon: Wand2, color: 'text-brand-teal' },
-    { key: 'niche-lessons', label: 'Aulas por nicho', icon: BookOpen, color: 'text-brand-green' },
-    { key: 'lessons', label: 'Aulas em grupo', icon: GraduationCap, color: 'text-brand-blue-medium' },
-  ];
 
   return (
     <>
@@ -97,15 +115,18 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
               <button onClick={() => setShowMenu(false)} className="text-muted-foreground hover:text-foreground p-1 rounded-md hover:bg-secondary"><X size={18} /></button>
             </div>
             <div className="flex-1 overflow-y-auto py-2">
-              {menuItems.map(({ key, label, icon: Icon, color }) => (
-                <button key={key} onClick={() => go(key)} className="w-full flex items-center justify-between px-5 py-3 hover:bg-secondary transition-colors text-left">
-                  <span className="flex items-center gap-3">
-                    <Icon size={18} className={color} />
-                    <span className="text-sm">{label}</span>
-                  </span>
-                  <ChevronRight size={16} className="text-muted-foreground/40" />
-                </button>
-              ))}
+              {menuItems.map(({ key, label, icon, color, target }) => {
+                const Icon = ICON_MAP[icon] || Sparkles;
+                return (
+                  <button key={key} onClick={() => go(target)} className="w-full flex items-center justify-between px-5 py-3 hover:bg-secondary transition-colors text-left">
+                    <span className="flex items-center gap-3">
+                      <Icon size={18} className={color} />
+                      <span className="text-sm">{label}</span>
+                    </span>
+                    <ChevronRight size={16} className="text-muted-foreground/40" />
+                  </button>
+                );
+              })}
               {isAdmin && (
                 <>
                   <div className="my-2 border-t border-border" />
