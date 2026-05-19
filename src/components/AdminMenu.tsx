@@ -79,7 +79,7 @@ export default function AdminMenu() {
     setSaving(false);
     if (error) { toast({ title: 'Erro', description: error.message, variant: 'destructive' }); return; }
     toast({ title: 'Menu salvo', description: 'As alterações já estão ativas.' });
-    void logActivity({ action: 'menu_update', entity_type: 'site_settings', entity_id: 'nav_menu_items', entity_label: 'Menu lateral', metadata: { count: payload.length } });
+    void logActivity({ action: 'settings_update', entity_type: 'site_settings', entity_id: 'nav_menu_items', entity_label: 'Menu lateral', metadata: { count: payload.length } });
   };
 
   if (loading) return <p className="text-muted-foreground text-sm">Carregando…</p>;
