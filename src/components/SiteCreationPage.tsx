@@ -59,7 +59,7 @@ export default function SiteCreationPage({ onBack }: { onBack: () => void }) {
   });
 
   const Card = ({ p }: { p: Product }) => {
-    const buyLabel = p.kind === 'criativo' ? 'Comprar Criativo' : 'Comprar Site Pronto';
+    const buyLabel = p.kind === 'criativo' ? 'Quero esse criativo' : 'Quero esse site agora';
     return (
       <div className="bg-card border border-border rounded-xl p-5 hover:border-brand-blue transition-colors flex flex-col">
         <div className="flex items-baseline justify-between mb-2 gap-2">
@@ -75,8 +75,8 @@ export default function SiteCreationPage({ onBack }: { onBack: () => void }) {
             </a>
           )}
           <button onClick={() => openOrder(p)}
-            className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-brand-amber text-white text-xs font-medium hover:opacity-90">
-            <ShoppingCart size={12} /> {buyLabel}
+            className="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-gradient-to-r from-brand-amber via-orange-500 to-brand-red text-white text-sm font-semibold shadow-[0_4px_14px_-2px_hsl(var(--brand-amber)/0.55)] hover:shadow-[0_6px_20px_-2px_hsl(var(--brand-amber)/0.85)] hover:scale-[1.02] active:scale-[0.98] transition-all">
+            <ShoppingCart size={14} /> {buyLabel}
           </button>
         </div>
       </div>
