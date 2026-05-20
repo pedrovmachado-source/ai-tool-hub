@@ -489,7 +489,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'content', label: 'Conteúdo', icon: FileText },
     { key: 'lessons', label: 'Aulas gravadas', icon: GraduationCap },
     { key: 'niche-lessons', label: 'Aulas por nicho', icon: Video },
-    { key: 'site-creation', label: 'Criação de Site', icon: Folder },
+    { key: 'site-creation', label: 'Comprar Site', icon: Folder },
     { key: 'sections', label: 'Conteúdos', icon: Folder },
     { key: 'menu', label: 'Menu Lateral', icon: Menu },
     { key: 'activity', label: 'Atividade', icon: Activity },
