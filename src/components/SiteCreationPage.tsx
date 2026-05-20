@@ -143,13 +143,22 @@ export default function SiteCreationPage({ onBack }: { onBack: () => void }) {
                       <div>{manual ? <Card p={manual} /> : <div className="border border-dashed border-border rounded-xl p-5 text-xs text-muted-foreground/60 flex items-center justify-center min-h-[180px]">Em breve</div>}</div>
 
                       {banner.enabled && banner.after_row_key === rowKey && idx < siteRows.length - 1 && (
-                        <div className="md:col-span-2 my-2">
-                          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-navy via-brand-blue-dark to-brand-teal px-6 py-7 text-center shadow-lg">
-                            <div className="absolute inset-0 opacity-10 [background-image:radial-gradient(circle_at_20%_20%,#fff_1px,transparent_1px),radial-gradient(circle_at_80%_70%,#fff_1px,transparent_1px)] [background-size:24px_24px]" />
-                            <div className="relative flex items-center justify-center gap-3 text-white">
-                              <Wand2 size={20} className="text-brand-amber" />
-                              <p className="font-serif-display text-lg sm:text-xl">{banner.text}</p>
-                              <Wand2 size={20} className="text-brand-amber scale-x-[-1]" />
+                        <div className="md:col-span-2 my-3">
+                          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-navy via-brand-blue-dark to-brand-teal px-6 py-8 sm:px-10 sm:py-10 shadow-[0_10px_40px_-10px_hsl(var(--brand-blue)/0.5)]">
+                            <div className="absolute inset-0 opacity-[0.08] [background-image:radial-gradient(circle_at_20%_20%,#fff_1px,transparent_1px),radial-gradient(circle_at_80%_70%,#fff_1px,transparent_1px)] [background-size:24px_24px]" />
+                            <div className="absolute -top-8 -right-8 w-40 h-40 bg-brand-amber/20 rounded-full blur-3xl" />
+                            <div className="relative text-center text-white max-w-2xl mx-auto">
+                              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-brand-amber/20 text-brand-amber text-[10px] font-semibold uppercase tracking-wider mb-3">
+                                <Wand2 size={11} /> Feito sob medida pra você
+                              </div>
+                              <h3 className="font-serif-display text-xl sm:text-2xl md:text-3xl leading-tight mb-2">
+                                {banner.title || banner.text || DEFAULT_BANNER.title}
+                              </h3>
+                              {(banner.subtitle || DEFAULT_BANNER.subtitle) && (
+                                <p className="text-sm sm:text-[15px] text-white/75 leading-relaxed">
+                                  {banner.subtitle || DEFAULT_BANNER.subtitle}
+                                </p>
+                              )}
                             </div>
                           </div>
                         </div>
