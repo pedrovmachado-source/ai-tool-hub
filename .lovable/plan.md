@@ -1,49 +1,43 @@
-## 1. Menu lateral editável pelo admin
+# Plano de correções
 
-Hoje os itens do drawer (Ofertas validadas, Criação de site, Edição de criativo, Aulas por nicho, Aulas em grupo) estão **hard-coded** em `src/components/Navbar.tsx`. Vou torná-los gerenciáveis.
+## 1. Labels padrão do menu (primeira abertura)
+O banco já tem os nomes corretos ("Comprar Site", "Comprar Criativo", "Aulas gravadas"), mas os **fallbacks no código** ainda mostram os nomes antigos enquanto o fetch não termina. Atualizar:
 
-### Backend
-- Nova chave em `site_settings`: `nav_menu_items` (já existe a tabela com RLS apropriada — só admin escreve).
-- Valor: array JSON
-  ```json
-  [{ "key":"offers","label":"Ofertas validadas","icon":"Sparkles","color":"text-brand-amber","target":"offers","enabled":true,"sort_order":1 }, …]
-  ```
-- Seed da migration com os 5 itens atuais (idempotente: `INSERT … ON CONFLICT (key) DO NOTHING`).
+- `src/components/Navbar.tsx` (linha 19): `DEFAULT_MENU` → `'Criação de site'` vira `'Comprar Site'`. Verificar também `creative-edit` e `lessons` para garantir consistência.
+- `src/components/AdminMenu.tsx` (linha 27): opção do select → `'Comprar Site'`.
+- `src/components/AdminPanel.tsx` (linha 492): item da navegação lateral admin → `'Comprar Site'`.
 
-### Frontend
-- **Navbar**: carrega `nav_menu_items` ao montar; usa um mapa `iconMap` (Sparkles, Globe2, Wand2, BookOpen, GraduationCap, Shield, Video, etc.) para resolver o `icon` string → componente. Fallback para os defaults atuais se a query falhar/estiver vazia. Apenas itens `enabled` são renderizados, ordenados por `sort_order`.
-- **AdminPanel**: novo item de nav `'menu'` (ícone `Menu`) e nova seção `AdminMenu.tsx` com:
-  - Lista ordenada (drag handles via setas ↑/↓ ou input numérico de ordem).
-  - Cada linha: campos `label`, `target` (select com rotas válidas: offers, site-creation, creative-edit, niche-lessons, lessons, pro, profile, custom URL), `icon` (select dos ícones permitidos), `color` (select de tokens: text-brand-amber, text-brand-blue-medium, text-brand-teal, text-brand-green, text-brand-red), toggle `enabled`.
-  - Botões "Adicionar item", "Remover", "Salvar" (faz `upsert` em `site_settings` e dispara `logActivity`).
+## 2. Notificação de novos pedidos no painel admin
+A tabela `site_orders` já tem o campo `read_at`. Aproveitar isso:
 
-### Bônus — expor seções admin já existentes mas sem entrada no menu
-Adiciono também ao sidebar:
-- `niche-lessons` → `<AdminNicheLessons />`
-- `site-creation` → `<AdminSiteCreation />` (já contém o CRUD de produtos site/criativo + Pedidos Recebidos)
+- No `AdminPanel.tsx`, no carregamento inicial e a cada 30s, contar pedidos com `read_at IS NULL`.
+- Adicionar um **badge vermelho com contagem** ao lado do item "Comprar Site" no menu lateral admin (`navItems`).
+- Adicionar um **sino de notificação** no topo do painel (ao lado do título) que, ao clicar, navega para a aba "Comprar Site" (Pedidos).
+- Quando o admin abrir a aba de pedidos no `AdminSiteCreation.tsx`, marcar todos os pedidos não lidos como `read_at = now()` automaticamente, zerando o badge.
 
-## 2. Copy direta + cores mais atrativas nos botões de compra
+## 3. Melhorar copy do banner "Fazemos a copy do seu site do zero"
+O texto atual é genérico. Substituir por algo com mais valor de conversão. Sugestão (ajustável):
 
-Em `SiteCreationPage.tsx` (`Card`):
-- Trocar labels:
-  - `site` → **"Quero esse site agora"**
-  - `criativo` → **"Quero esse criativo"**
-- Trocar o `bg-brand-amber` plano por **gradiente vibrante** com hover animado e leve glow:
-  ```
-  bg-gradient-to-r from-brand-amber via-orange-500 to-brand-red
-  shadow-[0_4px_14px_-2px_hsl(var(--brand-amber)/0.6)]
-  hover:shadow-[0_6px_20px_-2px_hsl(var(--brand-amber)/0.8)]
-  hover:scale-[1.02] transition-all font-semibold
-  ```
-- Aumentar peso (`font-semibold`) e tamanho (`text-sm`) para reforçar CTA.
-- Mesmo tratamento no `OfferModal` (botão "Comprar agora") e no `SiteOrderModal` (CTA final), mantendo consistência de identidade.
+- **Título:** "Site pronto para vender em 7 dias — copy persuasiva incluída"
+- **Subtítulo/CTA:** "Estrutura validada por quem fatura 6 dígitos. Sem enrolação, só conversão."
 
-## Arquivos afetados
-- `supabase/migrations/<new>.sql` — seed de `nav_menu_items` em `site_settings`.
-- `src/components/Navbar.tsx` — leitura dinâmica + `iconMap`.
-- `src/components/AdminPanel.tsx` — 3 novos itens de nav e roteamento de seções.
-- `src/components/AdminMenu.tsx` *(novo)* — CRUD de itens de menu.
-- `src/components/SiteCreationPage.tsx` — novo CTA (copy + cores).
-- `src/components/SiteOrderModal.tsx`, `src/components/OfferModal.tsx` — estilo consistente do CTA.
+Como o banner hoje é uma única string em `site_settings.site_creation_banner.text`, vou:
+- Estender a estrutura para suportar `title` + `subtitle` + opcional `cta_label`.
+- Atualizar `SiteCreationPage.tsx` para renderizar o novo layout (gradiente atual mantido, tipografia mais hierárquica, ícone de raio/check).
+- Atualizar `AdminContentSections.tsx` (ou onde o banner é editado) para permitir editar título e subtítulo separadamente.
+- Preencher os defaults no DB via migration de update (`UPDATE site_settings SET value = ...`).
 
-Posso seguir com a implementação?
+## Detalhes técnicos
+- Polling de pedidos via `setInterval` + `supabase.channel('site_orders').on('postgres_changes', ...)` para realtime (já há precedente no projeto).
+- Habilitar realtime: `ALTER PUBLICATION supabase_realtime ADD TABLE public.site_orders;` (se ainda não estiver).
+- Badge usa token semântico `bg-destructive text-destructive-foreground`.
+- Migration única para: ativar realtime em `site_orders` + atualizar `site_creation_banner` com nova estrutura `{enabled, after_row_key, title, subtitle}`.
+
+## Arquivos a alterar
+- `src/components/Navbar.tsx`
+- `src/components/AdminMenu.tsx`
+- `src/components/AdminPanel.tsx`
+- `src/components/AdminSiteCreation.tsx`
+- `src/components/SiteCreationPage.tsx`
+- `src/components/AdminContentSections.tsx` (editor do banner)
+- nova migration SQL
