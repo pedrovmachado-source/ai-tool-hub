@@ -16,10 +16,9 @@ interface NavItem { key: string; label: string; icon: string; color: string; tar
 
 const DEFAULT_ITEMS: NavItem[] = [
   { key: 'offers', label: 'Ofertas validadas', icon: 'Sparkles', color: 'text-brand-amber', target: 'offers', enabled: true, sort_order: 1 },
-  { key: 'site-creation', label: 'Criação de site', icon: 'Globe2', color: 'text-brand-blue-medium', target: 'site-creation', enabled: true, sort_order: 2 },
-  { key: 'creative-edit', label: 'Edição de criativo', icon: 'Wand2', color: 'text-brand-teal', target: 'creative-edit', enabled: true, sort_order: 3 },
-  { key: 'niche-lessons', label: 'Aulas por nicho', icon: 'BookOpen', color: 'text-brand-green', target: 'niche-lessons', enabled: true, sort_order: 4 },
-  { key: 'lessons', label: 'Aulas gravadas', icon: 'GraduationCap', color: 'text-brand-blue-medium', target: 'lessons', enabled: true, sort_order: 5 },
+  { key: 'site-creation', label: 'Comprar Site', icon: 'Globe2', color: 'text-brand-blue-medium', target: 'site-creation', enabled: true, sort_order: 2 },
+  { key: 'creative-edit', label: 'Comprar Criativo', icon: 'Wand2', color: 'text-brand-teal', target: 'creative-edit', enabled: true, sort_order: 3 },
+  { key: 'lessons', label: 'Aulas gravadas', icon: 'GraduationCap', color: 'text-brand-blue-medium', target: 'lessons', enabled: true, sort_order: 4 },
 ];
 
 export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onNavigate: (page: string) => void; onOpenSavedEbook?: (toolKey: string, categoryKey: string) => void; hideAuth?: boolean }) {
