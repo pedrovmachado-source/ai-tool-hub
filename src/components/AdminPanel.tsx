@@ -427,6 +427,13 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
   const { categories, updateCategory: updateCategoryDb, saveTool: saveToolDb, deleteTool: deleteToolDb } = useCategories();
   const [section, setSection] = useState('dashboard');
   const [unreadOrders, setUnreadOrders] = useState(0);
+  const [siteCreationInitialTab, setSiteCreationInitialTab] = useState<'products' | 'orders'>('products');
+  const goToOrders = () => {
+    setSiteCreationInitialTab('orders');
+    setSection('site-creation');
+    setViewingCategory(null);
+    setSidebarOpen(false);
+  };
 
   // Poll unread orders count and subscribe to realtime
   useEffect(() => {
