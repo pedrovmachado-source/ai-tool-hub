@@ -53,8 +53,8 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-export default function AdminSiteCreation() {
-  const [tab, setTab] = useState<'products' | 'orders'>('products');
+export default function AdminSiteCreation({ initialTab = 'products' }: { initialTab?: 'products' | 'orders' } = {}) {
+  const [tab, setTab] = useState<'products' | 'orders'>(initialTab);
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [form, setForm] = useState<Partial<Product> | null>(null);
@@ -73,6 +73,16 @@ export default function AdminSiteCreation() {
   };
 
   useEffect(() => { void reload(); }, []);
+
+  // Auto-mark unread orders as read when opening the orders tab
+  useEffect(() => {
+    if (tab !== 'orders' || orders.length === 0) return;
+    const unreadIds = orders.filter(o => !o.read_at).map(o => o.id);
+    if (unreadIds.length === 0) return;
+    const now = new Date().toISOString();
+    setOrders(prev => prev.map(o => unreadIds.includes(o.id) ? { ...o, read_at: now } : o));
+    void (supabase as any).from('site_orders').update({ read_at: now }).in('id', unreadIds);
+  }, [tab, orders.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const productsBySlug = useMemo(() => {
     const m = new Map<string, Product>();

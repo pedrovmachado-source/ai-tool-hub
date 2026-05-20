@@ -426,6 +426,32 @@ interface DbUser {
 export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: () => void; onCategoriesChanged: () => Promise<void> }) {
   const { categories, updateCategory: updateCategoryDb, saveTool: saveToolDb, deleteTool: deleteToolDb } = useCategories();
   const [section, setSection] = useState('dashboard');
+  const [unreadOrders, setUnreadOrders] = useState(0);
+  const [siteCreationInitialTab, setSiteCreationInitialTab] = useState<'products' | 'orders'>('products');
+  const goToOrders = () => {
+    setSiteCreationInitialTab('orders');
+    setSection('site-creation');
+    setViewingCategory(null);
+    setSidebarOpen(false);
+  };
+
+  // Poll unread orders count and subscribe to realtime
+  useEffect(() => {
+    const load = async () => {
+      const { count } = await (supabase as any)
+        .from('site_orders')
+        .select('id', { count: 'exact', head: true })
+        .is('read_at', null);
+      if (typeof count === 'number') setUnreadOrders(count);
+    };
+    void load();
+    const interval = setInterval(load, 30000);
+    const channel = (supabase as any)
+      .channel('admin-site-orders')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'site_orders' }, () => void load())
+      .subscribe();
+    return () => { clearInterval(interval); (supabase as any).removeChannel(channel); };
+  }, []);
   const [users, setUsers] = useState<DbUser[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
@@ -489,7 +515,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'content', label: 'Conteúdo', icon: FileText },
     { key: 'lessons', label: 'Aulas gravadas', icon: GraduationCap },
     { key: 'niche-lessons', label: 'Aulas por nicho', icon: Video },
-    { key: 'site-creation', label: 'Criação de Site', icon: Folder },
+    { key: 'site-creation', label: 'Comprar Site', icon: Folder },
     { key: 'sections', label: 'Conteúdos', icon: Folder },
     { key: 'menu', label: 'Menu Lateral', icon: Menu },
     { key: 'activity', label: 'Atividade', icon: Activity },
@@ -592,7 +618,17 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
         <button onClick={() => setSidebarOpen(true)} className="p-1.5 rounded-lg text-primary-foreground hover:bg-primary-foreground/10">
           <Menu size={20} />
         </button>
-        <div className="text-[13px] font-medium text-primary-foreground truncate">AdAI Admin · {currentSectionLabel}</div>
+        <div className="text-[13px] font-medium text-primary-foreground truncate flex-1">AdAI Admin · {currentSectionLabel}</div>
+        <button
+          onClick={goToOrders}
+          className="relative p-1.5 rounded-lg text-primary-foreground hover:bg-primary-foreground/10"
+          aria-label="Novos pedidos"
+        >
+          <Bell size={18} />
+          {unreadOrders > 0 && (
+            <span className="absolute -top-0.5 -right-0.5 bg-destructive text-destructive-foreground text-[10px] font-semibold rounded-full min-w-[16px] h-[16px] px-1 inline-flex items-center justify-center">{unreadOrders}</span>
+          )}
+        </button>
       </div>
 
       {/* Mobile backdrop */}
@@ -607,14 +643,30 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
             <div className="text-[15px] font-medium text-primary-foreground">AdAI Admin</div>
             <div className="text-[11px] text-muted-foreground/40">Painel de administração</div>
           </div>
-          <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-muted-foreground hover:text-primary-foreground p-1">
-            <X size={16} />
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={goToOrders}
+              className="relative hidden lg:inline-flex p-1.5 rounded-lg text-muted-foreground/60 hover:text-primary-foreground hover:bg-primary-foreground/10"
+              aria-label="Novos pedidos"
+              title={unreadOrders > 0 ? `${unreadOrders} novo(s) pedido(s)` : 'Sem novos pedidos'}
+            >
+              <Bell size={16} />
+              {unreadOrders > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 bg-destructive text-destructive-foreground text-[10px] font-semibold rounded-full min-w-[16px] h-[16px] px-1 inline-flex items-center justify-center">{unreadOrders}</span>
+              )}
+            </button>
+            <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-muted-foreground hover:text-primary-foreground p-1">
+              <X size={16} />
+            </button>
+          </div>
         </div>
         <div className="py-3 flex-1 overflow-y-auto">
           {navItems.map(item => (
-            <button key={item.key} onClick={() => { setSection(item.key); setViewingCategory(null); setSidebarOpen(false); }} className={`w-full flex items-center gap-2.5 px-5 py-2.5 text-[13px] transition-colors ${section === item.key ? 'text-brand-blue-medium bg-brand-blue/15' : 'text-muted-foreground/50 hover:text-primary-foreground hover:bg-primary-foreground/5'}`}>
-              <item.icon size={15} /> {item.label}
+            <button key={item.key} onClick={() => { setSection(item.key); setViewingCategory(null); setSidebarOpen(false); if (item.key === 'site-creation') setSiteCreationInitialTab('products'); }} className={`w-full flex items-center gap-2.5 px-5 py-2.5 text-[13px] transition-colors ${section === item.key ? 'text-brand-blue-medium bg-brand-blue/15' : 'text-muted-foreground/50 hover:text-primary-foreground hover:bg-primary-foreground/5'}`}>
+              <item.icon size={15} /> <span className="flex-1 text-left">{item.label}</span>
+              {item.key === 'site-creation' && unreadOrders > 0 && (
+                <span className="bg-destructive text-destructive-foreground text-[10px] font-semibold rounded-full min-w-[18px] h-[18px] px-1.5 inline-flex items-center justify-center">{unreadOrders}</span>
+              )}
             </button>
           ))}
         </div>
@@ -868,7 +920,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
         {section === 'lessons' && <AdminLessons />}
         {section === 'sections' && <AdminContentSections />}
         {section === 'niche-lessons' && <AdminNicheLessons />}
-        {section === 'site-creation' && <AdminSiteCreation />}
+        {section === 'site-creation' && <AdminSiteCreation initialTab={siteCreationInitialTab} />}
         {section === 'menu' && <AdminMenu />}
 
         {section === 'activity' && <ActivityLogView />}
