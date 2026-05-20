@@ -426,6 +426,25 @@ interface DbUser {
 export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: () => void; onCategoriesChanged: () => Promise<void> }) {
   const { categories, updateCategory: updateCategoryDb, saveTool: saveToolDb, deleteTool: deleteToolDb } = useCategories();
   const [section, setSection] = useState('dashboard');
+  const [unreadOrders, setUnreadOrders] = useState(0);
+
+  // Poll unread orders count and subscribe to realtime
+  useEffect(() => {
+    const load = async () => {
+      const { count } = await (supabase as any)
+        .from('site_orders')
+        .select('id', { count: 'exact', head: true })
+        .is('read_at', null);
+      if (typeof count === 'number') setUnreadOrders(count);
+    };
+    void load();
+    const interval = setInterval(load, 30000);
+    const channel = (supabase as any)
+      .channel('admin-site-orders')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'site_orders' }, () => void load())
+      .subscribe();
+    return () => { clearInterval(interval); (supabase as any).removeChannel(channel); };
+  }, []);
   const [users, setUsers] = useState<DbUser[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
