@@ -620,7 +620,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
         </button>
         <div className="text-[13px] font-medium text-primary-foreground truncate flex-1">AdAI Admin · {currentSectionLabel}</div>
         <button
-          onClick={() => { setSection('site-creation'); setViewingCategory(null); }}
+          onClick={goToOrders}
           className="relative p-1.5 rounded-lg text-primary-foreground hover:bg-primary-foreground/10"
           aria-label="Novos pedidos"
         >
