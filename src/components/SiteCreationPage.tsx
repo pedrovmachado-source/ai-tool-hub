@@ -114,7 +114,7 @@ export default function SiteCreationPage({ onBack }: { onBack: () => void }) {
           <button onClick={onBack} className="flex items-center gap-2 text-white/80 hover:text-white text-sm mb-4">
             <ArrowLeft size={16} /> Voltar
           </button>
-          <h1 className="font-serif-display text-3xl text-white mb-2">Criação de Site</h1>
+          <h1 className="font-serif-display text-3xl text-white mb-2">Comprar Site</h1>
           <p className="text-sm text-white/60">Escolha entre copy gerada por IA (mais rápido) ou copy escrita à mão (mais personalizada).</p>
         </div>
       </div>
