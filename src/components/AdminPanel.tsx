@@ -636,14 +636,30 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
             <div className="text-[15px] font-medium text-primary-foreground">AdAI Admin</div>
             <div className="text-[11px] text-muted-foreground/40">Painel de administração</div>
           </div>
-          <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-muted-foreground hover:text-primary-foreground p-1">
-            <X size={16} />
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => { setSection('site-creation'); setViewingCategory(null); setSidebarOpen(false); }}
+              className="relative hidden lg:inline-flex p-1.5 rounded-lg text-muted-foreground/60 hover:text-primary-foreground hover:bg-primary-foreground/10"
+              aria-label="Novos pedidos"
+              title={unreadOrders > 0 ? `${unreadOrders} novo(s) pedido(s)` : 'Sem novos pedidos'}
+            >
+              <Bell size={16} />
+              {unreadOrders > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 bg-destructive text-destructive-foreground text-[10px] font-semibold rounded-full min-w-[16px] h-[16px] px-1 inline-flex items-center justify-center">{unreadOrders}</span>
+              )}
+            </button>
+            <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-muted-foreground hover:text-primary-foreground p-1">
+              <X size={16} />
+            </button>
+          </div>
         </div>
         <div className="py-3 flex-1 overflow-y-auto">
           {navItems.map(item => (
             <button key={item.key} onClick={() => { setSection(item.key); setViewingCategory(null); setSidebarOpen(false); }} className={`w-full flex items-center gap-2.5 px-5 py-2.5 text-[13px] transition-colors ${section === item.key ? 'text-brand-blue-medium bg-brand-blue/15' : 'text-muted-foreground/50 hover:text-primary-foreground hover:bg-primary-foreground/5'}`}>
-              <item.icon size={15} /> {item.label}
+              <item.icon size={15} /> <span className="flex-1 text-left">{item.label}</span>
+              {item.key === 'site-creation' && unreadOrders > 0 && (
+                <span className="bg-destructive text-destructive-foreground text-[10px] font-semibold rounded-full min-w-[18px] h-[18px] px-1.5 inline-flex items-center justify-center">{unreadOrders}</span>
+              )}
             </button>
           ))}
         </div>
