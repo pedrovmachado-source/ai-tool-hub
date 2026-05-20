@@ -645,7 +645,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
           </div>
           <div className="flex items-center gap-1">
             <button
-              onClick={() => { setSection('site-creation'); setViewingCategory(null); setSidebarOpen(false); }}
+              onClick={goToOrders}
               className="relative hidden lg:inline-flex p-1.5 rounded-lg text-muted-foreground/60 hover:text-primary-foreground hover:bg-primary-foreground/10"
               aria-label="Novos pedidos"
               title={unreadOrders > 0 ? `${unreadOrders} novo(s) pedido(s)` : 'Sem novos pedidos'}
