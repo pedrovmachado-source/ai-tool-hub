@@ -611,7 +611,17 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
         <button onClick={() => setSidebarOpen(true)} className="p-1.5 rounded-lg text-primary-foreground hover:bg-primary-foreground/10">
           <Menu size={20} />
         </button>
-        <div className="text-[13px] font-medium text-primary-foreground truncate">AdAI Admin · {currentSectionLabel}</div>
+        <div className="text-[13px] font-medium text-primary-foreground truncate flex-1">AdAI Admin · {currentSectionLabel}</div>
+        <button
+          onClick={() => { setSection('site-creation'); setViewingCategory(null); }}
+          className="relative p-1.5 rounded-lg text-primary-foreground hover:bg-primary-foreground/10"
+          aria-label="Novos pedidos"
+        >
+          <Bell size={18} />
+          {unreadOrders > 0 && (
+            <span className="absolute -top-0.5 -right-0.5 bg-destructive text-destructive-foreground text-[10px] font-semibold rounded-full min-w-[16px] h-[16px] px-1 inline-flex items-center justify-center">{unreadOrders}</span>
+          )}
+        </button>
       </div>
 
       {/* Mobile backdrop */}
