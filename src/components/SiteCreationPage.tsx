@@ -18,11 +18,26 @@ interface Product {
   active: boolean;
 }
 
-interface BannerCfg { enabled: boolean; after_row_key: string; text: string; }
+interface BannerCfg {
+  enabled: boolean;
+  after_row_key: string;
+  text?: string; // legacy
+  title?: string;
+  subtitle?: string;
+  cta_label?: string;
+}
+
+const DEFAULT_BANNER: BannerCfg = {
+  enabled: true,
+  after_row_key: 'quiz',
+  title: 'Site pronto para vender em até 7 dias',
+  subtitle: 'Copy persuasiva, estrutura validada por quem fatura 6 dígitos e gatilhos de conversão prontos. Sem enrolação — só resultado.',
+  cta_label: 'Falar com um especialista',
+};
 
 export default function SiteCreationPage({ onBack }: { onBack: () => void }) {
   const [products, setProducts] = useState<Product[]>([]);
-  const [banner, setBanner] = useState<BannerCfg>({ enabled: true, after_row_key: 'quiz', text: 'Fazemos a copy do seu site do zero' });
+  const [banner, setBanner] = useState<BannerCfg>(DEFAULT_BANNER);
   const [loading, setLoading] = useState(true);
   const [orderingProduct, setOrderingProduct] = useState<SiteOrderProduct | null>(null);
 
