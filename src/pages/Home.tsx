@@ -262,7 +262,7 @@ export default function Home() {
             <Reveal delay={400} className="relative">
               <div className="relative z-10 p-4 glass-smooth rounded-[3.5rem] transform lg:rotate-3 hover:rotate-0 transition-all duration-1000">
                 <div className="aspect-[4/5] bg-gradient-to-br from-white/10 to-transparent rounded-[3rem] p-12 flex flex-col justify-end overflow-hidden relative group">
-                   <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop')] bg-cover opacity-20 grayscale group-hover:scale-110 transition-transform duration-[2000ms]" />
+                   <div className="absolute inset-0 bg-cover opacity-20 grayscale group-hover:scale-110 transition-transform duration-[2000ms]" style={{ backgroundImage: `url(${hoteducaRef})` }} />
                    <div className="relative z-10">
                     <Layout className="w-16 h-16 text-white mb-8" />
                     <h3 className="text-4xl font-serif-display text-white mb-6">Interface Masterclass</h3>
