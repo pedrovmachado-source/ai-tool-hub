@@ -19,7 +19,8 @@ import {
   MousePointer2,
   Clock,
   Award,
-  Users
+  Users,
+  ChevronRight
 } from 'lucide-react';
 
 export default function Home() {
@@ -32,9 +33,9 @@ export default function Home() {
   };
 
   useEffect(() => {
-    document.title = 'AdAI — Tudo o que seu negócio precisa para escalar';
+    document.title = 'Convert Club — Comunidade de Alta Conversão';
     const desc = document.querySelector('meta[name="description"]');
-    const content = 'Desde sites de alta conversão até as ferramentas de IA mais avançadas. A solução completa para infoprodutores e empreendedores digitais.';
+    const content = 'Acesse a Convert Club: A maior comunidade de infoprodutores e estrategistas digitais focados em escala e alta conversão.';
     if (desc) desc.setAttribute('content', content);
   }, []);
 
@@ -71,8 +72,8 @@ export default function Home() {
       title: "Ofertas Validadas",
       description: "Copias e funis que já faturaram alto, prontos para você modelar e aplicar.",
       icon: Sparkles,
-      color: "text-brand-amber",
-      bg: "bg-brand-amber/10",
+      color: "text-white",
+      bg: "bg-white/10",
       target: "offers",
       badge: "Best Seller"
     },
@@ -80,8 +81,8 @@ export default function Home() {
       title: "Comprar Site",
       description: "Sites prontos para vender em até 7 dias com copy persuasiva incluída.",
       icon: Globe2,
-      color: "text-brand-blue-medium",
-      bg: "bg-brand-blue/10",
+      color: "text-white",
+      bg: "bg-white/10",
       target: "site-creation",
       badge: "Alta Conversão"
     },
@@ -89,8 +90,8 @@ export default function Home() {
       title: "Comprar Criativo",
       description: "Anúncios validados que param o scroll e trazem leads qualificados.",
       icon: Wand2,
-      color: "text-brand-teal",
-      bg: "bg-brand-teal/10",
+      color: "text-white",
+      bg: "bg-white/10",
       target: "creative-edit",
       badge: "Vendas Diretas"
     },
@@ -98,8 +99,8 @@ export default function Home() {
       title: "Aulas Gravadas",
       description: "Estratégias práticas de quem fatura 6 dígitos no mercado digital.",
       icon: GraduationCap,
-      color: "text-brand-blue-medium",
-      bg: "bg-brand-blue/10",
+      color: "text-white",
+      bg: "bg-white/10",
       target: "lessons",
       badge: "Conteúdo VIP"
     },
@@ -107,8 +108,8 @@ export default function Home() {
       title: "Ferramentas de IA",
       description: "O maior guia de IAs com e-books e prompts para turbinar seu fluxo.",
       icon: Layout,
-      color: "text-brand-blue-medium",
-      bg: "bg-brand-blue/10",
+      color: "text-white",
+      bg: "bg-white/10",
       target: "/ferramentas",
       badge: "Curadoria 2026"
     }
@@ -123,7 +124,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-background text-foreground selection:bg-brand-blue/30">
+    <div className="flex flex-col min-h-screen bg-black text-white selection:bg-white/20 font-sans overflow-x-hidden">
       <Navbar
         hideAuth
         onNavigate={(page) => {
@@ -135,123 +136,122 @@ export default function Home() {
       />
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden pt-16 pb-20 sm:pt-24 sm:pb-32 lg:pt-32 lg:pb-40 bg-navy">
-        {/* Background Gradients */}
+      <section className="relative pt-24 pb-32 sm:pt-32 sm:pb-48 lg:pt-48 lg:pb-64">
+        {/* Glass Orbs */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-brand-blue/20 blur-[120px]" />
-          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-brand-teal/10 blur-[120px]" />
+          <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-white/5 blur-[140px]" />
+          <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] rounded-full bg-white/5 blur-[140px]" />
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 text-center">
-          <Reveal className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8">
+          <Reveal className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-smooth mb-10">
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-teal opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-teal"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
             </span>
-            <span className="text-xs font-medium text-white/80 tracking-wide uppercase">Solução completa para o seu negócio digital</span>
+            <span className="text-[10px] font-bold text-white/70 tracking-[0.2em] uppercase">Convert Club Access</span>
           </Reveal>
           
           <Reveal delay={200}>
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-serif-display text-white tracking-tight leading-[1.1] mb-8">
-              Tudo o que seu negócio precisa para <em className="text-brand-blue-medium italic not-italic">escalar</em> com IA
+            <h1 className="text-5xl sm:text-7xl lg:text-8xl font-serif-display text-white tracking-tighter leading-[0.9] mb-10">
+              Transforme Cliques em <em className="italic font-normal">Escala Brutal</em>.
             </h1>
           </Reveal>
 
           <Reveal delay={400}>
-            <p className="max-w-2xl mx-auto text-lg sm:text-xl text-white/60 leading-relaxed mb-10">
-              Desde a criação do seu site de alta conversão até as ferramentas mais avançadas para dominar o mercado digital. Menos esforço, mais lucro.
+            <p className="max-w-2xl mx-auto text-lg sm:text-xl text-white/50 leading-relaxed mb-12 font-light">
+              Bem-vindo à Convert Club. A etapa final para infoprodutores que buscam o domínio absoluto do mercado através de sites de alta conversão e inteligência estratégica.
             </p>
           </Reveal>
 
-          <Reveal delay={600} className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <Reveal delay={600} className="flex flex-col sm:flex-row items-center justify-center gap-6">
             <Button 
               size="lg" 
               onClick={() => scrollTo('services')}
-              className="w-full sm:w-auto bg-brand-blue hover:bg-brand-blue/90 text-white h-14 px-10 rounded-2xl text-lg font-semibold shadow-xl shadow-brand-blue/20 transition-all hover:scale-[1.02]"
+              className="w-full sm:w-auto bg-white hover:bg-white/90 text-black h-16 px-12 rounded-full text-lg font-bold transition-all hover:scale-[1.05] shadow-[0_0_40px_rgba(255,255,255,0.2)]"
             >
-              Começar Agora
+              Entrar na Comunidade
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
             <Button 
               size="lg" 
               variant="outline"
               onClick={() => scrollTo('how-it-works')}
-              className="w-full sm:w-auto border-white/20 text-white hover:bg-white/10 h-14 px-10 rounded-2xl text-lg font-medium backdrop-blur-sm"
+              className="w-full sm:w-auto border-white/10 text-white hover:bg-white/5 h-16 px-12 rounded-full text-lg font-medium glass-smooth"
             >
-              Como funciona
+              Explorar Ecossistema
             </Button>
           </Reveal>
         </div>
       </section>
 
       {/* Services Grid */}
-      <section id="services" className="py-24 sm:py-32 px-6 bg-slate-50">
+      <section id="services" className="py-32 px-6 relative">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16 sm:mb-24">
-            <Reveal className="text-brand-blue font-bold tracking-widest uppercase text-sm mb-4">Serviços Especializados</Reveal>
-            <Reveal delay={200} as="h2" className="text-3xl sm:text-5xl font-serif-display tracking-tight text-slate-900">
-              Nossas Verticais de <span className="text-brand-blue">Crescimento</span>
+          <div className="text-center mb-24">
+            <Reveal className="text-white/40 font-bold tracking-[0.3em] uppercase text-[10px] mb-4">Vertical de Acesso</Reveal>
+            <Reveal delay={200} as="h2" className="text-4xl sm:text-6xl font-serif-display tracking-tight text-white">
+              O Que Você <span className="italic">Destrava</span> Aqui
             </Reveal>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service, idx) => (
               <Reveal key={service.title} delay={idx * 150}>
-                <Card 
-                  className="group relative h-full p-8 border border-slate-200 bg-white hover:border-brand-blue/30 hover:shadow-2xl hover:shadow-brand-blue/5 transition-all duration-500 rounded-[2rem] cursor-pointer overflow-hidden"
+                <div 
+                  className="group relative h-full p-10 glass-smooth hover:bg-white/10 transition-all duration-700 rounded-[2.5rem] cursor-pointer"
                   onClick={() => handleServiceClick(service.target)}
                 >
-                  <div className="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <ArrowRight className="w-5 h-5 text-brand-blue" />
+                  <div className="absolute top-10 right-10 opacity-20 group-hover:opacity-100 transition-opacity transform group-hover:translate-x-2">
+                    <ChevronRight className="w-6 h-6 text-white" />
                   </div>
 
-                  <div className={`w-14 h-14 ${service.bg} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500`}>
-                    <service.icon className={`w-7 h-7 ${service.color}`} />
+                  <div className={`w-16 h-16 ${service.bg} rounded-2xl flex items-center justify-center mb-10 group-hover:rotate-[10deg] transition-transform duration-500`}>
+                    <service.icon className={`w-8 h-8 ${service.color}`} />
                   </div>
 
-                  <div className="inline-block px-3 py-1 rounded-full bg-slate-100 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-4">
+                  <div className="inline-block px-4 py-1.5 rounded-full bg-white/5 border border-white/5 text-[10px] font-bold text-white/50 uppercase tracking-[0.2em] mb-6">
                     {service.badge}
                   </div>
 
-                  <h3 className="text-2xl font-serif-display text-slate-900 mb-4 group-hover:text-brand-blue transition-colors">
+                  <h3 className="text-3xl font-serif-display text-white mb-6 group-hover:tracking-wide transition-all">
                     {service.title}
                   </h3>
                   
-                  <p className="text-slate-500 leading-relaxed">
+                  <p className="text-white/40 leading-relaxed font-light text-sm">
                     {service.description}
                   </p>
-                </Card>
+                </div>
               </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Why Section - The "Zero" Refactoring part */}
-      <section id="how-it-works" className="py-24 sm:py-32 px-6 overflow-hidden">
+      {/* Experience Section */}
+      <section id="how-it-works" className="py-32 px-6 relative overflow-hidden">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
             <Reveal>
               <div className="relative">
-                <div className="absolute -top-10 -left-10 w-40 h-40 bg-brand-blue/5 rounded-full blur-3xl" />
-                <p className="text-brand-blue font-bold tracking-widest uppercase text-sm mb-4">Vantagem Competitiva</p>
-                <h2 className="text-4xl sm:text-5xl font-serif-display tracking-tight text-slate-900 mb-8 leading-[1.1]">
-                  Por que escolher a plataforma AdAI?
+                <p className="text-white/40 font-bold tracking-[0.3em] uppercase text-[10px] mb-4">Standard of Quality</p>
+                <h2 className="text-5xl sm:text-6xl font-serif-display tracking-tight text-white mb-12 leading-[1.1]">
+                  A Experiência <br/><em className="italic">Glass Smooth</em>.
                 </h2>
-                <div className="space-y-8">
+                <div className="space-y-12">
                   {[
-                    { title: "Entrega Expressa", desc: "Seu site pronto em tempo recorde, sem comprometer a qualidade ou a copy.", icon: Clock },
-                    { title: "Copy que Vende", desc: "Nossas estruturas são baseadas em gatilhos mentais que realmente convertem.", icon: MousePointer2 },
-                    { title: "IA de Ponta", desc: "Acesso às ferramentas mais modernas de 2026, curadas por especialistas.", icon: Zap },
-                    { title: "Suporte Premium", desc: "Acompanhamento dedicado para garantir que seu funil esteja performando.", icon: Award }
+                    { title: "Design Imersivo", desc: "Uma interface pensada para não distrair e focar no que importa: seus resultados.", icon: Clock },
+                    { title: "Arquitetura de Vendas", desc: "Cada pixel é posicionado para conduzir o lead através do seu funil.", icon: MousePointer2 },
+                    { title: "Inteligência Ativa", desc: "Acesso direto aos segredos dos maiores players do mercado digital.", icon: Zap },
+                    { title: "Escalabilidade PWA", desc: "Leve a Convert Club no seu bolso. Instale como um app e tenha acesso instantâneo.", icon: Rocket }
                   ].map((item, i) => (
-                    <div key={i} className="flex gap-6">
-                      <div className="flex-shrink-0 w-12 h-12 bg-white border border-slate-100 shadow-sm rounded-xl flex items-center justify-center">
-                        <item.icon className="w-6 h-6 text-brand-blue" />
+                    <div key={i} className="flex gap-8 group">
+                      <div className="flex-shrink-0 w-14 h-14 glass-smooth rounded-2xl flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all duration-500">
+                        <item.icon className="w-7 h-7" />
                       </div>
                       <div>
-                        <h4 className="text-lg font-bold text-slate-900 mb-1">{item.title}</h4>
-                        <p className="text-slate-500 text-sm leading-relaxed">{item.desc}</p>
+                        <h4 className="text-xl font-bold text-white mb-2">{item.title}</h4>
+                        <p className="text-white/30 text-sm leading-relaxed font-light">{item.desc}</p>
                       </div>
                     </div>
                   ))}
@@ -259,100 +259,66 @@ export default function Home() {
               </div>
             </Reveal>
 
-            <Reveal delay={400} className="relative lg:ml-auto">
-              <div className="relative z-10 p-2 bg-white rounded-[3rem] shadow-2xl shadow-slate-200 border border-slate-100 overflow-hidden transform lg:rotate-2">
-                <div className="aspect-[4/5] bg-navy rounded-[2.5rem] p-8 flex flex-col justify-center items-center text-center overflow-hidden relative">
-                   {/* Abstract Preview */}
-                   <div className="absolute inset-0 opacity-20 pointer-events-none">
-                     <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-brand-blue/40 via-transparent to-transparent" />
-                   </div>
-                   
-                   <Layout className="w-20 h-20 text-brand-blue-medium mb-8" />
-                   <h3 className="text-3xl font-serif-display text-white mb-4">Interface de Alta Conversão</h3>
-                   <p className="text-white/60 text-sm max-w-xs mb-8">
-                     Visualizamos cada detalhe do seu funil para maximizar cada clique.
-                   </p>
-                   <div className="w-full h-px bg-white/10 mb-8" />
-                   <div className="flex gap-4">
-                     <div className="px-4 py-2 rounded-full bg-brand-teal/20 text-brand-teal text-xs font-bold uppercase tracking-widest">Performance</div>
-                     <div className="px-4 py-2 rounded-full bg-brand-amber/20 text-brand-amber text-xs font-bold uppercase tracking-widest">Escala</div>
+            <Reveal delay={400} className="relative">
+              <div className="relative z-10 p-4 glass-smooth rounded-[3.5rem] transform lg:rotate-3 hover:rotate-0 transition-all duration-1000">
+                <div className="aspect-[4/5] bg-gradient-to-br from-white/10 to-transparent rounded-[3rem] p-12 flex flex-col justify-end overflow-hidden relative group">
+                   <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop')] bg-cover opacity-20 grayscale group-hover:scale-110 transition-transform duration-[2000ms]" />
+                   <div className="relative z-10">
+                    <Layout className="w-16 h-16 text-white mb-8" />
+                    <h3 className="text-4xl font-serif-display text-white mb-6">Interface Masterclass</h3>
+                    <p className="text-white/40 text-sm max-w-xs mb-10 font-light">
+                      Onde a estética encontra a conversão agressiva. Tudo o que você vê é projetado para vender.
+                    </p>
+                    <div className="flex gap-4">
+                      <div className="px-5 py-2 rounded-full glass-smooth text-[10px] font-bold uppercase tracking-widest">Premium</div>
+                      <div className="px-5 py-2 rounded-full glass-smooth text-[10px] font-bold uppercase tracking-widest">Exclusive</div>
+                    </div>
                    </div>
                 </div>
               </div>
-              <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-brand-teal/5 rounded-full blur-3xl" />
             </Reveal>
           </div>
         </div>
       </section>
 
-      {/* Metrics Strip */}
-      <section className="bg-navy py-20 border-y border-white/5">
+      {/* Stats Strip */}
+      <section className="bg-white/5 py-24 border-y border-white/5">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
             {[
-              { label: "Clientes Satisfeitos", value: "1.500+", icon: Users },
-              { label: "Anúncios Gerados", value: "50k+", icon: Wand2 },
-              { label: "Sites Entregues", value: "300+", icon: Globe2 },
-              { label: "Economia de Tempo", value: "85%", icon: TrendingUp }
+              { label: "Convert Club Members", value: "1.5k+", icon: Users },
+              { label: "Conversion Rate Avg", value: "12%+", icon: TrendingUp },
+              { label: "Community Assets", value: "300+", icon: Globe2 },
+              { label: "Scale Multiplier", value: "10x", icon: Rocket }
             ].map((stat, i) => (
               <Reveal key={i} delay={i * 100} className="text-center">
-                <div className="text-3xl sm:text-5xl font-serif-display text-brand-blue-medium mb-2">{stat.value}</div>
-                <div className="text-white/40 text-xs sm:text-sm font-medium uppercase tracking-wider">{stat.label}</div>
+                <div className="text-4xl sm:text-6xl font-serif-display text-white mb-3 tracking-tighter">{stat.value}</div>
+                <div className="text-white/20 text-[10px] font-bold uppercase tracking-[0.3em]">{stat.label}</div>
               </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Social Proof - Keep simple and powerful */}
-      <section className="py-24 sm:py-32 px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <Reveal className="mb-12">
-            <div className="flex justify-center gap-1 text-brand-amber mb-6">
-              {[...Array(5)].map((_, i) => <Star key={i} className="w-6 h-6 fill-current" />)}
-            </div>
-            <p className="text-2xl sm:text-4xl font-serif-display leading-tight text-slate-900 mb-10 italic">
-              "O AdAI mudou completamente a forma como encaro a escala do meu negócio. Ter o site, os criativos e as ferramentas de IA em um só lugar é um diferencial absurdo."
-            </p>
-            <div className="flex items-center justify-center gap-4">
-              <div className="w-14 h-14 rounded-full bg-brand-blue/10 flex items-center justify-center text-brand-blue font-bold text-xl">
-                RD
-              </div>
-              <div className="text-left">
-                <div className="font-bold text-slate-900 text-lg">Ricardo Duarte</div>
-                <div className="text-slate-500 text-sm">CEO & Infoprodutor</div>
-              </div>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
       {/* Final CTA */}
-      <section className="py-24 sm:py-32 px-6 bg-navy relative overflow-hidden">
-        <div className="absolute inset-0 z-0 opacity-20 bg-[radial-gradient(circle_at_50%_50%,_var(--tw-gradient-stops))] from-brand-blue/30 via-transparent to-transparent pointer-events-none" />
+      <section className="py-48 px-6 relative overflow-hidden">
+        <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_50%_50%,_rgba(255,255,255,0.05),transparent)] pointer-events-none" />
         
-        <div className="relative z-10 max-w-4xl mx-auto text-center">
+        <div className="relative z-10 max-w-5xl mx-auto text-center">
           <Reveal>
-            <h2 className="text-4xl sm:text-5xl font-serif-display text-white mb-8 tracking-tight">
-              Pronto para levar seu negócio ao próximo nível?
+            <h2 className="text-5xl sm:text-8xl font-serif-display text-white mb-12 tracking-tighter leading-[0.9]">
+              Torne-se <em className="italic font-normal">Inegociável</em>.
             </h2>
-            <p className="text-white/60 text-lg mb-12 max-w-2xl mx-auto">
-              Junte-se a centenas de empreendedores que já estão usando o poder da inteligência artificial para automatizar e lucrar.
+            <p className="text-white/40 text-xl mb-16 max-w-2xl mx-auto font-light">
+              A Convert Club não é para todos. É para aqueles que entenderam que no digital, ou você domina a conversão, ou você é dominado por ela.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
               <Button 
                 size="lg" 
                 onClick={() => scrollTo('services')}
-                className="w-full sm:w-auto bg-brand-teal hover:bg-brand-teal/90 text-navy h-14 px-12 rounded-2xl text-lg font-bold transition-all hover:scale-105"
+                className="w-full sm:w-auto bg-white hover:bg-white/90 text-black h-20 px-16 rounded-full text-xl font-bold transition-all hover:scale-105"
               >
-                Quero Escalar Agora
-              </Button>
-              <Button 
-                size="lg" 
-                variant="link"
-                className="text-white/60 hover:text-white"
-              >
-                Falar com consultor especializado
+                Acessar Agora
               </Button>
             </div>
           </Reveal>
@@ -360,19 +326,19 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-6 border-t border-slate-100 text-center bg-white">
+      <footer className="py-24 px-6 border-t border-white/5 text-center bg-black">
         <div className="max-w-7xl mx-auto">
-          <div className="font-serif-display text-2xl text-slate-900 mb-4">AdAI</div>
-          <p className="text-slate-400 text-sm mb-8 max-w-md mx-auto leading-relaxed">
-            A solução definitiva para o empreendedorismo digital moderno.
+          <div className="font-serif-display text-4xl text-white mb-6 tracking-tighter">CONVERT CLUB</div>
+          <p className="text-white/20 text-sm mb-12 max-w-md mx-auto leading-relaxed font-light">
+            The elite layer of digital entrepreneurship. Glass smooth experience, razor sharp results.
           </p>
-          <div className="flex justify-center gap-8 mb-8 text-sm font-medium text-slate-500">
-            <button onClick={() => navigate('/')} className="hover:text-brand-blue">Home</button>
-            <button onClick={() => navigate('/ferramentas')} className="hover:text-brand-blue">Ferramentas</button>
-            <button onClick={() => navigate('/pro')} className="hover:text-brand-blue">Planos</button>
+          <div className="flex justify-center gap-12 mb-12 text-[10px] font-bold uppercase tracking-[0.3em] text-white/40">
+            <button onClick={() => navigate('/')} className="hover:text-white transition-colors">Home</button>
+            <button onClick={() => navigate('/ferramentas')} className="hover:text-white transition-colors">Tools</button>
+            <button onClick={() => navigate('/pro')} className="hover:text-white transition-colors">Plano Max</button>
           </div>
-          <div className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">
-            &copy; 2026 ADAI PLATFORM · TODOS OS DIREITOS RESERVADOS
+          <div className="text-[10px] text-white/10 font-bold uppercase tracking-[0.5em]">
+            &copy; 2026 CONVERT CLUB · BUILT FOR THE 1%
           </div>
         </div>
       </footer>
