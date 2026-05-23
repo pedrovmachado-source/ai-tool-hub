@@ -18,7 +18,8 @@ import {
   Layout, 
   MousePointer2,
   Clock,
-  Award
+  Award,
+  Users
 } from 'lucide-react';
 
 export default function Home() {
