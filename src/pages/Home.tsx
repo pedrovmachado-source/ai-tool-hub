@@ -206,7 +206,7 @@ export default function Home() {
                     <ChevronRight className="w-6 h-6 text-white" />
                   </div>
 
-                  <div className={`w-16 h-16 ${service.bg} rounded-2xl flex items-center justify-center mb-10 group-hover:rotate-[10deg] transition-transform duration-500`}>
+                  <div className={`w-16 h-16 ${service.bg} rounded-2xl mb-10 group-hover:rotate-[10deg] transition-transform duration-500 flex items-center justify-center`}>
                     <service.icon className={`w-8 h-8 ${service.color}`} />
                   </div>
 
