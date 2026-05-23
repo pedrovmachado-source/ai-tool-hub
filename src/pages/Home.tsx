@@ -235,7 +235,7 @@ export default function Home() {
               <div className="relative">
                 <p className="text-white/40 font-bold tracking-[0.3em] uppercase text-[10px] mb-4">Standard of Quality</p>
                 <h2 className="text-5xl sm:text-6xl font-serif-display tracking-tight text-white mb-12 leading-[1.1]">
-                  A Experiência <br/><em className="italic">Glass Smooth</em>.
+                  A Experiência <br/><em className="italic">Convert Club</em>.
                 </h2>
                 <div className="space-y-12">
                   {[
