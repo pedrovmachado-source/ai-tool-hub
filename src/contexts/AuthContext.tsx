@@ -33,7 +33,7 @@ interface AuthContextType {
   savedEbooks: SavedEbook[];
   loading: boolean;
   login: (email: string, password: string) => Promise<string | null>;
-  register: (nome: string, sobre: string, email: string, password: string) => Promise<string | null>;
+  register: (nome: string, email: string, password: string) => Promise<string | null>;
   logout: () => Promise<void>;
   upgradeToPro: () => Promise<void>;
   updateUser: (data: Partial<Profile>) => Promise<void>;
@@ -279,12 +279,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return msg;
   };
 
-  const register = useCallback(async (nome: string, sobre: string, email: string, password: string): Promise<string | null> => {
+  const register = useCallback(async (nome: string, email: string, password: string): Promise<string | null> => {
     const redirectUrl = `${window.location.origin}/`;
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { nome, sobre }, emailRedirectTo: redirectUrl },
+      options: { data: { nome, sobre: '' }, emailRedirectTo: redirectUrl },
     });
     return error ? translateAuthError(error.message) : null;
   }, []);
