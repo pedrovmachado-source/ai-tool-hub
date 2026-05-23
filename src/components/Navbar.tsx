@@ -86,8 +86,8 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
           )}
           {!user && !hideAuth ? (
             <>
-              <button onClick={() => setAuthModal({ open: true, mode: 'login' })} className="px-2.5 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-white bg-white/15 hover:bg-white/25 transition-colors">Entrar</button>
-              <button onClick={() => setAuthModal({ open: true, mode: 'register' })} className="px-2.5 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-navy bg-white hover:bg-white/90 transition-colors">Cadastrar</button>
+              <button onClick={() => setAuthModal({ open: true, mode: 'login' })} className="px-2.5 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-white bg-white/15 hover:bg-white/25 transition-colors">Acess</button>
+              <button onClick={() => setAuthModal({ open: true, mode: 'register' })} className="px-2.5 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-black bg-white hover:bg-white/90 transition-colors">Inscrever-se</button>
             </>
           ) : !user ? null : (
             <>
