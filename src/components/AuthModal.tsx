@@ -17,7 +17,6 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch, onRegistere
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [nome, setNome] = useState('');
-  const [sobre, setSobre] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState('');
@@ -44,12 +43,12 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch, onRegistere
   };
 
   const handleRegister = async () => {
-    if (!nome || !sobre || !email || !password || !confirmPassword) { setError('Preencha todos os campos.'); return; }
+    if (!nome || !email || !password || !confirmPassword) { setError('Preencha todos os campos.'); return; }
     if (password.length < 8) { setError('Senha deve ter no mínimo 8 caracteres.'); return; }
     if (password !== confirmPassword) { setError('As senhas não coincidem. Verifique e tente novamente.'); return; }
     setSubmitting(true);
     setError('');
-    const err = await register(nome, sobre, email, password);
+    const err = await register(nome, email, password);
     setSubmitting(false);
     if (err) {
       setError(err);
@@ -106,10 +105,7 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch, onRegistere
 
           {mode === 'register' && !success && (
             <>
-              <div className="grid grid-cols-2 gap-3 mb-4">
-                <div><label className="text-xs font-medium text-muted-foreground mb-1 block">Nome</label><input value={nome} onChange={e => setNome(e.target.value)} placeholder="Seu nome" className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-card focus:outline-none focus:border-brand-blue" /></div>
-                <div><label className="text-xs font-medium text-muted-foreground mb-1 block">Sobrenome</label><input value={sobre} onChange={e => setSobre(e.target.value)} placeholder="Sobrenome" className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-card focus:outline-none focus:border-brand-blue" /></div>
-              </div>
+              <div className="mb-4"><label className="text-xs font-medium text-muted-foreground mb-1 block">Nome</label><input value={nome} onChange={e => setNome(e.target.value)} placeholder="Seu nome" className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-card focus:outline-none focus:border-brand-blue" /></div>
               <div className="mb-4"><label className="text-xs font-medium text-muted-foreground mb-1 block">E-mail</label><input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="seu@email.com" className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-card focus:outline-none focus:border-brand-blue" /></div>
               <div className="mb-4"><label className="text-xs font-medium text-muted-foreground mb-1 block">Senha</label><input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Mínimo 8 caracteres" className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-card focus:outline-none focus:border-brand-blue" /></div>
               <div className="mb-4"><label className="text-xs font-medium text-muted-foreground mb-1 block">Confirmar senha</label><input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="Digite a senha novamente" className={`w-full px-3 py-2 border rounded-lg text-sm bg-card focus:outline-none focus:border-brand-blue ${confirmPassword && password !== confirmPassword ? 'border-brand-red' : 'border-border'}`} /></div>
