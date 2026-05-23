@@ -17,7 +17,6 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch, onRegistere
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [nome, setNome] = useState('');
-  const [sobre, setSobre] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState('');
@@ -44,12 +43,12 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch, onRegistere
   };
 
   const handleRegister = async () => {
-    if (!nome || !sobre || !email || !password || !confirmPassword) { setError('Preencha todos os campos.'); return; }
+    if (!nome || !email || !password || !confirmPassword) { setError('Preencha todos os campos.'); return; }
     if (password.length < 8) { setError('Senha deve ter no mínimo 8 caracteres.'); return; }
     if (password !== confirmPassword) { setError('As senhas não coincidem. Verifique e tente novamente.'); return; }
     setSubmitting(true);
     setError('');
-    const err = await register(nome, sobre, email, password);
+    const err = await register(nome, email, password);
     setSubmitting(false);
     if (err) {
       setError(err);
