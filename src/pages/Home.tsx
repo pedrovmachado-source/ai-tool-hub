@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
+import hoteducaRef from '@/assets/hoteduca-ref.png';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { 
