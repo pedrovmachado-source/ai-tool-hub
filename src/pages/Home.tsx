@@ -239,8 +239,8 @@ export default function Home() {
                 </h2>
                 <div className="space-y-12">
                   {[
-                    { title: "Design Imersivo", desc: "Uma interface pensada para não distrair e focar no que importa: seus resultados.", icon: Clock },
-                    { title: "Arquitetura de Vendas", desc: "Cada pixel é posicionado para conduzir o lead através do seu funil.", icon: MousePointer2 },
+                    { title: "Networking", desc: "Uma interface pensada para não distrair e focar no que importa: seus resultados.", icon: Clock },
+                    { title: "Arquitetura de Vendas", desc: "Leve a Convert Club no seu bolso. Instale como um app e tenha acesso instantâneo a toda comunidade e serviços.", icon: MousePointer2 },
                     { title: "Inteligência Ativa", desc: "Acesso direto aos segredos dos maiores players do mercado digital.", icon: Zap },
                     { title: "Escalabilidade PWA", desc: "Leve a Convert Club no seu bolso. Instale como um app e tenha acesso instantâneo.", icon: Rocket }
                   ].map((item, i) => (
