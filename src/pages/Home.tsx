@@ -121,7 +121,7 @@ export default function Home() {
           if (page === 'home') navigate('/');
           else if (page === 'profile') navigate('/perfil');
           else if (page === 'pro') navigate('/pro');
-          else if (page === 'admin' || page === 'lessons') openEmbeddedPage(page);
+          else openEmbeddedPage(page);
         }}
       />
 
