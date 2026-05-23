@@ -6,8 +6,8 @@
 
 @layer base {
   :root {
-    --background: 220 20% 97%;
-    --foreground: 240 60% 14%;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
     
     --card: 0 0% 100%;
     --card-foreground: 240 60% 14%;
@@ -138,4 +138,16 @@
 /* Serif heading */
 .font-serif-display {
   font-family: 'DM Serif Display', serif;
+}
+
+.glass {
+  @apply bg-white/10 backdrop-blur-md border border-white/20;
+}
+
+.glass-dark {
+  @apply bg-black/40 backdrop-blur-md border border-white/10;
+}
+
+.glass-smooth {
+  @apply bg-white/5 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)];
 }

@@ -48,7 +48,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
 
   return (
     <>
-      <nav className="bg-navy h-[64px] sm:h-[72px] px-3 sm:px-8 grid grid-cols-[auto_auto_1fr_auto] sm:grid-cols-[auto_1fr_auto_1fr] items-center sticky top-0 z-[200] gap-2">
+      <nav className="bg-black/80 backdrop-blur-xl h-[72px] sm:h-[88px] px-6 sm:px-12 grid grid-cols-[auto_auto_1fr_auto] sm:grid-cols-[auto_1fr_auto_1fr] items-center sticky top-0 z-[200] gap-4 border-b border-white/5">
         {user && (
           <button
             onClick={() => setShowMenu(true)}
@@ -66,8 +66,8 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
         </button>
 
         <button onClick={() => onNavigate('home')} className="text-center justify-self-center text-white min-w-0">
-          <span className="block text-base sm:text-xl font-semibold tracking-tight leading-none">AdAI</span>
-          <span className="hidden sm:block text-[11px] font-normal text-white leading-none mt-1">Plataforma para Empreendedores</span>
+          <span className="block text-base sm:text-xl font-semibold tracking-tighter leading-none">CONVERT CLUB</span>
+          <span className="hidden sm:block text-[9px] font-bold text-white/40 tracking-[0.3em] uppercase leading-none mt-2">Elite Community</span>
         </button>
 
         <div className="flex items-center gap-1 sm:gap-2 justify-self-end">
