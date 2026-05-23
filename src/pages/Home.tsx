@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
+import hoteducaRef from '@/assets/hoteduca-ref.png';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { 
@@ -78,8 +79,8 @@ export default function Home() {
       badge: "Best Seller"
     },
     {
-      title: "Comprar Site",
-      description: "Sites prontos para vender em até 7 dias com copy persuasiva incluída.",
+      title: "Criativos",
+      description: "Estratégias práticas de quem fatura 7 dígitos no mercado digital, prontas pra você assistir.",
       icon: Globe2,
       color: "text-white",
       bg: "bg-white/10",
@@ -205,7 +206,7 @@ export default function Home() {
                     <ChevronRight className="w-6 h-6 text-white" />
                   </div>
 
-                  <div className={`w-16 h-16 ${service.bg} rounded-2xl flex items-center justify-center mb-10 group-hover:rotate-[10deg] transition-transform duration-500`}>
+                  <div className={`w-16 h-16 ${service.bg} rounded-2xl mb-10 group-hover:rotate-[10deg] transition-transform duration-500 flex items-center justify-center`}>
                     <service.icon className={`w-8 h-8 ${service.color}`} />
                   </div>
 
@@ -235,12 +236,12 @@ export default function Home() {
               <div className="relative">
                 <p className="text-white/40 font-bold tracking-[0.3em] uppercase text-[10px] mb-4">Standard of Quality</p>
                 <h2 className="text-5xl sm:text-6xl font-serif-display tracking-tight text-white mb-12 leading-[1.1]">
-                  A Experiência <br/><em className="italic">Glass Smooth</em>.
+                  A Experiência <br/><em className="italic">Convert Club</em>.
                 </h2>
                 <div className="space-y-12">
                   {[
-                    { title: "Design Imersivo", desc: "Uma interface pensada para não distrair e focar no que importa: seus resultados.", icon: Clock },
-                    { title: "Arquitetura de Vendas", desc: "Cada pixel é posicionado para conduzir o lead através do seu funil.", icon: MousePointer2 },
+                    { title: "Networking", desc: "Uma interface pensada para não distrair e focar no que importa: seus resultados.", icon: Clock },
+                    { title: "Arquitetura de Vendas", desc: "Leve a Convert Club no seu bolso. Instale como um app e tenha acesso instantâneo a toda comunidade e serviços.", icon: MousePointer2 },
                     { title: "Inteligência Ativa", desc: "Acesso direto aos segredos dos maiores players do mercado digital.", icon: Zap },
                     { title: "Escalabilidade PWA", desc: "Leve a Convert Club no seu bolso. Instale como um app e tenha acesso instantâneo.", icon: Rocket }
                   ].map((item, i) => (
@@ -261,7 +262,7 @@ export default function Home() {
             <Reveal delay={400} className="relative">
               <div className="relative z-10 p-4 glass-smooth rounded-[3.5rem] transform lg:rotate-3 hover:rotate-0 transition-all duration-1000">
                 <div className="aspect-[4/5] bg-gradient-to-br from-white/10 to-transparent rounded-[3rem] p-12 flex flex-col justify-end overflow-hidden relative group">
-                   <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop')] bg-cover opacity-20 grayscale group-hover:scale-110 transition-transform duration-[2000ms]" />
+                   <div className="absolute inset-0 bg-cover opacity-20 grayscale group-hover:scale-110 transition-transform duration-[2000ms]" style={{ backgroundImage: `url(${hoteducaRef})` }} />
                    <div className="relative z-10">
                     <Layout className="w-16 h-16 text-white mb-8" />
                     <h3 className="text-4xl font-serif-display text-white mb-6">Interface Masterclass</h3>
