@@ -126,7 +126,6 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-black text-white selection:bg-white/20 font-sans overflow-x-hidden">
       <Navbar
-        hideAuth
         onNavigate={(page) => {
           if (page === 'home') navigate('/');
           else if (page === 'profile') navigate('/perfil');
@@ -136,7 +135,7 @@ export default function Home() {
       />
 
       {/* Hero Section */}
-      <section className="relative pt-24 pb-32 sm:pt-32 sm:pb-48 lg:pt-48 lg:pb-64">
+      <section className="relative pt-12 pb-16 sm:pt-16 sm:pb-24 lg:pt-24 lg:pb-32">
         {/* Glass Orbs */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
           <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-white/5 blur-[140px]" />
@@ -186,7 +185,7 @@ export default function Home() {
       </section>
 
       {/* Services Grid */}
-      <section id="services" className="py-32 px-6 relative">
+      <section id="services" className="py-16 sm:py-24 px-6 relative">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-24">
             <Reveal className="text-white/40 font-bold tracking-[0.3em] uppercase text-[10px] mb-4">Vertical de Acesso</Reveal>
