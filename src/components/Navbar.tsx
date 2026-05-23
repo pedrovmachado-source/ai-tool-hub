@@ -60,7 +60,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
         )}
 
         <button onClick={() => onNavigate('home')} className="flex items-center gap-3 text-white text-xl font-semibold tracking-tight justify-self-start">
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-[10px] overflow-hidden flex items-center justify-center bg-navy">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl overflow-hidden flex items-center justify-center bg-white/5 border border-white/10 glass-smooth">
             <img src={logoAdai} alt="AdAI" className="w-full h-full object-cover" />
           </div>
         </button>
