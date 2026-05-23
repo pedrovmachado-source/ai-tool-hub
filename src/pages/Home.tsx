@@ -116,13 +116,6 @@ export default function Home() {
     }
   ];
 
-  const handleServiceClick = (target: string) => {
-    if (target.startsWith('/')) {
-      navigate(target);
-    } else {
-      openEmbeddedPage(target);
-    }
-  };
 
   return (
     <div className="flex flex-col min-h-screen bg-black text-white selection:bg-white/20 font-sans overflow-x-hidden">
@@ -199,13 +192,8 @@ export default function Home() {
             {services.map((service, idx) => (
               <Reveal key={service.title} delay={idx * 150}>
                 <div 
-                  className="group relative h-full p-10 glass-smooth hover:bg-white/10 transition-all duration-700 rounded-[2.5rem] cursor-pointer"
-                  onClick={() => handleServiceClick(service.target)}
+                  className="group relative h-full p-10 glass-smooth hover:bg-white/10 transition-all duration-700 rounded-[2.5rem]"
                 >
-                  <div className="absolute top-10 right-10 opacity-20 group-hover:opacity-100 transition-opacity transform group-hover:translate-x-2">
-                    <ChevronRight className="w-6 h-6 text-white" />
-                  </div>
-
                   <div className={`w-16 h-16 ${service.bg} rounded-2xl mb-10 group-hover:rotate-[10deg] transition-transform duration-500 flex items-center justify-center`}>
                     <service.icon className={`w-8 h-8 ${service.color}`} />
                   </div>
