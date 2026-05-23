@@ -68,6 +68,15 @@ export default function Home() {
 
   const services = [
     {
+      title: "Ofertas Validadas",
+      description: "Copias e funis que já faturaram alto, prontos para você modelar e aplicar.",
+      icon: Sparkles,
+      color: "text-brand-amber",
+      bg: "bg-brand-amber/10",
+      target: "offers",
+      badge: "Best Seller"
+    },
+    {
       title: "Comprar Site",
       description: "Sites prontos para vender em até 7 dias com copy persuasiva incluída.",
       icon: Globe2,
@@ -97,9 +106,9 @@ export default function Home() {
     {
       title: "Ferramentas de IA",
       description: "O maior guia de IAs com e-books e prompts para turbinar seu fluxo.",
-      icon: Sparkles,
-      color: "text-brand-amber",
-      bg: "bg-brand-amber/10",
+      icon: Layout,
+      color: "text-brand-blue-medium",
+      bg: "bg-brand-blue/10",
       target: "/ferramentas",
       badge: "Curadoria 2026"
     }
