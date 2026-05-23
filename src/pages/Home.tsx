@@ -78,8 +78,8 @@ export default function Home() {
       badge: "Best Seller"
     },
     {
-      title: "Comprar Site",
-      description: "Sites prontos para vender em até 7 dias com copy persuasiva incluída.",
+      title: "Criativos",
+      description: "Estratégias práticas de quem fatura 7 dígitos no mercado digital, prontas pra você assistir.",
       icon: Globe2,
       color: "text-white",
       bg: "bg-white/10",
