@@ -1,16 +1,29 @@
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useCategories } from '@/hooks/useCategories';
 import Navbar from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Sparkles, Search, BookOpen, Rocket, ArrowRight, Zap, Shield, Library, Users, Star, TrendingUp, CheckCircle2, MessageSquare, HelpCircle } from 'lucide-react';
+import { 
+  Sparkles, 
+  Rocket, 
+  ArrowRight, 
+  Zap, 
+  Star, 
+  TrendingUp, 
+  CheckCircle2, 
+  Globe2, 
+  Wand2, 
+  GraduationCap, 
+  Layout, 
+  MousePointer2,
+  Clock,
+  Award
+} from 'lucide-react';
 
 export default function Home() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { categories } = useCategories();
 
   const openEmbeddedPage = (page: string) => {
     sessionStorage.setItem('adai:initialPage', page);
@@ -18,30 +31,15 @@ export default function Home() {
   };
 
   useEffect(() => {
-    document.title = 'AdAI — Guia de IAs para empreendedores';
+    document.title = 'AdAI — Tudo o que seu negócio precisa para escalar';
     const desc = document.querySelector('meta[name="description"]');
-    const content = 'Curadoria de ferramentas de inteligência artificial com e-books, prompts e passo a passo para empreendedores.';
+    const content = 'Desde sites de alta conversão até as ferramentas de IA mais avançadas. A solução completa para infoprodutores e empreendedores digitais.';
     if (desc) desc.setAttribute('content', content);
-    else {
-      const m = document.createElement('meta');
-      m.name = 'description'; m.content = content;
-      document.head.appendChild(m);
-    }
   }, []);
 
-  const featured = useMemo(() => {
-    return categories.slice(0, 6).map(c => ({
-      key: c.key,
-      label: c.label,
-      desc: c.introTitle,
-      count: c.tools?.length || 0,
-    }));
-  }, [categories]);
-
-  const goTools = () => navigate('/ferramentas');
   const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
-  // Reveal-on-scroll
+  // Reveal-on-scroll component
   const Reveal = ({ children, className = '', as: As = 'section' as any, delay = 0, ...rest }: any) => {
     const ref = useRef<HTMLElement | null>(null);
     const [shown, setShown] = useState(false);
@@ -50,7 +48,7 @@ export default function Home() {
       if (!el) return;
       const io = new IntersectionObserver(
         ([e]) => { if (e.isIntersecting) { setShown(true); io.disconnect(); } },
-        { threshold: 0.12 }
+        { threshold: 0.1 }
       );
       io.observe(el);
       return () => io.disconnect();
@@ -59,7 +57,7 @@ export default function Home() {
       <As
         ref={ref as any}
         {...rest}
-        className={`${className} transition-all duration-700 ease-out ${shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+        className={`${className} transition-all duration-1000 ease-out ${shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
         style={{ transitionDelay: `${delay}ms`, ...(rest.style || {}) }}
       >
         {children}
@@ -67,8 +65,55 @@ export default function Home() {
     );
   };
 
+  const services = [
+    {
+      title: "Comprar Site",
+      description: "Sites prontos para vender em até 7 dias com copy persuasiva incluída.",
+      icon: Globe2,
+      color: "text-brand-blue-medium",
+      bg: "bg-brand-blue/10",
+      target: "site-creation",
+      badge: "Alta Conversão"
+    },
+    {
+      title: "Comprar Criativo",
+      description: "Anúncios validados que param o scroll e trazem leads qualificados.",
+      icon: Wand2,
+      color: "text-brand-teal",
+      bg: "bg-brand-teal/10",
+      target: "creative-edit",
+      badge: "Vendas Diretas"
+    },
+    {
+      title: "Aulas Gravadas",
+      description: "Estratégias práticas de quem fatura 6 dígitos no mercado digital.",
+      icon: GraduationCap,
+      color: "text-brand-blue-medium",
+      bg: "bg-brand-blue/10",
+      target: "lessons",
+      badge: "Conteúdo VIP"
+    },
+    {
+      title: "Ferramentas de IA",
+      description: "O maior guia de IAs com e-books e prompts para turbinar seu fluxo.",
+      icon: Sparkles,
+      color: "text-brand-amber",
+      bg: "bg-brand-amber/10",
+      target: "/ferramentas",
+      badge: "Curadoria 2026"
+    }
+  ];
+
+  const handleServiceClick = (target: string) => {
+    if (target.startsWith('/')) {
+      navigate(target);
+    } else {
+      openEmbeddedPage(target);
+    }
+  };
+
   return (
-    <div className="flex flex-col min-h-screen bg-background">
+    <div className="flex flex-col min-h-screen bg-background text-foreground selection:bg-brand-blue/30">
       <Navbar
         hideAuth
         onNavigate={(page) => {
@@ -77,311 +122,249 @@ export default function Home() {
           else if (page === 'pro') navigate('/pro');
           else if (page === 'admin' || page === 'lessons') openEmbeddedPage(page);
         }}
-        onOpenSavedEbook={(toolKey, categoryKey) => {
-          navigate(`/ferramentas?tool=${toolKey}&cat=${categoryKey}`);
-        }}
       />
 
-      {/* Hero */}
-      <section className="bg-navy relative overflow-hidden">
-        <div
-          aria-hidden
-          className="absolute inset-0 opacity-30"
-          style={{
-            background:
-              'radial-gradient(800px 400px at 20% 0%, hsl(var(--blue) / 0.25), transparent 60%), radial-gradient(600px 300px at 80% 20%, hsl(var(--teal) / 0.18), transparent 60%)',
-          }}
-        />
-        <div className="relative max-w-[1100px] mx-auto px-4 sm:px-6 py-16 sm:py-24 md:py-32 text-center">
-          <div className="inline-flex items-center gap-2 bg-brand-blue/15 border border-brand-blue/30 text-brand-blue-medium text-[10px] sm:text-xs px-3 sm:px-4 py-1 sm:py-1.5 rounded-full mb-4 sm:mb-6 max-w-full">
-            <span className="truncate">🎯 Feito para infoprodutores, lançadores e gestores de tráfego</span>
-          </div>
-          <h1 className="font-serif-display text-[26px] sm:text-4xl md:text-6xl leading-[1.12] sm:leading-[1.07] text-primary-foreground tracking-tight mb-4 sm:mb-5">
-            A IA que escreve seus <em className="text-brand-blue-medium italic">anúncios</em> e multiplica seu faturamento — no piloto automático.
-          </h1>
-          <p className="text-sm sm:text-base md:text-lg text-muted-foreground/70 max-w-[680px] mx-auto leading-relaxed mb-6 sm:mb-8">
-            Feito para infoprodutores que querem parar de perder tempo com copy ruim e vender mais todos os dias.
-          </p>
-          <div className="flex flex-col items-center justify-center gap-3 sm:gap-4">
-            <Button
-              size="lg"
-              onClick={goTools}
-              className="bg-brand-blue hover:bg-brand-blue/90 hover:scale-[1.03] text-primary-foreground gap-2 sm:gap-3 h-12 sm:h-16 px-5 sm:px-10 rounded-2xl text-sm sm:text-base md:text-lg font-semibold shadow-lg shadow-brand-blue/25 transition-all duration-200 w-full sm:w-auto max-w-full whitespace-normal"
+      {/* Hero Section */}
+      <section className="relative overflow-hidden pt-16 pb-20 sm:pt-24 sm:pb-32 lg:pt-32 lg:pb-40 bg-navy">
+        {/* Background Gradients */}
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-brand-blue/20 blur-[120px]" />
+          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-brand-teal/10 blur-[120px]" />
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 text-center">
+          <Reveal className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-teal opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-teal"></span>
+            </span>
+            <span className="text-xs font-medium text-white/80 tracking-wide uppercase">Solução completa para o seu negócio digital</span>
+          </Reveal>
+          
+          <Reveal delay={200}>
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-serif-display text-white tracking-tight leading-[1.1] mb-8">
+              Tudo o que seu negócio precisa para <em className="text-brand-blue-medium italic not-italic">escalar</em> com IA
+            </h1>
+          </Reveal>
+
+          <Reveal delay={400}>
+            <p className="max-w-2xl mx-auto text-lg sm:text-xl text-white/60 leading-relaxed mb-10">
+              Desde a criação do seu site de alta conversão até as ferramentas mais avançadas para dominar o mercado digital. Menos esforço, mais lucro.
+            </p>
+          </Reveal>
+
+          <Reveal delay={600} className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Button 
+              size="lg" 
+              onClick={() => scrollTo('services')}
+              className="w-full sm:w-auto bg-brand-blue hover:bg-brand-blue/90 text-white h-14 px-10 rounded-2xl text-lg font-semibold shadow-xl shadow-brand-blue/20 transition-all hover:scale-[1.02]"
             >
-              <span className="truncate">Quero escalar meu infoproduto agora</span> <ArrowRight size={18} className="shrink-0" />
+              Começar Agora
+              <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
-            <Button
-              size="lg"
-              variant="ghost"
-              onClick={() => scrollTo('o-que-muda')}
-              className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10 h-10 sm:h-12 px-5 sm:px-6 rounded-xl text-sm"
+            <Button 
+              size="lg" 
+              variant="outline"
+              onClick={() => scrollTo('how-it-works')}
+              className="w-full sm:w-auto border-white/20 text-white hover:bg-white/10 h-14 px-10 rounded-2xl text-lg font-medium backdrop-blur-sm"
             >
-              Saiba mais
+              Como funciona
             </Button>
-          </div>
+          </Reveal>
         </div>
       </section>
 
-      {/* O que muda quando você usa o AdAi */}
-      <Reveal id="o-que-muda" className="max-w-[1100px] mx-auto px-4 sm:px-6 py-12 sm:py-20 w-full">
-        <div className="text-center mb-8 sm:mb-12">
-          <p className="text-[11px] sm:text-xs font-medium uppercase tracking-widest text-brand-blue mb-2">Resultados reais</p>
-          <h2 className="font-serif-display text-2xl sm:text-3xl md:text-4xl tracking-tight">O que muda quando você usa o AdAi</h2>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-          {[
-            { i: '⚡', t: 'Copies em segundos', d: 'Gere anúncios, headlines e VSLs completos em segundos. Sem agência. Sem espera.' },
-            { i: '📈', t: 'Escala sem equipe', d: 'A IA trabalha 24h por você. Crie variações, teste criativos e otimize campanhas sozinho.' },
-            { i: '🎯', t: 'Anúncios que convertem', d: 'Prompts treinados para infoprodutos. Linguagem que fala direto com quem vai comprar.' },
-            { i: '💰', t: 'Mais lucro, menos custo', d: 'Reduza o custo por lead e aumente o ROAS com a copy certa no tráfego.' },
-            { i: '🔄', t: 'Lançamentos no automático', d: 'E-mails, stories, scripts e páginas de vendas gerados em minutos.' },
-            { i: '🌍', t: 'Venda para qualquer mercado', d: 'Copies adaptadas para Brasil, Portugal, Reino Unido e mercados europeus.' },
-          ].map((c) => (
-            <Card key={c.t} className="p-5 sm:p-7 border border-border hover:border-brand-blue/40 hover:-translate-y-0.5 transition-all rounded-xl">
-              <div className="text-2xl sm:text-3xl mb-2 sm:mb-3" aria-hidden>{c.i}</div>
-              <h3 className="font-serif-display text-lg sm:text-xl mb-1.5">{c.t}</h3>
-              <p className="text-[13px] sm:text-sm text-muted-foreground leading-relaxed">{c.d}</p>
-            </Card>
-          ))}
-        </div>
-      </Reveal>
-
-      {/* Faixa de métricas */}
-      <Reveal as="section" className="bg-navy border-y border-primary-foreground/5">
-        <div className="max-w-[1100px] mx-auto px-4 sm:px-6 py-10 sm:py-14">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-5 sm:gap-6 text-center">
-            {[
-              { n: '10x', l: 'mais variações de anúncios' },
-              { n: '-60%', l: 'no custo por criativo' },
-              { n: '3min', l: 'para gerar uma VSL' },
-              { n: '0', l: 'copywriters necessários' },
-            ].map((m) => (
-              <div key={m.l}>
-                <div className="font-serif-display text-3xl sm:text-4xl md:text-5xl text-brand-blue-medium mb-1 sm:mb-2">{m.n}</div>
-                <p className="text-[11px] sm:text-xs md:text-sm text-muted-foreground/80 leading-snug">{m.l}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </Reveal>
-
-      {/* Como funciona */}
-      <Reveal id="como-funciona" className="max-w-[1100px] mx-auto px-4 sm:px-6 py-12 sm:py-20 w-full">
-        <div className="text-center mb-8 sm:mb-12">
-          <p className="text-[11px] sm:text-xs font-medium uppercase tracking-widest text-brand-blue mb-2">Como funciona</p>
-          <h2 className="font-serif-display text-2xl sm:text-3xl md:text-4xl tracking-tight">Três passos para começar</h2>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
-          {[
-            { n: '01', icon: Search, t: 'Escolha a ferramenta', d: 'Navegue por categorias curadas — texto, imagem, vídeo, automação e muito mais.' },
-            { n: '02', icon: BookOpen, t: 'Aprenda com o e-book', d: 'Cada IA vem com guia completo, prompts prontos e passo a passo de uso.' },
-            { n: '03', icon: Rocket, t: 'Aplique no negócio', d: 'Aplique imediatamente no seu fluxo de trabalho com confiança.' },
-          ].map((s) => (
-            <Card key={s.n} className="p-7 border border-border hover:border-brand-blue/40 transition-colors rounded-xl">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-lg bg-brand-blue/10 text-brand-blue flex items-center justify-center">
-                  <s.icon size={18} />
-                </div>
-                <span className="text-xs font-mono text-muted-foreground">{s.n}</span>
-              </div>
-              <h3 className="font-serif-display text-xl mb-1.5">{s.t}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">{s.d}</p>
-            </Card>
-          ))}
-        </div>
-      </Reveal>
-      {/* Categorias em destaque */}
-      <section className="bg-secondary/40 border-y border-border">
-        <div className="max-w-[1100px] mx-auto px-4 sm:px-6 py-12 sm:py-20">
-          <div className="flex items-end justify-between mb-6 sm:mb-10 gap-3 sm:gap-4 flex-wrap">
-            <div>
-              <p className="text-[11px] sm:text-xs font-medium uppercase tracking-widest text-brand-blue mb-2">Catálogo</p>
-              <h2 className="font-serif-display text-2xl sm:text-3xl md:text-4xl tracking-tight">Categorias disponíveis</h2>
-            </div>
-            <Button variant="outline" onClick={goTools} className="gap-2 rounded-xl text-xs sm:text-sm h-9 sm:h-10">
-              Ver todas <ArrowRight size={14} />
-            </Button>
+      {/* Services Grid */}
+      <section id="services" className="py-24 sm:py-32 px-6 bg-slate-50">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16 sm:mb-24">
+            <Reveal className="text-brand-blue font-bold tracking-widest uppercase text-sm mb-4">Serviços Especializados</Reveal>
+            <Reveal delay={200} as="h2" className="text-3xl sm:text-5xl font-serif-display tracking-tight text-slate-900">
+              Nossas Verticais de <span className="text-brand-blue">Crescimento</span>
+            </Reveal>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-            {featured.length === 0 ? (
-              Array.from({ length: 6 }).map((_, i) => (
-                <Card key={i} className="p-6 rounded-xl animate-pulse h-32 bg-card" />
-              ))
-            ) : (
-              featured.map((c) => (
-                <button
-                  key={c.key}
-                  onClick={() => navigate(`/ferramentas?cat=${c.key}`)}
-                  className="text-left group"
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+            {services.map((service, idx) => (
+              <Reveal key={service.title} delay={idx * 150}>
+                <Card 
+                  className="group relative h-full p-8 border border-slate-200 bg-white hover:border-brand-blue/30 hover:shadow-2xl hover:shadow-brand-blue/5 transition-all duration-500 rounded-[2rem] cursor-pointer overflow-hidden"
+                  onClick={() => handleServiceClick(service.target)}
                 >
-                  <Card className="p-6 rounded-xl border border-border group-hover:border-brand-blue/40 group-hover:shadow-md transition-all h-full">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="w-9 h-9 rounded-lg bg-brand-blue/10 text-brand-blue flex items-center justify-center">
-                        <Library size={16} />
+                  <div className="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <ArrowRight className="w-5 h-5 text-brand-blue" />
+                  </div>
+
+                  <div className={`w-14 h-14 ${service.bg} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500`}>
+                    <service.icon className={`w-7 h-7 ${service.color}`} />
+                  </div>
+
+                  <div className="inline-block px-3 py-1 rounded-full bg-slate-100 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-4">
+                    {service.badge}
+                  </div>
+
+                  <h3 className="text-2xl font-serif-display text-slate-900 mb-4 group-hover:text-brand-blue transition-colors">
+                    {service.title}
+                  </h3>
+                  
+                  <p className="text-slate-500 leading-relaxed">
+                    {service.description}
+                  </p>
+                </Card>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Why Section - The "Zero" Refactoring part */}
+      <section id="how-it-works" className="py-24 sm:py-32 px-6 overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+            <Reveal>
+              <div className="relative">
+                <div className="absolute -top-10 -left-10 w-40 h-40 bg-brand-blue/5 rounded-full blur-3xl" />
+                <p className="text-brand-blue font-bold tracking-widest uppercase text-sm mb-4">Vantagem Competitiva</p>
+                <h2 className="text-4xl sm:text-5xl font-serif-display tracking-tight text-slate-900 mb-8 leading-[1.1]">
+                  Por que escolher a plataforma AdAI?
+                </h2>
+                <div className="space-y-8">
+                  {[
+                    { title: "Entrega Expressa", desc: "Seu site pronto em tempo recorde, sem comprometer a qualidade ou a copy.", icon: Clock },
+                    { title: "Copy que Vende", desc: "Nossas estruturas são baseadas em gatilhos mentais que realmente convertem.", icon: MousePointer2 },
+                    { title: "IA de Ponta", desc: "Acesso às ferramentas mais modernas de 2026, curadas por especialistas.", icon: Zap },
+                    { title: "Suporte Premium", desc: "Acompanhamento dedicado para garantir que seu funil esteja performando.", icon: Award }
+                  ].map((item, i) => (
+                    <div key={i} className="flex gap-6">
+                      <div className="flex-shrink-0 w-12 h-12 bg-white border border-slate-100 shadow-sm rounded-xl flex items-center justify-center">
+                        <item.icon className="w-6 h-6 text-brand-blue" />
                       </div>
-                      <span className="text-[11px] font-medium text-muted-foreground bg-secondary rounded-full px-2.5 py-0.5">
-                        {c.count} {c.count === 1 ? 'ferramenta' : 'ferramentas'}
-                      </span>
+                      <div>
+                        <h4 className="text-lg font-bold text-slate-900 mb-1">{item.title}</h4>
+                        <p className="text-slate-500 text-sm leading-relaxed">{item.desc}</p>
+                      </div>
                     </div>
-                    <h3 className="font-serif-display text-lg mb-1 group-hover:text-brand-blue transition-colors">{c.label}</h3>
-                    <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">{c.desc}</p>
-                  </Card>
-                </button>
-              ))
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Números */}
-      <section className="max-w-[1100px] mx-auto px-4 sm:px-6 py-10 sm:py-16 w-full">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-          {[
-            { icon: Library, n: '24+', l: 'Ferramentas curadas' },
-            { icon: BookOpen, n: '24', l: 'E-books completos' },
-            { icon: MessageSquare, n: '200+', l: 'Prompts prontos' },
-            { icon: Users, n: '1.500+', l: 'Empreendedores ativos' },
-          ].map((s) => (
-            <div key={s.l} className="text-center p-5 rounded-xl bg-secondary/40 border border-border">
-              <div className="w-10 h-10 mx-auto rounded-lg bg-brand-blue/10 text-brand-blue flex items-center justify-center mb-3">
-                <s.icon size={18} />
-              </div>
-              <div className="font-serif-display text-2xl md:text-3xl mb-1">{s.n}</div>
-              <p className="text-xs text-muted-foreground">{s.l}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Benefícios */}
-      <section className="max-w-[1100px] mx-auto px-4 sm:px-6 py-12 sm:py-20 w-full">
-        <div className="text-center mb-8 sm:mb-12">
-          <p className="text-[11px] sm:text-xs font-medium uppercase tracking-widest text-brand-blue mb-2">Por que AdAI</p>
-          <h2 className="font-serif-display text-2xl sm:text-3xl md:text-4xl tracking-tight">Pensado para quem aplica, não só lê</h2>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
-          {[
-            { icon: Zap, t: 'Curadoria atualizada', d: 'Só as IAs que realmente entregam resultado, revisadas mensalmente em 2026.' },
-            { icon: BookOpen, t: 'E-books completos', d: 'Guia prático com casos reais e prompts testados, prontos para usar.' },
-            { icon: Shield, t: 'Sem ruído', d: 'Sem hype — recomendações honestas e direcionadas ao seu negócio.' },
-            { icon: TrendingUp, t: 'Resultados reais', d: 'Fluxos prontos para marketing, vendas, conteúdo e operação.' },
-            { icon: CheckCircle2, t: 'Passo a passo', d: 'Cada ferramenta vem com tutorial claro — do zero ao primeiro resultado.' },
-            { icon: Star, t: 'Acesso vitalício', d: 'Pague uma vez no Pro e receba todas as atualizações futuras sem mensalidades.' },
-          ].map((b) => (
-            <div key={b.t}>
-              <div className="w-10 h-10 rounded-lg bg-brand-teal/10 text-brand-teal flex items-center justify-center mb-3">
-                <b.icon size={18} />
-              </div>
-              <h3 className="text-base font-semibold mb-1.5">{b.t}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">{b.d}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Para quem é */}
-      <section className="bg-secondary/40 border-y border-border">
-        <div className="max-w-[1100px] mx-auto px-4 sm:px-6 py-12 sm:py-20">
-          <div className="text-center mb-8 sm:mb-12">
-            <p className="text-[11px] sm:text-xs font-medium uppercase tracking-widest text-brand-blue mb-2">Para quem é</p>
-            <h2 className="font-serif-display text-2xl sm:text-3xl md:text-4xl tracking-tight">Feito para empreendedores ocupados</h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5">
-            {[
-              { t: 'Donos de pequenos negócios', d: 'Automatize tarefas repetitivas e ganhe horas na semana com IAs certas.' },
-              { t: 'Profissionais de marketing', d: 'Crie conteúdo, anúncios e copies em escala mantendo a qualidade.' },
-              { t: 'Criadores e freelancers', d: 'Entregue mais projetos com menos esforço usando fluxos com IA.' },
-            ].map((p) => (
-              <Card key={p.t} className="p-6 rounded-xl border border-border">
-                <div className="w-9 h-9 rounded-lg bg-brand-blue/10 text-brand-blue flex items-center justify-center mb-3">
-                  <CheckCircle2 size={16} />
+                  ))}
                 </div>
-                <h3 className="font-serif-display text-lg mb-1.5">{p.t}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{p.d}</p>
-              </Card>
+              </div>
+            </Reveal>
+
+            <Reveal delay={400} className="relative lg:ml-auto">
+              <div className="relative z-10 p-2 bg-white rounded-[3rem] shadow-2xl shadow-slate-200 border border-slate-100 overflow-hidden transform lg:rotate-2">
+                <div className="aspect-[4/5] bg-navy rounded-[2.5rem] p-8 flex flex-col justify-center items-center text-center overflow-hidden relative">
+                   {/* Abstract Preview */}
+                   <div className="absolute inset-0 opacity-20 pointer-events-none">
+                     <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-brand-blue/40 via-transparent to-transparent" />
+                   </div>
+                   
+                   <Layout className="w-20 h-20 text-brand-blue-medium mb-8" />
+                   <h3 className="text-3xl font-serif-display text-white mb-4">Interface de Alta Conversão</h3>
+                   <p className="text-white/60 text-sm max-w-xs mb-8">
+                     Visualizamos cada detalhe do seu funil para maximizar cada clique.
+                   </p>
+                   <div className="w-full h-px bg-white/10 mb-8" />
+                   <div className="flex gap-4">
+                     <div className="px-4 py-2 rounded-full bg-brand-teal/20 text-brand-teal text-xs font-bold uppercase tracking-widest">Performance</div>
+                     <div className="px-4 py-2 rounded-full bg-brand-amber/20 text-brand-amber text-xs font-bold uppercase tracking-widest">Escala</div>
+                   </div>
+                </div>
+              </div>
+              <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-brand-teal/5 rounded-full blur-3xl" />
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* Metrics Strip */}
+      <section className="bg-navy py-20 border-y border-white/5">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
+            {[
+              { label: "Clientes Satisfeitos", value: "1.500+", icon: Users },
+              { label: "Anúncios Gerados", value: "50k+", icon: Wand2 },
+              { label: "Sites Entregues", value: "300+", icon: Globe2 },
+              { label: "Economia de Tempo", value: "85%", icon: TrendingUp }
+            ].map((stat, i) => (
+              <Reveal key={i} delay={i * 100} className="text-center">
+                <div className="text-3xl sm:text-5xl font-serif-display text-brand-blue-medium mb-2">{stat.value}</div>
+                <div className="text-white/40 text-xs sm:text-sm font-medium uppercase tracking-wider">{stat.label}</div>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Depoimento */}
-      <section className="max-w-[900px] mx-auto px-4 sm:px-6 py-12 sm:py-20 w-full">
-        <Card className="p-6 sm:p-8 md:p-10 rounded-2xl border border-border bg-card">
-          <div className="flex items-center gap-1 mb-4 text-brand-blue">
-            {Array.from({ length: 5 }).map((_, i) => <Star key={i} size={16} fill="currentColor" />)}
-          </div>
-          <p className="font-serif-display text-lg sm:text-xl md:text-2xl leading-relaxed mb-5">
-            "Em duas semanas refiz todo o meu fluxo de marketing usando os e-books da AdAI. Economizo cerca de 10 horas por semana e meus anúncios performam melhor."
-          </p>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-brand-blue/15 text-brand-blue flex items-center justify-center font-semibold text-sm">MR</div>
-            <div>
-              <p className="text-sm font-semibold">Marina R.</p>
-              <p className="text-xs text-muted-foreground">Fundadora · agência de conteúdo</p>
+      {/* Social Proof - Keep simple and powerful */}
+      <section className="py-24 sm:py-32 px-6">
+        <div className="max-w-4xl mx-auto text-center">
+          <Reveal className="mb-12">
+            <div className="flex justify-center gap-1 text-brand-amber mb-6">
+              {[...Array(5)].map((_, i) => <Star key={i} className="w-6 h-6 fill-current" />)}
             </div>
-          </div>
-        </Card>
-      </section>
-
-      {/* FAQ */}
-      <section className="bg-secondary/40 border-y border-border">
-        <div className="max-w-[800px] mx-auto px-4 sm:px-6 py-12 sm:py-20">
-          <div className="text-center mb-6 sm:mb-10">
-            <p className="text-[11px] sm:text-xs font-medium uppercase tracking-widest text-brand-blue mb-2">Dúvidas frequentes</p>
-            <h2 className="font-serif-display text-2xl sm:text-3xl md:text-4xl tracking-tight">Perguntas comuns</h2>
-          </div>
-          <div className="space-y-4">
-            {[
-              { q: 'Preciso saber programar para usar?', a: 'Não. Todas as ferramentas e e-books são pensados para quem não tem background técnico — basta seguir o passo a passo.' },
-              { q: 'O acesso é mensal ou vitalício?', a: 'O plano Pro é pagamento único e vitalício — você recebe todas as atualizações futuras sem mensalidades.' },
-              { q: 'Os e-books são atualizados?', a: 'Sim. Revisamos a curadoria mensalmente em 2026 para incluir novas IAs e remover ferramentas obsoletas.' },
-              { q: 'Posso cancelar?', a: 'Como o plano é vitalício e único, não há recorrência. Se mudar de ideia em até 7 dias, devolvemos 100% do valor.' },
-            ].map((f) => (
-              <Card key={f.q} className="p-5 rounded-xl border border-border">
-                <div className="flex items-start gap-3 mb-2">
-                  <HelpCircle size={16} className="text-brand-blue mt-1 shrink-0" />
-                  <h3 className="text-base font-semibold">{f.q}</h3>
-                </div>
-                <p className="text-sm text-muted-foreground leading-relaxed pl-7">{f.a}</p>
-              </Card>
-            ))}
-          </div>
+            <p className="text-2xl sm:text-4xl font-serif-display leading-tight text-slate-900 mb-10 italic">
+              "O AdAI mudou completamente a forma como encaro a escala do meu negócio. Ter o site, os criativos e as ferramentas de IA em um só lugar é um diferencial absurdo."
+            </p>
+            <div className="flex items-center justify-center gap-4">
+              <div className="w-14 h-14 rounded-full bg-brand-blue/10 flex items-center justify-center text-brand-blue font-bold text-xl">
+                RD
+              </div>
+              <div className="text-left">
+                <div className="font-bold text-slate-900 text-lg">Ricardo Duarte</div>
+                <div className="text-slate-500 text-sm">CEO & Infoprodutor</div>
+              </div>
+            </div>
+          </Reveal>
         </div>
       </section>
 
-      {/* CTA final */}
-      <Reveal as="section" className="bg-navy relative overflow-hidden">
-        <div
-          aria-hidden
-          className="absolute inset-0 opacity-30"
-          style={{
-            background:
-              'radial-gradient(700px 350px at 50% 100%, hsl(var(--blue) / 0.25), transparent 60%)',
-          }}
-        />
-        <div className="relative max-w-[800px] mx-auto px-4 sm:px-6 py-16 sm:py-24 text-center">
-          <h2 className="font-serif-display text-2xl sm:text-3xl md:text-5xl text-primary-foreground tracking-tight mb-3 sm:mb-4">
-            Pare de deixar dinheiro na mesa.
-          </h2>
-          <p className="text-sm sm:text-base md:text-lg text-muted-foreground/80 mb-6 sm:mb-8 max-w-lg mx-auto">
-            Seu concorrente já está usando IA. Você vai ficar pra trás?
-          </p>
-          <Button
-            size="lg"
-            onClick={goTools}
-            className="bg-brand-blue hover:bg-brand-blue/90 hover:scale-[1.03] text-primary-foreground h-12 sm:h-16 px-5 sm:px-10 rounded-2xl gap-2 sm:gap-3 text-sm sm:text-base md:text-lg font-semibold shadow-lg shadow-brand-blue/25 transition-all duration-200 w-full sm:w-auto max-w-full whitespace-normal"
-          >
-            <span className="truncate">Começar agora — é gratuito</span> <ArrowRight size={18} className="shrink-0" />
-          </Button>
+      {/* Final CTA */}
+      <section className="py-24 sm:py-32 px-6 bg-navy relative overflow-hidden">
+        <div className="absolute inset-0 z-0 opacity-20 bg-[radial-gradient(circle_at_50%_50%,_var(--tw-gradient-stops))] from-brand-blue/30 via-transparent to-transparent pointer-events-none" />
+        
+        <div className="relative z-10 max-w-4xl mx-auto text-center">
+          <Reveal>
+            <h2 className="text-4xl sm:text-5xl font-serif-display text-white mb-8 tracking-tight">
+              Pronto para levar seu negócio ao próximo nível?
+            </h2>
+            <p className="text-white/60 text-lg mb-12 max-w-2xl mx-auto">
+              Junte-se a centenas de empreendedores que já estão usando o poder da inteligência artificial para automatizar e lucrar.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Button 
+                size="lg" 
+                onClick={() => scrollTo('services')}
+                className="w-full sm:w-auto bg-brand-teal hover:bg-brand-teal/90 text-navy h-14 px-12 rounded-2xl text-lg font-bold transition-all hover:scale-105"
+              >
+                Quero Escalar Agora
+              </Button>
+              <Button 
+                size="lg" 
+                variant="link"
+                className="text-white/60 hover:text-white"
+              >
+                Falar com consultor especializado
+              </Button>
+            </div>
+          </Reveal>
         </div>
-      </Reveal>
+      </section>
 
       {/* Footer */}
-      <footer className="bg-navy border-t border-primary-foreground/5 py-8 text-center">
-        <p className="text-xs text-muted-foreground/40">
-          AdAI · Guia de Inteligência Artificial para Empreendedores · © {new Date().getFullYear()}
-        </p>
+      <footer className="py-12 px-6 border-t border-slate-100 text-center bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="font-serif-display text-2xl text-slate-900 mb-4">AdAI</div>
+          <p className="text-slate-400 text-sm mb-8 max-w-md mx-auto leading-relaxed">
+            A solução definitiva para o empreendedorismo digital moderno.
+          </p>
+          <div className="flex justify-center gap-8 mb-8 text-sm font-medium text-slate-500">
+            <button onClick={() => navigate('/')} className="hover:text-brand-blue">Home</button>
+            <button onClick={() => navigate('/ferramentas')} className="hover:text-brand-blue">Ferramentas</button>
+            <button onClick={() => navigate('/pro')} className="hover:text-brand-blue">Planos</button>
+          </div>
+          <div className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">
+            &copy; 2026 ADAI PLATFORM · TODOS OS DIREITOS RESERVADOS
+          </div>
+        </div>
       </footer>
     </div>
   );

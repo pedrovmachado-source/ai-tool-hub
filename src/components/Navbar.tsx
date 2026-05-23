@@ -67,7 +67,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
 
         <button onClick={() => onNavigate('home')} className="text-center justify-self-center text-white min-w-0">
           <span className="block text-base sm:text-xl font-semibold tracking-tight leading-none">AdAI</span>
-          <span className="hidden sm:block text-[11px] font-normal text-white leading-none mt-1">Guia de IAs para Empreendedores</span>
+          <span className="hidden sm:block text-[11px] font-normal text-white leading-none mt-1">Plataforma para Empreendedores</span>
         </button>
 
         <div className="flex items-center gap-1 sm:gap-2 justify-self-end">
