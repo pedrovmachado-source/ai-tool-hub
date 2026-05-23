@@ -48,7 +48,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
 
   return (
     <>
-      <nav className="bg-black/80 backdrop-blur-xl h-[72px] sm:h-[88px] px-6 sm:px-12 grid grid-cols-[auto_auto_1fr_auto] sm:grid-cols-[auto_1fr_auto_1fr] items-center sticky top-0 z-[200] gap-4 border-b border-white/5">
+      <nav className="bg-black/80 backdrop-blur-xl h-[72px] sm:h-[88px] px-6 sm:px-12 grid grid-cols-[auto_1fr_auto] items-center sticky top-0 z-[200] gap-4 border-b border-white/5">
         {user && (
           <button
             onClick={() => setShowMenu(true)}
@@ -65,7 +65,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
           </div>
         </button>
 
-        <button onClick={() => onNavigate('home')} className="text-center justify-self-center text-white min-w-0">
+        <button onClick={() => onNavigate('home')} className="hidden sm:flex flex-col text-center justify-self-center text-white min-w-0">
           <span className="block text-base sm:text-xl font-semibold tracking-tighter leading-none">CONVERT CLUB</span>
           <span className="hidden sm:block text-[9px] font-bold text-white/40 tracking-[0.3em] uppercase leading-none mt-2">Elite Community</span>
         </button>
@@ -86,7 +86,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
           )}
           {!user && !hideAuth ? (
             <>
-              <button onClick={() => setAuthModal({ open: true, mode: 'login' })} className="px-2.5 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-white bg-white/15 hover:bg-white/25 transition-colors">Acess</button>
+              <button onClick={() => setAuthModal({ open: true, mode: 'login' })} className="px-2.5 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-white bg-white/15 hover:bg-white/25 transition-colors">Acessar</button>
               <button onClick={() => setAuthModal({ open: true, mode: 'register' })} className="px-2.5 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-black bg-white hover:bg-white/90 transition-colors">Inscrever-se</button>
             </>
           ) : !user ? null : (
