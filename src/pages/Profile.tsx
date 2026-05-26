@@ -29,9 +29,15 @@ export default function Profile() {
   const { user, updateUser, savedEbooks, logout } = useAuth();
   const [tab, setTab] = useState<Tab>('dados');
 
-  const openEmbeddedPage = (page: string) => {
-    sessionStorage.setItem('adai:initialPage', page);
-    navigate('/ferramentas');
+  const handleNavigate = (page: string) => {
+    if (page === 'home') navigate('/');
+    else if (page === 'profile') navigate('/perfil');
+    else if (page === 'alunos') navigate('/alunos');
+    else if (page === 'mentorias') navigate('/mentorias');
+    else {
+      sessionStorage.setItem('adai:initialPage', page);
+      navigate('/ferramentas');
+    }
   };
 
   useEffect(() => {
@@ -50,12 +56,7 @@ export default function Profile() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Navbar
-        onNavigate={(page) => {
-          if (page === 'home') navigate('/');
-          else if (page === 'profile') navigate('/perfil');
-          else if (page === 'pro') navigate('/pro');
-          else if (page === 'admin' || page === 'lessons') openEmbeddedPage(page);
-        }}
+        onNavigate={handleNavigate}
         onOpenSavedEbook={(toolKey, categoryKey) => navigate(`/ferramentas?tool=${toolKey}&cat=${categoryKey}`)}
       />
 
@@ -331,6 +332,15 @@ function TabSeguranca({ onLogout }: { onLogout: () => void }) {
   const [loading, setLoading] = useState(false);
 
   const change = async () => {
+    // Check if user has a password provider
+    const { data: { user: supaUser } } = await supabase.auth.getUser();
+    const hasPassword = supaUser?.app_metadata?.provider === 'email' || 
+                       supaUser?.identities?.some(id => id.provider === 'email');
+
+    if (!hasPassword) {
+      return toast.error('Sua conta está vinculada ao Google. Não é possível alterar a senha por aqui.');
+    }
+
     if (!oldPassword) return toast.error('Digite sua senha atual.');
     if (newPassword.length < 8) return toast.error('Nova senha deve ter no mínimo 8 caracteres.');
     if (newPassword !== confirm) return toast.error('As novas senhas não coincidem.');

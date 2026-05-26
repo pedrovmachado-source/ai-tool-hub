@@ -58,7 +58,7 @@ export default function AdminStudentAreas() {
     setLoading(false);
   };
 
-  const fetchStudentArea = async (studentId: string) => {
+  const fetchStudentArea = async (studentId: string, studentNome?: string) => {
     const { data, error } = await supabase
       .from('student_areas')
       .select('*')
@@ -81,7 +81,7 @@ export default function AdminStudentAreas() {
         user_id: studentId,
         content: {
           lessons: [],
-          welcomeMessage: `Bem-vindo à sua mentoria personalizada, ${selectedStudent?.nome}!`
+          welcomeMessage: `Bem-vindo à sua mentoria personalizada, ${studentNome || selectedStudent?.nome || 'Membro'}!`
         }
       });
     }
@@ -89,7 +89,7 @@ export default function AdminStudentAreas() {
 
   const handleSelectStudent = (student: Student) => {
     setSelectedStudent(student);
-    fetchStudentArea(student.id);
+    fetchStudentArea(student.id, student.nome);
   };
 
   const saveStudentArea = async () => {

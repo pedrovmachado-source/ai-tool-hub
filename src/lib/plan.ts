@@ -4,8 +4,8 @@ export type Period = 'mensal' | 'trimestral' | 'vitalicio';
 
 export const isPaid = (plano?: string | null) => plano === 'Elite' || plano === 'Elite Plus' || plano === 'Max';
 export const isMentorado = (plano?: string | null) => plano === 'Max';
-export const isMax = (plano?: string | null) => plano === 'Elite Plus';
-export const isPro = (plano?: string | null) => plano === 'Elite';
+export const isElitePlus = (plano?: string | null) => plano === 'Elite Plus';
+export const isElite = (plano?: string | null) => plano === 'Elite';
 
 export const planLabel = (plano?: string | null) =>
   plano === 'Max' ? 'MAX' : plano === 'Elite Plus' ? 'ELITE PLUS' : plano === 'Elite' ? 'ELITE' : 'FREE';

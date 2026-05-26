@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { planLabel, planBadgeClass, isPaid, isMax } from '@/lib/plan';
+import { planLabel, planBadgeClass, isPaid, isElitePlus } from '@/lib/plan';
 
 export default function UserProfile({ onBack, onNavigate }: { onBack: () => void; onNavigate: (page: string) => void }) {
   const { user, updateUser, logout } = useAuth();
@@ -96,17 +96,17 @@ export default function UserProfile({ onBack, onNavigate }: { onBack: () => void
         {tab === 'plano' && (
           <div>
             {isPaid(user.plano) ? (
-              <div className={`border rounded-xl p-6 text-center ${isMax(user.plano) ? 'bg-brand-blue/10 border-brand-blue/30' : 'bg-brand-amber/10 border-brand-amber/30'}`}>
-                <div className="text-2xl mb-2">{isMax(user.plano) ? '👑' : '⚡'}</div>
+              <div className={`border rounded-xl p-6 text-center ${isElitePlus(user.plano) ? 'bg-brand-blue/10 border-brand-blue/30' : 'bg-brand-amber/10 border-brand-amber/30'}`}>
+                <div className="text-2xl mb-2">{isElitePlus(user.plano) ? '👑' : '⚡'}</div>
                 <div className="text-base font-semibold mb-1">Você é assinante {planLabel(user.plano)}!</div>
                 <p className="text-sm text-muted-foreground">
-                  {isMax(user.plano)
+                  {isElitePlus(user.plano)
                     ? 'Acesso completo: e-books, prompts, vídeos dos e-books e aulas exclusivas.'
-                    : 'Acesso completo a e-books, prompts e guias. Faça upgrade para Max e libere vídeos e aulas.'}
+                    : 'Acesso completo a e-books, prompts e guias. Faça upgrade para Elite Plus e libere vídeos e aulas.'}
                 </p>
-                {!isMax(user.plano) && (
+                {!isElitePlus(user.plano) && (
                   <button onClick={() => onNavigate('pro')} className="mt-4 px-5 py-2 rounded-lg text-[13px] font-semibold text-white bg-gradient-to-r from-brand-blue to-brand-teal hover:opacity-90">
-                    👑 Fazer upgrade para Max
+                    👑 Fazer upgrade para Elite Plus
                   </button>
                 )}
               </div>

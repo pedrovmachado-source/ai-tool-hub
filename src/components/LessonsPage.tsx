@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { isMax } from '@/lib/plan';
+import { meetsMinPlan } from '@/lib/plan';
 import { ArrowLeft, Play, FileText, Lock, Folder, X, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Document, Page, pdfjs } from 'react-pdf';
@@ -64,7 +64,7 @@ export default function LessonsPage({ onBack }: { onBack: () => void }) {
   const [pdfPage, setPdfPage] = useState(1);
   const [pdfLoading, setPdfLoading] = useState(false);
 
-  const canAccess = isAdmin || isMax(user?.plano);
+  const canAccess = isAdmin || meetsMinPlan(user?.plano, 'Elite Plus');
   const pdfCanGoPrev = pdfPage > 1;
   const pdfCanGoNext = pdfPage < pdfPages;
   const pdfScale = useMemo(() => (typeof window !== 'undefined' && window.innerWidth < 768 ? 0.8 : 1.2), []);

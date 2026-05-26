@@ -17,6 +17,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Search, Lock } from 'lucide-react';
 import type { Tool, Category } from '@/data/tools-data';
+import { isPaid } from '@/lib/plan';
 
 export default function Index() {
   const navigate = useNavigate();
@@ -95,7 +96,7 @@ export default function Index() {
   const filteredTools = freeOnly ? baseTools.filter(({ tool }) => isFreeTool(tool)) : baseTools;
 
   const handleOpenEbook = (tool: Tool, cat: Category) => {
-    const canAccess = isAdmin || (user && (user.plano === 'Elite' || user.plano === 'Elite Plus' || user.plano === 'Max'));
+    const canAccess = isAdmin || isPaid(user?.plano);
     if (!canAccess) {
       setPage('pro');
       return;
@@ -195,7 +196,7 @@ export default function Index() {
           </button>
         </div>
 
-        {(!user || (user.plano !== 'Elite' && user.plano !== 'Elite Plus' && user.plano !== 'Max')) && (
+        {(!user || !isPaid(user.plano)) && (
           <div className="flex flex-col items-center gap-3 mt-5">
             <div className="flex items-center justify-center gap-2 text-[12px] sm:text-[13px] text-muted-foreground/40 text-center px-2">
               <Lock size={14} className="shrink-0" /> E-books completos exclusivos para assinantes Elite

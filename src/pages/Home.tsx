@@ -33,21 +33,15 @@ export default function Home() {
   const [mentoriaModalOpen, setMentoriaModalOpen] = useState(false);
   const [authModal, setAuthModal] = useState<{ open: boolean; mode: 'login' | 'register' }>({ open: false, mode: 'login' });
 
-  const openEmbeddedPage = (page: string) => {
-    if (page === 'alunos' || page === 'lessons') {
-      if (!user) {
-        setAuthModal({ open: true, mode: 'login' });
-        return;
-      }
-      if (!isMentorado(user.plano)) {
-        setMentoriaModalOpen(true);
-        return;
-      }
-      navigate('/alunos');
-      return;
+  const handleNavigate = (page: string) => {
+    if (page === 'home') navigate('/');
+    else if (page === 'profile') navigate('/perfil');
+    else if (page === 'alunos') navigate('/alunos');
+    else if (page === 'mentorias') navigate('/mentorias');
+    else {
+      sessionStorage.setItem('adai:initialPage', page);
+      navigate('/ferramentas');
     }
-    sessionStorage.setItem('adai:initialPage', page);
-    navigate('/ferramentas');
   };
 
 
@@ -148,13 +142,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-black text-white selection:bg-white/20 font-sans overflow-x-hidden">
       <Navbar
-        onNavigate={(page) => {
-          if (page === 'home') navigate('/');
-          else if (page === 'profile') navigate('/perfil');
-          else if (page === 'pro') navigate('/pro');
-          else if (page === 'alunos' || page === 'lessons') navigate('/alunos');
-          else openEmbeddedPage(page);
-        }}
+        onNavigate={handleNavigate}
       />
 
       {/* Hero Section */}
