@@ -355,11 +355,6 @@ export default function Home() {
           <p className="text-white/20 text-sm mb-12 max-w-md mx-auto leading-relaxed font-light">
             The elite layer of digital entrepreneurship. Glass smooth experience, razor sharp results.
           </p>
-          <div className="flex justify-center gap-12 mb-12 text-[10px] font-bold uppercase tracking-[0.3em] text-white/40">
-            <button onClick={() => navigate('/')} className="hover:text-white transition-colors">Home</button>
-            <button onClick={() => navigate('/ferramentas')} className="hover:text-white transition-colors">Tools</button>
-            <button onClick={() => navigate('/pro')} className="hover:text-white transition-colors">Plano Max</button>
-          </div>
           <div className="text-[10px] text-white/10 font-bold uppercase tracking-[0.5em]">
             &copy; 2026 CONVERT CLUB · BUILT FOR THE 1%
           </div>
