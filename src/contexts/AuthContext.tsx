@@ -9,6 +9,7 @@ interface Profile {
   plano: 'Free' | 'Elite' | 'Elite Plus' | 'Max';
   telefone?: string;
   empresa?: string;
+  avatarUrl?: string;
   inviteValidated: boolean;
   abuseBlocked: boolean;
 }
@@ -27,6 +28,7 @@ interface ProfileRecord {
   plano: string;
   telefone: string | null;
   empresa: string | null;
+  avatar_url: string | null;
   invite_validated: boolean;
   abuse_blocked: boolean;
 }
@@ -63,6 +65,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     plano: (profile?.plano === 'Max' || profile?.plano === 'Mentorado') ? 'Max' : (profile?.plano === 'Elite Plus' || profile?.plano === 'Max') ? 'Elite Plus' : (profile?.plano === 'Elite' || profile?.plano === 'Pro') ? 'Elite' : 'Free',
     telefone: profile?.telefone || undefined,
     empresa: profile?.empresa || undefined,
+    avatarUrl: (profile as ProfileRecord)?.avatar_url || (profile as Profile)?.avatarUrl || undefined,
     inviteValidated: (profile as ProfileRecord)?.invite_validated ?? (profile as Profile)?.inviteValidated ?? false,
     abuseBlocked: (profile as ProfileRecord)?.abuse_blocked ?? (profile as Profile)?.abuseBlocked ?? false,
   }), []);
@@ -138,6 +141,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           plano: fallbackData.plano,
           telefone: fallbackData.telefone,
           empresa: fallbackData.empresa,
+          avatar_url: fallbackData.avatar_url,
           invite_validated: fallbackData.invite_validated,
           abuse_blocked: fallbackData.abuse_blocked,
         } satisfies ProfileRecord;
