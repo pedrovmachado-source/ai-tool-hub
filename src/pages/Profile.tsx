@@ -131,7 +131,38 @@ function TabDados() {
   const [sobre, setSobre] = useState(user?.sobre || '');
   const [telefone, setTelefone] = useState(user?.telefone || '');
   const [empresa, setEmpresa] = useState(user?.empresa || '');
+  const [avatarUrl, setAvatarUrl] = useState(user?.avatarUrl || '');
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+
+    setUploading(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const filePath = `${user.id}/${Math.random()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('profile_images')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('profile_images')
+        .getPublicUrl(filePath);
+
+      setAvatarUrl(publicUrl);
+      await updateUser({ avatarUrl: publicUrl });
+      toast.success('Foto de perfil atualizada!');
+    } catch (error: any) {
+      toast.error('Erro ao fazer upload: ' + error.message);
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const save = async () => {
     setSaving(true);
@@ -147,7 +178,33 @@ function TabDados() {
 
   return (
     <Card className="p-7 rounded-xl">
-      <h2 className="font-serif-display text-xl mb-5">Dados pessoais</h2>
+      <div className="flex flex-col md:flex-row gap-8 items-start mb-8">
+        <div className="relative group">
+          <Avatar className="h-32 w-32 border-4 border-background shadow-xl">
+            {avatarUrl ? (
+              <img src={avatarUrl} alt="Preview" className="h-full w-full object-cover" />
+            ) : (
+              <AvatarFallback className="bg-brand-blue text-white text-3xl font-bold">
+                {nome?.[0]?.toUpperCase() || '?'}
+              </AvatarFallback>
+            )}
+            {uploading && (
+              <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-full">
+                <Loader2 className="animate-spin text-white" size={24} />
+              </div>
+            )}
+          </Avatar>
+          <label className="absolute bottom-0 right-0 bg-brand-blue hover:bg-brand-blue/90 text-white p-2.5 rounded-full cursor-pointer shadow-lg transition-transform hover:scale-110">
+            <Camera size={18} />
+            <input type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={uploading} />
+          </label>
+        </div>
+        <div className="flex-1">
+          <h2 className="font-serif-display text-2xl mb-1">Dados pessoais</h2>
+          <p className="text-sm text-muted-foreground mb-4">Atualize suas informações de contato e foto de perfil.</p>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <Label htmlFor="nome">Nome</Label>
@@ -181,30 +238,42 @@ function TabDados() {
 }
 
 function TabPreferencias() {
-  const [dark, setDark] = useState(() => document.documentElement.classList.contains('dark'));
-  const [notif, setNotif] = useState(() => localStorage.getItem('adai:notifications') !== 'off');
+  const [notif, setNotif] = useState(() => {
+    if (typeof window !== 'undefined' && 'Notification' in window) {
+      return Notification.permission === 'granted';
+    }
+    return localStorage.getItem('adai:notifications') !== 'off';
+  });
 
-  const toggleDark = (v: boolean) => {
-    setDark(v);
-    document.documentElement.classList.toggle('dark', v);
-    localStorage.setItem('adai:theme', v ? 'dark' : 'light');
-  };
-  const toggleNotif = (v: boolean) => {
-    setNotif(v);
-    localStorage.setItem('adai:notifications', v ? 'on' : 'off');
+  const toggleNotif = async (v: boolean) => {
+    if (v) {
+      if (!('Notification' in window)) {
+        toast.error('Seu navegador não suporta notificações.');
+        return;
+      }
+
+      const permission = await Notification.requestPermission();
+      if (permission === 'granted') {
+        setNotif(true);
+        localStorage.setItem('adai:notifications', 'on');
+        toast.success('Notificações ativadas!');
+        new Notification('Convert Club', {
+          body: 'Você agora receberá alertas sobre novos conteúdos.',
+          icon: '/favicon.ico'
+        });
+      } else {
+        toast.error('Você precisa permitir notificações no seu navegador.');
+      }
+    } else {
+      setNotif(false);
+      localStorage.setItem('adai:notifications', 'off');
+    }
   };
 
   return (
     <Card className="p-7 rounded-xl">
       <h2 className="font-serif-display text-xl mb-5">Preferências</h2>
       <div className="space-y-5">
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="text-sm font-medium">Tema escuro</div>
-            <div className="text-xs text-muted-foreground">Use cores escuras para reduzir cansaço visual.</div>
-          </div>
-          <Switch checked={dark} onCheckedChange={toggleDark} />
-        </div>
         <div className="flex items-center justify-between">
           <div>
             <div className="text-sm font-medium">Notificações</div>
@@ -255,20 +324,43 @@ function TabHistorico({
 }
 
 function TabSeguranca({ onLogout }: { onLogout: () => void }) {
+  const { user } = useAuth();
+  const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [loading, setLoading] = useState(false);
 
   const change = async () => {
-    if (newPassword.length < 8) return toast.error('Senha deve ter no mínimo 8 caracteres.');
-    if (newPassword !== confirm) return toast.error('As senhas não coincidem.');
+    if (!oldPassword) return toast.error('Digite sua senha atual.');
+    if (newPassword.length < 8) return toast.error('Nova senha deve ter no mínimo 8 caracteres.');
+    if (newPassword !== confirm) return toast.error('As novas senhas não coincidem.');
+    
     setLoading(true);
-    const { error } = await supabase.auth.updateUser({ password: newPassword });
-    setLoading(false);
-    if (error) toast.error(error.message);
-    else {
+    
+    try {
+      // First verify old password by re-authenticating
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: user?.email || '',
+        password: oldPassword
+      });
+
+      if (signInError) {
+        throw new Error('Senha atual incorreta.');
+      }
+
+      // Then update password
+      const { error: updateError } = await supabase.auth.updateUser({ password: newPassword });
+      
+      if (updateError) throw updateError;
+
       toast.success('Senha alterada com sucesso');
-      setNewPassword(''); setConfirm('');
+      setOldPassword('');
+      setNewPassword(''); 
+      setConfirm('');
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -282,17 +374,23 @@ function TabSeguranca({ onLogout }: { onLogout: () => void }) {
     <div className="space-y-5">
       <Card className="p-7 rounded-xl">
         <h2 className="font-serif-display text-xl mb-5">Trocar senha</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-4">
           <div>
-            <Label htmlFor="np">Nova senha</Label>
-            <Input id="np" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Mínimo 8 caracteres" className="mt-1.5" />
+            <Label htmlFor="op">Senha atual</Label>
+            <Input id="op" type="password" value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} placeholder="Sua senha atual" className="mt-1.5" />
           </div>
-          <div>
-            <Label htmlFor="cp">Confirmar</Label>
-            <Input id="cp" type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder="Repita a nova senha" className="mt-1.5" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="np">Nova senha</Label>
+              <Input id="np" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Mínimo 8 caracteres" className="mt-1.5" />
+            </div>
+            <div>
+              <Label htmlFor="cp">Confirmar nova senha</Label>
+              <Input id="cp" type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder="Repita a nova senha" className="mt-1.5" />
+            </div>
           </div>
         </div>
-        <Button onClick={change} disabled={loading} className="mt-5 bg-brand-blue hover:bg-brand-blue/90 text-primary-foreground gap-2">
+        <Button onClick={change} disabled={loading} className="mt-6 bg-brand-blue hover:bg-brand-blue/90 text-primary-foreground gap-2">
           {loading && <Loader2 size={14} className="animate-spin" />} Alterar senha
         </Button>
       </Card>
@@ -393,7 +491,9 @@ function TabConvites() {
         <header className="mb-6">
           <h2 className="font-serif-display text-xl">Meus Convites</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Você tem direito a 3 convites. Use-os com sabedoria para trazer novos membros para o Convert Club.
+            {isAdmin 
+              ? "Como administrador, você pode gerar convites ilimitados para novos membros."
+              : "Você tem direito a 3 convites. Use-os com sabedoria para trazer novos membros para o Convert Club."}
           </p>
         </header>
 
