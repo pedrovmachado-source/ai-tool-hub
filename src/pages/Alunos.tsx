@@ -166,7 +166,7 @@ export default function Alunos() {
                 Bem-vindo à sua <em className="italic font-normal">Formação</em>.
               </h1>
               <p className="text-white/40 text-lg max-w-2xl font-light">
-                Olá, {user?.nome || 'Membro'}. Aqui você encontra todo o arsenal necessário para dominar o mercado. Escolha uma aula abaixo para começar.
+                {welcomeMessage || `Olá, ${user?.nome || 'Membro'}. Aqui você encontra todo o arsenal necessário para dominar o mercado. Escolha uma aula abaixo para começar.`}
               </p>
             </Reveal>
           </header>
