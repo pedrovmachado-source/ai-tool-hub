@@ -202,6 +202,36 @@ export type Database = {
         }
         Relationships: []
       }
+      invite_codes: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          is_used: boolean | null
+          owner_id: string
+          used_at: string | null
+          used_by: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          is_used?: boolean | null
+          owner_id: string
+          used_at?: string | null
+          used_by?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          is_used?: boolean | null
+          owner_id?: string
+          used_at?: string | null
+          used_by?: string | null
+        }
+        Relationships: []
+      }
       lessons: {
         Row: {
           created_at: string
@@ -368,6 +398,7 @@ export type Database = {
           email: string
           empresa: string | null
           id: string
+          invite_validated: boolean | null
           nome: string
           plano: string
           sobre: string
@@ -380,6 +411,7 @@ export type Database = {
           email?: string
           empresa?: string | null
           id?: string
+          invite_validated?: boolean | null
           nome?: string
           plano?: string
           sobre?: string
@@ -392,6 +424,7 @@ export type Database = {
           email?: string
           empresa?: string | null
           id?: string
+          invite_validated?: boolean | null
           nome?: string
           plano?: string
           sobre?: string
@@ -615,6 +648,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_unique_invite_code: { Args: never; Returns: string }
       get_tool_premium: { Args: { _tool_key: string }; Returns: Json }
       has_role: {
         Args: {
@@ -623,6 +657,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      initialize_admin_invites: { Args: never; Returns: Json }
       list_categories_public: {
         Args: never
         Returns: {
@@ -657,6 +692,10 @@ export type Database = {
           url: string
           url_label: string
         }[]
+      }
+      validate_invite_code: {
+        Args: { invite_code_text: string }
+        Returns: Json
       }
     }
     Enums: {

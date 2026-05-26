@@ -9,14 +9,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { User, Settings, History, ShieldCheck, Loader2, LogOut, Bookmark } from 'lucide-react';
+import { User, Settings, History, ShieldCheck, Loader2, LogOut, Bookmark, Ticket, Eye, EyeOff, Copy, Check } from 'lucide-react';
 import { toast } from 'sonner';
 import { planLabel, planBadgeClass } from '@/lib/plan';
 
-type Tab = 'dados' | 'preferencias' | 'historico' | 'seguranca';
+type Tab = 'dados' | 'preferencias' | 'historico' | 'seguranca' | 'convites';
 
 const TABS: { key: Tab; label: string; icon: typeof User }[] = [
   { key: 'dados', label: 'Dados pessoais', icon: User },
+  { key: 'convites', label: 'Meus Convites', icon: Ticket },
   { key: 'preferencias', label: 'Preferências', icon: Settings },
   { key: 'historico', label: 'Histórico', icon: History },
   { key: 'seguranca', label: 'Segurança', icon: ShieldCheck },
@@ -101,6 +102,7 @@ export default function Profile() {
           {/* Conteúdo */}
           <main>
             {tab === 'dados' && <TabDados />}
+            {tab === 'convites' && <TabConvites />}
             {tab === 'preferencias' && <TabPreferencias />}
             {tab === 'historico' && <TabHistorico savedEbooks={savedEbooks} onOpen={(k, c) => navigate(`/ferramentas?tool=${k}&cat=${c}`)} />}
             {tab === 'seguranca' && <TabSeguranca onLogout={logout} />}
@@ -294,6 +296,164 @@ function TabSeguranca({ onLogout }: { onLogout: () => void }) {
             <LogOut size={14} /> Sair desta sessão
           </Button>
         </div>
+      </Card>
+    </div>
+  );
+}
+
+function TabConvites() {
+  const { user, isAdmin } = useAuth();
+  const [invites, setInvites] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [initializing, setInitializing] = useState(false);
+  const [visibleCodes, setVisibleCodes] = useState<Record<string, boolean>>({});
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const fetchInvites = async () => {
+    if (!user) return;
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('invite_codes')
+        .select('*')
+        .eq('owner_id', user.id)
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
+      setInvites(data || []);
+    } catch (error) {
+      console.error('Erro ao buscar convites:', error);
+      toast.error('Não foi possível carregar seus convites.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchInvites();
+  }, [user]);
+
+  const toggleVisibility = (id: string) => {
+    setVisibleCodes(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const copyToClipboard = (text: string, id: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedId(id);
+    toast.success('Código copiado!');
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const initializeInvites = async () => {
+    setInitializing(true);
+    try {
+      const { data, error } = await supabase.rpc('initialize_admin_invites');
+      if (error) throw error;
+      
+      const result = data as { success: boolean; message: string };
+      if (result.success) {
+        toast.success(result.message);
+        fetchInvites();
+      } else {
+        toast.error(result.message);
+      }
+    } catch (error) {
+      console.error('Erro ao inicializar convites:', error);
+      toast.error('Erro ao inicializar convites.');
+    } finally {
+      setInitializing(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <Card className="p-7 rounded-xl flex items-center justify-center min-h-[300px]">
+        <Loader2 className="w-8 h-8 animate-spin text-brand-blue" />
+      </Card>
+    );
+  }
+
+  const allUsed = invites.length > 0 && invites.every(i => i.is_used);
+
+  return (
+    <div className="space-y-6">
+      <Card className="p-7 rounded-xl">
+        <header className="mb-6">
+          <h2 className="font-serif-display text-xl">Meus Convites</h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            Você tem direito a 3 convites. Use-os com sabedoria para trazer novos membros para o Clube Kayosa.
+          </p>
+        </header>
+
+        {invites.length === 0 ? (
+          <div className="text-center py-12 border border-dashed border-border rounded-lg space-y-4">
+            <Ticket className="mx-auto opacity-20 w-12 h-12" />
+            <p className="text-sm text-muted-foreground">Você ainda não possui convites gerados.</p>
+            {isAdmin && (
+              <Button onClick={initializeInvites} disabled={initializing} className="bg-brand-blue hover:bg-brand-blue/90">
+                {initializing && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                Inicializar Meus Convites
+              </Button>
+            )}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {invites.map((invite) => (
+              <div 
+                key={invite.id} 
+                className={`relative overflow-hidden p-5 rounded-xl border transition-all ${
+                  invite.is_used ? 'bg-secondary/30 border-border opacity-70' : 'bg-brand-blue/[0.03] border-brand-blue/20'
+                }`}
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                    invite.is_used ? 'bg-gray-200 text-gray-600' : 'bg-green-100 text-green-700'
+                  }`}>
+                    {invite.is_used ? 'Utilizado' : 'Disponível'}
+                  </span>
+                  {!invite.is_used && (
+                    <button 
+                      onClick={() => toggleVisibility(invite.id)}
+                      className="text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {visibleCodes[invite.id] ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                  )}
+                </div>
+
+                <div className="relative group">
+                  <div className={`text-2xl font-mono font-bold text-center tracking-widest transition-all duration-300 ${
+                    !invite.is_used && !visibleCodes[invite.id] ? 'blur-md select-none' : ''
+                  }`}>
+                    {invite.code}
+                  </div>
+                  
+                  {!invite.is_used && (
+                    <button 
+                      onClick={() => copyToClipboard(invite.code, invite.id)}
+                      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-2 rounded-full bg-white shadow-sm border opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      {copiedId === invite.id ? <Check size={14} className="text-green-600" /> : <Copy size={14} />}
+                    </button>
+                  )}
+                </div>
+
+                {invite.is_used && (
+                  <div className="mt-4 pt-4 border-t border-border/50 text-[10px] text-muted-foreground space-y-1">
+                    <p>Utilizado em: {new Date(invite.used_at).toLocaleDateString('pt-BR')}</p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {allUsed && (
+          <div className="mt-6 p-4 bg-yellow-50 border border-yellow-100 rounded-lg text-yellow-800 text-sm flex gap-3">
+            <ShieldCheck className="w-5 h-5 flex-shrink-0" />
+            <p>Você já utilizou todos os seus convites disponíveis. Não é possível gerar novos códigos.</p>
+          </div>
+        )}
       </Card>
     </div>
   );
