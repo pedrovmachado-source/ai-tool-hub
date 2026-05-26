@@ -129,7 +129,7 @@ export default function Profile() {
 function TabDados() {
   const { user, updateUser } = useAuth();
   const [nome, setNome] = useState(user?.nome || '');
-  const [sobre, setSobre] = useState(user?.sobre || '');
+  const [sobrenome, setSobrenome] = useState(user?.sobrenome || '');
   const [telefone, setTelefone] = useState(user?.telefone || '');
   const [empresa, setEmpresa] = useState(user?.empresa || '');
   const [avatarUrl, setAvatarUrl] = useState(user?.avatarUrl || '');
