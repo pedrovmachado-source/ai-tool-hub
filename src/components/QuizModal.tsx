@@ -117,7 +117,6 @@ export default function QuizModal({ isOpen, onClose, onRecommend }: QuizModalPro
   };
 
   return (
-  return (
     <div className="fixed inset-0 z-[1100] flex items-center justify-center p-4 backdrop-blur-md" style={{ background: 'rgba(0,0,0,0.85)' }} onClick={onClose}>
       <div className="bg-[#0D0D0F] border border-white/10 rounded-[2.5rem] w-full max-w-[520px] animate-slide-up overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
         {/* Header */}
@@ -216,10 +215,6 @@ export default function QuizModal({ isOpen, onClose, onRecommend }: QuizModalPro
               </div>
             </>
           )}
-        </div>
-      </div>
-    </div>
-
         </div>
       </div>
     </div>
