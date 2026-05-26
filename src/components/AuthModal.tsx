@@ -178,6 +178,17 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch, onRegistere
                   placeholder="Mínimo 8 caracteres" 
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-all" 
                 />
+              <div className="mb-6 flex items-start gap-3 px-1">
+                <input 
+                  type="checkbox" 
+                  id="lgpd"
+                  checked={lgpdAccepted}
+                  onChange={e => setLgpdAccepted(e.target.checked)}
+                  className="mt-1 w-4 h-4 rounded border-white/10 bg-white/5 text-white focus:ring-white/30"
+                />
+                <label htmlFor="lgpd" className="text-[11px] text-white/60 leading-relaxed cursor-pointer select-none">
+                  Estou de acordo com a <span className="text-white font-medium">LGPD</span> e ciente de que este site vende dados para outras plataformas como <span className="text-white font-medium">Meta Ads</span> e <span className="text-white font-medium">Google Ads</span>.
+                </label>
               </div>
               <div className="mb-6">
                 <label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] mb-2 block ml-1">Confirmar senha</label>
