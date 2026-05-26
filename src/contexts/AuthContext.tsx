@@ -9,6 +9,7 @@ interface Profile {
   plano: 'Free' | 'Pro' | 'Max';
   telefone?: string;
   empresa?: string;
+  inviteValidated: boolean;
 }
 
 interface SavedEbook {
@@ -25,6 +26,7 @@ interface ProfileRecord {
   plano: string;
   telefone: string | null;
   empresa: string | null;
+  invite_validated: boolean;
 }
 
 interface AuthContextType {
@@ -59,6 +61,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     plano: profile?.plano === 'Max' ? 'Max' : profile?.plano === 'Pro' ? 'Pro' : 'Free',
     telefone: profile?.telefone || undefined,
     empresa: profile?.empresa || undefined,
+    inviteValidated: (profile as ProfileRecord)?.invite_validated ?? (profile as Profile)?.inviteValidated ?? false,
   }), []);
 
   const clearAuthState = useCallback(() => {
@@ -132,6 +135,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           plano: fallbackData.plano,
           telefone: fallbackData.telefone,
           empresa: fallbackData.empresa,
+          invite_validated: fallbackData.invite_validated,
         } satisfies ProfileRecord;
       }
 
@@ -156,6 +160,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           plano: createdData.plano,
           telefone: createdData.telefone,
           empresa: createdData.empresa,
+          invite_validated: createdData.invite_validated,
         } satisfies ProfileRecord
       : null;
   }, []);
