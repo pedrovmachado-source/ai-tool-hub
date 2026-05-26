@@ -640,8 +640,8 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
       <div className={`fixed lg:relative top-0 left-0 z-50 w-[240px] lg:w-[220px] h-full lg:h-auto bg-black border-r border-white/5 flex flex-col shrink-0 transition-transform duration-200 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}>
         <div className="px-5 py-6 border-b border-primary-foreground/[0.07] flex items-start justify-between gap-2">
           <div>
-            <div className="text-[15px] font-medium text-primary-foreground">AdAI Admin</div>
-            <div className="text-[11px] text-muted-foreground/40">Painel de administração</div>
+            <div className="text-lg font-serif-display tracking-tight text-white">Convert Club</div>
+            <div className="text-[9px] font-bold uppercase tracking-[0.2em] text-white/30">Dashboard Admin</div>
           </div>
           <div className="flex items-center gap-1">
             <button
