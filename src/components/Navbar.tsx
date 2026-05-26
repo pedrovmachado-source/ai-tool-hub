@@ -151,8 +151,8 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
                     </button>
 
                     {hasSubmenu && hoveredItem === key && (
-                      <div className="absolute left-full top-0 w-[240px] h-full">
-                        <div className="ml-0 w-[240px] bg-black border border-white/5 shadow-2xl rounded-r-xl overflow-hidden animate-slide-in-left origin-left h-full min-h-[250px] z-[350]">
+                      <div className="absolute left-full top-0 w-[240px] h-full pl-0.5">
+                        <div className="w-[240px] bg-black border border-white/5 shadow-2xl rounded-r-xl overflow-hidden animate-slide-in-right origin-left h-full min-h-[250px] z-[350]">
                           <div className="p-4 border-b border-white/5 bg-white/5">
                             <span className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em]">Modelos de Site</span>
                           </div>
