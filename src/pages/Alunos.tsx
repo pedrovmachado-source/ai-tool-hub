@@ -80,10 +80,12 @@ export default function Alunos() {
         const content = data.content as any;
         setPersonalizedAulas(content.lessons || []);
         setWelcomeMessage(content.welcomeMessage || '');
+        setCompletedLessons(new Set(content.completed_ids || []));
       } else {
         // Fallback to defaults if no personalized area found
         setPersonalizedAulas(defaultAulas);
         setWelcomeMessage('');
+        setCompletedLessons(new Set());
       }
     }
     setLoading(false);
@@ -113,16 +115,44 @@ export default function Alunos() {
     }
   };
 
-  const toggleLessonCompletion = (lessonId: string) => {
-    setCompletedLessons(prev => {
-      const next = new Set(prev);
-      if (next.has(lessonId)) {
-        next.delete(lessonId);
-      } else {
-        next.add(lessonId);
+  const toggleLessonCompletion = async (lessonId: string) => {
+    const newCompleted = new Set(completedLessons);
+    if (newCompleted.has(lessonId)) {
+      newCompleted.delete(lessonId);
+    } else {
+      newCompleted.add(lessonId);
+    }
+    setCompletedLessons(newCompleted);
+
+    if (!user) return;
+
+    // Persist to database
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('user_id', user.id)
+      .single();
+
+    if (profile) {
+      const { data: currentArea } = await supabase
+        .from('student_areas')
+        .select('*')
+        .eq('user_id', profile.id)
+        .maybeSingle();
+
+      if (currentArea) {
+        const content = currentArea.content as any;
+        await supabase
+          .from('student_areas')
+          .update({
+            content: {
+              ...content,
+              completed_ids: Array.from(newCompleted)
+            }
+          })
+          .eq('id', currentArea.id);
       }
-      return next;
-    });
+    }
   };
 
   const handleViewTranscription = (url?: string) => {
