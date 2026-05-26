@@ -101,7 +101,7 @@ export default function Mentorias() {
       videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
       duration: '42min',
       thumbnail: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=2670&auto=format&fit=crop',
-      description: 'Sessão prática corrigindo e otimizando as ofertas dos mentorados em tempo real.',
+      description: 'Sessão prática corrigindo e otimizando as ofertas dos alunos Max em tempo real.',
       transcription: 'Transcrição sobre análise de ofertas...'
     }
   ];
@@ -119,7 +119,7 @@ export default function Mentorias() {
         onNavigate={(page) => {
           if (page === 'home') navigate('/');
           else if (page === 'profile') navigate('/perfil');
-          else if (page === 'pro') navigate('/pro');
+          else if (page === 'pro' || page === 'elite') navigate('/pro');
           else if (page === 'alunos' || page === 'lessons') navigate('/alunos');
           else if (page === 'mentorias') navigate('/mentorias');
           else navigate('/ferramentas');
