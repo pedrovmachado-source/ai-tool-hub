@@ -126,6 +126,7 @@ export default function Mentorias() {
         }} 
       />
 
+
       <main className="flex-1">
         {/* Hero / Player Section */}
         <section className="relative w-full aspect-[21/9] sm:aspect-video lg:aspect-[21/9] bg-black group overflow-hidden" ref={playerRef}>
