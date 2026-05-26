@@ -16,37 +16,45 @@ function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
   const copy = () => { navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 2000); };
   return (
-    <button onClick={copy} className="text-[11px] font-semibold border rounded px-2 py-0.5 flex items-center gap-1 transition-colors hover:bg-secondary" style={{ borderColor: 'currentColor' }}>
-      {copied ? <><Check size={11} /> Copiado!</> : <><Copy size={11} /> Copiar</>}
+    <button onClick={copy} className="text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/40 hover:text-white hover:bg-white/10 transition-all">
+      {copied ? <Check size={12} className="text-green-500" /> : 'Copiar'}
     </button>
   );
 }
 
 function SectionTitle({ icon, children }: { icon: string; children: React.ReactNode }) {
-  return <h3 className="text-sm font-semibold pb-2 border-b-2 border-border mb-3">{icon} {children}</h3>;
-}
-
-function PromptCard({ prompt, accentLight, accentDark }: { prompt: { label: string; text: string }; accentLight: string; accentDark: string }) {
-  const label = prompt?.label ?? '';
-  const level = label.startsWith('🟢') ? 'beginner' : label.startsWith('🟡') ? 'intermediate' : label.startsWith('🔴') ? 'advanced' : 'default';
-  const levelColors = {
-    beginner: { bg: '#E8F5E9', border: '#4CAF50', text: '#2E7D32' },
-    intermediate: { bg: '#FFF8E1', border: '#FFC107', text: '#F57F17' },
-    advanced: { bg: '#FFEBEE', border: '#F44336', text: '#C62828' },
-    default: { bg: accentLight, border: accentDark, text: accentDark },
-  };
-  const colors = levelColors[level];
-
   return (
-    <div className="border rounded-lg overflow-hidden mb-3" style={{ borderColor: colors.border + '40' }}>
-      <div className="flex items-center justify-between px-4 py-2" style={{ background: colors.bg, color: colors.text }}>
-        <span className="text-[11px] font-bold uppercase tracking-wider">{prompt.label}</span>
-        <CopyButton text={prompt.text} />
-      </div>
-      <div className="px-4 py-3 text-[13px] leading-7 italic bg-card">{prompt.text}</div>
+    <div className="flex items-center gap-3 mb-6">
+      <span className="text-xl">{icon}</span>
+      <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/30">{children}</h3>
+      <div className="flex-1 border-t border-white/5" />
     </div>
   );
 }
+
+function PromptCard({ prompt }: { prompt: { label: string; text: string } }) {
+  const label = prompt?.label ?? '';
+  const level = label.startsWith('🟢') ? 'beginner' : label.startsWith('🟡') ? 'intermediate' : label.startsWith('🔴') ? 'advanced' : 'default';
+  const levelColors = {
+    beginner: 'border-green-500/20 text-green-400 bg-green-500/5',
+    intermediate: 'border-yellow-500/20 text-yellow-400 bg-yellow-500/5',
+    advanced: 'border-red-500/20 text-red-400 bg-red-500/5',
+    default: 'border-white/10 text-white/40 bg-white/5',
+  };
+
+  return (
+    <div className="glass-smooth border border-white/5 rounded-2xl overflow-hidden mb-4">
+      <div className={`flex items-center justify-between px-5 py-3 border-b border-white/5 ${levelColors[level]}`}>
+        <span className="text-[9px] font-bold uppercase tracking-[0.2em]">{prompt.label}</span>
+        <CopyButton text={prompt.text} />
+      </div>
+      <div className="p-6">
+        <p className="text-sm text-white/60 font-light leading-relaxed italic">"{prompt.text}"</p>
+      </div>
+    </div>
+  );
+}
+
 
 function getEmbedUrl(url: string): string | null {
   // YouTube
