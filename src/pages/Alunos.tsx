@@ -41,6 +41,7 @@ export default function Alunos() {
   const [personalizedAulas, setPersonalizedAulas] = useState<Lesson[]>([]);
   const [welcomeMessage, setWelcomeMessage] = useState<string>('');
   const [loading, setLoading] = useState(true);
+  const [completedLessons, setCompletedLessons] = useState<Set<string>>(new Set());
   const videoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -88,9 +89,19 @@ export default function Alunos() {
     setLoading(false);
   };
 
-  useEffect(() => {
-    document.title = 'Convert Club — Área do Aluno';
-  }, []);
+  const getEmbedUrl = (url: string) => {
+    if (!url) return '';
+    
+    // YouTube
+    const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
+    if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`;
+    
+    // Vimeo
+    const vimeoMatch = url.match(/(?:vimeo\.com\/|player\.vimeo\.com\/video\/)([0-9]+)/);
+    if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+    
+    return url;
+  };
 
   const handleLessonSelect = (lesson: Lesson) => {
     setSelectedVideo(lesson);
@@ -100,6 +111,32 @@ export default function Alunos() {
         videoRef.current?.scrollIntoView({ behavior: 'smooth' });
       }, 100);
     }
+  };
+
+  const toggleLessonCompletion = (lessonId: string) => {
+    setCompletedLessons(prev => {
+      const next = new Set(prev);
+      if (next.has(lessonId)) {
+        next.delete(lessonId);
+      } else {
+        next.add(lessonId);
+      }
+      return next;
+    });
+  };
+
+  const handleViewTranscription = (url?: string) => {
+    if (!url || url === '#') {
+      import('@/hooks/use-toast').then(({ toast }) => {
+        toast({
+          title: "Transcrição Indisponível",
+          description: "Este conteúdo ainda não possui transcrição anexada.",
+          variant: "destructive"
+        });
+      });
+      return;
+    }
+    window.open(url, '_blank');
   };
 
   const Reveal = ({ children, className = '', as: As = 'div' as any, delay = 0 }: any) => {
@@ -199,8 +236,13 @@ export default function Alunos() {
                             className={`w-full text-left p-4 rounded-2xl transition-all duration-300 flex items-center justify-between group ${selectedVideo?.id === aula.id ? 'bg-white/10 border-white/10' : 'hover:bg-white/5 border-transparent'} border`}
                           >
                             <div className="flex items-center gap-3">
-                              <PlayCircle className={`w-4 h-4 ${selectedVideo?.id === aula.id ? 'text-white' : 'text-white/20 group-hover:text-white/50'}`} />
-                              <span className={`text-sm ${selectedVideo?.id === aula.id ? 'text-white font-medium' : 'text-white/50'}`}>{aula.title}</span>
+                              <div className="relative">
+                                <PlayCircle className={`w-4 h-4 ${selectedVideo?.id === aula.id ? 'text-white' : 'text-white/20 group-hover:text-white/50'}`} />
+                                {completedLessons.has(aula.id) && (
+                                  <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full border border-black" />
+                                )}
+                              </div>
+                              <span className={`text-sm ${selectedVideo?.id === aula.id ? 'text-white font-medium' : 'text-white/50'} ${completedLessons.has(aula.id) ? 'line-through opacity-50' : ''}`}>{aula.title}</span>
                             </div>
                             <span className="text-[10px] text-white/20 font-mono">{aula.duration}</span>
                           </button>
@@ -237,6 +279,7 @@ export default function Alunos() {
                             <Button 
                               variant="ghost" 
                               size="sm" 
+                              onClick={() => handleViewTranscription(aula.transcriptionUrl)}
                               className="h-8 gap-2 text-[10px] font-bold uppercase tracking-wider text-white/40 hover:text-white hover:bg-white/10"
                             >
                               <Download className="w-3 h-3" />
@@ -259,7 +302,7 @@ export default function Alunos() {
                   {selectedVideo ? (
                     <div className="aspect-video w-full bg-black relative">
                       <iframe
-                        src={selectedVideo.videoUrl}
+                        src={getEmbedUrl(selectedVideo.videoUrl)}
                         className="absolute inset-0 w-full h-full"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
@@ -295,11 +338,22 @@ export default function Alunos() {
                       {selectedVideo?.title || 'Selecione um conteúdo para começar'}
                     </h2>
                     {selectedVideo && (
-                      <div className="mt-8 flex gap-4">
-                        <Button className="rounded-full bg-white text-black hover:bg-white/90 px-8 font-bold text-xs uppercase tracking-widest">
-                          Marcar como Concluída
+                      <div className="mt-8 flex flex-wrap gap-4">
+                        <Button 
+                          onClick={() => toggleLessonCompletion(selectedVideo.id)}
+                          className={`rounded-full px-8 font-bold text-xs uppercase tracking-widest transition-all ${
+                            completedLessons.has(selectedVideo.id) 
+                              ? 'bg-green-500 text-white hover:bg-green-600' 
+                              : 'bg-white text-black hover:bg-white/90'
+                          }`}
+                        >
+                          {completedLessons.has(selectedVideo.id) ? 'Concluída' : 'Marcar como Concluída'}
                         </Button>
-                        <Button variant="outline" className="rounded-full border-white/10 text-white hover:bg-white/5 px-8 font-bold text-xs uppercase tracking-widest glass-smooth">
+                        <Button 
+                          variant="outline" 
+                          onClick={() => handleViewTranscription(selectedVideo.transcriptionUrl)}
+                          className="rounded-full border-white/10 text-white hover:bg-white/5 px-8 font-bold text-xs uppercase tracking-widest glass-smooth"
+                        >
                           Ver Transcrição
                         </Button>
                       </div>
