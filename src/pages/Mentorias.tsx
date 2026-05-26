@@ -34,8 +34,8 @@ export default function Mentorias() {
   const { user } = useAuth();
   const [mentoriaModalOpen, setMentoriaModalOpen] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<MentorLesson | null>(null);
-  const [hoveredVideo, setHoveredVideo] = useState<string | null>(null);
   const playerRef = useRef<HTMLDivElement>(null);
+
 
   useEffect(() => {
     if (user) {
