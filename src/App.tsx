@@ -14,6 +14,8 @@ import Invite from "./pages/Invite.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import Blocked from "./pages/Blocked.tsx";
 import AbuseBlocks from "./pages/AbuseBlocks.tsx";
+import Mentorias from "./pages/Mentorias.tsx";
+
 
 const queryClient = new QueryClient();
 
@@ -33,6 +35,8 @@ const App = () => (
             <Route path="/alunos" element={<ProtectedRoute><Alunos /></ProtectedRoute>} />
             <Route path="/bloqueado" element={<ProtectedRoute><Blocked /></ProtectedRoute>} />
             <Route path="/admin/bloqueios" element={<ProtectedRoute><AbuseBlocks /></ProtectedRoute>} />
+            <Route path="/mentorias" element={<ProtectedRoute><Mentorias /></ProtectedRoute>} />
+
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
