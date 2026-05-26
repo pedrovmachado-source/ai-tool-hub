@@ -15,6 +15,7 @@ import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import Blocked from "./pages/Blocked.tsx";
 import AbuseBlocks from "./pages/AbuseBlocks.tsx";
 import Mentorias from "./pages/Mentorias.tsx";
+import CompleteProfile from "./pages/CompleteProfile.tsx";
 
 
 const queryClient = new QueryClient();
