@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { isPaid } from '@/lib/plan';
 import { X, Folder, Play, FileText, ArrowLeft, Lock } from 'lucide-react';
 import { PdfModal, VideoModal } from '@/lib/lessonViewers';
+import logoAdai from '@/assets/logo.png';
 
 interface Module { id: string; title: string; description: string; cover_url: string | null; sort_order: number; }
 interface Lesson {
@@ -55,9 +56,11 @@ export default function NicheLessonsModal({ onClose, onUpgrade }: { onClose: () 
         <div className="flex-1 overflow-y-auto p-4 sm:p-6">
           {!canAccess ? (
             <div className="py-12 text-center">
-              <Lock size={36} className="mx-auto mb-3 text-muted-foreground/50" />
-              <p className="text-sm text-muted-foreground mb-4">Conteúdo exclusivo para assinantes <strong>Pro</strong> ou <strong>Max</strong>.</p>
-              <button onClick={onUpgrade} className="px-4 py-2 rounded-lg bg-brand-amber text-white text-sm font-medium">⚡ Assinar</button>
+              <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-white/10 overflow-hidden">
+                <img src={logoAdai} alt="Logo" className="w-10 h-10 object-contain" />
+              </div>
+              <p className="text-sm text-muted-foreground mb-4">Conteúdo exclusivo para assinantes <strong>Elite</strong>, <strong>Elite Plus</strong> ou <strong>Max</strong>.</p>
+              <button onClick={onUpgrade} className="px-6 py-2 rounded-lg bg-brand-amber text-white text-sm font-bold uppercase tracking-widest">⚡ Assinar</button>
             </div>
           ) : loading ? (
             <p className="text-center text-muted-foreground py-10">Carregando…</p>

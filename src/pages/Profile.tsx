@@ -9,15 +9,16 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { User, Settings, History, ShieldCheck, Loader2, LogOut, Bookmark, Ticket, Eye, EyeOff, Copy, Check } from 'lucide-react';
+import { User, Settings, History, ShieldCheck, Loader2, LogOut, Bookmark, Ticket, Eye, EyeOff, Copy, Check, CreditCard, Camera, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 import { planLabel, planBadgeClass } from '@/lib/plan';
 
-type Tab = 'dados' | 'preferencias' | 'historico' | 'seguranca' | 'convites';
+type Tab = 'dados' | 'preferencias' | 'historico' | 'seguranca' | 'convites' | 'planos';
 
-const TABS: { key: Tab; label: string; icon: typeof User }[] = [
+const TABS: { key: Tab; label: string; icon: any }[] = [
   { key: 'dados', label: 'Dados pessoais', icon: User },
   { key: 'convites', label: 'Meus Convites', icon: Ticket },
+  { key: 'planos', label: 'Planos', icon: CreditCard },
   { key: 'preferencias', label: 'Preferências', icon: Settings },
   { key: 'historico', label: 'Histórico', icon: History },
   { key: 'seguranca', label: 'Segurança', icon: ShieldCheck },
@@ -69,10 +70,14 @@ export default function Profile() {
           <aside className="space-y-4">
             <Card className="p-5 rounded-xl">
               <div className="flex items-center gap-3 mb-4">
-                <Avatar className="h-12 w-12 bg-brand-blue text-primary-foreground">
-                  <AvatarFallback className="bg-brand-blue text-primary-foreground font-semibold">
-                    {user.nome?.[0]?.toUpperCase() || '?'}
-                  </AvatarFallback>
+                <Avatar className="h-12 w-12 bg-brand-blue text-primary-foreground border-2 border-brand-blue/20">
+                  {user.avatarUrl ? (
+                    <img src={user.avatarUrl} alt={user.nome} className="h-full w-full object-cover" />
+                  ) : (
+                    <AvatarFallback className="bg-brand-blue text-primary-foreground font-semibold">
+                      {user.nome?.[0]?.toUpperCase() || '?'}
+                    </AvatarFallback>
+                  )}
                 </Avatar>
                 <div className="min-w-0">
                   <div className="text-sm font-medium truncate">{user.nome} {user.sobre}</div>
@@ -109,6 +114,7 @@ export default function Profile() {
           <main>
             {tab === 'dados' && <TabDados />}
             {tab === 'convites' && <TabConvites />}
+            {tab === 'planos' && <TabPlanos />}
             {tab === 'preferencias' && <TabPreferencias />}
             {tab === 'historico' && <TabHistorico savedEbooks={savedEbooks} onOpen={(k, c) => navigate(`/ferramentas?tool=${k}&cat=${c}`)} />}
             {tab === 'seguranca' && <TabSeguranca onLogout={logout} />}
@@ -125,7 +131,38 @@ function TabDados() {
   const [sobre, setSobre] = useState(user?.sobre || '');
   const [telefone, setTelefone] = useState(user?.telefone || '');
   const [empresa, setEmpresa] = useState(user?.empresa || '');
+  const [avatarUrl, setAvatarUrl] = useState(user?.avatarUrl || '');
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+
+    setUploading(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const filePath = `${user.id}/${Math.random()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('profile_images')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('profile_images')
+        .getPublicUrl(filePath);
+
+      setAvatarUrl(publicUrl);
+      await updateUser({ avatarUrl: publicUrl });
+      toast.success('Foto de perfil atualizada!');
+    } catch (error: any) {
+      toast.error('Erro ao fazer upload: ' + error.message);
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const save = async () => {
     setSaving(true);
@@ -141,7 +178,33 @@ function TabDados() {
 
   return (
     <Card className="p-7 rounded-xl">
-      <h2 className="font-serif-display text-xl mb-5">Dados pessoais</h2>
+      <div className="flex flex-col md:flex-row gap-8 items-start mb-8">
+        <div className="relative group">
+          <Avatar className="h-32 w-32 border-4 border-background shadow-xl">
+            {avatarUrl ? (
+              <img src={avatarUrl} alt="Preview" className="h-full w-full object-cover" />
+            ) : (
+              <AvatarFallback className="bg-brand-blue text-white text-3xl font-bold">
+                {nome?.[0]?.toUpperCase() || '?'}
+              </AvatarFallback>
+            )}
+            {uploading && (
+              <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-full">
+                <Loader2 className="animate-spin text-white" size={24} />
+              </div>
+            )}
+          </Avatar>
+          <label className="absolute bottom-0 right-0 bg-brand-blue hover:bg-brand-blue/90 text-white p-2.5 rounded-full cursor-pointer shadow-lg transition-transform hover:scale-110">
+            <Camera size={18} />
+            <input type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={uploading} />
+          </label>
+        </div>
+        <div className="flex-1">
+          <h2 className="font-serif-display text-2xl mb-1">Dados pessoais</h2>
+          <p className="text-sm text-muted-foreground mb-4">Atualize suas informações de contato e foto de perfil.</p>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <Label htmlFor="nome">Nome</Label>
@@ -175,30 +238,42 @@ function TabDados() {
 }
 
 function TabPreferencias() {
-  const [dark, setDark] = useState(() => document.documentElement.classList.contains('dark'));
-  const [notif, setNotif] = useState(() => localStorage.getItem('adai:notifications') !== 'off');
+  const [notif, setNotif] = useState(() => {
+    if (typeof window !== 'undefined' && 'Notification' in window) {
+      return Notification.permission === 'granted';
+    }
+    return localStorage.getItem('adai:notifications') !== 'off';
+  });
 
-  const toggleDark = (v: boolean) => {
-    setDark(v);
-    document.documentElement.classList.toggle('dark', v);
-    localStorage.setItem('adai:theme', v ? 'dark' : 'light');
-  };
-  const toggleNotif = (v: boolean) => {
-    setNotif(v);
-    localStorage.setItem('adai:notifications', v ? 'on' : 'off');
+  const toggleNotif = async (v: boolean) => {
+    if (v) {
+      if (!('Notification' in window)) {
+        toast.error('Seu navegador não suporta notificações.');
+        return;
+      }
+
+      const permission = await Notification.requestPermission();
+      if (permission === 'granted') {
+        setNotif(true);
+        localStorage.setItem('adai:notifications', 'on');
+        toast.success('Notificações ativadas!');
+        new Notification('Convert Club', {
+          body: 'Você agora receberá alertas sobre novos conteúdos.',
+          icon: '/favicon.ico'
+        });
+      } else {
+        toast.error('Você precisa permitir notificações no seu navegador.');
+      }
+    } else {
+      setNotif(false);
+      localStorage.setItem('adai:notifications', 'off');
+    }
   };
 
   return (
     <Card className="p-7 rounded-xl">
       <h2 className="font-serif-display text-xl mb-5">Preferências</h2>
       <div className="space-y-5">
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="text-sm font-medium">Tema escuro</div>
-            <div className="text-xs text-muted-foreground">Use cores escuras para reduzir cansaço visual.</div>
-          </div>
-          <Switch checked={dark} onCheckedChange={toggleDark} />
-        </div>
         <div className="flex items-center justify-between">
           <div>
             <div className="text-sm font-medium">Notificações</div>
@@ -249,20 +324,43 @@ function TabHistorico({
 }
 
 function TabSeguranca({ onLogout }: { onLogout: () => void }) {
+  const { user } = useAuth();
+  const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [loading, setLoading] = useState(false);
 
   const change = async () => {
-    if (newPassword.length < 8) return toast.error('Senha deve ter no mínimo 8 caracteres.');
-    if (newPassword !== confirm) return toast.error('As senhas não coincidem.');
+    if (!oldPassword) return toast.error('Digite sua senha atual.');
+    if (newPassword.length < 8) return toast.error('Nova senha deve ter no mínimo 8 caracteres.');
+    if (newPassword !== confirm) return toast.error('As novas senhas não coincidem.');
+    
     setLoading(true);
-    const { error } = await supabase.auth.updateUser({ password: newPassword });
-    setLoading(false);
-    if (error) toast.error(error.message);
-    else {
+    
+    try {
+      // First verify old password by re-authenticating
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: user?.email || '',
+        password: oldPassword
+      });
+
+      if (signInError) {
+        throw new Error('Senha atual incorreta.');
+      }
+
+      // Then update password
+      const { error: updateError } = await supabase.auth.updateUser({ password: newPassword });
+      
+      if (updateError) throw updateError;
+
       toast.success('Senha alterada com sucesso');
-      setNewPassword(''); setConfirm('');
+      setOldPassword('');
+      setNewPassword(''); 
+      setConfirm('');
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -276,17 +374,23 @@ function TabSeguranca({ onLogout }: { onLogout: () => void }) {
     <div className="space-y-5">
       <Card className="p-7 rounded-xl">
         <h2 className="font-serif-display text-xl mb-5">Trocar senha</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-4">
           <div>
-            <Label htmlFor="np">Nova senha</Label>
-            <Input id="np" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Mínimo 8 caracteres" className="mt-1.5" />
+            <Label htmlFor="op">Senha atual</Label>
+            <Input id="op" type="password" value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} placeholder="Sua senha atual" className="mt-1.5" />
           </div>
-          <div>
-            <Label htmlFor="cp">Confirmar</Label>
-            <Input id="cp" type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder="Repita a nova senha" className="mt-1.5" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="np">Nova senha</Label>
+              <Input id="np" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Mínimo 8 caracteres" className="mt-1.5" />
+            </div>
+            <div>
+              <Label htmlFor="cp">Confirmar nova senha</Label>
+              <Input id="cp" type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder="Repita a nova senha" className="mt-1.5" />
+            </div>
           </div>
         </div>
-        <Button onClick={change} disabled={loading} className="mt-5 bg-brand-blue hover:bg-brand-blue/90 text-primary-foreground gap-2">
+        <Button onClick={change} disabled={loading} className="mt-6 bg-brand-blue hover:bg-brand-blue/90 text-primary-foreground gap-2">
           {loading && <Loader2 size={14} className="animate-spin" />} Alterar senha
         </Button>
       </Card>
@@ -312,6 +416,7 @@ function TabConvites() {
   const [invites, setInvites] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [initializing, setInitializing] = useState(false);
+  const [generating, setGenerating] = useState(false);
   const [visibleCodes, setVisibleCodes] = useState<Record<string, boolean>>({});
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
@@ -323,7 +428,7 @@ function TabConvites() {
         .from('invite_codes')
         .select('*')
         .eq('owner_id', user.id)
-        .order('created_at', { ascending: true });
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
       setInvites(data || []);
@@ -332,6 +437,27 @@ function TabConvites() {
       toast.error('Não foi possível carregar seus convites.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const generateNewInvite = async () => {
+    if (!isAdmin || !user) return;
+    setGenerating(true);
+    try {
+      const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+      const { error } = await supabase.from('invite_codes').insert({
+        owner_id: user.id,
+        code: code,
+        is_used: false
+      });
+
+      if (error) throw error;
+      toast.success('Novo convite gerado!');
+      fetchInvites();
+    } catch (error: any) {
+      toast.error('Erro ao gerar convite: ' + error.message);
+    } finally {
+      setGenerating(false);
     }
   };
 
@@ -387,7 +513,9 @@ function TabConvites() {
         <header className="mb-6">
           <h2 className="font-serif-display text-xl">Meus Convites</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Você tem direito a 3 convites. Use-os com sabedoria para trazer novos membros para o Convert Club.
+            {isAdmin 
+              ? "Como administrador, você pode gerar convites ilimitados para novos membros."
+              : "Você tem direito a 3 convites. Use-os com sabedoria para trazer novos membros para o Convert Club."}
           </p>
         </header>
 
@@ -454,12 +582,109 @@ function TabConvites() {
           </div>
         )}
 
-        {allUsed && (
-          <div className="mt-6 p-4 bg-yellow-50 border border-yellow-100 rounded-lg text-yellow-800 text-sm flex gap-3">
-            <ShieldCheck className="w-5 h-5 flex-shrink-0" />
-            <p>Você já utilizou todos os seus convites disponíveis. Não é possível gerar novos códigos.</p>
+        {(allUsed || isAdmin) && (
+          <div className="mt-6 flex flex-col gap-4">
+            {allUsed && !isAdmin && (
+              <div className="p-4 bg-yellow-50 border border-yellow-100 rounded-lg text-yellow-800 text-sm flex gap-3">
+                <ShieldCheck className="w-5 h-5 flex-shrink-0" />
+                <p>Você já utilizou todos os seus convites disponíveis. Não é possível gerar novos códigos.</p>
+              </div>
+            )}
+            {isAdmin && (
+              <Button onClick={generateNewInvite} disabled={generating} className="bg-brand-blue hover:bg-brand-blue/90 gap-2 self-start">
+                {generating ? <Loader2 size={16} className="animate-spin" /> : <Ticket size={16} />}
+                Gerar novo convite ilimitado
+              </Button>
+            )}
           </div>
         )}
+      </Card>
+    </div>
+  );
+}
+
+function TabPlanos() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const plans = [
+    {
+      name: 'Elite',
+      description: 'Acesso às ferramentas essenciais do Convert Club.',
+      badge: 'bg-gradient-to-r from-brand-amber to-brand-amber/80 text-white',
+      link: '/pro',
+      cta: 'Ver detalhes'
+    },
+    {
+      name: 'Elite Plus',
+      description: 'Ferramentas avançadas e limites ampliados.',
+      badge: 'bg-gradient-to-r from-brand-blue to-brand-teal text-white',
+      link: '/pro',
+      cta: 'Ver detalhes'
+    },
+    {
+      name: 'Max',
+      description: 'Cargo exclusivo para mentorados. Acompanhamento direto e estratégico.',
+      badge: 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white',
+      link: 'https://kayosa.com.br',
+      cta: 'Conhecer Mentoria',
+      external: true
+    }
+  ];
+
+  return (
+    <div className="space-y-6">
+      <Card className="p-7 rounded-xl">
+        <h2 className="font-serif-display text-xl mb-1">Categorias de Planos</h2>
+        <p className="text-sm text-muted-foreground mb-6">Conheça os níveis de acesso disponíveis no Convert Club.</p>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {plans.map((p) => (
+            <div key={p.name} className="flex flex-col border border-border rounded-xl p-5 hover:border-brand-blue/30 transition-colors">
+              <div className="flex justify-between items-start mb-4">
+                <h3 className="font-bold text-lg">{p.name}</h3>
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${p.badge}`}>
+                  PLANO
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground mb-6 flex-1">{p.description}</p>
+              
+              {p.external ? (
+                <a 
+                  href={p.link} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg bg-secondary text-secondary-foreground hover:bg-secondary/80 text-xs font-medium transition-colors"
+                >
+                  {p.cta} <ExternalLink size={14} />
+                </a>
+              ) : (
+                <Button 
+                  onClick={() => navigate(p.link)} 
+                  variant="secondary" 
+                  size="sm" 
+                  className="w-full text-xs"
+                >
+                  {p.cta}
+                </Button>
+              )}
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      <Card className="p-7 rounded-xl bg-brand-blue/[0.03] border-brand-blue/10">
+        <h3 className="font-medium text-sm mb-2">Seu plano atual</h3>
+        <div className="flex items-center gap-3">
+          <span className={`inline-block text-xs font-semibold px-3 py-1 rounded-full ${planBadgeClass(user?.plano)}`}>
+            {planLabel(user?.plano)}
+          </span>
+          <p className="text-xs text-muted-foreground">
+            {user?.plano === 'Free' 
+              ? 'Você está no plano gratuito. Faça upgrade para desbloquear todo o potencial.' 
+              : 'Você já possui um acesso premium ativo.'}
+          </p>
+        </div>
       </Card>
     </div>
   );

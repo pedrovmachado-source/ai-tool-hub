@@ -9,6 +9,7 @@ interface Profile {
   plano: 'Free' | 'Elite' | 'Elite Plus' | 'Max';
   telefone?: string;
   empresa?: string;
+  avatarUrl?: string;
   inviteValidated: boolean;
   abuseBlocked: boolean;
 }
@@ -27,6 +28,7 @@ interface ProfileRecord {
   plano: string;
   telefone: string | null;
   empresa: string | null;
+  avatar_url: string | null;
   invite_validated: boolean;
   abuse_blocked: boolean;
 }
@@ -40,7 +42,7 @@ interface AuthContextType {
   register: (nome: string, email: string, password: string) => Promise<string | null>;
   logout: () => Promise<void>;
   upgradeToPro: () => Promise<void>;
-  updateUser: (data: Partial<Profile>) => Promise<void>;
+  updateUser: (data: Partial<Omit<Profile, 'inviteValidated' | 'abuseBlocked'>>) => Promise<void>;
   saveEbook: (toolKey: string, toolName: string, categoryKey: string) => Promise<void>;
   unsaveEbook: (toolKey: string) => Promise<void>;
   isEbookSaved: (toolKey: string) => boolean;
@@ -63,6 +65,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     plano: (profile?.plano === 'Max' || profile?.plano === 'Mentorado') ? 'Max' : (profile?.plano === 'Elite Plus' || profile?.plano === 'Max') ? 'Elite Plus' : (profile?.plano === 'Elite' || profile?.plano === 'Pro') ? 'Elite' : 'Free',
     telefone: profile?.telefone || undefined,
     empresa: profile?.empresa || undefined,
+    avatarUrl: (profile as ProfileRecord)?.avatar_url || (profile as Profile)?.avatarUrl || undefined,
     inviteValidated: (profile as ProfileRecord)?.invite_validated ?? (profile as Profile)?.inviteValidated ?? false,
     abuseBlocked: (profile as ProfileRecord)?.abuse_blocked ?? (profile as Profile)?.abuseBlocked ?? false,
   }), []);
@@ -95,7 +98,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return !!(fallbackData as { isAdmin?: boolean } | null)?.isAdmin;
   }, []);
 
-  const fetchProfile = useCallback(async (supaUser: SupaUser) => {
+  const fetchProfile = useCallback(async (supaUser: SupaUser): Promise<ProfileRecord | null> => {
     const { data, error } = await supabase
       .from('profiles')
       .select('*')
@@ -130,20 +133,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throw fallbackError;
       }
 
-      if (fallbackData) {
-        return {
-          nome: fallbackData.nome,
-          sobre: fallbackData.sobre,
-          email: fallbackData.email,
-          plano: fallbackData.plano,
-          telefone: fallbackData.telefone,
-          empresa: fallbackData.empresa,
-          invite_validated: fallbackData.invite_validated,
-          abuse_blocked: fallbackData.abuse_blocked,
-        } satisfies ProfileRecord;
-      }
-
-      throw insertError;
+      return fallbackData || null;
     }
 
     const { data: createdData, error: createdError } = await supabase
@@ -156,18 +146,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       throw createdError;
     }
 
-    return createdData
-      ? {
-          nome: createdData.nome,
-          sobre: createdData.sobre,
-          email: createdData.email,
-          plano: createdData.plano,
-          telefone: createdData.telefone,
-          empresa: createdData.empresa,
-          invite_validated: createdData.invite_validated,
-          abuse_blocked: createdData.abuse_blocked,
-        } satisfies ProfileRecord
-      : null;
+    return createdData || null;
   }, []);
 
   const fetchSavedEbooks = useCallback(async (userId: string) => {
@@ -250,8 +229,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       // Fix for Google Login infinite loading / redirect
       if (event === 'SIGNED_IN') {
-        // Redireciona para /menu após o login bem-sucedido
-        // Usamos window.location para garantir que qualquer estado de popup seja limpo
         if (window.location.pathname === '/' || window.location.pathname === '') {
           window.location.href = '/menu';
         }
@@ -316,8 +293,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const upgradeToPro = useCallback(async () => {
-    // Now handled by Stripe checkout + check-subscription sync
-    // This manually syncs by calling check-subscription
     if (!user) return;
     try {
       const { data, error } = await supabase.functions.invoke('check-subscription');
@@ -331,7 +306,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const updateUser = useCallback(async (data: Partial<Omit<Profile, 'inviteValidated' | 'abuseBlocked'>>) => {
     if (!user) return;
-    const { error } = await supabase.from('profiles').update(data).eq('user_id', user.id);
+    
+    // Map camelCase to snake_case for Supabase
+    const updateData: any = { ...data };
+    if (data.avatarUrl !== undefined) {
+      updateData.avatar_url = data.avatarUrl;
+      delete updateData.avatarUrl;
+    }
+
+    const { error } = await supabase.from('profiles').update(updateData).eq('user_id', user.id);
     if (!error) {
       setUser(prev => prev ? { ...prev, ...data } : null);
     }
