@@ -675,8 +675,8 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
           ))}
         </div>
         <div className="px-3 pb-4 space-y-1">
-          <button onClick={onBack} className="w-full flex items-center gap-2.5 px-3 py-2.5 text-[13px] text-brand-blue-medium rounded-lg hover:bg-primary-foreground/5"><ArrowLeft size={15} /> Voltar ao site</button>
-          <button onClick={onBack} className="w-full flex items-center gap-2.5 px-3 py-2.5 text-[13px] text-brand-red/60 rounded-lg hover:bg-primary-foreground/5"><LogOut size={15} /> Sair</button>
+          <button onClick={onBack} className="w-full flex items-center gap-2.5 px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-white/50 rounded-xl hover:bg-white/5 transition-colors"><ArrowLeft size={14} /> Voltar ao site</button>
+          <button onClick={onBack} className="w-full flex items-center gap-2.5 px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-red-500/60 rounded-xl hover:bg-white/5 transition-colors"><LogOut size={14} /> Sair</button>
         </div>
       </div>
 
