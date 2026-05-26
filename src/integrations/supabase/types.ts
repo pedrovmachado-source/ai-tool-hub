@@ -790,6 +790,10 @@ export type Database = {
           url_label: string
         }[]
       }
+      regenerate_invite_code: {
+        Args: { target_invite_id: string }
+        Returns: Json
+      }
       remove_abuse_block: {
         Args: { target_fingerprint: string; target_user_id: string }
         Returns: Json

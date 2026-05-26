@@ -426,7 +426,7 @@ function TabConvites() {
   const [invites, setInvites] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [initializing, setInitializing] = useState(false);
-  const [generating, setGenerating] = useState(false);
+  const [regenerating, setRegenerating] = useState<string | null>(null);
   const [visibleCodes, setVisibleCodes] = useState<Record<string, boolean>>({});
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
@@ -450,24 +450,27 @@ function TabConvites() {
     }
   };
 
-  const generateNewInvite = async () => {
-    if (!isAdmin || !user) return;
-    setGenerating(true);
+  const handleRegenerateInvite = async (inviteId: string) => {
+    if (!isAdmin) return;
+    setRegenerating(inviteId);
     try {
-      const code = Math.random().toString(36).substring(2, 8).toUpperCase();
-      const { error } = await supabase.from('invite_codes').insert({
-        owner_id: user.id,
-        code: code,
-        is_used: false
+      const { data, error } = await supabase.rpc('regenerate_invite_code', {
+        target_invite_id: inviteId
       });
 
       if (error) throw error;
-      toast.success('Novo convite gerado!');
-      fetchInvites();
+      
+      const result = data as { success: boolean; message: string };
+      if (result.success) {
+        toast.success(result.message);
+        fetchInvites();
+      } else {
+        toast.error(result.message);
+      }
     } catch (error: any) {
-      toast.error('Erro ao gerar convite: ' + error.message);
+      toast.error('Erro ao substituir convite: ' + error.message);
     } finally {
-      setGenerating(false);
+      setRegenerating(null);
     }
   };
 
@@ -524,7 +527,7 @@ function TabConvites() {
           <h2 className="font-serif-display text-xl">Meus Convites</h2>
           <p className="text-sm text-muted-foreground mt-1">
             {isAdmin 
-              ? "Como administrador, você pode gerar convites ilimitados para novos membros."
+              ? "Como administrador, você pode substituir convites existentes por novos códigos."
               : "Você tem direito a 3 convites. Use-os com sabedoria para trazer novos membros para o Convert Club."}
           </p>
         </header>
@@ -582,8 +585,27 @@ function TabConvites() {
                   )}
                 </div>
 
+                {isAdmin && (
+                  <div className="mt-4 pt-4 border-t border-border/50">
+                    <Button 
+                      onClick={() => handleRegenerateInvite(invite.id)}
+                      disabled={regenerating === invite.id}
+                      variant="ghost" 
+                      size="sm"
+                      className="w-full text-[10px] h-8 gap-2 hover:bg-brand-blue/10 hover:text-brand-blue"
+                    >
+                      {regenerating === invite.id ? (
+                        <Loader2 size={12} className="animate-spin" />
+                      ) : (
+                        <History size={12} />
+                      )}
+                      Substituir código
+                    </Button>
+                  </div>
+                )}
+
                 {invite.is_used && (
-                  <div className="mt-4 pt-4 border-t border-border/50 text-[10px] text-muted-foreground space-y-1">
+                  <div className="mt-2 text-[10px] text-muted-foreground space-y-1">
                     <p>Utilizado em: {new Date(invite.used_at).toLocaleDateString('pt-BR')}</p>
                   </div>
                 )}
@@ -592,20 +614,10 @@ function TabConvites() {
           </div>
         )}
 
-        {(allUsed || isAdmin) && (
-          <div className="mt-6 flex flex-col gap-4">
-            {allUsed && !isAdmin && (
-              <div className="p-4 bg-yellow-50 border border-yellow-100 rounded-lg text-yellow-800 text-sm flex gap-3">
-                <ShieldCheck className="w-5 h-5 flex-shrink-0" />
-                <p>Você já utilizou todos os seus convites disponíveis. Não é possível gerar novos códigos.</p>
-              </div>
-            )}
-            {isAdmin && (
-              <Button onClick={generateNewInvite} disabled={generating} className="bg-brand-blue hover:bg-brand-blue/90 gap-2 self-start">
-                {generating ? <Loader2 size={16} className="animate-spin" /> : <Ticket size={16} />}
-                Gerar novo convite ilimitado
-              </Button>
-            )}
+        {allUsed && !isAdmin && (
+          <div className="mt-6 p-4 bg-yellow-50 border border-yellow-100 rounded-lg text-yellow-800 text-sm flex gap-3">
+            <ShieldCheck className="w-5 h-5 flex-shrink-0" />
+            <p>Você já utilizou todos os seus convites disponíveis. Não é possível gerar novos códigos.</p>
           </div>
         )}
       </Card>
