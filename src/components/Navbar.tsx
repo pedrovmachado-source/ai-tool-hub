@@ -111,12 +111,12 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
               <button onClick={() => onNavigate('profile')} className="flex items-center gap-1.5 sm:gap-2 bg-white/15 hover:bg-white/25 pl-1 sm:pl-1.5 pr-2 sm:pr-3 py-1 rounded-full transition-colors max-w-[140px] sm:max-w-none">
                 <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-navy flex items-center justify-center text-[11px] font-medium text-white shrink-0 overflow-hidden border border-white/10">
                   {user.avatarUrl ? (
-                    <img src={user.avatarUrl} alt={user.nome} className="w-full h-full object-cover" />
+                    <img src={user.avatarUrl} alt={`${user.nome} ${user.sobrenome || ''}`} className="w-full h-full object-cover" />
                   ) : (
-                    user.nome[0]
+                    user.nome?.[0] || '?'
                   )}
                 </div>
-                <span className="text-[12px] sm:text-[13px] text-white truncate hidden xs:inline sm:inline">{user.nome}</span>
+                <span className="text-[12px] sm:text-[13px] text-white truncate hidden xs:inline sm:inline">{user.nome} {user.sobrenome}</span>
                 <span className={`text-[9px] sm:text-[10px] font-medium px-1.5 sm:px-2 py-0.5 rounded-full shrink-0 ${planBadgeClass(user.plano)}`}>{planLabel(user.plano)}</span>
               </button>
             </>
