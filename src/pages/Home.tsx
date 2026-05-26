@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
 import MentoriaModal from '@/components/MentoriaModal';
+import AuthModal from '@/components/AuthModal';
 import { isMentorado } from '@/lib/plan';
 
 import hoteducaRef from '@/assets/hoteduca-ref.png';
@@ -30,6 +31,7 @@ export default function Home() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [mentoriaModalOpen, setMentoriaModalOpen] = useState(false);
+  const [authModal, setAuthModal] = useState<{ open: boolean; mode: 'login' | 'register' }>({ open: false, mode: 'login' });
 
   const openEmbeddedPage = (page: string) => {
     if (page === 'alunos' || page === 'lessons') {
@@ -48,6 +50,12 @@ export default function Home() {
     navigate('/ferramentas');
   };
 
+
+  useEffect(() => {
+    if (user) {
+      navigate('/menu');
+    }
+  }, [user, navigate]);
 
   useEffect(() => {
     document.title = 'Convert Club — Comunidade de Alta Conversão';
@@ -177,7 +185,10 @@ export default function Home() {
           <Reveal delay={600} className="flex flex-col sm:flex-row items-center justify-center gap-6">
             <Button 
               size="lg" 
-              onClick={() => navigate('/menu')}
+              onClick={() => {
+                if (user) navigate('/menu');
+                else setAuthModal({ open: true, mode: 'login' });
+              }}
               className="w-full sm:w-auto bg-white hover:bg-white/90 text-black h-16 px-12 rounded-full text-lg font-bold transition-all hover:scale-[1.05] shadow-[0_0_40px_rgba(255,255,255,0.2)]"
             >
               Entrar na Comunidade
@@ -357,7 +368,10 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
               <Button 
                 size="lg" 
-                onClick={() => navigate('/menu')}
+                onClick={() => {
+                  if (user) navigate('/menu');
+                  else setAuthModal({ open: true, mode: 'login' });
+                }}
                 className="w-full sm:w-auto bg-white hover:bg-white/90 text-black h-20 px-16 rounded-full text-xl font-bold transition-all hover:scale-105"
               >
                 Acessar Agora
