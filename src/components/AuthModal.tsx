@@ -45,12 +45,13 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch, onRegistere
   };
 
   const handleRegister = async () => {
-    if (!nome || !email || !password || !confirmPassword) { setError('Preencha todos os campos.'); return; }
+    if (!nome || !sobrenome || !email || !password || !confirmPassword) { setError('Preencha todos os campos.'); return; }
+    if (!lgpdAccepted) { setError('Você deve aceitar os termos da LGPD para continuar.'); return; }
     if (password.length < 8) { setError('Senha deve ter no mínimo 8 caracteres.'); return; }
     if (password !== confirmPassword) { setError('As senhas não coincidem. Verifique e tente novamente.'); return; }
     setSubmitting(true);
     setError('');
-    const err = await register(nome, email, password);
+    const err = await register(nome, sobrenome, email, password, lgpdAccepted);
     setSubmitting(false);
     if (err) {
       setError(err);
