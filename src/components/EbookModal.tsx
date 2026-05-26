@@ -98,11 +98,13 @@ export default function EbookModal({ tool, category, isOpen, onClose }: EbookMod
   if (!canAccess) {
     return (
       <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4" style={{ background: 'rgba(10,10,30,0.65)' }} onClick={onClose}>
-        <div className="bg-card rounded-2xl w-full max-w-[400px] p-8 text-center animate-slide-up" onClick={e => e.stopPropagation()}>
-          <div className="text-4xl mb-4">🔒</div>
-          <h2 className="text-lg font-semibold mb-2">Conteúdo exclusivo</h2>
-          <p className="text-sm text-muted-foreground mb-6">Assine um plano Pro ou Max para acessar os e-books completos, prompts avançados e guias passo a passo.</p>
-          <button onClick={onClose} className="px-6 py-2 rounded-lg text-sm font-medium bg-secondary text-foreground hover:bg-secondary/80 transition-colors">Fechar</button>
+        <div className="bg-[#050505] border border-white/10 rounded-[2rem] w-full max-w-[400px] p-8 text-center animate-slide-up" onClick={e => e.stopPropagation()}>
+          <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-white/10 overflow-hidden">
+            <img src="/src/assets/logo.png" alt="Logo" className="w-10 h-10 object-contain" />
+          </div>
+          <h2 className="text-xl font-serif-display text-white mb-2">Conteúdo exclusivo</h2>
+          <p className="text-sm text-white/50 mb-6 font-light">Assine um plano <strong>Elite</strong>, <strong>Elite Plus</strong> ou <strong>Max</strong> para acessar os e-books completos, prompts avançados e guias passo a passo.</p>
+          <button onClick={onClose} className="w-full py-2.5 rounded-xl text-sm font-bold bg-white text-black hover:bg-white/90 transition-colors uppercase tracking-widest">Fechar</button>
         </div>
       </div>
     );
