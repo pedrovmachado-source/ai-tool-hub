@@ -61,21 +61,16 @@ export default function PromptsLibrary({ category }: { category?: Category }) {
     if (allPrompts.length === 0) return null;
 
     return (
-      <div className="glass-smooth border border-white/5 rounded-[3rem] p-8 sm:p-12 mt-12 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
-        
-        <div className="relative z-10 mb-10">
-          <h3 className="text-3xl font-serif-display text-white mb-2 tracking-tight">Arsenal de Prompts</h3>
-          <p className="text-sm text-white/30 font-light uppercase tracking-widest">Modelos prontos para acelerar seu fluxo</p>
-        </div>
-
-        <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="bg-card border border-border rounded-xl p-7 mt-7">
+        <h3 className="text-base font-medium mb-1">✍️ Prompts prontos para esta categoria</h3>
+        <p className="text-[13px] text-muted-foreground mb-5">Copie, adapte e use nos seus projetos</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {allPrompts.map((pr, i) => (
-            <div key={i} className="glass-smooth border border-white/5 rounded-2xl p-6 group/prompt hover:bg-white/[0.02] transition-colors">
-              <div className="text-[9px] font-bold text-white/20 uppercase tracking-[0.2em] mb-3">{pr.label}</div>
-              <p className="text-sm text-white/60 font-light leading-relaxed italic mb-6">"{pr.text}"</p>
-              <button onClick={() => copyPrompt(pr.text, i)} className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-white/30 hover:text-white transition-all">
-                {copiedIdx === i ? <><Check size={14} className="text-green-500" /> Copiado!</> : <><Copy size={14} /> Copiar prompt</>}
+            <div key={i} className="bg-secondary rounded-lg p-4" style={{ borderLeft: `3px solid ${category.accent}` }}>
+              <div className="text-[10px] font-medium uppercase tracking-wider mb-1.5" style={{ color: category.accent }}>{pr.label}</div>
+              <p className="text-xs text-muted-foreground leading-relaxed italic">{pr.text}</p>
+              <button onClick={() => copyPrompt(pr.text, i)} className="flex items-center gap-1 mt-2 text-[11.5px] font-medium" style={{ color: category.accent }}>
+                {copiedIdx === i ? <><Check size={12} /> Copiado!</> : <><Copy size={12} /> Copiar prompt</>}
               </button>
             </div>
           ))}
@@ -86,47 +81,46 @@ export default function PromptsLibrary({ category }: { category?: Category }) {
 
   // Full prompts library page
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12">
-      <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
+    <div className="max-w-[1100px] mx-auto px-6 py-8">
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-5xl font-serif-display text-white mb-4">Biblioteca Global</h2>
-          <p className="text-sm text-white/40 font-light uppercase tracking-[0.2em]">+200 prompts exclusivos para membros</p>
+          <h2 className="font-serif-display text-2xl">Biblioteca de Prompts</h2>
+          <p className="text-sm text-muted-foreground mt-1">+200 prompts prontos para copiar e usar</p>
         </div>
         <button
           onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
-          className={`px-8 py-4 rounded-2xl text-[10px] font-bold uppercase tracking-widest border transition-all ${showFavoritesOnly ? 'bg-white text-black border-white shadow-lg' : 'bg-white/5 text-white/40 border-white/10 hover:border-white/30 hover:text-white'}`}
+          className={`px-4 py-1.5 rounded-full text-xs font-medium border transition-colors ${showFavoritesOnly ? 'bg-brand-red text-primary-foreground border-brand-red' : 'border-border text-muted-foreground hover:border-brand-red'}`}
         >
-          <Heart size={14} className={`inline mr-2 ${showFavoritesOnly ? 'fill-black' : ''}`} /> Favoritos ({favorites.length})
+          <Heart size={12} className="inline mr-1" /> Favoritos ({favorites.length})
         </button>
       </div>
 
       {!showFavoritesOnly && (
-        <div className="flex gap-3 mb-12 overflow-x-auto no-scrollbar pb-2">
+        <div className="flex gap-2 mb-6 flex-wrap">
           {PROMPT_CATEGORIES.map(c => (
-            <button key={c.key} onClick={() => setActivePromptCat(c.key)} className={`px-6 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest border whitespace-nowrap transition-all ${activePromptCat === c.key ? 'bg-white text-black border-white shadow-md' : 'bg-white/5 text-white/30 border-white/5 hover:border-white/20 hover:text-white'}`}>
+            <button key={c.key} onClick={() => setActivePromptCat(c.key)} className={`px-4 py-2 rounded-full text-xs font-medium border transition-colors ${activePromptCat === c.key ? 'bg-brand-blue text-primary-foreground border-brand-blue' : 'border-border text-muted-foreground hover:border-brand-blue'}`}>
               {c.icon} {c.label}
             </button>
           ))}
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {filtered.map((pr, i) => (
-          <div key={i} className="glass-smooth border border-white/5 rounded-[2rem] p-8 group hover:bg-white/[0.02] transition-colors relative">
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em]">{pr.label}</span>
-              <button onClick={() => toggleFavorite(pr.label)} className="p-2 rounded-full hover:bg-white/5 transition-colors">
-                <Heart size={16} className={favorites.includes(pr.label) ? 'fill-red-500 text-red-500' : 'text-white/10'} />
+          <div key={i} className="bg-card border border-border rounded-xl p-5">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-medium text-brand-blue uppercase tracking-wider">{pr.label}</span>
+              <button onClick={() => toggleFavorite(pr.label)}>
+                <Heart size={14} className={favorites.includes(pr.label) ? 'fill-brand-red text-brand-red' : 'text-muted-foreground'} />
               </button>
             </div>
-            <p className="text-base text-white/50 font-light leading-relaxed italic mb-8">"{pr.text}"</p>
-            <button onClick={() => copyPrompt(pr.text, i)} className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-white/30 hover:text-white transition-all">
-              {copiedIdx === i ? <><Check size={16} className="text-green-500" /> Copiado!</> : <><Copy size={16} /> Copiar prompt</>}
+            <p className="text-[13px] text-muted-foreground leading-relaxed italic mb-3">{pr.text}</p>
+            <button onClick={() => copyPrompt(pr.text, i)} className="flex items-center gap-1 text-xs font-medium text-brand-blue hover:underline">
+              {copiedIdx === i ? <><Check size={12} /> Copiado!</> : <><Copy size={12} /> Copiar prompt</>}
             </button>
           </div>
         ))}
       </div>
     </div>
-
   );
 }

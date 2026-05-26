@@ -12,9 +12,10 @@ import LessonsPage from '@/components/LessonsPage';
 import ContentSectionPage from '@/components/ContentSectionPage';
 import SiteCreationPage from '@/components/SiteCreationPage';
 import PromptsLibrary from '@/components/PromptsLibrary';
+import UserProfile from '@/components/UserProfile';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import { Search, Lock, ArrowRight, Sparkles } from 'lucide-react';
+import { Search, Lock } from 'lucide-react';
 import type { Tool, Category } from '@/data/tools-data';
 
 export default function Index() {
@@ -105,8 +106,8 @@ export default function Index() {
   if (page === 'admin') {
     if (verifyingAdmin || serverAdminVerified === null) {
       return (
-        <div className="flex items-center justify-center min-h-screen bg-black">
-          <div className="text-white/40 font-bold uppercase tracking-widest text-[10px]">Verificando permissões…</div>
+        <div className="flex items-center justify-center min-h-screen bg-background">
+          <div className="text-muted-foreground">Verificando permissões…</div>
         </div>
       );
     }
@@ -126,21 +127,21 @@ export default function Index() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-black">
-        <div className="text-white/40 font-bold uppercase tracking-widest text-[10px] animate-pulse">Carregando...</div>
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <div className="text-muted-foreground">Carregando...</div>
       </div>
     );
   }
 
   if (error && categories.length === 0) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black px-6">
+      <div className="flex min-h-screen items-center justify-center bg-background px-6">
         <div className="max-w-md text-center">
-          <h1 className="font-serif-display text-4xl text-white mb-4">Falha de Conexão</h1>
-          <p className="text-sm text-white/40 mb-8 font-light">{error}</p>
+          <h1 className="font-serif-display text-3xl text-foreground mb-3">Não foi possível carregar o site</h1>
+          <p className="text-sm text-muted-foreground mb-5">{error}</p>
           <button
             onClick={() => void fetchCategories()}
-            className="h-14 px-10 rounded-full bg-white text-black font-bold uppercase tracking-widest text-xs transition-all hover:scale-[1.05]"
+            className="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
           >
             Tentar novamente
           </button>
@@ -150,7 +151,7 @@ export default function Index() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-black text-white selection:bg-white/20 font-sans">
+    <div className="flex flex-col min-h-screen">
       <Navbar onNavigate={handleNavigate} onOpenSavedEbook={(toolKey, categoryKey) => {
         const cat = categories.find(c => c.key === categoryKey);
         const tool = cat?.tools.find(t => t.key === toolKey);
@@ -158,99 +159,79 @@ export default function Index() {
       }} />
 
       {/* Hero */}
-      <div className="relative pt-20 pb-16 sm:pt-24 sm:pb-24 px-6 text-center overflow-hidden">
-        {/* Glass Orbs */}
-        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-white/5 blur-[140px]" />
-          <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] rounded-full bg-white/5 blur-[140px]" />
+      <div className="bg-navy py-10 sm:py-14 px-4 sm:px-8 text-center">
+        <div className="inline-flex items-center gap-2 bg-brand-blue/15 border border-brand-blue/30 text-brand-blue-medium text-[10px] sm:text-xs px-3 sm:px-4 py-1 sm:py-1.5 rounded-full mb-4 sm:mb-5">
+          ✨ Curadoria atualizada em 2026
+        </div>
+        <h1 className="font-serif-display text-2xl sm:text-3xl md:text-4xl leading-tight text-primary-foreground tracking-tight mb-3">
+          Descubra as melhores <em className="text-brand-blue-medium italic">IAs</em> para<br className="hidden sm:inline" /> turbinar seu negócio
+        </h1>
+        <p className="text-[13px] sm:text-[15px] text-muted-foreground/60 max-w-[520px] mx-auto leading-relaxed">
+          Guia completo com as ferramentas de inteligência artificial mais poderosas para empreendedores. Com e-books, prompts prontos e passo a passo.
+        </p>
+
+        {/* Search */}
+        <div className="max-w-md mx-auto mt-5 sm:mt-6 relative">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <input
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            placeholder="Buscar ferramentas de IA..."
+            className="w-full pl-10 pr-4 py-2.5 rounded-lg text-sm bg-primary-foreground/10 text-primary-foreground placeholder:text-muted-foreground/40 border border-primary-foreground/10 focus:outline-none focus:border-brand-blue"
+          />
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-smooth mb-10 border border-white/5">
-            <Sparkles className="w-3 h-3 text-white/50" />
-            <span className="text-[10px] font-bold text-white/70 tracking-[0.2em] uppercase">Curadoria Elite 2026</span>
-          </div>
-          
-          <h1 className="text-5xl sm:text-7xl font-serif-display text-white tracking-tighter leading-[0.9] mb-8">
-            Arsenal de <em className="italic font-normal">Inteligência</em>.
-          </h1>
-          
-          <p className="max-w-2xl mx-auto text-lg text-white/40 leading-relaxed mb-12 font-light">
-            O guia definitivo com as ferramentas de IA mais poderosas para infoprodutores que buscam domínio absoluto e escala brutal.
-          </p>
-
-          {/* Search */}
-          <div className="max-w-2xl mx-auto relative group">
-            <div className="absolute -inset-1 bg-gradient-to-r from-white/10 to-white/5 rounded-[2rem] blur opacity-25 group-focus-within:opacity-50 transition duration-1000" />
-            <div className="relative flex items-center bg-black/40 backdrop-blur-xl border border-white/10 rounded-[2rem] overflow-hidden">
-              <Search size={20} className="absolute left-6 text-white/20" />
-              <input
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                placeholder="Buscar no ecossistema..."
-                className="w-full pl-16 pr-8 py-5 bg-transparent text-white placeholder:text-white/20 focus:outline-none text-lg font-light"
-              />
-            </div>
-          </div>
-
-          {/* Filters & Pro CTA */}
-          <div className="flex flex-col items-center gap-6 mt-10">
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              <button
-                onClick={() => setFreeOnly(v => !v)}
-                className={`inline-flex items-center gap-2 px-6 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest border transition-all ${
-                  freeOnly
-                    ? 'bg-white text-black border-white shadow-[0_0_20px_rgba(255,255,255,0.2)]'
-                    : 'bg-white/5 text-white/40 border-white/5 hover:border-white/20 hover:text-white'
-                }`}
-              >
-                {freeOnly ? '✓ Somente Gratuitas' : 'Filtrar Gratuitas'}
-              </button>
-
-              {(!user || user.plano !== 'Pro') && (
-                <button
-                  onClick={() => setPage('pro')}
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-brand-amber text-white text-[10px] font-bold uppercase tracking-widest hover:opacity-90 transition-all shadow-[0_0_20px_rgba(245,158,11,0.2)]"
-                >
-                  ⚡ Seja Pro · R${plan.price}
-                </button>
-              )}
-            </div>
-
-            {(!user || user.plano !== 'Pro') && (
-              <div className="flex items-center gap-2 text-[10px] font-bold text-white/20 uppercase tracking-[0.2em]">
-                <Lock size={12} className="shrink-0" /> E-books exclusivos para assinantes
-              </div>
-            )}
-          </div>
+        {/* Free filter toggle */}
+        <div className="flex items-center justify-center gap-2 mt-4">
+          <button
+            onClick={() => setFreeOnly(v => !v)}
+            className={`inline-flex items-center gap-1.5 text-[11px] sm:text-xs px-3 sm:px-3.5 py-1.5 rounded-full border transition-all ${
+              freeOnly
+                ? 'bg-brand-green text-primary-foreground border-brand-green shadow-brand-sm'
+                : 'bg-primary-foreground/5 text-muted-foreground border-primary-foreground/15 hover:border-brand-green/50 hover:text-brand-green'
+            }`}
+          >
+            🆓 {freeOnly ? 'Mostrando só IAs 100% gratuitas' : 'Filtrar IAs 100% gratuitas'}
+          </button>
         </div>
+
+        {(!user || user.plano !== 'Pro') && (
+          <div className="flex flex-col items-center gap-3 mt-5">
+            <div className="flex items-center justify-center gap-2 text-[12px] sm:text-[13px] text-muted-foreground/40 text-center px-2">
+              <Lock size={14} className="shrink-0" /> E-books completos exclusivos para assinantes Pro
+            </div>
+            <button
+              onClick={() => setPage('pro')}
+              className="inline-flex items-center gap-2 text-xs px-4 py-2 rounded-full bg-brand-amber/10 border border-brand-amber/25 text-brand-amber hover:bg-brand-amber/20 transition-all"
+            >
+              ⚡ Seja Pro · R${plan.price} {plan.period === 'vitalicio' ? '(acesso vitalício)' : ''}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Tabs */}
       {!searchQuery && <CategoryTabs activeCategory={activeCategory} onSelect={setActiveCategory} categories={categories} />}
 
       {/* Content */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-6 py-12 relative z-10">
+      <div className="max-w-[1100px] mx-auto px-4 sm:px-6 py-6 sm:py-8 flex-1 w-full">
         {/* Intro Panel */}
         {!searchQuery && category && (
-          <div className="glass-smooth border border-white/5 rounded-[3rem] p-8 sm:p-12 mb-12 flex flex-col lg:flex-row justify-between gap-12 relative overflow-hidden group">
-            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
-            
-            <div className="relative z-10 max-w-2xl">
-              <h2 className="text-4xl font-serif-display text-white mb-6 leading-tight">{category.introTitle}</h2>
-              <p className="text-white/40 text-base font-light leading-relaxed mb-8">{category.introText}</p>
-              <div className="flex flex-wrap gap-3">
+          <div className="bg-card border border-border rounded-xl p-5 sm:p-7 mb-6 sm:mb-7 flex flex-col md:flex-row justify-between md:items-start gap-5 md:gap-8">
+            <div className="min-w-0">
+              <h2 className="font-serif-display text-xl sm:text-2xl mb-2">{category.introTitle}</h2>
+              <p className="text-[13px] sm:text-sm text-muted-foreground leading-6 sm:leading-7 max-w-[580px]">{category.introText}</p>
+              <div className="flex flex-wrap gap-1.5 mt-3">
                 {category.whenTags.map(tag => (
-                  <span key={tag} className="text-[10px] font-bold text-white/30 uppercase tracking-widest px-4 py-1.5 rounded-full bg-white/5 border border-white/5">{tag}</span>
+                  <span key={tag} className="text-[11px] sm:text-xs px-2.5 sm:px-3 py-1 rounded-full border border-border text-muted-foreground">{tag}</span>
                 ))}
               </div>
             </div>
-
-            <div className="relative z-10 flex lg:flex-col gap-4 overflow-x-auto lg:shrink-0 pb-2 lg:pb-0 no-scrollbar">
+            <div className="flex md:flex-col gap-2 md:shrink-0 overflow-x-auto md:overflow-visible -mx-1 px-1 md:mx-0 md:px-0">
               {category.stats.map((s, i) => (
-                <div key={i} className="glass-smooth border border-white/5 rounded-2xl p-6 text-center min-w-[140px] hover:bg-white/5 transition-colors">
-                  <div className="text-3xl font-serif-display text-white mb-1">{s.num}</div>
-                  <div className="text-[9px] font-bold text-white/20 uppercase tracking-[0.2em]">{s.lbl}</div>
+                <div key={i} className="bg-secondary rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-center min-w-[90px] sm:min-w-[100px] shrink-0">
+                  <div className="text-base sm:text-xl font-medium">{s.num}</div>
+                  <div className="text-[10px] sm:text-[11px] text-muted-foreground mt-0.5">{s.lbl}</div>
                 </div>
               ))}
             </div>
@@ -258,14 +239,11 @@ export default function Index() {
         )}
 
         {searchQuery && (
-          <div className="mb-8 flex items-center gap-3">
-            <span className="text-white/40 font-bold uppercase tracking-widest text-[10px]">{filteredTools.length} resultado(s) para</span>
-            <span className="text-white font-serif-display text-xl italic">"{searchQuery}"</span>
-          </div>
+          <p className="text-sm text-muted-foreground mb-4">{filteredTools.length} resultado(s) para "{searchQuery}"</p>
         )}
 
         {/* Tools Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           {filteredTools.map(({ tool, category: cat }) => (
             <ToolCard key={tool.key} tool={tool} category={cat} onOpenEbook={() => handleOpenEbook(tool, cat)} />
           ))}
@@ -273,22 +251,13 @@ export default function Index() {
 
         {/* Prompts Section */}
         {!searchQuery && category && (
-          <div className="mt-24">
-            <PromptsLibrary category={category} />
-          </div>
+          <PromptsLibrary category={category} />
         )}
-      </main>
+      </div>
 
       {/* Footer */}
-      <footer className="py-16 px-6 border-t border-white/5 bg-black text-center">
-        <div className="max-w-7xl mx-auto flex flex-col items-center gap-6">
-          <div className="text-[10px] font-bold text-white/10 uppercase tracking-[0.5em]">
-            &copy; 2026 CONVERT CLUB · ARSENAL ESTRATÉGICO
-          </div>
-          <p className="text-[9px] text-white/5 uppercase tracking-[0.2em] max-w-xl leading-relaxed">
-            AdAI · Guia de Inteligência Artificial para Empreendedores · Todos os links são externos e oficiais de cada plataforma
-          </p>
-        </div>
+      <footer className="bg-navy py-8 text-center mt-12">
+        <p className="text-xs text-muted-foreground/40">AdAI · Guia de Inteligência Artificial para Empreendedores · Todos os links são externos e oficiais de cada plataforma</p>
       </footer>
 
       {/* Ebook Modal */}
