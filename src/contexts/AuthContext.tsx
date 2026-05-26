@@ -62,7 +62,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     nome: profile?.nome || (typeof supaUser.user_metadata?.nome === 'string' ? supaUser.user_metadata.nome : ''),
     sobre: profile?.sobre || (typeof supaUser.user_metadata?.sobre === 'string' ? supaUser.user_metadata.sobre : ''),
     email: profile?.email || supaUser.email || '',
-    plano: (profile?.plano === 'Max' || profile?.plano === 'Mentorado') ? 'Max' : (profile?.plano === 'Elite Plus' || profile?.plano === 'Max') ? 'Elite Plus' : (profile?.plano === 'Elite' || profile?.plano === 'Pro') ? 'Elite' : 'Free',
+    plano: (profile?.plano === 'Max' || profile?.plano === 'Mentorado') ? 'Max' : (profile?.plano === 'Elite Plus') ? 'Elite Plus' : (profile?.plano === 'Elite' || profile?.plano === 'Pro') ? 'Elite' : 'Free',
     telefone: profile?.telefone || undefined,
     empresa: profile?.empresa || undefined,
     avatarUrl: (profile as ProfileRecord)?.avatar_url || (profile as Profile)?.avatarUrl || undefined,
@@ -313,7 +313,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       updateData.avatar_url = data.avatarUrl;
       delete updateData.avatarUrl;
     }
-
+    
+    // Profiles table columns are mostly snake_case but some are used as camelCase in code
+    // Let's ensure consistency with the DB types
     const { error } = await supabase.from('profiles').update(updateData).eq('user_id', user.id);
     if (!error) {
       setUser(prev => prev ? { ...prev, ...data } : null);
