@@ -234,9 +234,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let active = true;
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (!active) return;
       void syncSession(session);
+      
+      // Fix for Google Login infinite loading / redirect
+      if (event === 'SIGNED_IN') {
+        // Redireciona para /menu após o login bem-sucedido
+        // Usamos window.location para garantir que qualquer estado de popup seja limpo
+        if (window.location.pathname === '/' || window.location.pathname === '') {
+          window.location.href = '/menu';
+        }
+      }
     });
 
     supabase.auth.getSession()
