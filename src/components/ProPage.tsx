@@ -67,14 +67,14 @@ export default function ProPage({ onBack, onNavigate: _onNavigate }: { onBack: (
     );
   }
 
-  const proPrice = plans.pro[period].price;
-  const maxPrice = plans.max[period].price;
+  const elitePrice = plans.elite[period].price;
+  const elitePlusPrice = plans.elitePlus[period].price;
   const periodMeta = PERIODS.find(p => p.key === period)!;
   const isLifetime = period === 'vitalicio';
   const periodCopy = isLifetime ? 'pagamento único · acesso vitalício' : periodMeta.suffix;
 
-  const proParts = priceParts(proPrice);
-  const maxParts = priceParts(maxPrice);
+  const eliteParts = priceParts(elitePrice);
+  const elitePlusParts = priceParts(elitePlusPrice);
 
   return (
     <div className="min-h-screen bg-navy">
