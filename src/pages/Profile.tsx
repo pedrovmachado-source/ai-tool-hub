@@ -81,7 +81,7 @@ export default function Profile() {
                   )}
                 </Avatar>
                 <div className="min-w-0">
-                  <div className="text-sm font-medium truncate">{user.nome} {user.sobre}</div>
+                  <div className="text-sm font-medium truncate">{user.nome} {user.sobrenome}</div>
                   <div className="text-xs text-muted-foreground truncate">{user.email}</div>
                 </div>
               </div>
@@ -129,7 +129,7 @@ export default function Profile() {
 function TabDados() {
   const { user, updateUser } = useAuth();
   const [nome, setNome] = useState(user?.nome || '');
-  const [sobre, setSobre] = useState(user?.sobre || '');
+  const [sobrenome, setSobrenome] = useState(user?.sobrenome || '');
   const [telefone, setTelefone] = useState(user?.telefone || '');
   const [empresa, setEmpresa] = useState(user?.empresa || '');
   const [avatarUrl, setAvatarUrl] = useState(user?.avatarUrl || '');
@@ -168,7 +168,7 @@ function TabDados() {
   const save = async () => {
     setSaving(true);
     try {
-      await updateUser({ nome, sobre, telefone, empresa });
+      await updateUser({ nome, sobrenome, telefone, empresa });
       toast.success('Dados atualizados');
     } catch {
       toast.error('Falha ao salvar');
@@ -212,8 +212,8 @@ function TabDados() {
           <Input id="nome" value={nome} onChange={(e) => setNome(e.target.value)} className="mt-1.5" />
         </div>
         <div>
-          <Label htmlFor="sobre">Sobrenome</Label>
-          <Input id="sobre" value={sobre} onChange={(e) => setSobre(e.target.value)} className="mt-1.5" />
+          <Label htmlFor="sobrenome">Sobrenome</Label>
+          <Input id="sobrenome" value={sobrenome} onChange={(e) => setSobrenome(e.target.value)} className="mt-1.5" />
         </div>
         <div className="md:col-span-2">
           <Label htmlFor="email">E-mail</Label>

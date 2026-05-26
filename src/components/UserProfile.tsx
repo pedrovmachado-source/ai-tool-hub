@@ -8,7 +8,7 @@ export default function UserProfile({ onBack, onNavigate }: { onBack: () => void
   const { user, updateUser, logout } = useAuth();
   const [tab, setTab] = useState<'info' | 'senha' | 'plano'>('info');
   const [nome, setNome] = useState(user?.nome || '');
-  const [sobre, setSobre] = useState(user?.sobre || '');
+  const [sobrenome, setSobrenome] = useState(user?.sobrenome || '');
   const [email] = useState(user?.email || '');
   const [telefone, setTelefone] = useState(user?.telefone || '');
   const [empresa, setEmpresa] = useState(user?.empresa || '');
@@ -25,7 +25,7 @@ export default function UserProfile({ onBack, onNavigate }: { onBack: () => void
 
   const save = async () => {
     setSaving(true);
-    await updateUser({ nome, sobre, telefone, empresa });
+    await updateUser({ nome, sobrenome, telefone, empresa });
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
@@ -49,7 +49,7 @@ export default function UserProfile({ onBack, onNavigate }: { onBack: () => void
         <div className="flex items-center gap-5 mb-6 pb-6 border-b border-border">
           <div className="w-16 h-16 rounded-full bg-brand-blue flex items-center justify-center text-2xl font-semibold text-primary-foreground">{user.nome?.[0] || '?'}</div>
           <div>
-            <div className="text-lg font-medium">{user.nome} {user.sobre}</div>
+            <div className="text-lg font-medium">{user.nome} {user.sobrenome}</div>
             <div className="text-sm text-muted-foreground">{user.email}</div>
             <div className="mt-1">
               <span className={`text-[11px] font-semibold px-3 py-0.5 rounded-full ${planBadgeClass(user.plano)}`}>{planLabel(user.plano)}</span>
@@ -69,7 +69,7 @@ export default function UserProfile({ onBack, onNavigate }: { onBack: () => void
           <div>
             <div className="grid grid-cols-2 gap-3 mb-4">
               <div><label className="text-xs font-medium text-muted-foreground mb-1 block">Nome</label><input value={nome} onChange={e => setNome(e.target.value)} className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:border-brand-blue" /></div>
-              <div><label className="text-xs font-medium text-muted-foreground mb-1 block">Sobrenome</label><input value={sobre} onChange={e => setSobre(e.target.value)} className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:border-brand-blue" /></div>
+              <div><label className="text-xs font-medium text-muted-foreground mb-1 block">Sobrenome</label><input value={sobrenome} onChange={e => setSobrenome(e.target.value)} className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:border-brand-blue" /></div>
             </div>
             <div className="mb-4"><label className="text-xs font-medium text-muted-foreground mb-1 block">E-mail</label><input value={email} disabled className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-secondary text-muted-foreground" /></div>
             <div className="mb-4"><label className="text-xs font-medium text-muted-foreground mb-1 block">Telefone</label><input value={telefone} onChange={e => setTelefone(e.target.value)} placeholder="(11) 99999-9999" className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:border-brand-blue" /></div>

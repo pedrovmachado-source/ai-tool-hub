@@ -17,6 +17,8 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch, onRegistere
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [nome, setNome] = useState('');
+  const [sobrenome, setSobrenome] = useState('');
+  const [lgpdAccepted, setLgpdAccepted] = useState(false);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState('');
@@ -43,12 +45,13 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch, onRegistere
   };
 
   const handleRegister = async () => {
-    if (!nome || !email || !password || !confirmPassword) { setError('Preencha todos os campos.'); return; }
+    if (!nome || !sobrenome || !email || !password || !confirmPassword) { setError('Preencha todos os campos.'); return; }
+    if (!lgpdAccepted) { setError('Você deve aceitar os termos da LGPD para continuar.'); return; }
     if (password.length < 8) { setError('Senha deve ter no mínimo 8 caracteres.'); return; }
     if (password !== confirmPassword) { setError('As senhas não coincidem. Verifique e tente novamente.'); return; }
     setSubmitting(true);
     setError('');
-    const err = await register(nome, email, password);
+    const err = await register(nome, sobrenome, email, password, lgpdAccepted);
     setSubmitting(false);
     if (err) {
       setError(err);
@@ -136,14 +139,25 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch, onRegistere
 
           {mode === 'register' && !success && (
             <>
-              <div className="mb-4">
-                <label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] mb-2 block ml-1">Nome</label>
-                <input 
-                  value={nome} 
-                  onChange={e => setNome(e.target.value)} 
-                  placeholder="Seu nome" 
-                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-all" 
-                />
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] mb-2 block ml-1">Nome</label>
+                  <input 
+                    value={nome} 
+                    onChange={e => setNome(e.target.value)} 
+                    placeholder="Seu nome" 
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-all" 
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] mb-2 block ml-1">Sobrenome</label>
+                  <input 
+                    value={sobrenome} 
+                    onChange={e => setSobrenome(e.target.value)} 
+                    placeholder="Seu sobrenome" 
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-all" 
+                  />
+                </div>
               </div>
               <div className="mb-4">
                 <label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] mb-2 block ml-1">E-mail</label>
@@ -174,6 +188,19 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch, onRegistere
                   placeholder="Digite a senha novamente" 
                   className={`w-full px-4 py-3 bg-white/5 border rounded-2xl text-sm text-white placeholder:text-white/20 focus:outline-none transition-all ${confirmPassword && password !== confirmPassword ? 'border-brand-red' : 'border-white/10 focus:border-white/30'}`} 
                 />
+              </div>
+
+              <div className="mb-6 flex items-start gap-3 px-1">
+                <input 
+                  type="checkbox" 
+                  id="lgpd"
+                  checked={lgpdAccepted}
+                  onChange={e => setLgpdAccepted(e.target.checked)}
+                  className="mt-1 w-4 h-4 rounded border-white/10 bg-white/5 text-white focus:ring-white/30"
+                />
+                <label htmlFor="lgpd" className="text-[11px] text-white/60 leading-relaxed cursor-pointer select-none">
+                  Estou de acordo com a <span className="text-white font-medium">LGPD</span> e ciente de que este site vende dados para outras plataformas como <span className="text-white font-medium">Meta Ads</span> e <span className="text-white font-medium">Google Ads</span>.
+                </label>
               </div>
               
               <button 

@@ -15,6 +15,7 @@ import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import Blocked from "./pages/Blocked.tsx";
 import AbuseBlocks from "./pages/AbuseBlocks.tsx";
 import Mentorias from "./pages/Mentorias.tsx";
+import CompleteProfile from "./pages/CompleteProfile.tsx";
 
 
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="/ferramentas" element={<ProtectedRoute><Tools /></ProtectedRoute>} />
             <Route path="/menu" element={<ProtectedRoute><Menu /></ProtectedRoute>} />
             <Route path="/perfil" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="/completar-perfil" element={<ProtectedRoute><CompleteProfile /></ProtectedRoute>} />
             <Route path="/alunos" element={<ProtectedRoute><Alunos /></ProtectedRoute>} />
             <Route path="/bloqueado" element={<ProtectedRoute><Blocked /></ProtectedRoute>} />
             <Route path="/admin/bloqueios" element={<ProtectedRoute><AbuseBlocks /></ProtectedRoute>} />

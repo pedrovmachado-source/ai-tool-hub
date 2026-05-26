@@ -4,6 +4,7 @@ import type { Session, User as SupaUser } from '@supabase/supabase-js';
 
 interface Profile {
   nome: string;
+  sobrenome?: string;
   sobre: string;
   email: string;
   plano: 'Free' | 'Elite' | 'Elite Plus' | 'Max';
@@ -12,6 +13,7 @@ interface Profile {
   avatarUrl?: string;
   inviteValidated: boolean;
   abuseBlocked: boolean;
+  lgpdAccepted?: boolean;
 }
 
 interface SavedEbook {
@@ -23,6 +25,7 @@ interface SavedEbook {
 
 interface ProfileRecord {
   nome: string;
+  sobrenome: string | null;
   sobre: string;
   email: string;
   plano: string;
@@ -31,6 +34,7 @@ interface ProfileRecord {
   avatar_url: string | null;
   invite_validated: boolean;
   abuse_blocked: boolean;
+  lgpd_accepted: boolean | null;
 }
 
 interface AuthContextType {
@@ -39,7 +43,7 @@ interface AuthContextType {
   savedEbooks: SavedEbook[];
   loading: boolean;
   login: (email: string, password: string) => Promise<string | null>;
-  register: (nome: string, email: string, password: string) => Promise<string | null>;
+  register: (nome: string, sobrenome: string, email: string, password: string, lgpdAccepted: boolean) => Promise<string | null>;
   logout: () => Promise<void>;
   upgradeToPro: () => Promise<void>;
   updateUser: (data: Partial<Omit<Profile, 'inviteValidated' | 'abuseBlocked'>>) => Promise<void>;
@@ -59,7 +63,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const buildUserFromProfile = useCallback((supaUser: SupaUser, profile?: ProfileRecord | Partial<Profile> | null): Profile & { id: string } => ({
     id: supaUser.id,
-    nome: profile?.nome || (typeof supaUser.user_metadata?.nome === 'string' ? supaUser.user_metadata.nome : ''),
+    nome: profile?.nome || (typeof supaUser.user_metadata?.nome === 'string' ? supaUser.user_metadata.nome : '') || (typeof supaUser.user_metadata?.full_name === 'string' ? supaUser.user_metadata.full_name : ''),
+    sobrenome: profile?.sobrenome || (typeof (profile as ProfileRecord)?.sobrenome === 'string' ? (profile as ProfileRecord).sobrenome : undefined) || (typeof supaUser.user_metadata?.sobrenome === 'string' ? supaUser.user_metadata.sobrenome : undefined),
     sobre: profile?.sobre || (typeof supaUser.user_metadata?.sobre === 'string' ? supaUser.user_metadata.sobre : ''),
     email: profile?.email || supaUser.email || '',
     plano: (profile?.plano === 'Max' || profile?.plano === 'Mentorado') ? 'Max' : (profile?.plano === 'Elite Plus') ? 'Elite Plus' : (profile?.plano === 'Elite' || profile?.plano === 'Pro') ? 'Elite' : 'Free',
@@ -68,6 +73,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     avatarUrl: (profile as ProfileRecord)?.avatar_url || (profile as Profile)?.avatarUrl || undefined,
     inviteValidated: (profile as ProfileRecord)?.invite_validated ?? (profile as Profile)?.inviteValidated ?? false,
     abuseBlocked: (profile as ProfileRecord)?.abuse_blocked ?? (profile as Profile)?.abuseBlocked ?? false,
+    lgpdAccepted: (profile as ProfileRecord)?.lgpd_accepted ?? (profile as Profile)?.lgpdAccepted ?? false,
   }), []);
 
   const clearAuthState = useCallback(() => {
@@ -115,7 +121,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const payload = {
       user_id: supaUser.id,
-      nome: typeof supaUser.user_metadata?.nome === 'string' ? supaUser.user_metadata.nome : '',
+      nome: typeof supaUser.user_metadata?.nome === 'string' ? supaUser.user_metadata.nome : (typeof supaUser.user_metadata?.full_name === 'string' ? supaUser.user_metadata.full_name : ''),
+      sobrenome: typeof supaUser.user_metadata?.sobrenome === 'string' ? supaUser.user_metadata.sobrenome : '',
       sobre: typeof supaUser.user_metadata?.sobre === 'string' ? supaUser.user_metadata.sobre : '',
       email: supaUser.email || '',
     };
@@ -227,8 +234,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!active) return;
       void syncSession(session);
       
-      // Fix for Google Login infinite loading / redirect
-      if (event === 'SIGNED_IN') {
+      // Redirect logic after login
+      if (event === 'SIGNED_IN' && session?.user) {
+        // We need to wait for profile sync to decide where to go
+        // But for Google users specifically, we check if they have name/surname
+        const isGoogle = session.user.app_metadata.provider === 'google' || 
+                        session.user.identities?.some(id => id.provider === 'google');
+        
+        // If it's a new login or Google login, we might need to redirect
+        // We'll let the Profile/CompleteProfile pages handle the specific checks if possible
+        // but a baseline redirect to /menu or /completar-perfil is good
         if (window.location.pathname === '/' || window.location.pathname === '') {
           window.location.href = '/menu';
         }
@@ -275,12 +290,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return msg;
   };
 
-  const register = useCallback(async (nome: string, email: string, password: string): Promise<string | null> => {
+  const register = useCallback(async (nome: string, sobrenome: string, email: string, password: string, lgpdAccepted: boolean): Promise<string | null> => {
     const redirectUrl = `${window.location.origin}/`;
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { nome, sobre: '' }, emailRedirectTo: redirectUrl },
+      options: { 
+        data: { 
+          nome, 
+          sobrenome,
+          sobre: '',
+          lgpd_accepted: lgpdAccepted,
+          lgpd_accepted_at: lgpdAccepted ? new Date().toISOString() : null
+        }, 
+        emailRedirectTo: redirectUrl 
+      },
     });
     return error ? translateAuthError(error.message) : null;
   }, []);
@@ -312,6 +336,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (data.avatarUrl !== undefined) {
       updateData.avatar_url = data.avatarUrl;
       delete updateData.avatarUrl;
+    }
+    if (data.lgpdAccepted !== undefined) {
+      updateData.lgpd_accepted = data.lgpdAccepted;
+      updateData.lgpd_accepted_at = data.lgpdAccepted ? new Date().toISOString() : null;
+      delete updateData.lgpdAccepted;
     }
     
     // Profiles table columns are mostly snake_case but some are used as camelCase in code

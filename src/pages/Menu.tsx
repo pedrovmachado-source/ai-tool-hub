@@ -26,6 +26,9 @@ export default function Menu() {
     document.title = 'Convert Club — Dashboard';
     if (user?.abuseBlocked) {
       navigate('/bloqueado');
+    } else if (user && (!user.nome || !user.sobrenome)) {
+      // If user is missing name or surname (common for Google login), redirect to complete profile
+      navigate('/completar-perfil');
     }
   }, [user, navigate]);
 
