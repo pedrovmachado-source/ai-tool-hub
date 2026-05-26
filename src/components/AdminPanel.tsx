@@ -937,6 +937,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
         {section === 'niche-lessons' && <AdminNicheLessons />}
         {section === 'site-creation' && <AdminSiteCreation initialTab={siteCreationInitialTab} />}
         {section === 'menu' && <AdminMenu />}
+        {section === 'student-areas' && <AdminStudentAreas />}
 
         {section === 'activity' && <ActivityLogView />}
 
