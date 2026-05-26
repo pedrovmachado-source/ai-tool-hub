@@ -520,6 +520,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'site-creation', label: 'Comprar Site', icon: Folder },
     { key: 'sections', label: 'Conteúdos', icon: Folder },
     { key: 'menu', label: 'Menu Lateral', icon: Menu },
+    { key: 'student-areas', label: 'Área do Aluno (Max)', icon: GraduationCap },
     { key: 'activity', label: 'Atividade', icon: Activity },
     { key: 'settings', label: 'Configurações', icon: Settings },
   ];
