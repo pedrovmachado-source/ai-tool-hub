@@ -196,9 +196,9 @@ function ToolFormModal({ tool, onSave, onClose }: { tool?: Tool; onSave: (t: Too
           onChange={(p) => set('promptsAdvanced' as any, p)}
         />
 
-        <div className="flex gap-2 justify-end mt-4">
-          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm text-muted-foreground/60 hover:text-primary-foreground">Cancelar</button>
-          <button onClick={validateAndSave} className="px-4 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90">Salvar</button>
+        <div className="flex gap-4 justify-end mt-12">
+          <button onClick={onClose} className="px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest text-white/40 hover:text-white transition-colors">Cancelar</button>
+          <button onClick={validateAndSave} className="px-8 py-2.5 bg-white text-black rounded-full text-xs font-bold uppercase tracking-widest hover:bg-white/90 transition-all">Salvar</button>
         </div>
       </div>
     </div>
