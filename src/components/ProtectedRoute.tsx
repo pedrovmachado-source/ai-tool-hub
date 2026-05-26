@@ -18,8 +18,18 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
     return <Navigate to="/" replace />;
   }
 
+  // Check for abuse block first
+  if (user.abuseBlocked && location.pathname !== '/bloqueado') {
+    return <Navigate to="/bloqueado" replace />;
+  }
+
+  // If user is on /bloqueado but not blocked, send them back
+  if (!user.abuseBlocked && location.pathname === '/bloqueado') {
+    return <Navigate to="/menu" replace />;
+  }
+
   // If user is not validated and not an admin, they must go to /convite
-  if (!user.inviteValidated && !isAdmin && location.pathname !== '/convite') {
+  if (!user.inviteValidated && !isAdmin && location.pathname !== '/convite' && location.pathname !== '/bloqueado') {
     return <Navigate to="/convite" replace />;
   }
 
