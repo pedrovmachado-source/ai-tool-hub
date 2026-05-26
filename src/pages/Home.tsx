@@ -182,8 +182,11 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-24">
             <Reveal className="text-white/40 font-bold tracking-[0.3em] uppercase text-[10px] mb-4">Vertical de Acesso</Reveal>
-            <Reveal delay={200} as="h2" className="text-4xl sm:text-6xl font-serif-display tracking-tight text-white">
-              O Que Você <span className="italic">Destrava</span> Aqui
+            <Reveal delay={200} as="h2" className="text-4xl sm:text-6xl font-serif-display tracking-tight text-white mb-4">
+              A onde os fracos não tem vez
+            </Reveal>
+            <Reveal delay={300} as="p" className="text-white/40 text-lg font-light">
+              Quer descobrir como ?
             </Reveal>
           </div>
 
