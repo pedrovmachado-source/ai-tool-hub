@@ -63,7 +63,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const buildUserFromProfile = useCallback((supaUser: SupaUser, profile?: ProfileRecord | Partial<Profile> | null): Profile & { id: string } => ({
     id: supaUser.id,
-    nome: profile?.nome || (typeof supaUser.user_metadata?.nome === 'string' ? supaUser.user_metadata.nome : ''),
+    nome: profile?.nome || (typeof supaUser.user_metadata?.nome === 'string' ? supaUser.user_metadata.nome : '') || (typeof supaUser.user_metadata?.full_name === 'string' ? supaUser.user_metadata.full_name : ''),
+    sobrenome: profile?.sobrenome || (typeof (profile as ProfileRecord)?.sobrenome === 'string' ? (profile as ProfileRecord).sobrenome : undefined) || (typeof supaUser.user_metadata?.sobrenome === 'string' ? supaUser.user_metadata.sobrenome : undefined),
     sobre: profile?.sobre || (typeof supaUser.user_metadata?.sobre === 'string' ? supaUser.user_metadata.sobre : ''),
     email: profile?.email || supaUser.email || '',
     plano: (profile?.plano === 'Max' || profile?.plano === 'Mentorado') ? 'Max' : (profile?.plano === 'Elite Plus') ? 'Elite Plus' : (profile?.plano === 'Elite' || profile?.plano === 'Pro') ? 'Elite' : 'Free',
@@ -72,6 +73,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     avatarUrl: (profile as ProfileRecord)?.avatar_url || (profile as Profile)?.avatarUrl || undefined,
     inviteValidated: (profile as ProfileRecord)?.invite_validated ?? (profile as Profile)?.inviteValidated ?? false,
     abuseBlocked: (profile as ProfileRecord)?.abuse_blocked ?? (profile as Profile)?.abuseBlocked ?? false,
+    lgpdAccepted: (profile as ProfileRecord)?.lgpd_accepted ?? (profile as Profile)?.lgpdAccepted ?? false,
   }), []);
 
   const clearAuthState = useCallback(() => {
