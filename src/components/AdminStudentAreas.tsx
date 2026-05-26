@@ -17,6 +17,7 @@ interface StudentArea {
   content: {
     lessons: Lesson[];
     welcomeMessage?: string;
+    completed_ids?: string[];
   };
 }
 
