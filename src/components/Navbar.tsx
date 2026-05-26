@@ -131,7 +131,13 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
             <div className="flex-1 overflow-y-auto py-2 relative">
               {menuItems.map(({ key, label, icon, color, target }) => {
                 const Icon = ICON_MAP[icon] || Sparkles;
-                const hasSubmenu = key === 'site-creation';
+                const hasSubmenu = key === 'site-creation' || key === 'creative-edit';
+                const submenuOptions = key === 'site-creation' 
+                  ? ['Landing Page', 'Quiz', 'Advertorial', 'One-product Page', 'Chatbot']
+                  : key === 'creative-edit'
+                    ? ['Vídeo curto (15-45seg)', 'vídeo longo (+1m)', 'VSL', 'Super Edição', 'Personalizado']
+                    : [];
+
                 return (
                   <div 
                     key={key} 
@@ -153,13 +159,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
                     {hasSubmenu && (
                       <div className={`overflow-hidden transition-all duration-300 ease-in-out ${hoveredItem === key ? 'max-h-[300px] opacity-100' : 'max-h-0 opacity-0'}`}>
                         <div className="bg-white/5 py-1">
-                          {[
-                            'Landing Page',
-                            'Quiz',
-                            'Advertorial',
-                            'One-product Page',
-                            'Chatbot'
-                          ].map((subItem) => (
+                          {submenuOptions.map((subItem) => (
                             <button
                               key={subItem}
                               onClick={() => go(target)}
