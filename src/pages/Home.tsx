@@ -233,7 +233,8 @@ export default function Home() {
                     { title: "Networking", desc: "Uma interface pensada para não distrair e focar no que importa: seus resultados.", icon: Clock },
                     { title: "Arquitetura de Vendas", desc: "Leve a Convert Club no seu bolso. Instale como um app e tenha acesso instantâneo a toda comunidade e serviços.", icon: MousePointer2 },
                     { title: "Inteligência Ativa", desc: "Acesso direto aos segredos dos maiores players do mercado digital.", icon: Zap },
-                    { title: "Escalabilidade PWA", desc: "Leve a Convert Club no seu bolso. Instale como um app e tenha acesso instantâneo.", icon: Rocket }
+                    { title: "Escalabilidade PWA", desc: "Leve a Convert Club no seu bolso. Instale como um app e tenha acesso instantâneo.", icon: Rocket },
+                    { title: "Feito para os 1%", desc: "Feito para quem está fora da curva, não se encaixa na sociedade e busca o que julgam impossível", icon: Award }
                   ].map((item, i) => (
                     <div key={i} className="flex gap-8 group">
                       <div className="flex-shrink-0 w-14 h-14 glass-smooth rounded-2xl flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all duration-500">
