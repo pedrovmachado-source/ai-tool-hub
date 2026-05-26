@@ -329,6 +329,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       updateData.avatar_url = data.avatarUrl;
       delete updateData.avatarUrl;
     }
+    if (data.lgpdAccepted !== undefined) {
+      updateData.lgpd_accepted = data.lgpdAccepted;
+      updateData.lgpd_accepted_at = data.lgpdAccepted ? new Date().toISOString() : null;
+      delete updateData.lgpdAccepted;
+    }
     
     // Profiles table columns are mostly snake_case but some are used as camelCase in code
     // Let's ensure consistency with the DB types
