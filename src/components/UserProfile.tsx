@@ -25,7 +25,7 @@ export default function UserProfile({ onBack, onNavigate }: { onBack: () => void
 
   const save = async () => {
     setSaving(true);
-    await updateUser({ nome, sobre, telefone, empresa });
+    await updateUser({ nome, sobrenome, telefone, empresa });
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
