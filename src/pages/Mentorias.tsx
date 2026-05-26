@@ -201,11 +201,10 @@ export default function Mentorias() {
               {mentorias.map((m) => (
                 <div 
                   key={m.id}
-                  onMouseEnter={() => setHoveredVideo(m.id)}
-                  onMouseLeave={() => setHoveredVideo(null)}
                   onClick={() => handleVideoSelect(m)}
                   className="flex-shrink-0 w-64 sm:w-72 lg:w-80 relative group cursor-pointer transition-all duration-300 hover:scale-105 hover:z-30"
                 >
+
                   <div className="aspect-video rounded-md overflow-hidden bg-white/5 border border-white/5 relative">
                     <img src={m.thumbnail} alt={m.title} className="w-full h-full object-cover group-hover:opacity-40 transition-opacity" />
                     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
