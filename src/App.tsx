@@ -14,6 +14,8 @@ import Invite from "./pages/Invite.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import Blocked from "./pages/Blocked.tsx";
 import AbuseBlocks from "./pages/AbuseBlocks.tsx";
+import Mentorias from "./pages/Mentorias.tsx";
+
 
 const queryClient = new QueryClient();
 
