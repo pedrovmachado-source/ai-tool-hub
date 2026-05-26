@@ -251,17 +251,50 @@ export default function Home() {
 
             <Reveal delay={400} className="relative">
               <div className="relative z-10 p-4 glass-smooth rounded-[3.5rem] transform lg:rotate-3 hover:rotate-0 transition-all duration-1000">
-                <div className="aspect-[4/5] bg-gradient-to-br from-white/10 to-transparent rounded-[3rem] p-12 flex flex-col justify-end overflow-hidden relative group">
-                   <div className="absolute inset-0 bg-cover opacity-20 grayscale group-hover:scale-110 transition-transform duration-[2000ms]" style={{ backgroundImage: `url(${hoteducaRef})` }} />
+                <div className="aspect-[4/5] bg-black rounded-[3rem] p-12 flex flex-col justify-end overflow-hidden relative group border border-white/5">
+                   {/* Background Image / Platform Mockup */}
+                   <div className="absolute inset-0 bg-cover opacity-30 grayscale group-hover:scale-110 transition-transform duration-[2000ms]" style={{ backgroundImage: `url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=2670&auto=format&fit=crop')` }} />
+                   
+                   {/* UI Mockup Overlay */}
+                   <div className="absolute inset-0 p-8 flex flex-col gap-4 opacity-40 group-hover:opacity-70 transition-all duration-700">
+                     <div className="w-full h-8 bg-white/5 rounded-lg flex items-center px-3 gap-2 border border-white/5">
+                       <div className="w-2 h-2 rounded-full bg-white/40" />
+                       <div className="w-20 h-1.5 bg-white/20 rounded-full" />
+                     </div>
+                     <div className="flex gap-4 h-full">
+                       <div className="w-1/4 h-full bg-white/5 rounded-xl p-4 space-y-4 border border-white/5">
+                         <div className="w-full h-2 bg-white/20 rounded-full" />
+                         <div className="w-2/3 h-2 bg-white/10 rounded-full" />
+                         <div className="w-3/4 h-2 bg-white/10 rounded-full" />
+                         <div className="pt-4 space-y-3">
+                            <div className="w-full h-1.5 bg-white/5 rounded-full" />
+                            <div className="w-full h-1.5 bg-white/5 rounded-full" />
+                         </div>
+                       </div>
+                       <div className="w-3/4 h-full space-y-4">
+                         <div className="w-full aspect-video bg-white/10 rounded-2xl flex items-center justify-center relative overflow-hidden group/play border border-white/10">
+                           <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent" />
+                           <div className="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm group-hover/play:scale-110 transition-transform duration-500">
+                             <div className="w-0 h-0 border-t-[8px] border-t-transparent border-l-[12px] border-l-white border-b-[8px] border-b-transparent ml-1" />
+                           </div>
+                         </div>
+                         <div className="grid grid-cols-2 gap-3">
+                           <div className="h-16 bg-white/5 rounded-xl border border-white/5" />
+                           <div className="h-16 bg-white/5 rounded-xl border border-white/5" />
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+
                    <div className="relative z-10">
-                    <Layout className="w-16 h-16 text-white mb-8" />
-                    <h3 className="text-4xl font-serif-display text-white mb-6">Interface Masterclass</h3>
-                    <p className="text-white/40 text-sm max-w-xs mb-10 font-light">
-                      Onde a estética encontra a conversão agressiva. Tudo o que você vê é projetado para vender.
+                    <div className="font-serif-display text-white text-xl mb-4 tracking-tight opacity-50">Plataforma</div>
+                    <h3 className="text-5xl font-serif-display text-white mb-6">Convert Club</h3>
+                    <p className="text-white/40 text-sm max-w-xs mb-10 font-light leading-relaxed">
+                      A experiência definitiva de aprendizado. Acesse conteúdos exclusivos, ferramentas e a comunidade em uma interface projetada para sua escala.
                     </p>
                     <div className="flex gap-4">
-                      <div className="px-5 py-2 rounded-full glass-smooth text-[10px] font-bold uppercase tracking-widest">Premium</div>
-                      <div className="px-5 py-2 rounded-full glass-smooth text-[10px] font-bold uppercase tracking-widest">Exclusive</div>
+                      <div className="px-5 py-2 rounded-full glass-smooth text-[10px] font-bold uppercase tracking-widest text-white/70">LMS System</div>
+                      <div className="px-5 py-2 rounded-full glass-smooth text-[10px] font-bold uppercase tracking-widest text-white/70">Full Access</div>
                     </div>
                    </div>
                 </div>
