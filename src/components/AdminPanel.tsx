@@ -612,7 +612,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
   const currentSectionLabel = navItems.find(n => n.key === section)?.label || 'Admin';
 
   return (
-    <div className="min-h-screen flex" style={{ background: '#0F0F1A' }}>
+    <div className="min-h-screen flex selection:bg-white/20 font-sans" style={{ background: '#000000' }}>
       {/* Mobile top bar */}
       <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-navy border-b border-primary-foreground/[0.07] h-12 flex items-center px-3 gap-2">
         <button onClick={() => setSidebarOpen(true)} className="p-1.5 rounded-lg text-primary-foreground hover:bg-primary-foreground/10">
