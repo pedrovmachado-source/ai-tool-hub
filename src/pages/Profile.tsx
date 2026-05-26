@@ -81,7 +81,7 @@ export default function Profile() {
                   )}
                 </Avatar>
                 <div className="min-w-0">
-                  <div className="text-sm font-medium truncate">{user.nome} {user.sobre}</div>
+                  <div className="text-sm font-medium truncate">{user.nome} {user.sobrenome}</div>
                   <div className="text-xs text-muted-foreground truncate">{user.email}</div>
                 </div>
               </div>
