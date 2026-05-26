@@ -3,6 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
 import MentoriaModal from '@/components/MentoriaModal';
 import { isMentorado } from '@/lib/plan';
+import { supabase } from '@/integrations/supabase/client';
 
 import { Button } from '@/components/ui/button';
 import { 
@@ -37,6 +38,9 @@ export default function Alunos() {
   const { user } = useAuth();
   const [selectedVideo, setSelectedVideo] = useState<Lesson | null>(null);
   const [mentoriaModalOpen, setMentoriaModalOpen] = useState(false);
+  const [personalizedAulas, setPersonalizedAulas] = useState<Lesson[]>([]);
+  const [welcomeMessage, setWelcomeMessage] = useState<string>('');
+  const [loading, setLoading] = useState(true);
   const videoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -47,10 +51,42 @@ export default function Alunos() {
       }
       if (!isMentorado(user.plano)) {
         setMentoriaModalOpen(true);
+        return;
       }
+      fetchPersonalizedArea();
     }
   }, [user, navigate]);
 
+  const fetchPersonalizedArea = async () => {
+    if (!user) return;
+    setLoading(true);
+    
+    // First, find the profile ID (since student_areas uses profile.id as user_id)
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('user_id', user.id)
+      .single();
+
+    if (profile) {
+      const { data, error } = await supabase
+        .from('student_areas')
+        .select('*')
+        .eq('user_id', profile.id)
+        .maybeSingle();
+
+      if (data && !error) {
+        const content = data.content as any;
+        setPersonalizedAulas(content.lessons || []);
+        setWelcomeMessage(content.welcomeMessage || '');
+      } else {
+        // Fallback to defaults if no personalized area found
+        setPersonalizedAulas(defaultAulas);
+        setWelcomeMessage('');
+      }
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
     document.title = 'Convert Club — Área do Aluno';
@@ -90,7 +126,7 @@ export default function Alunos() {
     );
   };
 
-  const aulasGravadas: Lesson[] = [
+  const defaultAulas: Lesson[] = [
     { id: '1', title: 'Aula 1: O Mindset dos 1%', videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ', duration: '15:20', transcriptionUrl: '#' },
     { id: '2', title: 'Aula 2: Estrutura de Escala Brutal', videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ', duration: '22:45', transcriptionUrl: '#' },
     { id: '3', title: 'Aula 3: Copywriting de Alta Conversão', videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ', duration: '18:10', transcriptionUrl: '#' },
@@ -99,10 +135,6 @@ export default function Alunos() {
     { id: '6', title: 'Aula 6: Gestão de Comunidade e LTV', videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ', duration: '30:00', transcriptionUrl: '#' },
   ];
 
-  const aulasAdicionais: Lesson[] = [
-    { id: 'a1', title: 'Extra: Lançamentos Meteóricos 2.0', videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ', duration: '45:00', transcriptionUrl: '#' },
-    { id: 'a2', title: 'Extra: Escala com Influenciadores', videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ', duration: '35:20', transcriptionUrl: '#' },
-  ];
 
   return (
     <div className="flex flex-col min-h-screen bg-black text-white selection:bg-white/20 font-sans overflow-x-hidden">
@@ -134,7 +166,7 @@ export default function Alunos() {
                 Bem-vindo à sua <em className="italic font-normal">Formação</em>.
               </h1>
               <p className="text-white/40 text-lg max-w-2xl font-light">
-                Olá, {user?.nome || 'Membro'}. Aqui você encontra todo o arsenal necessário para dominar o mercado. Escolha uma aula abaixo para começar.
+                {welcomeMessage || `Olá, ${user?.nome || 'Membro'}. Aqui você encontra todo o arsenal necessário para dominar o mercado. Escolha uma aula abaixo para começar.`}
               </p>
             </Reveal>
           </header>
@@ -153,14 +185,14 @@ export default function Alunos() {
                           <Video className="w-5 h-5" />
                         </div>
                         <div>
-                          <h3 className="text-xl font-serif-display">Aulas Gravadas</h3>
-                          <p className="text-[10px] text-white/30 uppercase tracking-widest mt-1">6 Aulas Disponíveis</p>
+                          <h3 className="text-xl font-serif-display">Aulas Personalizadas</h3>
+                          <p className="text-[10px] text-white/30 uppercase tracking-widest mt-1">{personalizedAulas.length} Aulas Disponíveis</p>
                         </div>
                       </div>
                     </AccordionTrigger>
                     <AccordionContent className="pb-6">
                       <div className="space-y-2 pt-2">
-                        {aulasGravadas.map((aula) => (
+                        {personalizedAulas.map((aula) => (
                           <button
                             key={aula.id}
                             onClick={() => handleLessonSelect(aula)}
@@ -177,41 +209,6 @@ export default function Alunos() {
                     </AccordionContent>
                   </AccordionItem>
 
-                  {/* Seção 2 — Aulas Adicionais */}
-                  <AccordionItem value="adicionais" className="border-white/5 glass-smooth rounded-[2rem] overflow-hidden px-6">
-                    <AccordionTrigger className="hover:no-underline py-6">
-                      <div className="flex items-center gap-4 text-left">
-                        <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center">
-                          <PlayCircle className="w-5 h-5" />
-                        </div>
-                        <div>
-                          <h3 className="text-xl font-serif-display">Aulas Adicionais</h3>
-                          <p className="text-[10px] text-white/30 uppercase tracking-widest mt-1">Atualizado Semanalmente</p>
-                        </div>
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent className="pb-6">
-                      <div className="space-y-2 pt-2">
-                        {aulasAdicionais.map((aula) => (
-                          <button
-                            key={aula.id}
-                            onClick={() => handleLessonSelect(aula)}
-                            className={`w-full text-left p-4 rounded-2xl transition-all duration-300 flex items-center justify-between group ${selectedVideo?.id === aula.id ? 'bg-white/10 border-white/10' : 'hover:bg-white/5 border-transparent'} border`}
-                          >
-                            <div className="flex items-center gap-3">
-                              <PlayCircle className={`w-4 h-4 ${selectedVideo?.id === aula.id ? 'text-white' : 'text-white/20 group-hover:text-white/50'}`} />
-                              <span className={`text-sm ${selectedVideo?.id === aula.id ? 'text-white font-medium' : 'text-white/50'}`}>{aula.title}</span>
-                            </div>
-                            <span className="text-[10px] text-white/20 font-mono">{aula.duration}</span>
-                          </button>
-                        ))}
-                        <div className="p-4 border border-dashed border-white/5 rounded-2xl flex items-center justify-center gap-2 mt-4">
-                          <Lock className="w-3 h-3 text-white/20" />
-                          <span className="text-[10px] text-white/20 uppercase tracking-[0.2em]">Próxima aula em breve</span>
-                        </div>
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
 
                   {/* Seção 3 — Transcrições */}
                   <AccordionItem value="transcricoes" className="border-white/5 glass-smooth rounded-[2rem] overflow-hidden px-6">
@@ -228,7 +225,7 @@ export default function Alunos() {
                     </AccordionTrigger>
                     <AccordionContent className="pb-6">
                       <div className="space-y-2 pt-2">
-                        {[...aulasGravadas, ...aulasAdicionais].map((aula) => (
+                        {personalizedAulas.map((aula) => (
                           <div
                             key={`trans-${aula.id}`}
                             className="w-full p-4 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-between group"

@@ -8,7 +8,7 @@ export type ActivityAction =
 export type ActivityEntity =
   | 'user' | 'profile' | 'plan' | 'category' | 'tool'
   | 'module' | 'lesson' | 'lesson_pdf' | 'lesson_video'
-  | 'niche_module' | 'niche_lesson'
+  | 'niche_module' | 'niche_lesson' | 'student_area'
   | 'site_product' | 'site_order'
   | 'content_section' | 'content_item'
   | 'site_settings' | 'role';
