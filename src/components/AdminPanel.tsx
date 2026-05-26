@@ -741,11 +741,11 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
                 <button onClick={exportCSV} className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-white text-black hover:bg-white/90 transition-all"><Download size={14} /> Exportar CSV</button>
               </div>
             </div>
-            <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl overflow-hidden">
+            <div className="glass-smooth border border-white/5 rounded-[2rem] overflow-hidden">
               <div className="overflow-x-auto">
               <table className="w-full">
-                <thead><tr className="border-b border-primary-foreground/[0.07]">
-                  {['Nome', 'Sobrenome', 'E-mail', 'Plano', 'Acesso', 'Ações'].map(h => <th key={h} className="px-3 sm:px-5 py-3 text-left text-[11px] font-semibold text-muted-foreground/40 uppercase tracking-wider whitespace-nowrap">{h}</th>)}
+                <thead><tr className="border-b border-white/5">
+                  {['Nome', 'Sobrenome', 'E-mail', 'Plano', 'Acesso', 'Ações'].map(h => <th key={h} className="px-6 py-4 text-left text-[10px] font-bold text-white/30 uppercase tracking-widest whitespace-nowrap">{h}</th>)}
                 </tr></thead>
                 <tbody>
                   {filteredUsers.map(u => (
