@@ -48,26 +48,28 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
 
   return (
     <>
-      <nav className="bg-black/80 backdrop-blur-xl h-[72px] sm:h-[88px] px-6 sm:px-12 grid grid-cols-[auto_1fr_auto] items-center sticky top-0 z-[200] gap-4 border-b border-white/5">
-        {user && (
-          <button
-            onClick={() => setShowMenu(true)}
-            className="p-2 rounded-lg text-white/90 hover:text-white hover:bg-white/15 transition-colors justify-self-start"
-            title="Menu"
-          >
-            <Menu size={20} />
+      <nav className="bg-black/80 backdrop-blur-xl h-[72px] sm:h-[88px] px-6 sm:px-12 grid grid-cols-3 items-center sticky top-0 z-[200] gap-4 border-b border-white/5">
+        <div className="flex items-center gap-4 justify-self-start">
+          {user && (
+            <button
+              onClick={() => setShowMenu(true)}
+              className="p-2 rounded-lg text-white/90 hover:text-white hover:bg-white/15 transition-colors"
+              title="Menu"
+            >
+              <Menu size={20} />
+            </button>
+          )}
+
+          <button onClick={() => onNavigate('home')} className="flex items-center gap-3 text-white text-xl font-semibold tracking-tight">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl overflow-hidden flex items-center justify-center bg-white/5 border border-white/10 glass-smooth">
+              <img src={logoAdai} alt="AdAI" className="w-full h-full object-cover" />
+            </div>
           </button>
-        )}
+        </div>
 
-        <button onClick={() => onNavigate('home')} className="flex items-center gap-3 text-white text-xl font-semibold tracking-tight justify-self-start">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl overflow-hidden flex items-center justify-center bg-white/5 border border-white/10 glass-smooth">
-            <img src={logoAdai} alt="AdAI" className="w-full h-full object-cover" />
-          </div>
-        </button>
-
-        <button onClick={() => onNavigate('home')} className="hidden sm:flex flex-col text-center justify-self-center text-white min-w-0">
+        <button onClick={() => onNavigate('home')} className="flex flex-col text-center justify-self-center text-white min-w-0">
           <span className="block text-base sm:text-xl font-semibold tracking-tighter leading-none">CONVERT CLUB</span>
-          <span className="hidden sm:block text-[9px] font-bold text-white/40 tracking-[0.3em] uppercase leading-none mt-2">Elite Community</span>
+          <span className="block text-[9px] font-bold text-white/40 tracking-[0.3em] uppercase leading-none mt-2">Elite Community</span>
         </button>
 
         <div className="flex items-center gap-1 sm:gap-2 justify-self-end">
