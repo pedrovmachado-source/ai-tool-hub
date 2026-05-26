@@ -49,7 +49,7 @@ export default function UserProfile({ onBack, onNavigate }: { onBack: () => void
         <div className="flex items-center gap-5 mb-6 pb-6 border-b border-border">
           <div className="w-16 h-16 rounded-full bg-brand-blue flex items-center justify-center text-2xl font-semibold text-primary-foreground">{user.nome?.[0] || '?'}</div>
           <div>
-            <div className="text-lg font-medium">{user.nome} {user.sobre}</div>
+            <div className="text-lg font-medium">{user.nome} {user.sobrenome}</div>
             <div className="text-sm text-muted-foreground">{user.email}</div>
             <div className="mt-1">
               <span className={`text-[11px] font-semibold px-3 py-0.5 rounded-full ${planBadgeClass(user.plano)}`}>{planLabel(user.plano)}</span>
