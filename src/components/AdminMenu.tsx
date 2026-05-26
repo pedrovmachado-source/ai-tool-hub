@@ -14,7 +14,7 @@ export interface NavMenuItem {
   sort_order: number;
 }
 
-const ICON_OPTIONS = ['Sparkles', 'Globe2', 'Wand2', 'BookOpen', 'GraduationCap', 'Video', 'Shield', 'CreditCard', 'Star', 'Zap', 'Rocket'];
+const ICON_OPTIONS = ['Sparkles', 'Globe2', 'Wand2', 'BookOpen', 'GraduationCap', 'Video', 'Shield', 'CreditCard', 'Star', 'Zap', 'Rocket', 'Users'];
 const COLOR_OPTIONS = [
   { value: 'text-brand-amber', label: 'Âmbar' },
   { value: 'text-brand-blue-medium', label: 'Azul' },
@@ -23,13 +23,16 @@ const COLOR_OPTIONS = [
   { value: 'text-brand-red', label: 'Vermelho' },
 ];
 const TARGET_OPTIONS = [
+  { value: 'menu', label: 'Ais' },
   { value: 'offers', label: 'Ofertas validadas' },
   { value: 'site-creation', label: 'Comprar Site' },
   { value: 'creative-edit', label: 'Comprar Criativo' },
   { value: 'niche-lessons', label: 'Aulas por nicho' },
   { value: 'lessons', label: 'Aulas gravadas' },
+  { value: 'alunos', label: 'Área do Aluno' },
   { value: 'pro', label: 'Página Pro' },
   { value: 'profile', label: 'Perfil' },
+  { value: 'mentorias', label: 'Mentorias' },
 ];
 
 export default function AdminMenu() {

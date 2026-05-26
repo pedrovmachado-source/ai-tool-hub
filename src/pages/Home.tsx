@@ -38,6 +38,7 @@ export default function Home() {
     else if (page === 'profile') navigate('/perfil');
     else if (page === 'alunos') navigate('/alunos');
     else if (page === 'mentorias') navigate('/mentorias');
+    else if (page === 'menu') navigate('/menu');
     else {
       sessionStorage.setItem('adai:initialPage', page);
       navigate('/ferramentas');
