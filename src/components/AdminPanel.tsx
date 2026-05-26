@@ -732,7 +732,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
         {section === 'users' && (
           <>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-3">
-              <h1 className="text-lg sm:text-xl font-medium text-primary-foreground">Usuários</h1>
+              <h1 className="text-xl sm:text-3xl font-serif-display tracking-tight text-white">Usuários</h1>
               <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
                 <div className="relative flex-1 sm:flex-initial">
                   <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/40" />
