@@ -69,7 +69,7 @@ export default function UserProfile({ onBack, onNavigate }: { onBack: () => void
           <div>
             <div className="grid grid-cols-2 gap-3 mb-4">
               <div><label className="text-xs font-medium text-muted-foreground mb-1 block">Nome</label><input value={nome} onChange={e => setNome(e.target.value)} className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:border-brand-blue" /></div>
-              <div><label className="text-xs font-medium text-muted-foreground mb-1 block">Sobrenome</label><input value={sobre} onChange={e => setSobre(e.target.value)} className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:border-brand-blue" /></div>
+              <div><label className="text-xs font-medium text-muted-foreground mb-1 block">Sobrenome</label><input value={sobrenome} onChange={e => setSobrenome(e.target.value)} className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:border-brand-blue" /></div>
             </div>
             <div className="mb-4"><label className="text-xs font-medium text-muted-foreground mb-1 block">E-mail</label><input value={email} disabled className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-secondary text-muted-foreground" /></div>
             <div className="mb-4"><label className="text-xs font-medium text-muted-foreground mb-1 block">Telefone</label><input value={telefone} onChange={e => setTelefone(e.target.value)} placeholder="(11) 99999-9999" className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:border-brand-blue" /></div>
