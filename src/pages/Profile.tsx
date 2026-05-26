@@ -212,8 +212,8 @@ function TabDados() {
           <Input id="nome" value={nome} onChange={(e) => setNome(e.target.value)} className="mt-1.5" />
         </div>
         <div>
-          <Label htmlFor="sobre">Sobrenome</Label>
-          <Input id="sobre" value={sobre} onChange={(e) => setSobre(e.target.value)} className="mt-1.5" />
+          <Label htmlFor="sobrenome">Sobrenome</Label>
+          <Input id="sobrenome" value={sobrenome} onChange={(e) => setSobrenome(e.target.value)} className="mt-1.5" />
         </div>
         <div className="md:col-span-2">
           <Label htmlFor="email">E-mail</Label>
