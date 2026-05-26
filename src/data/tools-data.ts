@@ -7,10 +7,22 @@ export interface Tool {
   urlLabel: string;
   badge: string;
   desc: string;
+  fullDesc?: string;
+  whenToUse?: string[];
+  steps?: { title: string; text: string }[];
+  tip?: string;
   videos?: { title: string; url: string; desc?: string }[];
   prompts?: { label: string; text: string }[];
+  extraPrompts?: { label: string; text: string }[];
   promptsAdvanced?: { label: string; text: string }[];
+  useCases?: { title: string; text: string; result?: string }[];
+  commonErrors?: { erro: string; solucao: string }[];
+  monetization?: string[];
+  automations?: string[];
+  checklist?: string[];
+  pricing?: string;
   pdfDataUrl?: string;
+  stats?: { num: string; lbl: string }[];
 }
 
 export interface Category {
@@ -24,7 +36,7 @@ export interface Category {
   whenTags: string[];
   stats: { num: string; lbl: string }[];
   tools: Tool[];
-  promptsExtra?: { title: string; text: string }[];
+  promptsExtra?: { label: string; text: string }[];
 }
 
 export const TOOLS_DATA: Category[] = [
@@ -197,6 +209,8 @@ export const TOOLS_DATA: Category[] = [
     ]
   }
 ];
+
+export const CATEGORIES = TOOLS_DATA;
 
 export interface DbUser {
   id: string;
