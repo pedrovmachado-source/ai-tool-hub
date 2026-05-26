@@ -764,12 +764,13 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
                       <td className="px-6 py-4">
                         <div className="flex flex-wrap gap-2 items-center">
                           <select
-                            value={u.plano === 'Max' || u.plano === 'Pro' ? u.plano : 'Free'}
-                            onChange={e => setUserPlan(u.id, e.target.value as 'Free' | 'Pro' | 'Max')}
+                            value={u.plano}
+                            onChange={e => setUserPlan(u.id, e.target.value as any)}
                             className="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-white/70 focus:outline-none focus:border-white/20 transition-all outline-none"
                           >
                             <option value="Free">Free</option>
-                            <option value="Pro">Pro</option>
+                            <option value="Elite">Elite</option>
+                            <option value="Elite Plus">Elite Plus</option>
                             <option value="Max">Max</option>
                           </select>
                           <button onClick={() => deleteUser(u.id)} className="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors">Excluir</button>
