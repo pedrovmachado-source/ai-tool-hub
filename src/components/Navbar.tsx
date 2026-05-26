@@ -30,6 +30,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
   const [isMenuExiting, setIsMenuExiting] = useState(false);
   const [showNiche, setShowNiche] = useState(false);
   const [menuItems, setMenuItems] = useState<NavItem[]>(DEFAULT_ITEMS);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -127,17 +128,53 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
               <h3 className="text-base font-serif-display text-white">Menu</h3>
               <button onClick={closeMenu} className="text-white/40 hover:text-white p-1 rounded-md hover:bg-white/10"><X size={18} /></button>
             </div>
-            <div className="flex-1 overflow-y-auto py-2">
+            <div className="flex-1 overflow-y-auto py-2 relative">
               {menuItems.map(({ key, label, icon, color, target }) => {
                 const Icon = ICON_MAP[icon] || Sparkles;
+                const hasSubmenu = key === 'site-creation';
                 return (
-                  <button key={key} onClick={() => go(target)} className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/5 transition-colors text-left group">
-                    <span className="flex items-center gap-3">
-                      <Icon size={18} className="text-white/60 group-hover:text-white transition-colors" />
-                      <span className="text-sm font-light text-white/70 group-hover:text-white transition-colors">{label}</span>
-                    </span>
-                    <ChevronRight size={14} className="text-white/10 group-hover:text-white/40 group-hover:translate-x-0.5 transition-all" />
-                  </button>
+                  <div 
+                    key={key} 
+                    className="relative"
+                    onMouseEnter={() => hasSubmenu && setHoveredItem(key)}
+                    onMouseLeave={() => hasSubmenu && setHoveredItem(null)}
+                  >
+                    <button 
+                      onClick={() => go(target)} 
+                      className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/5 transition-colors text-left group"
+                    >
+                      <span className="flex items-center gap-3">
+                        <Icon size={18} className="text-white/60 group-hover:text-white transition-colors" />
+                        <span className="text-sm font-light text-white/70 group-hover:text-white transition-colors">{label}</span>
+                      </span>
+                      <ChevronRight size={14} className="text-white/10 group-hover:text-white/40 group-hover:translate-x-0.5 transition-all" />
+                    </button>
+
+                    {hasSubmenu && hoveredItem === key && (
+                      <div className="absolute left-[100%] top-0 w-[240px] bg-black border border-white/5 shadow-2xl rounded-r-xl overflow-hidden animate-slide-in-left origin-left h-full min-h-[250px] z-[350]">
+                        <div className="p-4 border-b border-white/5 bg-white/5">
+                          <span className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em]">Modelos de Site</span>
+                        </div>
+                        <div className="py-2">
+                          {[
+                            'Landing Page',
+                            'Quiz',
+                            'Advertorial',
+                            'One-product Page',
+                            'Chatbot'
+                          ].map((subItem) => (
+                            <button
+                              key={subItem}
+                              onClick={() => go(target)}
+                              className="w-full px-5 py-3 text-left text-sm font-light text-white/60 hover:text-white hover:bg-white/5 transition-colors"
+                            >
+                              {subItem}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 );
               })}
               {isAdmin && (
