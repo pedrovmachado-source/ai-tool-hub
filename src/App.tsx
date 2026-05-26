@@ -9,6 +9,7 @@ import Tools from "./pages/Tools.tsx";
 import Menu from "./pages/Menu.tsx";
 import Profile from "./pages/Profile.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import Alunos from "./pages/Alunos.tsx";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
             <Route path="/ferramentas" element={<Tools />} />
             <Route path="/menu" element={<Menu />} />
             <Route path="/perfil" element={<Profile />} />
+            <Route path="/alunos" element={<Alunos />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
