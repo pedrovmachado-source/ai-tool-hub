@@ -9,6 +9,7 @@ import AdminContentSections from './AdminContentSections';
 import AdminNicheLessons from './AdminNicheLessons';
 import AdminSiteCreation from './AdminSiteCreation';
 import AdminMenu from './AdminMenu';
+import AdminStudentAreas from './AdminStudentAreas';
 import ActivityLogView from './ActivityLogView';
 import { logActivity } from '@/lib/activity-log';
 
