@@ -110,38 +110,38 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
       {showMenu && (
         <div className="fixed inset-0 z-[300]" onClick={() => setShowMenu(false)}>
           <div className="absolute inset-0 bg-black/40" />
-          <div className="absolute left-0 top-0 h-full w-full max-w-[320px] bg-card shadow-2xl flex flex-col" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between p-5 border-b border-border">
-              <h3 className="text-base font-semibold">Menu</h3>
-              <button onClick={() => setShowMenu(false)} className="text-muted-foreground hover:text-foreground p-1 rounded-md hover:bg-secondary"><X size={18} /></button>
+          <div className="absolute left-0 top-0 h-full w-full max-w-[320px] bg-black shadow-2xl flex flex-col border-r border-white/5" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between p-5 border-b border-white/5">
+              <h3 className="text-base font-serif-display text-white">Menu</h3>
+              <button onClick={() => setShowMenu(false)} className="text-white/40 hover:text-white p-1 rounded-md hover:bg-white/10"><X size={18} /></button>
             </div>
             <div className="flex-1 overflow-y-auto py-2">
               {menuItems.map(({ key, label, icon, color, target }) => {
                 const Icon = ICON_MAP[icon] || Sparkles;
                 return (
-                  <button key={key} onClick={() => go(target)} className="w-full flex items-center justify-between px-5 py-3 hover:bg-secondary transition-colors text-left">
+                  <button key={key} onClick={() => go(target)} className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/5 transition-colors text-left group">
                     <span className="flex items-center gap-3">
-                      <Icon size={18} className={color} />
-                      <span className="text-sm">{label}</span>
+                      <Icon size={18} className="text-white/60 group-hover:text-white transition-colors" />
+                      <span className="text-sm font-light text-white/70 group-hover:text-white transition-colors">{label}</span>
                     </span>
-                    <ChevronRight size={16} className="text-muted-foreground/40" />
+                    <ChevronRight size={14} className="text-white/10 group-hover:text-white/40 group-hover:translate-x-0.5 transition-all" />
                   </button>
                 );
               })}
               {isAdmin && (
                 <>
-                  <div className="my-2 border-t border-border" />
-                  <button onClick={() => go('admin')} className="w-full flex items-center justify-between px-5 py-3 hover:bg-secondary transition-colors text-left">
+                  <div className="my-2 border-t border-white/5" />
+                  <button onClick={() => go('admin')} className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/5 transition-colors text-left group">
                     <span className="flex items-center gap-3">
-                      <Shield size={18} className="text-brand-red" />
-                      <span className="text-sm">Painel administrativo</span>
+                      <Shield size={18} className="text-white/60 group-hover:text-white transition-colors" />
+                      <span className="text-sm font-light text-white/70 group-hover:text-white transition-colors">Painel administrativo</span>
                     </span>
-                    <ChevronRight size={16} className="text-muted-foreground/40" />
+                    <ChevronRight size={14} className="text-white/10 group-hover:text-white/40 group-hover:translate-x-0.5 transition-all" />
                   </button>
                 </>
               )}
-              <div className="my-2 border-t border-border" />
-              <button onClick={() => { setShowMenu(false); logout(); }} className="w-full flex items-center gap-3 px-5 py-3 hover:bg-secondary transition-colors text-left text-sm text-muted-foreground">
+              <div className="my-2 border-t border-white/5" />
+              <button onClick={() => { setShowMenu(false); logout(); }} className="w-full flex items-center gap-3 px-5 py-4 hover:bg-white/5 transition-colors text-left text-sm font-light text-white/40 hover:text-white">
                 <LogOut size={18} /> Sair
               </button>
             </div>
