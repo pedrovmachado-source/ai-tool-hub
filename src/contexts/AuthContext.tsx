@@ -4,6 +4,7 @@ import type { Session, User as SupaUser } from '@supabase/supabase-js';
 
 interface Profile {
   nome: string;
+  sobrenome?: string;
   sobre: string;
   email: string;
   plano: 'Free' | 'Elite' | 'Elite Plus' | 'Max';
@@ -12,6 +13,7 @@ interface Profile {
   avatarUrl?: string;
   inviteValidated: boolean;
   abuseBlocked: boolean;
+  lgpdAccepted?: boolean;
 }
 
 interface SavedEbook {
