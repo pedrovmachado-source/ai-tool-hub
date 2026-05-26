@@ -84,7 +84,8 @@ export default function Menu() {
           if (page === 'home') navigate('/');
           else if (page === 'profile') navigate('/perfil');
           else if (page === 'pro') navigate('/pro');
-          else if (page === 'alunos' || page === 'lessons') navigate('/alunos');
+          else if (page === 'alunos') navigate('/alunos');
+          else if (page === 'lessons') { sessionStorage.setItem('adai:initialPage', 'lessons'); navigate('/ferramentas'); }
           else navigate('/ferramentas');
         }} 
       />
