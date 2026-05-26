@@ -25,7 +25,7 @@ interface Plan {
 }
 
 const DEFAULT_PLANS: Plan[] = [
-  { id: '1', name: 'Pro Vitalício', period: 'vitalicio', price: '14.90', active: true, highlight: true, checkoutUrl: 'https://buy.stripe.com/eVqdRb2JS5lmflRc1P5wI01', features: ['Tudo do plano gratuito', '24 e-books completos', '+200 prompts exclusivos', 'Guias passo a passo', 'Atualizações contínuas', 'Suporte prioritário'] },
+  { id: '1', name: 'Elite Vitalício', period: 'vitalicio', price: '14.90', active: true, highlight: true, checkoutUrl: 'https://buy.stripe.com/eVqdRb2JS5lmflRc1P5wI01', features: ['Tudo do plano gratuito', '24 e-books completos', '+200 prompts exclusivos', 'Guias passo a passo', 'Atualizações contínuas', 'Suporte prioritário'] },
 ];
 
 // ── Modals ──────────────────────────────────────────────────────────
@@ -504,7 +504,8 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     `${u.nome} ${u.sobre} ${u.email}`.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const proUsers = users.filter(u => u.plano === 'Pro').length;
+  const eliteUsers = users.filter(u => u.plano === 'Elite').length;
+  const elitePlusUsers = users.filter(u => u.plano === 'Elite Plus').length;
   const maxUsers = users.filter(u => u.plano === 'Max').length;
   const totalTools = categories.reduce((sum, c) => sum + c.tools.length, 0);
 
@@ -754,7 +755,9 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
                       <td className="px-6 py-4 text-[13px] text-white/80 whitespace-nowrap">{u.sobre}</td>
                       <td className="px-6 py-4 text-[13px] text-white/40 whitespace-nowrap">{u.email}</td>
                       <td className="px-6 py-4">
-                        <span className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full ${u.plano === 'Max' ? 'bg-white/10 text-white' : u.plano === 'Pro' ? 'bg-white/5 text-white/70' : u.plano === 'Cancelado' ? 'bg-red-500/10 text-red-500' : 'bg-white/5 text-white/40'}`}>{u.plano}</span>
+                        <span className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full ${u.plano === 'Max' ? 'bg-purple-500/10 text-purple-500' : u.plano === 'Elite Plus' ? 'bg-blue-500/10 text-blue-500' : u.plano === 'Elite' ? 'bg-brand-amber/10 text-brand-amber' : u.plano === 'Cancelado' ? 'bg-red-500/10 text-red-500' : 'bg-white/5 text-white/40'}`}>
+                          {u.plano}
+                        </span>
                       </td>
                       <td className="px-6 py-4 text-[13px] text-white/40 whitespace-nowrap">{new Date(u.created_at).toLocaleDateString('pt-BR')}</td>
                       <td className="px-6 py-4">
