@@ -393,6 +393,12 @@ export default function Home() {
           </div>
         </div>
       </footer>
+      <AuthModal
+        isOpen={authModal.open}
+        mode={authModal.mode}
+        onClose={() => setAuthModal({ ...authModal, open: false })}
+        onSwitch={mode => setAuthModal({ open: true, mode })}
+      />
       <MentoriaModal isOpen={mentoriaModalOpen} onClose={() => setMentoriaModalOpen(false)} />
     </div>
 
