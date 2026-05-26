@@ -17,6 +17,8 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch, onRegistere
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [nome, setNome] = useState('');
+  const [sobrenome, setSobrenome] = useState('');
+  const [lgpdAccepted, setLgpdAccepted] = useState(false);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState('');
