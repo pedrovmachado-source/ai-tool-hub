@@ -1,4 +1,4 @@
-import { X, Copy, Check, ExternalLink, Zap, DollarSign, CheckSquare, Image, Lightbulb, Play, Bookmark, BookmarkCheck, FileText } from 'lucide-react';
+import { X, Copy, Check, ExternalLink, Zap, DollarSign, CheckSquare, Lightbulb, Play, Bookmark, BookmarkCheck, FileText } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import type { Tool, Category } from '@/data/tools-data';
 import { useAuth } from '@/contexts/AuthContext';
@@ -55,15 +55,11 @@ function PromptCard({ prompt }: { prompt: { label: string; text: string } }) {
   );
 }
 
-
 function getEmbedUrl(url: string): string | null {
-  // YouTube
   const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
   if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`;
-  // Vimeo
   const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
   if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
-  // Loom
   const loomMatch = url.match(/loom\.com\/share\/([a-zA-Z0-9]+)/);
   if (loomMatch) return `https://www.loom.com/embed/${loomMatch[1]}`;
   return null;
@@ -94,7 +90,6 @@ export default function EbookModal({ tool, category, isOpen, onClose }: EbookMod
     return () => { cancelled = true; };
   }, [isOpen, canAccess, tool.key]);
 
-  // Build a merged tool with premium fields fetched server-side (only for Pro/admin)
   const fullTool: Tool = { ...tool, ...(premium || {}) } as Tool;
   useEffect(() => {
     if (premium?.pdfDataUrl) setActiveTab('pdf');
@@ -105,12 +100,14 @@ export default function EbookModal({ tool, category, isOpen, onClose }: EbookMod
 
   if (!canAccess) {
     return (
-      <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4" style={{ background: 'rgba(10,10,30,0.65)' }} onClick={onClose}>
-        <div className="bg-card rounded-2xl w-full max-w-[400px] p-8 text-center animate-slide-up" onClick={e => e.stopPropagation()}>
-          <div className="text-4xl mb-4">🔒</div>
-          <h2 className="text-lg font-semibold mb-2">Conteúdo exclusivo</h2>
-          <p className="text-sm text-muted-foreground mb-6">Assine um plano Pro ou Max para acessar os e-books completos, prompts avançados e guias passo a passo.</p>
-          <button onClick={onClose} className="px-6 py-2 rounded-lg text-sm font-medium bg-secondary text-foreground hover:bg-secondary/80 transition-colors">Fechar</button>
+      <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 backdrop-blur-md" style={{ background: 'rgba(0,0,0,0.85)' }} onClick={onClose}>
+        <div className="bg-[#0D0D0F] border border-white/10 rounded-[2.5rem] w-full max-w-[400px] p-10 text-center animate-slide-up shadow-2xl" onClick={e => e.stopPropagation()}>
+          <div className="w-20 h-20 bg-white/5 rounded-[2rem] flex items-center justify-center mx-auto mb-6 border border-white/10 shadow-xl">
+            <Lock size={32} className="text-white" />
+          </div>
+          <h2 className="text-3xl font-serif-display text-white mb-4 tracking-tight">Conteúdo de Elite</h2>
+          <p className="text-sm text-white/40 font-light leading-relaxed mb-10">Este arsenal é exclusivo para membros Pro. Assine agora para liberar e-books, prompts e guias de escala.</p>
+          <button onClick={onClose} className="w-full py-4 rounded-2xl bg-white text-black text-xs font-bold uppercase tracking-widest hover:bg-white/90 transition-all shadow-lg active:scale-[0.98]">Conhecer Planos</button>
         </div>
       </div>
     );
@@ -349,63 +346,50 @@ export default function EbookModal({ tool, category, isOpen, onClose }: EbookMod
             </section>
           )}
 
-
           {/* Common Errors */}
           {fullTool.commonErrors && fullTool.commonErrors.length > 0 && (
             <section>
-              <SectionTitle icon="⚠️">Erros comuns e como evitar</SectionTitle>
-              {fullTool.commonErrors.map((e, i) => (
-                <div key={i} className="flex gap-3 mb-3 rounded-lg p-3.5 bg-red-50/50 dark:bg-red-950/20">
-                  <span className="text-lg shrink-0">❌</span>
-                  <div>
-                    <div className="text-[13.5px] font-semibold text-red-600 dark:text-red-400 mb-1">{e.erro}</div>
-                    <div className="text-[13px] text-muted-foreground leading-relaxed">✅ {e.fix}</div>
+              <SectionTitle icon="⚠️">Blindagem de Erros</SectionTitle>
+              <div className="space-y-4">
+                {fullTool.commonErrors.map((e, i) => (
+                  <div key={i} className="flex gap-6 p-8 glass-smooth border border-red-500/10 rounded-2xl bg-red-500/[0.02]">
+                    <span className="text-2xl shrink-0">⚠️</span>
+                    <div>
+                      <div className="text-lg font-serif-display text-red-400 mb-2">{e.erro}</div>
+                      <div className="text-sm text-white/40 font-light leading-relaxed">Solução: {e.fix}</div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </section>
           )}
 
           {/* Monetization */}
           {fullTool.monetization && fullTool.monetization.length > 0 && (
             <section>
-              <SectionTitle icon="💰">Formas de monetização</SectionTitle>
-              <div className="rounded-xl p-4" style={{ background: `linear-gradient(135deg, ${category.accentLight}, transparent)` }}>
+              <SectionTitle icon="💰">Maquinaria de Lucro</SectionTitle>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {fullTool.monetization.map((m, i) => (
-                  <div key={i} className="flex items-start gap-2.5 mb-2.5 last:mb-0">
-                    <DollarSign size={14} className="shrink-0 mt-0.5" style={{ color: category.accent }} />
-                    <span className="text-[13px] leading-relaxed">{m}</span>
+                  <div key={i} className="flex items-center gap-4 glass-smooth border border-white/5 p-6 rounded-2xl">
+                    <DollarSign size={18} className="text-white/20" />
+                    <span className="text-sm text-white/60 font-light">{m}</span>
                   </div>
                 ))}
               </div>
             </section>
           )}
-
-          {/* Automations */}
-          {fullTool.automations && fullTool.automations.length > 0 && (
-            <section>
-              <SectionTitle icon="⚡">Automações e combinações com outras IAs</SectionTitle>
-              <div className="grid gap-2">
-                {fullTool.automations.map((a, i) => (
-                  <div key={i} className="flex items-start gap-2.5 bg-secondary rounded-lg p-3">
-                    <Zap size={14} className="shrink-0 mt-0.5" style={{ color: category.accent }} />
-                    <span className="text-[13px] leading-relaxed">{a}</span>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
 
           {/* Checklist */}
           {fullTool.checklist && fullTool.checklist.length > 0 && (
             <section>
-              <SectionTitle icon="✅">Checklist final</SectionTitle>
-              <div className="rounded-xl border-2 p-4" style={{ borderColor: category.accent + '30' }}>
+              <SectionTitle icon="✅">Checklist de Escala</SectionTitle>
+              <div className="glass-smooth border border-white/5 p-8 rounded-[2rem] space-y-4">
                 {fullTool.checklist.map((item, i) => (
-                  <div key={i} className="flex items-center gap-2.5 mb-2 last:mb-0">
-                    <CheckSquare size={14} style={{ color: category.accent }} />
-                    <span className="text-[13px]">{item}</span>
+                  <div key={i} className="flex items-center gap-4 group">
+                    <div className="w-6 h-6 rounded-full border border-white/10 flex items-center justify-center group-hover:border-white/40 transition-colors">
+                      <CheckSquare size={12} className="text-white/0 group-hover:text-white/40 transition-all" />
+                    </div>
+                    <span className="text-sm text-white/40 font-light group-hover:text-white/80 transition-colors">{item}</span>
                   </div>
                 ))}
               </div>
@@ -415,15 +399,19 @@ export default function EbookModal({ tool, category, isOpen, onClose }: EbookMod
           {/* Pricing */}
           {tool.pricing && (
             <section>
-              <SectionTitle icon="💰">Planos e preços</SectionTitle>
-              <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${tool.pricing.length}, 1fr)` }}>
+              <SectionTitle icon="💰">Investimento Requerido</SectionTitle>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {tool.pricing.map((p, i) => (
-                  <div key={i} className="border-2 rounded-xl p-4 text-center relative" style={{ borderColor: p.destaque ? category.accent : 'hsl(var(--border))', background: p.destaque ? category.accentLight : 'hsl(var(--card))' }}>
-                    {p.destaque && <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 text-[10px] font-bold px-3 py-0.5 rounded-full text-primary-foreground whitespace-nowrap" style={{ background: category.accent }}>Recomendado</div>}
-                    <div className="text-xs font-medium text-muted-foreground mb-1">{p.name}</div>
-                    <div className="text-xl font-bold" style={{ color: category.accentDark }}>{p.price}</div>
-                    <div className="text-[11px] text-muted-foreground mt-1 mb-3">{p.period}</div>
-                    <div className="text-xs text-muted-foreground leading-relaxed">{p.features.join(' · ')}</div>
+                  <div key={i} className={`glass-smooth border p-8 rounded-[2rem] text-center relative flex flex-col ${p.destaque ? 'border-white/30 bg-white/[0.02] scale-105 z-10' : 'border-white/5'}`}>
+                    {p.destaque && <div className="absolute -top-3 left-1/2 -translate-x-1/2 text-[9px] font-bold px-4 py-1 rounded-full bg-white text-black uppercase tracking-widest whitespace-nowrap">Recomendado</div>}
+                    <div className="text-[10px] font-bold text-white/20 uppercase tracking-widest mb-4">{p.name}</div>
+                    <div className="text-4xl font-serif-display text-white mb-1">{p.price}</div>
+                    <div className="text-[10px] text-white/20 uppercase tracking-widest mb-8">{p.period}</div>
+                    <div className="space-y-3 mt-auto">
+                      {p.features.map((f, idx) => (
+                        <div key={idx} className="text-xs text-white/40 font-light">{f}</div>
+                      ))}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -431,13 +419,15 @@ export default function EbookModal({ tool, category, isOpen, onClose }: EbookMod
           )}
 
           {/* CTA */}
-          <div className="rounded-xl p-8 text-center" style={{ background: `linear-gradient(135deg, ${category.accentDark}, ${category.accent})` }}>
-            <div className="text-2xl mb-2">🚀</div>
-            <div className="text-base font-semibold text-primary-foreground mb-1">Pronto para começar com {tool.name}?</div>
-            <div className="text-[13px] text-primary-foreground/80 mb-4">Acesse agora e comece gratuitamente</div>
-            <a href={tool.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary-foreground text-foreground rounded-lg text-sm font-medium hover:opacity-90 transition-opacity">
-              Acessar {tool.name} <ExternalLink size={14} />
-            </a>
+          <div className="glass-smooth border border-white/5 rounded-[3rem] p-12 text-center relative overflow-hidden group mt-12">
+            <div className="absolute inset-0 bg-gradient-to-t from-white/[0.05] to-transparent pointer-events-none" />
+            <div className="relative z-10">
+              <h2 className="text-3xl font-serif-display text-white mb-2 tracking-tight">Pronto para a Escala Brutal?</h2>
+              <p className="text-sm text-white/40 font-light uppercase tracking-widest mb-10">Acesse {tool.name} e comece hoje mesmo</p>
+              <a href={tool.url} target="_blank" rel="noopener noreferrer" className="h-16 px-12 rounded-full bg-white text-black font-bold uppercase tracking-widest text-xs inline-flex items-center gap-3 hover:scale-[1.05] transition-all shadow-xl">
+                Link Oficial da Plataforma <ExternalLink size={16} />
+              </a>
+            </div>
           </div>
         </>)}
         </div>
