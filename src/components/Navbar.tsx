@@ -109,8 +109,11 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
       {/* Side Menu Drawer */}
       {showMenu && (
         <div className="fixed inset-0 z-[300]" onClick={() => setShowMenu(false)}>
-          <div className="absolute inset-0 bg-black/40" />
-          <div className="absolute left-0 top-0 h-full w-full max-w-[320px] bg-black shadow-2xl flex flex-col border-r border-white/5" onClick={e => e.stopPropagation()}>
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-fade-in" />
+          <div 
+            className="absolute left-0 top-0 h-full w-full max-w-[320px] bg-black shadow-2xl flex flex-col border-r border-white/5 animate-slide-in-left" 
+            onClick={e => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between p-5 border-b border-white/5">
               <h3 className="text-base font-serif-display text-white">Menu</h3>
               <button onClick={() => setShowMenu(false)} className="text-white/40 hover:text-white p-1 rounded-md hover:bg-white/10"><X size={18} /></button>
