@@ -169,7 +169,7 @@ export default function Home() {
               size="lg" 
               variant="outline"
               onClick={() => scrollTo('how-it-works')}
-              className="w-full sm:w-auto border-white/10 text-white hover:bg-white/5 h-16 px-12 rounded-full text-lg font-medium glass-smooth"
+              className="w-full sm:w-auto border-white/10 text-white hover:bg-white/5 h-16 px-12 rounded-full text-lg font-medium glass-smooth active:bg-white/5"
             >
               Explorar Ecossistema
             </Button>
