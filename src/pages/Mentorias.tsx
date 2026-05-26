@@ -142,8 +142,9 @@ export default function Mentorias() {
                 onClick={() => setSelectedVideo(null)}
                 className="absolute top-24 right-8 z-50 bg-black/50 hover:bg-black/80 p-2 rounded-full border border-white/10 transition-all"
               >
-                <X size={24} />
+                <XIcon size={24} />
               </button>
+
             </div>
           ) : (
             <>
