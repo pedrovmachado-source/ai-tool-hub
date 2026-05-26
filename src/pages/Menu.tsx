@@ -71,7 +71,14 @@ export default function Menu() {
 
   return (
     <div className="flex flex-col min-h-screen bg-black text-white selection:bg-white/20 font-sans overflow-x-hidden">
-      <Navbar />
+      <Navbar 
+        onNavigate={(page) => {
+          if (page === 'home') navigate('/');
+          else if (page === 'profile') navigate('/perfil');
+          else if (page === 'pro') navigate('/pro');
+          else navigate('/ferramentas');
+        }} 
+      />
 
       <main className="flex-1 relative pt-32 pb-24 px-6">
         {/* Background Gradients */}
