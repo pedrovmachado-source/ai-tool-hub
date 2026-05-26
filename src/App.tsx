@@ -10,6 +10,7 @@ import Menu from "./pages/Menu.tsx";
 import Profile from "./pages/Profile.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import Alunos from "./pages/Alunos.tsx";
+import Invite from "./pages/Invite.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
 
 const queryClient = new QueryClient();
@@ -23,6 +24,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/convite" element={<ProtectedRoute><Invite /></ProtectedRoute>} />
             <Route path="/ferramentas" element={<ProtectedRoute><Tools /></ProtectedRoute>} />
             <Route path="/menu" element={<ProtectedRoute><Menu /></ProtectedRoute>} />
             <Route path="/perfil" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
