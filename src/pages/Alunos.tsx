@@ -94,6 +94,7 @@ export default function Alunos() {
           if (page === 'home') navigate('/');
           else if (page === 'profile') navigate('/perfil');
           else if (page === 'pro') navigate('/pro');
+          else if (page === 'alunos' || page === 'lessons') navigate('/alunos');
           else navigate('/ferramentas');
         }} 
       />
