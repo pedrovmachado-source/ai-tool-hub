@@ -192,7 +192,7 @@ export default function Alunos() {
                     </AccordionTrigger>
                     <AccordionContent className="pb-6">
                       <div className="space-y-2 pt-2">
-                        {aulasGravadas.map((aula) => (
+                        {personalizedAulas.map((aula) => (
                           <button
                             key={aula.id}
                             onClick={() => handleLessonSelect(aula)}
