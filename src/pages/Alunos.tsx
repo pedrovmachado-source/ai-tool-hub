@@ -209,41 +209,6 @@ export default function Alunos() {
                     </AccordionContent>
                   </AccordionItem>
 
-                  {/* Seção 2 — Aulas Adicionais */}
-                  <AccordionItem value="adicionais" className="border-white/5 glass-smooth rounded-[2rem] overflow-hidden px-6">
-                    <AccordionTrigger className="hover:no-underline py-6">
-                      <div className="flex items-center gap-4 text-left">
-                        <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center">
-                          <PlayCircle className="w-5 h-5" />
-                        </div>
-                        <div>
-                          <h3 className="text-xl font-serif-display">Aulas Adicionais</h3>
-                          <p className="text-[10px] text-white/30 uppercase tracking-widest mt-1">Atualizado Semanalmente</p>
-                        </div>
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent className="pb-6">
-                      <div className="space-y-2 pt-2">
-                        {aulasAdicionais.map((aula) => (
-                          <button
-                            key={aula.id}
-                            onClick={() => handleLessonSelect(aula)}
-                            className={`w-full text-left p-4 rounded-2xl transition-all duration-300 flex items-center justify-between group ${selectedVideo?.id === aula.id ? 'bg-white/10 border-white/10' : 'hover:bg-white/5 border-transparent'} border`}
-                          >
-                            <div className="flex items-center gap-3">
-                              <PlayCircle className={`w-4 h-4 ${selectedVideo?.id === aula.id ? 'text-white' : 'text-white/20 group-hover:text-white/50'}`} />
-                              <span className={`text-sm ${selectedVideo?.id === aula.id ? 'text-white font-medium' : 'text-white/50'}`}>{aula.title}</span>
-                            </div>
-                            <span className="text-[10px] text-white/20 font-mono">{aula.duration}</span>
-                          </button>
-                        ))}
-                        <div className="p-4 border border-dashed border-white/5 rounded-2xl flex items-center justify-center gap-2 mt-4">
-                          <Lock className="w-3 h-3 text-white/20" />
-                          <span className="text-[10px] text-white/20 uppercase tracking-[0.2em]">Próxima aula em breve</span>
-                        </div>
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
 
                   {/* Seção 3 — Transcrições */}
                   <AccordionItem value="transcricoes" className="border-white/5 glass-smooth rounded-[2rem] overflow-hidden px-6">
