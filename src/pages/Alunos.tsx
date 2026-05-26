@@ -1,6 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
+import MentoriaModal from '@/components/MentoriaModal';
+import { isMentorado } from '@/lib/plan';
+
 import { Button } from '@/components/ui/button';
 import { 
   PlayCircle, 
@@ -33,7 +36,15 @@ export default function Alunos() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [selectedVideo, setSelectedVideo] = useState<Lesson | null>(null);
+  const [mentoriaModalOpen, setMentoriaModalOpen] = useState(false);
   const videoRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (user && !isMentorado(user.plano)) {
+      setMentoriaModalOpen(true);
+    }
+  }, [user]);
+
 
   useEffect(() => {
     document.title = 'Convert Club — Área do Aluno';
@@ -303,6 +314,15 @@ export default function Alunos() {
           &copy; 2026 CONVERT CLUB · BUILT FOR THE 1%
         </div>
       </footer>
+
+      <MentoriaModal 
+        isOpen={mentoriaModalOpen} 
+        onClose={() => {
+          setMentoriaModalOpen(false);
+          navigate('/menu');
+        }} 
+      />
     </div>
+
   );
 }

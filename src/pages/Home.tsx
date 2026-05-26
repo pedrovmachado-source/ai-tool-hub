@@ -2,6 +2,9 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
+import MentoriaModal from '@/components/MentoriaModal';
+import { isMentorado } from '@/lib/plan';
+
 import hoteducaRef from '@/assets/hoteduca-ref.png';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -26,11 +29,25 @@ import {
 export default function Home() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [mentoriaModalOpen, setMentoriaModalOpen] = useState(false);
 
   const openEmbeddedPage = (page: string) => {
+    if (page === 'alunos' || page === 'lessons') {
+      if (!user) {
+        // Handled by Navbar/AuthModal usually, but for safety:
+        return;
+      }
+      if (!isMentorado(user.plano)) {
+        setMentoriaModalOpen(true);
+        return;
+      }
+      navigate('/alunos');
+      return;
+    }
     sessionStorage.setItem('adai:initialPage', page);
     navigate('/ferramentas');
   };
+
 
   useEffect(() => {
     document.title = 'Convert Club — Comunidade de Alta Conversão';
@@ -362,6 +379,8 @@ export default function Home() {
           </div>
         </div>
       </footer>
+      <MentoriaModal isOpen={mentoriaModalOpen} onClose={() => setMentoriaModalOpen(false)} />
     </div>
+
   );
 }

@@ -1,6 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
+import MentoriaModal from '@/components/MentoriaModal';
+import { isMentorado } from '@/lib/plan';
+
 import { Button } from '@/components/ui/button';
 import { 
   Wrench, 
@@ -16,6 +19,8 @@ import { useEffect, useRef, useState } from 'react';
 export default function Menu() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [mentoriaModalOpen, setMentoriaModalOpen] = useState(false);
+
 
   useEffect(() => {
     document.title = 'Convert Club — Dashboard';
@@ -108,7 +113,14 @@ export default function Menu() {
             {menuItems.map((item, idx) => (
               <Reveal key={item.title} delay={idx * 150}>
                 <div 
-                  onClick={() => navigate(item.path)}
+                  onClick={() => {
+                    if (item.path === '/alunos' && !isMentorado(user?.plano)) {
+                      setMentoriaModalOpen(true);
+                      return;
+                    }
+                    navigate(item.path);
+                  }}
+
                   className="group relative cursor-pointer p-8 glass-smooth hover:bg-white/10 transition-all duration-500 rounded-[2.5rem] border border-white/5 h-full flex flex-col"
                 >
                   <div className="w-14 h-14 bg-white/5 rounded-2xl mb-8 group-hover:bg-white group-hover:text-black transition-all duration-500 flex items-center justify-center">
@@ -181,6 +193,8 @@ export default function Menu() {
           &copy; 2026 CONVERT CLUB · BUILT FOR THE 1%
         </div>
       </footer>
+      <MentoriaModal isOpen={mentoriaModalOpen} onClose={() => setMentoriaModalOpen(false)} />
     </div>
+
   );
 }
