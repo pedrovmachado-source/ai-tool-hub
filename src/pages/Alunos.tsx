@@ -37,6 +37,9 @@ export default function Alunos() {
   const { user } = useAuth();
   const [selectedVideo, setSelectedVideo] = useState<Lesson | null>(null);
   const [mentoriaModalOpen, setMentoriaModalOpen] = useState(false);
+  const [personalizedAulas, setPersonalizedAulas] = useState<Lesson[]>([]);
+  const [welcomeMessage, setWelcomeMessage] = useState<string>('');
+  const [loading, setLoading] = useState(true);
   const videoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -47,10 +50,42 @@ export default function Alunos() {
       }
       if (!isMentorado(user.plano)) {
         setMentoriaModalOpen(true);
+        return;
       }
+      fetchPersonalizedArea();
     }
   }, [user, navigate]);
 
+  const fetchPersonalizedArea = async () => {
+    if (!user) return;
+    setLoading(true);
+    
+    // First, find the profile ID (since student_areas uses profile.id as user_id)
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('user_id', user.id)
+      .single();
+
+    if (profile) {
+      const { data, error } = await supabase
+        .from('student_areas')
+        .select('*')
+        .eq('user_id', profile.id)
+        .maybeSingle();
+
+      if (data && !error) {
+        const content = data.content as any;
+        setPersonalizedAulas(content.lessons || []);
+        setWelcomeMessage(content.welcomeMessage || '');
+      } else {
+        // Fallback to defaults if no personalized area found
+        setPersonalizedAulas(defaultAulas);
+        setWelcomeMessage('');
+      }
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
     document.title = 'Convert Club — Área do Aluno';
@@ -90,7 +125,7 @@ export default function Alunos() {
     );
   };
 
-  const aulasGravadas: Lesson[] = [
+  const defaultAulas: Lesson[] = [
     { id: '1', title: 'Aula 1: O Mindset dos 1%', videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ', duration: '15:20', transcriptionUrl: '#' },
     { id: '2', title: 'Aula 2: Estrutura de Escala Brutal', videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ', duration: '22:45', transcriptionUrl: '#' },
     { id: '3', title: 'Aula 3: Copywriting de Alta Conversão', videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ', duration: '18:10', transcriptionUrl: '#' },
@@ -99,10 +134,6 @@ export default function Alunos() {
     { id: '6', title: 'Aula 6: Gestão de Comunidade e LTV', videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ', duration: '30:00', transcriptionUrl: '#' },
   ];
 
-  const aulasAdicionais: Lesson[] = [
-    { id: 'a1', title: 'Extra: Lançamentos Meteóricos 2.0', videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ', duration: '45:00', transcriptionUrl: '#' },
-    { id: 'a2', title: 'Extra: Escala com Influenciadores', videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ', duration: '35:20', transcriptionUrl: '#' },
-  ];
 
   return (
     <div className="flex flex-col min-h-screen bg-black text-white selection:bg-white/20 font-sans overflow-x-hidden">
