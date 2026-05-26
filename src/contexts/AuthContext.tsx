@@ -165,6 +165,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           telefone: createdData.telefone,
           empresa: createdData.empresa,
           invite_validated: createdData.invite_validated,
+          abuse_blocked: createdData.abuse_blocked,
         } satisfies ProfileRecord
       : null;
   }, []);
