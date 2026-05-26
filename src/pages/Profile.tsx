@@ -387,7 +387,7 @@ function TabConvites() {
         <header className="mb-6">
           <h2 className="font-serif-display text-xl">Meus Convites</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Você tem direito a 3 convites. Use-os com sabedoria para trazer novos membros para o Clube Kayosa.
+            Você tem direito a 3 convites. Use-os com sabedoria para trazer novos membros para o Convert Club.
           </p>
         </header>
 
