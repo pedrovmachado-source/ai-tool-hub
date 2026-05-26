@@ -121,11 +121,11 @@ function ToolFormModal({ tool, onSave, onClose }: { tool?: Tool; onSave: (t: Too
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-3 sm:p-0" onClick={onClose}>
-      <div className="bg-navy border border-primary-foreground/10 rounded-xl p-6 w-[95vw] sm:w-[520px] max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-medium text-primary-foreground">{tool ? 'Editar Ferramenta' : 'Nova Ferramenta'}</h3>
-          <button onClick={onClose} className="text-muted-foreground/40 hover:text-primary-foreground"><X size={16} /></button>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-3 sm:p-0" onClick={onClose}>
+      <div className="glass-smooth border border-white/10 rounded-[2rem] p-8 w-[95vw] sm:w-[520px] max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-8">
+          <h3 className="text-2xl font-serif-display text-white">{tool ? 'Editar Ferramenta' : 'Nova Ferramenta'}</h3>
+          <button onClick={onClose} className="text-white/20 hover:text-white transition-colors"><X size={20} /></button>
         </div>
         {[
           { label: 'Nome', key: 'name' as const, placeholder: 'Ex: ChatGPT' },
