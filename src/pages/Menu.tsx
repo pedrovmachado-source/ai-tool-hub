@@ -1,0 +1,185 @@
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import Navbar from '@/components/Navbar';
+import { Button } from '@/components/ui/button';
+import { 
+  Wrench, 
+  Video, 
+  Users, 
+  ArrowRight,
+  BookOpen,
+  Layout,
+  PlayCircle
+} from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+
+export default function Menu() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    document.title = 'Convert Club — Dashboard';
+  }, []);
+
+  const Reveal = ({ children, className = '', as: As = 'div' as any, delay = 0 }: any) => {
+    const ref = useRef<HTMLElement | null>(null);
+    const [shown, setShown] = useState(false);
+    useEffect(() => {
+      const el = ref.current;
+      if (!el) return;
+      const io = new IntersectionObserver(
+        ([e]) => { if (e.isIntersecting) { setShown(true); io.disconnect(); } },
+        { threshold: 0.1 }
+      );
+      io.observe(el);
+      return () => io.disconnect();
+    }, []);
+    return (
+      <As
+        ref={ref as any}
+        className={`${className} transition-all duration-1000 ease-out ${shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+        style={{ transitionDelay: `${delay}ms` }}
+      >
+        {children}
+      </As>
+    );
+  };
+
+  const menuItems = [
+    {
+      title: "Ferramentas",
+      description: "Acesse nosso ecossistema de IAs, prompts e utilitários de alta performance.",
+      icon: Wrench,
+      path: "/ferramentas",
+      badge: "Full Access"
+    },
+    {
+      title: "Mentorias",
+      description: "Gravações das mentorias exclusivas com estratégias de escala e conversão.",
+      icon: Video,
+      path: "/mentorias",
+      badge: "Conteúdo VIP"
+    },
+    {
+      title: "Área do Aluno",
+      description: "Gravação de aulas, transcrição de reuniões e materiais de apoio.",
+      icon: Users,
+      path: "/alunos",
+      badge: "Comunidade"
+    }
+  ];
+
+  return (
+    <div className="flex flex-col min-h-screen bg-black text-white selection:bg-white/20 font-sans overflow-x-hidden">
+      <Navbar 
+        onNavigate={(page) => {
+          if (page === 'home') navigate('/');
+          else if (page === 'profile') navigate('/perfil');
+          else if (page === 'pro') navigate('/pro');
+          else navigate('/ferramentas');
+        }} 
+      />
+
+      <main className="flex-1 relative pt-32 pb-24 px-6">
+        {/* Background Gradients */}
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-[10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-white/5 blur-[120px]" />
+          <div className="absolute bottom-[10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-white/5 blur-[120px]" />
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto">
+          <header className="mb-20">
+            <Reveal>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-smooth mb-6 border border-white/5">
+                <Layout className="w-3 h-3 text-white/50" />
+                <span className="text-[10px] font-bold text-white/50 tracking-[0.2em] uppercase">Dashboard de Acesso</span>
+              </div>
+              <h1 className="text-4xl md:text-6xl font-serif-display tracking-tight text-white mb-6">
+                Bem-vindo ao <em className="italic font-normal">Ecossistema</em>.
+              </h1>
+              <p className="text-white/40 text-lg max-w-2xl font-light">
+                Olá, {user?.nome || 'Membro'}. Selecione a vertical que deseja acessar hoje para continuar sua jornada rumo à escala brutal.
+              </p>
+            </Reveal>
+          </header>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {menuItems.map((item, idx) => (
+              <Reveal key={item.title} delay={idx * 150}>
+                <div 
+                  onClick={() => navigate(item.path)}
+                  className="group relative cursor-pointer p-8 glass-smooth hover:bg-white/10 transition-all duration-500 rounded-[2.5rem] border border-white/5 h-full flex flex-col"
+                >
+                  <div className="w-14 h-14 bg-white/5 rounded-2xl mb-8 group-hover:bg-white group-hover:text-black transition-all duration-500 flex items-center justify-center">
+                    <item.icon className="w-7 h-7" />
+                  </div>
+
+                  <div className="inline-block px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[9px] font-bold text-white/40 uppercase tracking-[0.2em] mb-4 w-fit">
+                    {item.badge}
+                  </div>
+
+                  <h3 className="text-2xl font-serif-display text-white mb-4">
+                    {item.title}
+                  </h3>
+                  
+                  <p className="text-white/30 leading-relaxed font-light text-sm mb-8 flex-1">
+                    {item.description}
+                  </p>
+
+                  <div className="flex items-center text-sm font-bold text-white/70 group-hover:text-white transition-colors">
+                    Acessar agora
+                    <ArrowRight className="ml-2 w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+
+          {/* Quick Access Section */}
+          <section className="mt-32">
+            <Reveal>
+              <div className="p-12 glass-smooth rounded-[3rem] border border-white/5 relative overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-r from-white/[0.02] to-transparent pointer-events-none" />
+                
+                <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                  <div>
+                    <h2 className="text-3xl font-serif-display text-white mb-6">Últimas Atualizações</h2>
+                    <div className="space-y-6">
+                      {[
+                        { title: "Novas gravações de mentorias", date: "2 horas atrás", icon: PlayCircle },
+                        { title: "Prompt de escala V4 atualizado", date: "1 dia atrás", icon: BookOpen },
+                        { title: "Área de transcrição otimizada", date: "3 dias atrás", icon: Users }
+                      ].map((update, i) => (
+                        <div key={i} className="flex items-center gap-4 text-white/40 group/item">
+                          <update.icon className="w-5 h-5 group-hover/item:text-white transition-colors" />
+                          <span className="text-sm font-light group-hover/item:text-white/70 transition-colors">{update.title}</span>
+                          <span className="text-[10px] uppercase tracking-widest ml-auto opacity-50">{update.date}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div className="lg:text-right">
+                    <Button 
+                      onClick={() => navigate('/perfil')}
+                      variant="outline"
+                      className="border-white/10 text-white hover:bg-white/5 h-14 px-10 rounded-full text-sm font-bold glass-smooth"
+                    >
+                      Configurações do Perfil
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+          </section>
+        </div>
+      </main>
+
+      <footer className="py-12 px-6 border-t border-white/5 text-center">
+        <div className="text-[9px] text-white/10 font-bold uppercase tracking-[0.5em]">
+          &copy; 2026 CONVERT CLUB · BUILT FOR THE 1%
+        </div>
+      </footer>
+    </div>
+  );
+}

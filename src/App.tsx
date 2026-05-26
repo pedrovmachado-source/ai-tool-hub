@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Home from "./pages/Home.tsx";
 import Tools from "./pages/Tools.tsx";
+import Menu from "./pages/Menu.tsx";
 import Profile from "./pages/Profile.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
@@ -21,6 +22,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/ferramentas" element={<Tools />} />
+            <Route path="/menu" element={<Menu />} />
             <Route path="/perfil" element={<Profile />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

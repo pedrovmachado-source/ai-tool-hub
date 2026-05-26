@@ -110,7 +110,7 @@ export default function Home() {
       icon: Layout,
       color: "text-white",
       bg: "bg-white/10",
-      target: "/ferramentas",
+      target: "/menu",
       badge: "Curadoria 2026"
     }
   ];
@@ -149,7 +149,7 @@ export default function Home() {
               Transforme Cliques em <em className="italic font-normal">Escala Brutal</em>.
             </h1>
           </Reveal>
-
+          
           <Reveal delay={400}>
             <p className="max-w-2xl mx-auto text-lg sm:text-xl text-white/50 leading-relaxed mb-12 font-light">
               Bem-vindo à Convert Club. A etapa final para infoprodutores que buscam o domínio absoluto do mercado através de sites de alta conversão e inteligência estratégica.
@@ -159,7 +159,7 @@ export default function Home() {
           <Reveal delay={600} className="flex flex-col sm:flex-row items-center justify-center gap-6">
             <Button 
               size="lg" 
-              onClick={() => scrollTo('services')}
+              onClick={() => navigate('/menu')}
               className="w-full sm:w-auto bg-white hover:bg-white/90 text-black h-16 px-12 rounded-full text-lg font-bold transition-all hover:scale-[1.05] shadow-[0_0_40px_rgba(255,255,255,0.2)]"
             >
               Entrar na Comunidade
@@ -339,7 +339,7 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
               <Button 
                 size="lg" 
-                onClick={() => scrollTo('services')}
+                onClick={() => navigate('/menu')}
                 className="w-full sm:w-auto bg-white hover:bg-white/90 text-black h-20 px-16 rounded-full text-xl font-bold transition-all hover:scale-105"
               >
                 Acessar Agora
