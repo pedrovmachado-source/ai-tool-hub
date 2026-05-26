@@ -449,9 +449,12 @@ export type Database = {
           empresa: string | null
           id: string
           invite_validated: boolean | null
+          lgpd_accepted: boolean | null
+          lgpd_accepted_at: string | null
           nome: string
           plano: string
           sobre: string
+          sobrenome: string | null
           telefone: string | null
           updated_at: string
           user_id: string
@@ -464,9 +467,12 @@ export type Database = {
           empresa?: string | null
           id?: string
           invite_validated?: boolean | null
+          lgpd_accepted?: boolean | null
+          lgpd_accepted_at?: string | null
           nome?: string
           plano?: string
           sobre?: string
+          sobrenome?: string | null
           telefone?: string | null
           updated_at?: string
           user_id: string
@@ -479,9 +485,12 @@ export type Database = {
           empresa?: string | null
           id?: string
           invite_validated?: boolean | null
+          lgpd_accepted?: boolean | null
+          lgpd_accepted_at?: string | null
           nome?: string
           plano?: string
           sobre?: string
+          sobrenome?: string | null
           telefone?: string | null
           updated_at?: string
           user_id?: string
