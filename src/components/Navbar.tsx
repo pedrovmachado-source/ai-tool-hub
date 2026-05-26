@@ -135,7 +135,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
                 return (
                   <div 
                     key={key} 
-                    className="relative"
+                    className="relative group/nav-item"
                     onMouseEnter={() => hasSubmenu && setHoveredItem(key)}
                     onMouseLeave={() => hasSubmenu && setHoveredItem(null)}
                   >
