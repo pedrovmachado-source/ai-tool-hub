@@ -10,6 +10,7 @@ interface Profile {
   telefone?: string;
   empresa?: string;
   inviteValidated: boolean;
+  abuseBlocked: boolean;
 }
 
 interface SavedEbook {
@@ -27,6 +28,7 @@ interface ProfileRecord {
   telefone: string | null;
   empresa: string | null;
   invite_validated: boolean;
+  abuse_blocked: boolean;
 }
 
 interface AuthContextType {
@@ -62,6 +64,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     telefone: profile?.telefone || undefined,
     empresa: profile?.empresa || undefined,
     inviteValidated: (profile as ProfileRecord)?.invite_validated ?? (profile as Profile)?.inviteValidated ?? false,
+    abuseBlocked: (profile as ProfileRecord)?.abuse_blocked ?? (profile as Profile)?.abuseBlocked ?? false,
   }), []);
 
   const clearAuthState = useCallback(() => {
@@ -136,6 +139,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           telefone: fallbackData.telefone,
           empresa: fallbackData.empresa,
           invite_validated: fallbackData.invite_validated,
+          abuse_blocked: fallbackData.abuse_blocked,
         } satisfies ProfileRecord;
       }
 
