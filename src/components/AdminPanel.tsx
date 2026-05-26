@@ -749,26 +749,26 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
                 </tr></thead>
                 <tbody>
                   {filteredUsers.map(u => (
-                    <tr key={u.id} className="border-b border-primary-foreground/[0.04] hover:bg-primary-foreground/[0.02]">
-                      <td className="px-3 sm:px-5 py-3 text-[13px] text-primary-foreground/80 whitespace-nowrap">{u.nome}</td>
-                      <td className="px-3 sm:px-5 py-3 text-[13px] text-primary-foreground/80 whitespace-nowrap">{u.sobre}</td>
-                      <td className="px-3 sm:px-5 py-3 text-[13px] text-muted-foreground/50 whitespace-nowrap">{u.email}</td>
-                      <td className="px-3 sm:px-5 py-3">
-                        <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${u.plano === 'Max' ? 'bg-brand-blue/20 text-brand-blue-medium' : u.plano === 'Pro' ? 'bg-brand-green/20 text-brand-green' : u.plano === 'Cancelado' ? 'bg-brand-red/20 text-brand-red' : 'bg-brand-amber/20 text-brand-amber'}`}>{u.plano}</span>
+                    <tr key={u.id} className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors">
+                      <td className="px-6 py-4 text-[13px] text-white/80 whitespace-nowrap">{u.nome}</td>
+                      <td className="px-6 py-4 text-[13px] text-white/80 whitespace-nowrap">{u.sobre}</td>
+                      <td className="px-6 py-4 text-[13px] text-white/40 whitespace-nowrap">{u.email}</td>
+                      <td className="px-6 py-4">
+                        <span className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full ${u.plano === 'Max' ? 'bg-white/10 text-white' : u.plano === 'Pro' ? 'bg-white/5 text-white/70' : u.plano === 'Cancelado' ? 'bg-red-500/10 text-red-500' : 'bg-white/5 text-white/40'}`}>{u.plano}</span>
                       </td>
-                      <td className="px-3 sm:px-5 py-3 text-[13px] text-muted-foreground/50 whitespace-nowrap">{new Date(u.created_at).toLocaleDateString('pt-BR')}</td>
-                      <td className="px-3 sm:px-5 py-3">
+                      <td className="px-6 py-4 text-[13px] text-white/40 whitespace-nowrap">{new Date(u.created_at).toLocaleDateString('pt-BR')}</td>
+                      <td className="px-6 py-4">
                         <div className="flex flex-wrap gap-2 items-center">
                           <select
                             value={u.plano === 'Max' || u.plano === 'Pro' ? u.plano : 'Free'}
                             onChange={e => setUserPlan(u.id, e.target.value as 'Free' | 'Pro' | 'Max')}
-                            className="text-[11px] px-2 py-1 rounded bg-primary-foreground/10 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue"
+                            className="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-white/70 focus:outline-none focus:border-white/20 transition-all outline-none"
                           >
                             <option value="Free">Free</option>
                             <option value="Pro">Pro</option>
                             <option value="Max">Max</option>
                           </select>
-                          <button onClick={() => deleteUser(u.id)} className="text-[11px] px-2 py-1 rounded bg-brand-red/20 text-brand-red hover:bg-brand-red/30">Excluir</button>
+                          <button onClick={() => deleteUser(u.id)} className="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors">Excluir</button>
                         </div>
                       </td>
                     </tr>
