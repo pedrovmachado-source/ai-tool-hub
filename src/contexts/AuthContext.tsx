@@ -25,6 +25,7 @@ interface SavedEbook {
 
 interface ProfileRecord {
   nome: string;
+  sobrenome: string | null;
   sobre: string;
   email: string;
   plano: string;
@@ -33,6 +34,7 @@ interface ProfileRecord {
   avatar_url: string | null;
   invite_validated: boolean;
   abuse_blocked: boolean;
+  lgpd_accepted: boolean | null;
 }
 
 interface AuthContextType {
@@ -41,7 +43,7 @@ interface AuthContextType {
   savedEbooks: SavedEbook[];
   loading: boolean;
   login: (email: string, password: string) => Promise<string | null>;
-  register: (nome: string, email: string, password: string) => Promise<string | null>;
+  register: (nome: string, sobrenome: string, email: string, password: string, lgpdAccepted: boolean) => Promise<string | null>;
   logout: () => Promise<void>;
   upgradeToPro: () => Promise<void>;
   updateUser: (data: Partial<Omit<Profile, 'inviteValidated' | 'abuseBlocked'>>) => Promise<void>;
