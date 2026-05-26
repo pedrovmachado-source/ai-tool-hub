@@ -121,11 +121,11 @@ function ToolFormModal({ tool, onSave, onClose }: { tool?: Tool; onSave: (t: Too
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-3 sm:p-0" onClick={onClose}>
-      <div className="bg-navy border border-primary-foreground/10 rounded-xl p-6 w-[95vw] sm:w-[520px] max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-medium text-primary-foreground">{tool ? 'Editar Ferramenta' : 'Nova Ferramenta'}</h3>
-          <button onClick={onClose} className="text-muted-foreground/40 hover:text-primary-foreground"><X size={16} /></button>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-3 sm:p-0" onClick={onClose}>
+      <div className="glass-smooth border border-white/10 rounded-[2rem] p-8 w-[95vw] sm:w-[520px] max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-8">
+          <h3 className="text-2xl font-serif-display text-white">{tool ? 'Editar Ferramenta' : 'Nova Ferramenta'}</h3>
+          <button onClick={onClose} className="text-white/20 hover:text-white transition-colors"><X size={20} /></button>
         </div>
         {[
           { label: 'Nome', key: 'name' as const, placeholder: 'Ex: ChatGPT' },
@@ -136,12 +136,12 @@ function ToolFormModal({ tool, onSave, onClose }: { tool?: Tool; onSave: (t: Too
         ].map(f => (
           <div key={f.key} className="mb-3">
             <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">{f.label}</label>
-            <input value={(form[f.key] as string) || ''} onChange={e => set(f.key, e.target.value)} placeholder={f.placeholder} className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" />
+            <input value={(form[f.key] as string) || ''} onChange={e => set(f.key, e.target.value)} placeholder={f.placeholder} className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/5 text-white placeholder:text-white/20 focus:outline-none focus:border-white/20 transition-all" />
           </div>
         ))}
         <div className="mb-3">
           <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Descrição</label>
-          <textarea value={form.desc} onChange={e => set('desc', e.target.value)} rows={3} className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue resize-none" />
+          <textarea value={form.desc} onChange={e => set('desc', e.target.value)} rows={3} className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/5 text-white placeholder:text-white/20 focus:outline-none focus:border-white/20 transition-all resize-none" />
         </div>
 
         {/* PDF Upload */}
@@ -196,9 +196,9 @@ function ToolFormModal({ tool, onSave, onClose }: { tool?: Tool; onSave: (t: Too
           onChange={(p) => set('promptsAdvanced' as any, p)}
         />
 
-        <div className="flex gap-2 justify-end mt-4">
-          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm text-muted-foreground/60 hover:text-primary-foreground">Cancelar</button>
-          <button onClick={validateAndSave} className="px-4 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90">Salvar</button>
+        <div className="flex gap-4 justify-end mt-12">
+          <button onClick={onClose} className="px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest text-white/40 hover:text-white transition-colors">Cancelar</button>
+          <button onClick={validateAndSave} className="px-8 py-2.5 bg-white text-black rounded-full text-xs font-bold uppercase tracking-widest hover:bg-white/90 transition-all">Salvar</button>
         </div>
       </div>
     </div>
@@ -612,9 +612,9 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
   const currentSectionLabel = navItems.find(n => n.key === section)?.label || 'Admin';
 
   return (
-    <div className="min-h-screen flex" style={{ background: '#0F0F1A' }}>
+    <div className="min-h-screen flex selection:bg-white/20 font-sans" style={{ background: '#000000' }}>
       {/* Mobile top bar */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-navy border-b border-primary-foreground/[0.07] h-12 flex items-center px-3 gap-2">
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-black border-b border-white/5 h-12 flex items-center px-3 gap-2">
         <button onClick={() => setSidebarOpen(true)} className="p-1.5 rounded-lg text-primary-foreground hover:bg-primary-foreground/10">
           <Menu size={20} />
         </button>
@@ -637,11 +637,11 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
       )}
 
       {/* Sidebar */}
-      <div className={`fixed lg:relative top-0 left-0 z-50 w-[240px] lg:w-[220px] h-full lg:h-auto bg-navy flex flex-col shrink-0 transition-transform duration-200 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}>
+      <div className={`fixed lg:relative top-0 left-0 z-50 w-[240px] lg:w-[220px] h-full lg:h-auto bg-black border-r border-white/5 flex flex-col shrink-0 transition-transform duration-200 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}>
         <div className="px-5 py-6 border-b border-primary-foreground/[0.07] flex items-start justify-between gap-2">
           <div>
-            <div className="text-[15px] font-medium text-primary-foreground">AdAI Admin</div>
-            <div className="text-[11px] text-muted-foreground/40">Painel de administração</div>
+            <div className="text-lg font-serif-display tracking-tight text-white">Convert Club</div>
+            <div className="text-[9px] font-bold uppercase tracking-[0.2em] text-white/30">Dashboard Admin</div>
           </div>
           <div className="flex items-center gap-1">
             <button
@@ -662,17 +662,21 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
         </div>
         <div className="py-3 flex-1 overflow-y-auto">
           {navItems.map(item => (
-            <button key={item.key} onClick={() => { setSection(item.key); setViewingCategory(null); setSidebarOpen(false); if (item.key === 'site-creation') setSiteCreationInitialTab('products'); }} className={`w-full flex items-center gap-2.5 px-5 py-2.5 text-[13px] transition-colors ${section === item.key ? 'text-brand-blue-medium bg-brand-blue/15' : 'text-muted-foreground/50 hover:text-primary-foreground hover:bg-primary-foreground/5'}`}>
-              <item.icon size={15} /> <span className="flex-1 text-left">{item.label}</span>
+            <button 
+              key={item.key} 
+              onClick={() => { setSection(item.key); setViewingCategory(null); setSidebarOpen(false); if (item.key === 'site-creation') setSiteCreationInitialTab('products'); }} 
+              className={`w-full flex items-center gap-3 px-6 py-3 text-[11px] font-bold uppercase tracking-widest transition-all ${section === item.key ? 'text-white bg-white/5 border-r-2 border-white' : 'text-white/30 hover:text-white hover:bg-white/[0.02]'}`}
+            >
+              <item.icon size={14} /> <span className="flex-1 text-left">{item.label}</span>
               {item.key === 'site-creation' && unreadOrders > 0 && (
-                <span className="bg-destructive text-destructive-foreground text-[10px] font-semibold rounded-full min-w-[18px] h-[18px] px-1.5 inline-flex items-center justify-center">{unreadOrders}</span>
+                <span className="bg-white text-black text-[9px] font-bold rounded-full min-w-[18px] h-[18px] px-1.5 inline-flex items-center justify-center">{unreadOrders}</span>
               )}
             </button>
           ))}
         </div>
         <div className="px-3 pb-4 space-y-1">
-          <button onClick={onBack} className="w-full flex items-center gap-2.5 px-3 py-2.5 text-[13px] text-brand-blue-medium rounded-lg hover:bg-primary-foreground/5"><ArrowLeft size={15} /> Voltar ao site</button>
-          <button onClick={onBack} className="w-full flex items-center gap-2.5 px-3 py-2.5 text-[13px] text-brand-red/60 rounded-lg hover:bg-primary-foreground/5"><LogOut size={15} /> Sair</button>
+          <button onClick={onBack} className="w-full flex items-center gap-2.5 px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-white/50 rounded-xl hover:bg-white/5 transition-colors"><ArrowLeft size={14} /> Voltar ao site</button>
+          <button onClick={onBack} className="w-full flex items-center gap-2.5 px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-red-500/60 rounded-xl hover:bg-white/5 transition-colors"><LogOut size={14} /> Sair</button>
         </div>
       </div>
 
@@ -680,38 +684,42 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
       <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 pt-16 lg:pt-8 w-full min-w-0">
         {section === 'dashboard' && (
           <>
-            <h1 className="text-lg sm:text-xl font-medium text-primary-foreground mb-4 sm:mb-6">Dashboard</h1>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+            <h1 className="text-xl sm:text-3xl font-serif-display tracking-tight text-white mb-6 sm:mb-8">Dashboard</h1>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
               {[
                 { label: 'Total de Usuários', value: users.length, change: `${proUsers + maxUsers} pagantes` },
                 { label: 'Assinantes Pro', value: proUsers, change: 'plano intermediário' },
                 { label: 'Assinantes Max', value: maxUsers, change: 'plano premium' },
                 { label: 'Ferramentas', value: totalTools, change: `${categories.length} categorias` },
               ].map((s, i) => (
-                <div key={i} className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-4 sm:p-5">
-                  <div className="text-[11px] text-muted-foreground/40 uppercase tracking-wider mb-2">{s.label}</div>
-                  <div className="text-2xl sm:text-[28px] font-medium text-primary-foreground">{s.value}</div>
-                  <div className="text-xs text-brand-green mt-1">{s.change}</div>
+                <div key={i} className="glass-smooth border border-white/5 rounded-2xl p-5">
+                  <div className="text-[10px] text-white/40 uppercase tracking-[0.2em] mb-3">{s.label}</div>
+                  <div className="text-3xl font-serif-display text-white">{s.value}</div>
+                  <div className="text-[10px] text-white/30 font-bold uppercase tracking-widest mt-2">{s.change}</div>
                 </div>
               ))}
             </div>
-            <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl overflow-hidden">
-              <div className="flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 border-b border-primary-foreground/[0.07]">
-                <h3 className="text-sm font-medium text-primary-foreground">Usuários Recentes</h3>
-                <button onClick={() => setSection('users')} className="text-xs text-brand-blue-medium hover:underline">Ver todos</button>
+            <div className="glass-smooth border border-white/5 rounded-[2rem] overflow-hidden">
+              <div className="flex items-center justify-between px-6 py-5 border-b border-white/5">
+                <h3 className="text-lg font-serif-display text-white">Usuários Recentes</h3>
+                <button onClick={() => setSection('users')} className="text-[10px] font-bold uppercase tracking-widest text-white/50 hover:text-white transition-colors">Ver todos</button>
               </div>
               <div className="overflow-x-auto">
               <table className="w-full">
-                <thead><tr className="border-b border-primary-foreground/[0.07]">
-                  {['Nome', 'E-mail', 'Plano', 'Acesso'].map(h => <th key={h} className="px-5 py-3 text-left text-[11px] font-semibold text-muted-foreground/40 uppercase tracking-wider">{h}</th>)}
+                <thead><tr className="border-b border-white/5">
+                  {['Nome', 'E-mail', 'Plano', 'Acesso'].map(h => <th key={h} className="px-6 py-4 text-left text-[10px] font-bold text-white/30 uppercase tracking-widest">{h}</th>)}
                 </tr></thead>
                 <tbody>
                   {users.slice(0, 4).map(u => (
-                    <tr key={u.id} className="border-b border-primary-foreground/[0.04] hover:bg-primary-foreground/[0.02]">
-                      <td className="px-5 py-3 text-[13px] text-primary-foreground/80">{u.nome} {u.sobre}</td>
-                      <td className="px-5 py-3 text-[13px] text-muted-foreground/50">{u.email}</td>
-                      <td className="px-5 py-3"><span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${u.plano === 'Max' ? 'bg-brand-blue/20 text-brand-blue-medium' : u.plano === 'Pro' ? 'bg-brand-green/20 text-brand-green' : u.plano === 'Cancelado' ? 'bg-brand-red/20 text-brand-red' : 'bg-brand-amber/20 text-brand-amber'}`}>{u.plano}</span></td>
-                      <td className="px-5 py-3 text-[13px] text-muted-foreground/50">{new Date(u.created_at).toLocaleDateString('pt-BR')}</td>
+                    <tr key={u.id} className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors">
+                      <td className="px-6 py-4 text-[13px] text-white/80">{u.nome} {u.sobre}</td>
+                      <td className="px-6 py-4 text-[13px] text-white/40">{u.email}</td>
+                      <td className="px-6 py-4">
+                        <span className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full ${u.plano === 'Max' ? 'bg-white/10 text-white' : u.plano === 'Pro' ? 'bg-white/5 text-white/70' : u.plano === 'Cancelado' ? 'bg-red-500/10 text-red-500' : 'bg-white/5 text-white/40'}`}>
+                          {u.plano}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-[13px] text-white/40">{new Date(u.created_at).toLocaleDateString('pt-BR')}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -724,43 +732,43 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
         {section === 'users' && (
           <>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-3">
-              <h1 className="text-lg sm:text-xl font-medium text-primary-foreground">Usuários</h1>
+              <h1 className="text-xl sm:text-3xl font-serif-display tracking-tight text-white">Usuários</h1>
               <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
                 <div className="relative flex-1 sm:flex-initial">
                   <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/40" />
-                  <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Buscar..." className="pl-8 pr-4 py-2 rounded-lg text-sm bg-navy border border-primary-foreground/10 text-primary-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:border-brand-blue w-full sm:w-[260px]" />
+                  <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Filtrar por nome ou e-mail..." className="pl-10 pr-4 py-2.5 rounded-xl text-[11px] font-medium bg-white/5 border border-white/5 text-white placeholder:text-white/20 focus:outline-none focus:border-white/20 w-full sm:w-[280px] transition-all" />
                 </div>
-                <button onClick={exportCSV} className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-medium bg-brand-blue text-primary-foreground hover:opacity-90"><Download size={14} /> CSV</button>
+                <button onClick={exportCSV} className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-white text-black hover:bg-white/90 transition-all"><Download size={14} /> Exportar CSV</button>
               </div>
             </div>
-            <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl overflow-hidden">
+            <div className="glass-smooth border border-white/5 rounded-[2rem] overflow-hidden">
               <div className="overflow-x-auto">
               <table className="w-full">
-                <thead><tr className="border-b border-primary-foreground/[0.07]">
-                  {['Nome', 'Sobrenome', 'E-mail', 'Plano', 'Acesso', 'Ações'].map(h => <th key={h} className="px-3 sm:px-5 py-3 text-left text-[11px] font-semibold text-muted-foreground/40 uppercase tracking-wider whitespace-nowrap">{h}</th>)}
+                <thead><tr className="border-b border-white/5">
+                  {['Nome', 'Sobrenome', 'E-mail', 'Plano', 'Acesso', 'Ações'].map(h => <th key={h} className="px-6 py-4 text-left text-[10px] font-bold text-white/30 uppercase tracking-widest whitespace-nowrap">{h}</th>)}
                 </tr></thead>
                 <tbody>
                   {filteredUsers.map(u => (
-                    <tr key={u.id} className="border-b border-primary-foreground/[0.04] hover:bg-primary-foreground/[0.02]">
-                      <td className="px-3 sm:px-5 py-3 text-[13px] text-primary-foreground/80 whitespace-nowrap">{u.nome}</td>
-                      <td className="px-3 sm:px-5 py-3 text-[13px] text-primary-foreground/80 whitespace-nowrap">{u.sobre}</td>
-                      <td className="px-3 sm:px-5 py-3 text-[13px] text-muted-foreground/50 whitespace-nowrap">{u.email}</td>
-                      <td className="px-3 sm:px-5 py-3">
-                        <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${u.plano === 'Max' ? 'bg-brand-blue/20 text-brand-blue-medium' : u.plano === 'Pro' ? 'bg-brand-green/20 text-brand-green' : u.plano === 'Cancelado' ? 'bg-brand-red/20 text-brand-red' : 'bg-brand-amber/20 text-brand-amber'}`}>{u.plano}</span>
+                    <tr key={u.id} className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors">
+                      <td className="px-6 py-4 text-[13px] text-white/80 whitespace-nowrap">{u.nome}</td>
+                      <td className="px-6 py-4 text-[13px] text-white/80 whitespace-nowrap">{u.sobre}</td>
+                      <td className="px-6 py-4 text-[13px] text-white/40 whitespace-nowrap">{u.email}</td>
+                      <td className="px-6 py-4">
+                        <span className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full ${u.plano === 'Max' ? 'bg-white/10 text-white' : u.plano === 'Pro' ? 'bg-white/5 text-white/70' : u.plano === 'Cancelado' ? 'bg-red-500/10 text-red-500' : 'bg-white/5 text-white/40'}`}>{u.plano}</span>
                       </td>
-                      <td className="px-3 sm:px-5 py-3 text-[13px] text-muted-foreground/50 whitespace-nowrap">{new Date(u.created_at).toLocaleDateString('pt-BR')}</td>
-                      <td className="px-3 sm:px-5 py-3">
+                      <td className="px-6 py-4 text-[13px] text-white/40 whitespace-nowrap">{new Date(u.created_at).toLocaleDateString('pt-BR')}</td>
+                      <td className="px-6 py-4">
                         <div className="flex flex-wrap gap-2 items-center">
                           <select
                             value={u.plano === 'Max' || u.plano === 'Pro' ? u.plano : 'Free'}
                             onChange={e => setUserPlan(u.id, e.target.value as 'Free' | 'Pro' | 'Max')}
-                            className="text-[11px] px-2 py-1 rounded bg-primary-foreground/10 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue"
+                            className="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-white/70 focus:outline-none focus:border-white/20 transition-all outline-none"
                           >
                             <option value="Free">Free</option>
                             <option value="Pro">Pro</option>
                             <option value="Max">Max</option>
                           </select>
-                          <button onClick={() => deleteUser(u.id)} className="text-[11px] px-2 py-1 rounded bg-brand-red/20 text-brand-red hover:bg-brand-red/30">Excluir</button>
+                          <button onClick={() => deleteUser(u.id)} className="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors">Excluir</button>
                         </div>
                       </td>
                     </tr>
