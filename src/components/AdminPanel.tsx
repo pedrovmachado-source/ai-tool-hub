@@ -680,38 +680,42 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
       <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 pt-16 lg:pt-8 w-full min-w-0">
         {section === 'dashboard' && (
           <>
-            <h1 className="text-lg sm:text-xl font-medium text-primary-foreground mb-4 sm:mb-6">Dashboard</h1>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+            <h1 className="text-xl sm:text-3xl font-serif-display tracking-tight text-white mb-6 sm:mb-8">Dashboard</h1>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
               {[
                 { label: 'Total de Usuários', value: users.length, change: `${proUsers + maxUsers} pagantes` },
                 { label: 'Assinantes Pro', value: proUsers, change: 'plano intermediário' },
                 { label: 'Assinantes Max', value: maxUsers, change: 'plano premium' },
                 { label: 'Ferramentas', value: totalTools, change: `${categories.length} categorias` },
               ].map((s, i) => (
-                <div key={i} className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-4 sm:p-5">
-                  <div className="text-[11px] text-muted-foreground/40 uppercase tracking-wider mb-2">{s.label}</div>
-                  <div className="text-2xl sm:text-[28px] font-medium text-primary-foreground">{s.value}</div>
-                  <div className="text-xs text-brand-green mt-1">{s.change}</div>
+                <div key={i} className="glass-smooth border border-white/5 rounded-2xl p-5">
+                  <div className="text-[10px] text-white/40 uppercase tracking-[0.2em] mb-3">{s.label}</div>
+                  <div className="text-3xl font-serif-display text-white">{s.value}</div>
+                  <div className="text-[10px] text-white/30 font-bold uppercase tracking-widest mt-2">{s.change}</div>
                 </div>
               ))}
             </div>
-            <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl overflow-hidden">
-              <div className="flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 border-b border-primary-foreground/[0.07]">
-                <h3 className="text-sm font-medium text-primary-foreground">Usuários Recentes</h3>
-                <button onClick={() => setSection('users')} className="text-xs text-brand-blue-medium hover:underline">Ver todos</button>
+            <div className="glass-smooth border border-white/5 rounded-[2rem] overflow-hidden">
+              <div className="flex items-center justify-between px-6 py-5 border-b border-white/5">
+                <h3 className="text-lg font-serif-display text-white">Usuários Recentes</h3>
+                <button onClick={() => setSection('users')} className="text-[10px] font-bold uppercase tracking-widest text-white/50 hover:text-white transition-colors">Ver todos</button>
               </div>
               <div className="overflow-x-auto">
               <table className="w-full">
-                <thead><tr className="border-b border-primary-foreground/[0.07]">
-                  {['Nome', 'E-mail', 'Plano', 'Acesso'].map(h => <th key={h} className="px-5 py-3 text-left text-[11px] font-semibold text-muted-foreground/40 uppercase tracking-wider">{h}</th>)}
+                <thead><tr className="border-b border-white/5">
+                  {['Nome', 'E-mail', 'Plano', 'Acesso'].map(h => <th key={h} className="px-6 py-4 text-left text-[10px] font-bold text-white/30 uppercase tracking-widest">{h}</th>)}
                 </tr></thead>
                 <tbody>
                   {users.slice(0, 4).map(u => (
-                    <tr key={u.id} className="border-b border-primary-foreground/[0.04] hover:bg-primary-foreground/[0.02]">
-                      <td className="px-5 py-3 text-[13px] text-primary-foreground/80">{u.nome} {u.sobre}</td>
-                      <td className="px-5 py-3 text-[13px] text-muted-foreground/50">{u.email}</td>
-                      <td className="px-5 py-3"><span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${u.plano === 'Max' ? 'bg-brand-blue/20 text-brand-blue-medium' : u.plano === 'Pro' ? 'bg-brand-green/20 text-brand-green' : u.plano === 'Cancelado' ? 'bg-brand-red/20 text-brand-red' : 'bg-brand-amber/20 text-brand-amber'}`}>{u.plano}</span></td>
-                      <td className="px-5 py-3 text-[13px] text-muted-foreground/50">{new Date(u.created_at).toLocaleDateString('pt-BR')}</td>
+                    <tr key={u.id} className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors">
+                      <td className="px-6 py-4 text-[13px] text-white/80">{u.nome} {u.sobre}</td>
+                      <td className="px-6 py-4 text-[13px] text-white/40">{u.email}</td>
+                      <td className="px-6 py-4">
+                        <span className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full ${u.plano === 'Max' ? 'bg-white/10 text-white' : u.plano === 'Pro' ? 'bg-white/5 text-white/70' : u.plano === 'Cancelado' ? 'bg-red-500/10 text-red-500' : 'bg-white/5 text-white/40'}`}>
+                          {u.plano}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-[13px] text-white/40">{new Date(u.created_at).toLocaleDateString('pt-BR')}</td>
                     </tr>
                   ))}
                 </tbody>
