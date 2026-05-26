@@ -132,7 +132,16 @@
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.3s ease;
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Serif heading */
