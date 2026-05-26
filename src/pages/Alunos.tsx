@@ -6,6 +6,7 @@ import { isMentorado } from '@/lib/plan';
 import { supabase } from '@/integrations/supabase/client';
 
 import { Button } from '@/components/ui/button';
+import { useToast } from "@/hooks/use-toast";
 import { 
   PlayCircle, 
   FileText, 
@@ -35,6 +36,7 @@ interface Lesson {
 
 export default function Alunos() {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const { user } = useAuth();
   const [selectedVideo, setSelectedVideo] = useState<Lesson | null>(null);
   const [mentoriaModalOpen, setMentoriaModalOpen] = useState(false);
@@ -157,12 +159,10 @@ export default function Alunos() {
 
   const handleViewTranscription = (url?: string) => {
     if (!url || url === '#') {
-      import('@/hooks/use-toast').then(({ toast }) => {
-        toast({
-          title: "Transcrição Indisponível",
-          description: "Este conteúdo ainda não possui transcrição anexada.",
-          variant: "destructive"
-        });
+      toast({
+        title: "Transcrição Indisponível",
+        description: "Este conteúdo ainda não possui transcrição anexada.",
+        variant: "destructive"
       });
       return;
     }
