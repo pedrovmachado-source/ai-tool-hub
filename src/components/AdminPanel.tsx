@@ -136,7 +136,7 @@ function ToolFormModal({ tool, onSave, onClose }: { tool?: Tool; onSave: (t: Too
         ].map(f => (
           <div key={f.key} className="mb-3">
             <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">{f.label}</label>
-            <input value={(form[f.key] as string) || ''} onChange={e => set(f.key, e.target.value)} placeholder={f.placeholder} className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" />
+            <input value={(form[f.key] as string) || ''} onChange={e => set(f.key, e.target.value)} placeholder={f.placeholder} className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/5 text-white placeholder:text-white/20 focus:outline-none focus:border-white/20 transition-all" />
           </div>
         ))}
         <div className="mb-3">
