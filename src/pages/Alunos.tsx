@@ -225,7 +225,7 @@ export default function Alunos() {
                     </AccordionTrigger>
                     <AccordionContent className="pb-6">
                       <div className="space-y-2 pt-2">
-                        {[...aulasGravadas, ...aulasAdicionais].map((aula) => (
+                        {personalizedAulas.map((aula) => (
                           <div
                             key={`trans-${aula.id}`}
                             className="w-full p-4 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-between group"
