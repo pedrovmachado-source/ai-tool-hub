@@ -15,12 +15,12 @@ export interface Tool {
   prompts?: { label: string; text: string }[];
   extraPrompts?: { label: string; text: string }[];
   promptsAdvanced?: { label: string; text: string }[];
-  useCases?: { title: string; text: string; result?: string }[];
-  commonErrors?: { erro: string; solucao: string }[];
+  useCases?: { title: string; text?: string; result?: string; name?: string; description?: string; desc?: string }[];
+  commonErrors?: { erro: string; fix: string }[];
   monetization?: string[];
   automations?: string[];
   checklist?: string[];
-  pricing?: string;
+  pricing?: { name: string; price: string; period: string; features: string[]; destaque?: boolean }[];
   pdfDataUrl?: string;
   stats?: { num: string; lbl: string }[];
 }
@@ -36,7 +36,7 @@ export interface Category {
   whenTags: string[];
   stats: { num: string; lbl: string }[];
   tools: Tool[];
-  promptsExtra?: { label: string; text: string }[];
+  promptsExtra?: { title: string; text: string }[];
 }
 
 export const TOOLS_DATA: Category[] = [
