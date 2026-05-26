@@ -657,6 +657,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      initialize_admin_invites: { Args: never; Returns: Json }
       list_categories_public: {
         Args: never
         Returns: {
