@@ -125,7 +125,7 @@ export default function Home() {
       icon: GraduationCap,
       color: "text-white",
       bg: "bg-white/10",
-      target: "lessons",
+      target: "mentorias",
       badge: "Conteúdo VIP"
     },
     {
