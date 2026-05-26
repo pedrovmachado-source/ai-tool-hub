@@ -662,10 +662,14 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
         </div>
         <div className="py-3 flex-1 overflow-y-auto">
           {navItems.map(item => (
-            <button key={item.key} onClick={() => { setSection(item.key); setViewingCategory(null); setSidebarOpen(false); if (item.key === 'site-creation') setSiteCreationInitialTab('products'); }} className={`w-full flex items-center gap-2.5 px-5 py-2.5 text-[13px] transition-colors ${section === item.key ? 'text-brand-blue-medium bg-brand-blue/15' : 'text-muted-foreground/50 hover:text-primary-foreground hover:bg-primary-foreground/5'}`}>
-              <item.icon size={15} /> <span className="flex-1 text-left">{item.label}</span>
+            <button 
+              key={item.key} 
+              onClick={() => { setSection(item.key); setViewingCategory(null); setSidebarOpen(false); if (item.key === 'site-creation') setSiteCreationInitialTab('products'); }} 
+              className={`w-full flex items-center gap-3 px-6 py-3 text-[11px] font-bold uppercase tracking-widest transition-all ${section === item.key ? 'text-white bg-white/5 border-r-2 border-white' : 'text-white/30 hover:text-white hover:bg-white/[0.02]'}`}
+            >
+              <item.icon size={14} /> <span className="flex-1 text-left">{item.label}</span>
               {item.key === 'site-creation' && unreadOrders > 0 && (
-                <span className="bg-destructive text-destructive-foreground text-[10px] font-semibold rounded-full min-w-[18px] h-[18px] px-1.5 inline-flex items-center justify-center">{unreadOrders}</span>
+                <span className="bg-white text-black text-[9px] font-bold rounded-full min-w-[18px] h-[18px] px-1.5 inline-flex items-center justify-center">{unreadOrders}</span>
               )}
             </button>
           ))}
