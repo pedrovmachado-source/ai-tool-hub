@@ -44,6 +44,7 @@ export default function Alunos() {
   const [welcomeMessage, setWelcomeMessage] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [completedLessons, setCompletedLessons] = useState<Set<string>>(new Set());
+  const [areaId, setAreaId] = useState<string | null>(null);
   const videoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -79,7 +80,8 @@ export default function Alunos() {
         .maybeSingle();
 
       if (data && !error) {
-        const content = data.content as any;
+        setAreaId(data.id);
+        const content = (data.content as any) || {};
         setPersonalizedAulas(content.lessons || []);
         setWelcomeMessage(content.welcomeMessage || '');
         setCompletedLessons(new Set(content.completed_ids || []));
@@ -132,24 +134,18 @@ export default function Alunos() {
     }
     setCompletedLessons(newCompleted);
 
-    if (!user) return;
+    if (!user || !areaId) return;
 
-    // Persist to database
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('user_id', user.id)
-      .single();
-
-    if (profile) {
+    // Persist to database directly using cached areaId
+    try {
       const { data: currentArea } = await supabase
         .from('student_areas')
-        .select('*')
-        .eq('user_id', profile.id)
-        .maybeSingle();
+        .select('content')
+        .eq('id', areaId)
+        .single();
 
       if (currentArea) {
-        const content = currentArea.content as any;
+        const content = (currentArea.content as any) || {};
         await supabase
           .from('student_areas')
           .update({
@@ -158,8 +154,10 @@ export default function Alunos() {
               completed_ids: Array.from(newCompleted)
             }
           })
-          .eq('id', currentArea.id);
+          .eq('id', areaId);
       }
+    } catch (err) {
+      console.error('Error saving progress:', err);
     }
   };
 
