@@ -36,7 +36,7 @@ export default function Home() {
   const openEmbeddedPage = (page: string) => {
     if (page === 'alunos' || page === 'lessons') {
       if (!user) {
-        // Handled by Navbar/AuthModal usually, but for safety:
+        setAuthModal({ open: true, mode: 'login' });
         return;
       }
       if (!isMentorado(user.plano)) {
