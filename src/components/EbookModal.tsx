@@ -127,84 +127,81 @@ export default function EbookModal({ tool, category, isOpen, onClose }: EbookMod
   };
 
   return (
-    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4" style={{ background: 'rgba(10,10,30,0.65)' }} onClick={onClose}>
-      <div className="bg-card rounded-2xl w-full max-w-[900px] max-h-[90vh] overflow-hidden animate-slide-up flex flex-col" onClick={e => e.stopPropagation()}>
-        <div className="border-b border-border shrink-0">
-          <div className="flex items-center justify-between p-6 pb-3">
-            <h2 className="text-lg font-medium">📘 {tool.name}</h2>
-            <div className="flex items-center gap-2">
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 backdrop-blur-md" style={{ background: 'rgba(0,0,0,0.85)' }} onClick={onClose}>
+      <div className="bg-[#0D0D0F] border border-white/10 rounded-[2.5rem] w-full max-w-[900px] max-h-[90vh] overflow-hidden animate-slide-up flex flex-col shadow-2xl" onClick={e => e.stopPropagation()}>
+        <div className="border-b border-white/5 shrink-0 bg-white/[0.01]">
+          <div className="flex items-center justify-between p-8 pb-4">
+            <div className="flex items-center gap-3">
+              <h2 className="text-2xl font-serif-display text-white tracking-tight">{tool.name}</h2>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-white/10 text-white/40 uppercase tracking-widest">{tool.badge}</span>
+            </div>
+            <div className="flex items-center gap-3">
               {user && (
                 <button
                   onClick={handleToggleSave}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium transition-colors ${saved ? 'bg-brand-amber/15 text-brand-amber' : 'bg-secondary text-muted-foreground hover:text-foreground'}`}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${saved ? 'bg-white text-black' : 'bg-white/5 text-white/40 border border-white/5 hover:bg-white/10 hover:text-white'}`}
                   title={saved ? 'Remover dos salvos' : 'Salvar e-book'}
                 >
                   {saved ? <BookmarkCheck size={14} /> : <Bookmark size={14} />}
                   {saved ? 'Salvo' : 'Salvar'}
                 </button>
               )}
-              <button onClick={onClose} className="text-muted-foreground hover:text-foreground p-1 rounded-md hover:bg-secondary"><X size={18} /></button>
+              <button onClick={onClose} className="text-white/40 hover:text-white p-2 rounded-full hover:bg-white/5 transition-all"><X size={20} /></button>
             </div>
           </div>
-          <div className="flex gap-1 px-6 pb-0">
-            <button onClick={() => setActiveTab('ebook')} className={`px-4 py-2 text-[13px] font-medium rounded-t-lg transition-colors ${activeTab === 'ebook' ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
-              📖 E-Book
+          <div className="flex gap-2 px-8 pb-0 overflow-x-auto no-scrollbar">
+            <button onClick={() => setActiveTab('ebook')} className={`px-6 py-4 text-[10px] font-bold uppercase tracking-[0.2em] border-b-2 transition-all ${activeTab === 'ebook' ? 'text-white border-white' : 'text-white/20 hover:text-white/60 border-transparent'}`}>
+              📖 Guia
             </button>
             {fullTool.pdfDataUrl && (
-              <button onClick={() => setActiveTab('pdf')} className={`px-4 py-2 text-[13px] font-medium rounded-t-lg transition-colors flex items-center gap-1.5 ${activeTab === 'pdf' ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
-                <FileText size={13} /> PDF
+              <button onClick={() => setActiveTab('pdf')} className={`px-6 py-4 text-[10px] font-bold uppercase tracking-[0.2em] border-b-2 flex items-center gap-2 transition-all ${activeTab === 'pdf' ? 'text-white border-white' : 'text-white/20 hover:text-white/60 border-transparent'}`}>
+                <FileText size={14} /> PDF
               </button>
             )}
-            <button onClick={() => setActiveTab('videos')} className={`px-4 py-2 text-[13px] font-medium rounded-t-lg transition-colors flex items-center gap-1.5 ${activeTab === 'videos' ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
-              <Play size={13} /> Vídeos {fullTool.videos && fullTool.videos.length > 0 && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-brand-blue/20 text-brand-blue-medium">{fullTool.videos.length}</span>}
+            <button onClick={() => setActiveTab('videos')} className={`px-6 py-4 text-[10px] font-bold uppercase tracking-[0.2em] border-b-2 flex items-center gap-2 transition-all ${activeTab === 'videos' ? 'text-white border-white' : 'text-white/20 hover:text-white/60 border-transparent'}`}>
+              <Play size={14} /> Vídeos {fullTool.videos && fullTool.videos.length > 0 && <span className="ml-1 opacity-40">({fullTool.videos.length})</span>}
             </button>
           </div>
         </div>
-        <div className="p-6 overflow-y-auto flex-1 space-y-6">
+        <div className="p-8 overflow-y-auto flex-1 space-y-12">
 
         {activeTab === 'pdf' && fullTool.pdfDataUrl && (
-          <div className="h-[70vh] -m-6 -mb-6">
+          <div className="h-[70vh] -m-8">
             <iframe
               src={`${fullTool.pdfDataUrl}#toolbar=0&navpanes=0&scrollbar=1&view=FitH`}
               className="w-full h-full border-0"
               title={`PDF - ${tool.name}`}
               style={{ pointerEvents: 'auto' }}
             />
-            <style>{`
-              iframe[title="PDF - ${tool.name}"] {
-                -webkit-user-select: none;
-                user-select: none;
-              }
-            `}</style>
           </div>
         )}
 
         {activeTab === 'videos' && (
-          <div className="space-y-6">
+          <div className="grid grid-cols-1 gap-8">
             {(!fullTool.videos || fullTool.videos.length === 0) ? (
-              <div className="text-center py-16">
-                <Play size={40} className="mx-auto mb-3 text-muted-foreground/30" />
-                <p className="text-sm text-muted-foreground">Nenhum vídeo disponível para esta ferramenta ainda.</p>
+              <div className="text-center py-20">
+                <Play size={48} className="mx-auto mb-6 text-white/5" />
+                <p className="text-sm text-white/20 font-bold uppercase tracking-widest">Aulas em breve</p>
               </div>
             ) : (
               fullTool.videos.map((v, i) => {
                 const embedUrl = getEmbedUrl(v.url);
                 return (
-                  <div key={i} className="rounded-xl border border-border overflow-hidden">
+                  <div key={i} className="glass-smooth border border-white/5 rounded-[2rem] overflow-hidden group">
                     {embedUrl ? (
                       <div className="aspect-video">
                         <iframe src={embedUrl} className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen title={v.title} />
                       </div>
                     ) : (
-                      <div className="aspect-video bg-secondary flex items-center justify-center">
-                        <a href={v.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm hover:opacity-90">
-                          <Play size={14} /> Assistir vídeo
+                      <div className="aspect-video bg-white/5 flex items-center justify-center">
+                        <a href={v.url} target="_blank" rel="noopener noreferrer" className="h-14 px-8 rounded-full bg-white text-black font-bold uppercase tracking-widest text-xs flex items-center gap-3 hover:scale-[1.05] transition-all">
+                          <Play size={16} fill="currentColor" /> Assistir agora
                         </a>
                       </div>
                     )}
-                    <div className="p-4">
-                      <h4 className="text-sm font-semibold mb-1">{v.title}</h4>
-                      {v.desc && <p className="text-[13px] text-muted-foreground">{v.desc}</p>}
+                    <div className="p-8">
+                      <h4 className="text-xl font-serif-display text-white mb-2">{v.title}</h4>
+                      {v.desc && <p className="text-sm text-white/40 font-light leading-relaxed">{v.desc}</p>}
                     </div>
                   </div>
                 );
@@ -215,24 +212,27 @@ export default function EbookModal({ tool, category, isOpen, onClose }: EbookMod
 
         {activeTab === 'ebook' && (<>
           {/* Cover */}
-          <div className="rounded-2xl p-8 text-center" style={{ background: `linear-gradient(135deg, ${category.accentDark}, ${category.accent})` }}>
-            <div className="text-[11px] font-semibold opacity-70 uppercase tracking-wider text-primary-foreground mb-2">📘 E-Book Completo · AdAI Pro</div>
-            <h1 className="font-serif-display text-3xl text-primary-foreground mb-2">{tool.name}</h1>
-            <p className="text-[13.5px] opacity-85 text-primary-foreground max-w-[560px] mx-auto">{tool.desc}</p>
-            <div className="flex gap-2 justify-center mt-4 flex-wrap">
-              {['Guia Completo', 'Prompts Prontos', 'Monetização', 'Automações', 'Checklist'].map(t => (
-                <span key={t} className="text-[11px] px-3 py-1 rounded-full bg-primary-foreground/20 text-primary-foreground">{t}</span>
-              ))}
+          <div className="glass-smooth border border-white/5 rounded-[3rem] p-12 text-center relative overflow-hidden group">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.05] to-transparent pointer-events-none" />
+            <div className="relative z-10">
+              <div className="text-[10px] font-bold text-white/40 uppercase tracking-[0.3em] mb-4">Guia Completo · Edição 2026</div>
+              <h1 className="font-serif-display text-5xl text-white mb-6 tracking-tight">{tool.name}</h1>
+              <p className="text-base text-white/40 font-light max-w-xl mx-auto leading-relaxed">{tool.desc}</p>
+              <div className="flex gap-3 justify-center mt-8 flex-wrap">
+                {['Arsenal Estratégico', 'Prompts Elite', 'Escala Brutal'].map(t => (
+                  <span key={t} className="text-[9px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full bg-white/5 border border-white/5 text-white/30">{t}</span>
+                ))}
+              </div>
             </div>
           </div>
 
           {/* Stats */}
           {tool.stats && (
-            <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${Math.min(tool.stats.length, 4)}, 1fr)` }}>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {tool.stats.map((s, i) => (
-                <div key={i} className="rounded-xl p-4 text-center" style={{ background: category.accentLight }}>
-                  <div className="text-2xl font-bold" style={{ color: category.accentDark }}>{s.num}</div>
-                  <div className="text-[11.5px] mt-1 opacity-80" style={{ color: category.accentDark }}>{s.lbl}</div>
+                <div key={i} className="glass-smooth border border-white/5 rounded-[2rem] p-8 text-center hover:bg-white/[0.02] transition-colors">
+                  <div className="text-3xl font-serif-display text-white mb-1">{s.num}</div>
+                  <div className="text-[9px] font-bold text-white/20 uppercase tracking-[0.2em]">{s.lbl}</div>
                 </div>
               ))}
             </div>
@@ -240,19 +240,19 @@ export default function EbookModal({ tool, category, isOpen, onClose }: EbookMod
 
           {/* Description */}
           <section>
-            <SectionTitle icon="📖">O que é e para que serve</SectionTitle>
-            <p className="text-sm text-muted-foreground leading-7">{tool.fullDesc || tool.desc}</p>
+            <SectionTitle icon="📖">Arquitetura da IA</SectionTitle>
+            <p className="text-base text-white/50 font-light leading-loose">{tool.fullDesc || tool.desc}</p>
           </section>
 
           {/* When to use */}
           {tool.whenToUse && tool.whenToUse.length > 0 && (
             <section>
-              <SectionTitle icon="✅">Quando usar no seu negócio</SectionTitle>
-              <div className="grid grid-cols-2 gap-2">
+              <SectionTitle icon="⚡">Casos de Sucesso</SectionTitle>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {tool.whenToUse.map((w, i) => (
-                  <div key={i} className="flex items-start gap-2 bg-secondary rounded-lg p-3">
-                    <Check size={14} className="shrink-0 mt-0.5" style={{ color: category.accent }} />
-                    <span className="text-[13px] leading-relaxed">{w}</span>
+                  <div key={i} className="flex items-start gap-4 glass-smooth border border-white/5 p-6 rounded-2xl">
+                    <Check size={18} className="shrink-0 mt-0.5 text-white/20" />
+                    <span className="text-sm text-white/60 font-light leading-relaxed">{w}</span>
                   </div>
                 ))}
               </div>
@@ -262,82 +262,93 @@ export default function EbookModal({ tool, category, isOpen, onClose }: EbookMod
           {/* Steps */}
           {fullTool.steps && fullTool.steps.length > 0 && (
             <section>
-              <SectionTitle icon="🚀">Guia passo a passo</SectionTitle>
-              {fullTool.steps.map((s, i) => (
-                <div key={i} className="flex gap-3.5 mb-5">
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-[13px] font-bold text-primary-foreground shrink-0" style={{ background: `linear-gradient(135deg, ${category.accentDark}, ${category.accent})` }}>{i + 1}</div>
-                  <div>
-                    <div className="text-sm font-semibold mb-1">{s.title}</div>
-                    <div className="text-[13.5px] text-muted-foreground leading-7">{s.text}</div>
+              <SectionTitle icon="🚀">Plano de Execução</SectionTitle>
+              <div className="space-y-8">
+                {fullTool.steps.map((s, i) => (
+                  <div key={i} className="flex gap-8 group">
+                    <div className="w-14 h-14 rounded-2xl glass-smooth border border-white/5 flex items-center justify-center text-xl font-serif-display text-white shrink-0 group-hover:bg-white group-hover:text-black transition-all duration-500">{i + 1}</div>
+                    <div className="pt-2">
+                      <div className="text-xl font-serif-display text-white mb-2">{s.title}</div>
+                      <div className="text-sm text-white/40 font-light leading-relaxed">{s.text}</div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </section>
           )}
 
           {/* Tip */}
           {tool.tip && (
-            <div className="rounded-r-lg p-5" style={{ background: `linear-gradient(135deg, ${category.accentLight}, transparent)`, borderLeft: `4px solid ${category.accent}` }}>
-              <div className="text-[11px] font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: category.accentDark }}><Lightbulb size={13} /> Dica de ouro</div>
-              <p className="text-[13.5px] leading-7" style={{ color: category.accentDark }}>{tool.tip}</p>
+            <div className="glass-smooth border border-white/10 rounded-[2.5rem] p-10 relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-r from-brand-amber/10 to-transparent pointer-events-none" />
+              <div className="relative z-10">
+                <div className="text-[9px] font-bold uppercase tracking-[0.3em] mb-4 flex items-center gap-2 text-brand-amber"><Lightbulb size={14} /> Segredo Industrial</div>
+                <p className="text-lg text-white/80 font-light italic leading-relaxed">"{tool.tip}"</p>
+              </div>
             </div>
           )}
 
           {/* Prompts */}
           {allPrompts.length > 0 && (
             <section>
-              <SectionTitle icon="📋">Prompts prontos para copiar</SectionTitle>
-              <p className="text-[13px] text-muted-foreground mb-4">Substitua os itens entre <strong>[colchetes]</strong> com as informações do seu negócio.</p>
+              <SectionTitle icon="📋">Arsenal de Prompts</SectionTitle>
+              <p className="text-sm text-white/30 font-light uppercase tracking-widest mb-8">Copie e adapte os modelos abaixo</p>
               
-              {beginnerPrompts.length > 0 && (
-                <div className="mb-4">
-                  <div className="text-xs font-bold text-green-700 bg-green-50 dark:bg-green-950 dark:text-green-400 px-3 py-1.5 rounded-t-lg border border-green-200 dark:border-green-800">🟢 NÍVEL INICIANTE</div>
-                  {beginnerPrompts.map((pr, i) => (
-                    <PromptCard key={`b-${i}`} prompt={pr} accentLight={category.accentLight} accentDark={category.accentDark} />
-                  ))}
-                </div>
-              )}
+              <div className="space-y-8">
+                {beginnerPrompts.length > 0 && (
+                  <div>
+                    {beginnerPrompts.map((pr, i) => (
+                      <PromptCard key={`b-${i}`} prompt={pr} />
+                    ))}
+                  </div>
+                )}
 
-              {intermediatePrompts.length > 0 && (
-                <div className="mb-4">
-                  <div className="text-xs font-bold text-yellow-700 bg-yellow-50 dark:bg-yellow-950 dark:text-yellow-400 px-3 py-1.5 rounded-t-lg border border-yellow-200 dark:border-yellow-800">🟡 NÍVEL INTERMEDIÁRIO</div>
-                  {intermediatePrompts.map((pr, i) => (
-                    <PromptCard key={`m-${i}`} prompt={pr} accentLight={category.accentLight} accentDark={category.accentDark} />
-                  ))}
-                </div>
-              )}
+                {intermediatePrompts.length > 0 && (
+                  <div>
+                    {intermediatePrompts.map((pr, i) => (
+                      <PromptCard key={`m-${i}`} prompt={pr} />
+                    ))}
+                  </div>
+                )}
 
-              {advancedPrompts.length > 0 && (
-                <div className="mb-4">
-                  <div className="text-xs font-bold text-red-700 bg-red-50 dark:bg-red-950 dark:text-red-400 px-3 py-1.5 rounded-t-lg border border-red-200 dark:border-red-800">🔴 NÍVEL AVANÇADO</div>
-                  {advancedPrompts.map((pr, i) => (
-                    <PromptCard key={`a-${i}`} prompt={pr} accentLight={category.accentLight} accentDark={category.accentDark} />
-                  ))}
-                </div>
-              )}
+                {advancedPrompts.length > 0 && (
+                  <div>
+                    {advancedPrompts.map((pr, i) => (
+                      <PromptCard key={`a-${i}`} prompt={pr} />
+                    ))}
+                  </div>
+                )}
+              </div>
             </section>
           )}
 
           {/* Use Cases */}
           {fullTool.useCases && fullTool.useCases.length > 0 && (
             <section>
-              <SectionTitle icon="💼">Casos de uso reais</SectionTitle>
-              {fullTool.useCases.map((uc: any, i) => {
-                const item = typeof uc === 'string' ? { title: uc, text: '', result: undefined } : (uc || {});
-                const title = item.title || item.name || '';
-                const text = item.text || item.description || item.desc || '';
-                const result = item.result;
-                if (!title && !text) return null;
-                return (
-                  <div key={i} className="bg-secondary rounded-r-lg p-4 mb-3" style={{ borderLeft: `3px solid ${category.accent}` }}>
-                    {title && <div className="text-[13.5px] font-semibold mb-1">💼 {title}</div>}
-                    {text && <div className="text-[13px] text-muted-foreground leading-relaxed">{text}</div>}
-                    {result && <div className="mt-2 text-xs font-semibold" style={{ color: category.accent }}>📈 Resultado: {result}</div>}
-                  </div>
-                );
-              })}
+              <SectionTitle icon="💼">Campo de Batalha</SectionTitle>
+              <div className="grid grid-cols-1 gap-4">
+                {fullTool.useCases.map((uc: any, i) => {
+                  const item = typeof uc === 'string' ? { title: uc, text: '', result: undefined } : (uc || {});
+                  const title = item.title || item.name || '';
+                  const text = item.text || item.description || item.desc || '';
+                  const result = item.result;
+                  if (!title && !text) return null;
+                  return (
+                    <div key={i} className="glass-smooth border border-white/5 p-8 rounded-[2rem] hover:bg-white/[0.02] transition-colors">
+                      {title && <div className="text-lg font-serif-display text-white mb-2">💼 {title}</div>}
+                      {text && <div className="text-sm text-white/40 font-light leading-relaxed">{text}</div>}
+                      {result && (
+                        <div className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold text-white/60 uppercase tracking-widest">
+                          📈 ROI: {result}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </section>
           )}
+
 
           {/* Common Errors */}
           {fullTool.commonErrors && fullTool.commonErrors.length > 0 && (
