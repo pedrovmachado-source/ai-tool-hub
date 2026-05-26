@@ -151,26 +151,28 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
                     </button>
 
                     {hasSubmenu && hoveredItem === key && (
-                      <div className="absolute left-[100%] top-0 w-[240px] bg-black border border-white/5 shadow-2xl rounded-r-xl overflow-hidden animate-slide-in-left origin-left h-full min-h-[250px] z-[350]">
-                        <div className="p-4 border-b border-white/5 bg-white/5">
-                          <span className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em]">Modelos de Site</span>
-                        </div>
-                        <div className="py-2">
-                          {[
-                            'Landing Page',
-                            'Quiz',
-                            'Advertorial',
-                            'One-product Page',
-                            'Chatbot'
-                          ].map((subItem) => (
-                            <button
-                              key={subItem}
-                              onClick={() => go(target)}
-                              className="w-full px-5 py-3 text-left text-sm font-light text-white/60 hover:text-white hover:bg-white/5 transition-colors"
-                            >
-                              {subItem}
-                            </button>
-                          ))}
+                      <div className="absolute left-full top-0 w-[240px] h-full">
+                        <div className="ml-0 w-[240px] bg-black border border-white/5 shadow-2xl rounded-r-xl overflow-hidden animate-slide-in-left origin-left h-full min-h-[250px] z-[350]">
+                          <div className="p-4 border-b border-white/5 bg-white/5">
+                            <span className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em]">Modelos de Site</span>
+                          </div>
+                          <div className="py-2">
+                            {[
+                              'Landing Page',
+                              'Quiz',
+                              'Advertorial',
+                              'One-product Page',
+                              'Chatbot'
+                            ].map((subItem) => (
+                              <button
+                                key={subItem}
+                                onClick={() => go(target)}
+                                className="w-full px-5 py-3 text-left text-sm font-light text-white/60 hover:text-white hover:bg-white/5 transition-colors"
+                              >
+                                {subItem}
+                              </button>
+                            ))}
+                          </div>
                         </div>
                       </div>
                     )}
