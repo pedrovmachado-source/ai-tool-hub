@@ -282,12 +282,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return msg;
   };
 
-  const register = useCallback(async (nome: string, email: string, password: string): Promise<string | null> => {
+  const register = useCallback(async (nome: string, sobrenome: string, email: string, password: string, lgpdAccepted: boolean): Promise<string | null> => {
     const redirectUrl = `${window.location.origin}/`;
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { nome, sobre: '' }, emailRedirectTo: redirectUrl },
+      options: { 
+        data: { 
+          nome, 
+          sobrenome,
+          sobre: '',
+          lgpd_accepted: lgpdAccepted,
+          lgpd_accepted_at: lgpdAccepted ? new Date().toISOString() : null
+        }, 
+        emailRedirectTo: redirectUrl 
+      },
     });
     return error ? translateAuthError(error.message) : null;
   }, []);
