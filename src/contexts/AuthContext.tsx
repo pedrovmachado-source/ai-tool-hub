@@ -328,7 +328,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [user]);
 
-  const updateUser = useCallback(async (data: Partial<Omit<Profile, 'inviteValidated'>>) => {
+  const updateUser = useCallback(async (data: Partial<Omit<Profile, 'inviteValidated' | 'abuseBlocked'>>) => {
     if (!user) return;
     const { error } = await supabase.from('profiles').update(data).eq('user_id', user.id);
     if (!error) {
