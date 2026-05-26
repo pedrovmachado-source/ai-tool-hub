@@ -140,39 +140,34 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
                     onMouseLeave={() => hasSubmenu && setHoveredItem(null)}
                   >
                     <button 
-                      onClick={() => go(target)} 
+                      onClick={() => !hasSubmenu && go(target)} 
                       className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/5 transition-colors text-left group"
                     >
                       <span className="flex items-center gap-3">
                         <Icon size={18} className="text-white/60 group-hover:text-white transition-colors" />
                         <span className="text-sm font-light text-white/70 group-hover:text-white transition-colors">{label}</span>
                       </span>
-                      <ChevronRight size={14} className="text-white/10 group-hover:text-white/40 group-hover:translate-x-0.5 transition-all" />
+                      <ChevronRight size={14} className={`text-white/10 group-hover:text-white/40 group-hover:translate-x-0.5 transition-all ${hasSubmenu ? 'rotate-0 group-hover/nav-item:rotate-90' : ''}`} />
                     </button>
 
-                    {hasSubmenu && hoveredItem === key && (
-                      <div className="absolute left-full top-0 w-[240px] h-full pl-0.5">
-                        <div className="w-[240px] bg-black border border-white/5 shadow-2xl rounded-r-xl overflow-hidden animate-slide-in-right origin-left h-full min-h-[250px] z-[350]">
-                          <div className="p-4 border-b border-white/5 bg-white/5">
-                            <span className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em]">Modelos de Site</span>
-                          </div>
-                          <div className="py-2">
-                            {[
-                              'Landing Page',
-                              'Quiz',
-                              'Advertorial',
-                              'One-product Page',
-                              'Chatbot'
-                            ].map((subItem) => (
-                              <button
-                                key={subItem}
-                                onClick={() => go(target)}
-                                className="w-full px-5 py-3 text-left text-sm font-light text-white/60 hover:text-white hover:bg-white/5 transition-colors"
-                              >
-                                {subItem}
-                              </button>
-                            ))}
-                          </div>
+                    {hasSubmenu && (
+                      <div className={`overflow-hidden transition-all duration-300 ease-in-out ${hoveredItem === key ? 'max-h-[300px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                        <div className="bg-white/5 py-1">
+                          {[
+                            'Landing Page',
+                            'Quiz',
+                            'Advertorial',
+                            'One-product Page',
+                            'Chatbot'
+                          ].map((subItem) => (
+                            <button
+                              key={subItem}
+                              onClick={() => go(target)}
+                              className="w-full px-12 py-3 text-left text-xs font-light text-white/50 hover:text-white hover:bg-white/5 transition-colors"
+                            >
+                              {subItem}
+                            </button>
+                          ))}
                         </div>
                       </div>
                     )}
