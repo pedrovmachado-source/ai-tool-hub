@@ -523,7 +523,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'settings', label: 'Configurações', icon: Settings },
   ];
 
-  const setUserPlan = async (userId: string, newPlano: 'Free' | 'Pro' | 'Max') => {
+  const setUserPlan = async (userId: string, newPlano: 'Free' | 'Elite' | 'Elite Plus' | 'Max') => {
     const user = users.find(u => u.id === userId);
     if (!user || user.plano === newPlano) return;
     const { error } = await supabase.from('profiles').update({ plano: newPlano }).eq('id', userId);
@@ -688,9 +688,10 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
             <h1 className="text-xl sm:text-3xl font-serif-display tracking-tight text-white mb-6 sm:mb-8">Dashboard</h1>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
               {[
-                { label: 'Total de Usuários', value: users.length, change: `${proUsers + maxUsers} pagantes` },
-                { label: 'Assinantes Pro', value: proUsers, change: 'plano intermediário' },
-                { label: 'Assinantes Max', value: maxUsers, change: 'plano premium' },
+                { label: 'Total de Usuários', value: users.length, change: `${eliteUsers + elitePlusUsers + maxUsers} pagantes` },
+                { label: 'Assinantes Elite', value: eliteUsers, change: 'plano inicial' },
+                { label: 'Assinantes Elite Plus', value: elitePlusUsers, change: 'plano intermediário' },
+                { label: 'Assinantes Max', value: maxUsers, change: 'plano mentorados' },
                 { label: 'Ferramentas', value: totalTools, change: `${categories.length} categorias` },
               ].map((s, i) => (
                 <div key={i} className="glass-smooth border border-white/5 rounded-2xl p-5">
