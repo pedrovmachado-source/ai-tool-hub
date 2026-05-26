@@ -66,7 +66,7 @@ export default function Invite() {
           <div className="inline-flex items-center justify-center p-3 rounded-2xl bg-white/5 border border-white/10 mb-4">
             <Ticket className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">Clube Kayosa</h1>
+          <h1 className="text-3xl font-bold text-white tracking-tight">Convert Club</h1>
           <p className="text-gray-400">O acesso é restrito a convidados.</p>
         </div>
 

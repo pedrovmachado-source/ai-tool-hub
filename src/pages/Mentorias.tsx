@@ -276,7 +276,7 @@ export default function Mentorias() {
                 
                 <div className="prose prose-invert max-w-none text-white/50 font-light leading-loose text-sm">
                   <p className="mb-4">
-                    <strong>[00:00:00]</strong> Bem-vindos a mais uma mentoria exclusiva do Clube Kayosa. Hoje vamos abordar profundamente o tema: {selectedVideo.title}.
+                    <strong>[00:00:00]</strong> Bem-vindos a mais uma mentoria exclusiva do Convert Club. Hoje vamos abordar profundamente o tema: {selectedVideo.title}.
                   </p>
                   <p className="mb-4">
                     {selectedVideo.transcription}
