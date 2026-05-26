@@ -34,7 +34,7 @@ export default function Home() {
   const [authModal, setAuthModal] = useState<{ open: boolean; mode: 'login' | 'register' }>({ open: false, mode: 'login' });
 
   const openEmbeddedPage = (page: string) => {
-    if (page === 'alunos' || page === 'lessons') {
+    if (page === 'alunos') {
       if (!user) {
         setAuthModal({ open: true, mode: 'login' });
         return;
@@ -152,7 +152,7 @@ export default function Home() {
           if (page === 'home') navigate('/');
           else if (page === 'profile') navigate('/perfil');
           else if (page === 'pro') navigate('/pro');
-          else if (page === 'alunos' || page === 'lessons') navigate('/alunos');
+          else if (page === 'alunos') navigate('/alunos');
           else openEmbeddedPage(page);
         }}
       />
