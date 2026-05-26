@@ -1,6 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
+import MentoriaModal from '@/components/MentoriaModal';
+import { isMentorado } from '@/lib/plan';
+
 import { Button } from '@/components/ui/button';
 import { 
   Wrench, 
@@ -16,6 +19,8 @@ import { useEffect, useRef, useState } from 'react';
 export default function Menu() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [mentoriaModalOpen, setMentoriaModalOpen] = useState(false);
+
 
   useEffect(() => {
     document.title = 'Convert Club — Dashboard';
@@ -181,6 +186,8 @@ export default function Menu() {
           &copy; 2026 CONVERT CLUB · BUILT FOR THE 1%
         </div>
       </footer>
+      <MentoriaModal isOpen={mentoriaModalOpen} onClose={() => setMentoriaModalOpen(false)} />
     </div>
+
   );
 }
