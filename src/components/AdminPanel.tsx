@@ -736,7 +736,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
               <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
                 <div className="relative flex-1 sm:flex-initial">
                   <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/40" />
-                  <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Buscar..." className="pl-8 pr-4 py-2 rounded-lg text-sm bg-navy border border-primary-foreground/10 text-primary-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:border-brand-blue w-full sm:w-[260px]" />
+                  <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Filtrar por nome ou e-mail..." className="pl-10 pr-4 py-2.5 rounded-xl text-[11px] font-medium bg-white/5 border border-white/5 text-white placeholder:text-white/20 focus:outline-none focus:border-white/20 w-full sm:w-[280px] transition-all" />
                 </div>
                 <button onClick={exportCSV} className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-white text-black hover:bg-white/90 transition-all"><Download size={14} /> Exportar CSV</button>
               </div>
