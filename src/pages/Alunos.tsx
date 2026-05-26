@@ -185,8 +185,8 @@ export default function Alunos() {
                           <Video className="w-5 h-5" />
                         </div>
                         <div>
-                          <h3 className="text-xl font-serif-display">Aulas Gravadas</h3>
-                          <p className="text-[10px] text-white/30 uppercase tracking-widest mt-1">6 Aulas Disponíveis</p>
+                          <h3 className="text-xl font-serif-display">Aulas Personalizadas</h3>
+                          <p className="text-[10px] text-white/30 uppercase tracking-widest mt-1">{personalizedAulas.length} Aulas Disponíveis</p>
                         </div>
                       </div>
                     </AccordionTrigger>
