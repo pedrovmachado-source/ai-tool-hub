@@ -119,10 +119,16 @@ export default function Alunos() {
 
   const toggleLessonCompletion = async (lessonId: string) => {
     const newCompleted = new Set(completedLessons);
-    if (newCompleted.has(lessonId)) {
-      newCompleted.delete(lessonId);
-    } else {
+    const isAdding = !newCompleted.has(lessonId);
+    
+    if (isAdding) {
       newCompleted.add(lessonId);
+      toast({
+        title: "Aula concluída!",
+        description: "Seu progresso foi salvo.",
+      });
+    } else {
+      newCompleted.delete(lessonId);
     }
     setCompletedLessons(newCompleted);
 
