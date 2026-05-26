@@ -168,7 +168,7 @@ function TabDados() {
   const save = async () => {
     setSaving(true);
     try {
-      await updateUser({ nome, sobre, telefone, empresa });
+      await updateUser({ nome, sobrenome, telefone, empresa });
       toast.success('Dados atualizados');
     } catch {
       toast.error('Falha ao salvar');
