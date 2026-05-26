@@ -215,6 +215,8 @@ export default function Alunos() {
           else if (page === 'profile') navigate('/perfil');
           else if (page === 'pro') navigate('/pro');
           else if (page === 'alunos' || page === 'lessons') navigate('/alunos');
+          else if (page === 'menu') navigate('/menu');
+          else if (page === 'mentorias') navigate('/mentorias');
           else navigate('/ferramentas');
         }} 
       />
