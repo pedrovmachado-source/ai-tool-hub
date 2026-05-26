@@ -121,7 +121,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const payload = {
       user_id: supaUser.id,
-      nome: typeof supaUser.user_metadata?.nome === 'string' ? supaUser.user_metadata.nome : '',
+      nome: typeof supaUser.user_metadata?.nome === 'string' ? supaUser.user_metadata.nome : (typeof supaUser.user_metadata?.full_name === 'string' ? supaUser.user_metadata.full_name : ''),
+      sobrenome: typeof supaUser.user_metadata?.sobrenome === 'string' ? supaUser.user_metadata.sobrenome : '',
       sobre: typeof supaUser.user_metadata?.sobre === 'string' ? supaUser.user_metadata.sobre : '',
       email: supaUser.email || '',
     };
