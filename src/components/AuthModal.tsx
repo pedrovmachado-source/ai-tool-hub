@@ -139,14 +139,25 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch, onRegistere
 
           {mode === 'register' && !success && (
             <>
-              <div className="mb-4">
-                <label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] mb-2 block ml-1">Nome</label>
-                <input 
-                  value={nome} 
-                  onChange={e => setNome(e.target.value)} 
-                  placeholder="Seu nome" 
-                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-all" 
-                />
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] mb-2 block ml-1">Nome</label>
+                  <input 
+                    value={nome} 
+                    onChange={e => setNome(e.target.value)} 
+                    placeholder="Seu nome" 
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-all" 
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] mb-2 block ml-1">Sobrenome</label>
+                  <input 
+                    value={sobrenome} 
+                    onChange={e => setSobrenome(e.target.value)} 
+                    placeholder="Seu sobrenome" 
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-all" 
+                  />
+                </div>
               </div>
               <div className="mb-4">
                 <label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] mb-2 block ml-1">E-mail</label>
