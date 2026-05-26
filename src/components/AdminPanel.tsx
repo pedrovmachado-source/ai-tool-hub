@@ -637,7 +637,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
       )}
 
       {/* Sidebar */}
-      <div className={`fixed lg:relative top-0 left-0 z-50 w-[240px] lg:w-[220px] h-full lg:h-auto bg-navy flex flex-col shrink-0 transition-transform duration-200 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}>
+      <div className={`fixed lg:relative top-0 left-0 z-50 w-[240px] lg:w-[220px] h-full lg:h-auto bg-black border-r border-white/5 flex flex-col shrink-0 transition-transform duration-200 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}>
         <div className="px-5 py-6 border-b border-primary-foreground/[0.07] flex items-start justify-between gap-2">
           <div>
             <div className="text-[15px] font-medium text-primary-foreground">AdAI Admin</div>
