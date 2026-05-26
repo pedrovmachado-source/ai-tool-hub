@@ -1,4 +1,5 @@
-import { X, ExternalLink, ShieldCheck, Globe, Rocket } from 'lucide-react';
+import { X, ExternalLink, ShieldCheck, Rocket } from 'lucide-react';
+import logoAdai from '@/assets/logo.png';
 import { Button } from './ui/button';
 
 interface MentoriaModalProps {
@@ -30,17 +31,17 @@ export default function MentoriaModal({ isOpen, onClose }: MentoriaModalProps) {
         </div>
 
         <div className="p-8 pt-4 relative z-10 text-center">
-          <div className="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-white/10">
-            <Globe className="w-10 h-10 text-white/80" />
+          <div className="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-white/10 overflow-hidden">
+            <img src={logoAdai} alt="AdAI Logo" className="w-12 h-12 object-contain" />
           </div>
 
           <h2 className="text-3xl md:text-4xl font-serif-display text-white mb-6">
-            Mentoria <em className="italic font-normal">Europa 1%</em>
+            Acesso <em className="italic font-normal">Exclusivo Max</em>
           </h2>
           
           <div className="space-y-6 mb-10 text-left bg-white/[0.02] p-6 rounded-3xl border border-white/5">
             <p className="text-white/60 leading-relaxed font-light">
-              A Área do Aluno é um portal exclusivo para os membros da minha <span className="text-white font-medium">Mentoria de Infoprodutos para a Europa</span>.
+              A Área do Aluno é um portal exclusivo para os membros do plano <span className="text-brand-purple font-medium">MAX</span>.
             </p>
             
             <div className="grid grid-cols-1 gap-4">
