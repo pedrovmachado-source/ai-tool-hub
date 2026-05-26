@@ -17,10 +17,10 @@ export function usePlansConfig() {
         if (cancelled) return;
         if (data?.value) {
           // Shallow-merge with defaults to tolerate partial configs
-          const v = data.value as Partial<PlansConfig>;
+          const v = data.value as any;
           setPlans({
-            pro: { ...DEFAULT_PLANS_CONFIG.pro, ...(v.pro || {}) },
-            max: { ...DEFAULT_PLANS_CONFIG.max, ...(v.max || {}) },
+            elite: { ...DEFAULT_PLANS_CONFIG.elite, ...(v.elite || v.pro || {}) },
+            elitePlus: { ...DEFAULT_PLANS_CONFIG.elitePlus, ...(v.elitePlus || v.max || {}) },
           });
         }
         setLoading(false);
@@ -41,7 +41,7 @@ export interface PlanConfig {
 }
 
 const LEGACY_DEFAULT: PlanConfig = {
-  name: 'Pro Vitalício',
+  name: 'Elite Vitalício',
   price: '127.90',
   period: 'vitalicio',
   checkoutUrl: DEFAULT_PLANS_CONFIG.elite.vitalicio.checkoutUrl,
