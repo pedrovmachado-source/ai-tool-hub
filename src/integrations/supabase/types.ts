@@ -443,6 +443,7 @@ export type Database = {
       profiles: {
         Row: {
           abuse_blocked: boolean | null
+          avatar_url: string | null
           created_at: string
           email: string
           empresa: string | null
@@ -457,6 +458,7 @@ export type Database = {
         }
         Insert: {
           abuse_blocked?: boolean | null
+          avatar_url?: string | null
           created_at?: string
           email?: string
           empresa?: string | null
@@ -471,6 +473,7 @@ export type Database = {
         }
         Update: {
           abuse_blocked?: boolean | null
+          avatar_url?: string | null
           created_at?: string
           email?: string
           empresa?: string | null
