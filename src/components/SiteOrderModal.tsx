@@ -52,52 +52,53 @@ export default function SiteOrderModal({ product, onClose }: { product: SiteOrde
     }
   };
 
-  const inputCls = (k: string) => `w-full px-3 py-2 rounded-lg text-sm bg-secondary border ${errors[k] ? 'border-brand-red' : 'border-border'} text-foreground focus:outline-none focus:border-brand-blue`;
+  const inputCls = (k: string) => `w-full px-4 py-3 bg-white/5 border rounded-2xl text-sm text-white placeholder:text-white/20 focus:outline-none transition-all ${errors[k] ? 'border-brand-red' : 'border-white/10 focus:border-white/30'}`;
 
   return (
-    <div className="fixed inset-0 z-[400] bg-black/70 flex items-center justify-center p-3 sm:p-6" onClick={onClose}>
-      <div className="bg-card border border-border rounded-xl w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden" onClick={e => e.stopPropagation()}>
-        <div className="flex items-center justify-between p-4 border-b border-border">
+    <div className="fixed inset-0 z-[400] bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6" onClick={onClose}>
+      <div className="bg-[#0D0D0F] border border-white/10 rounded-[2.5rem] w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden shadow-2xl animate-slide-up" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between p-8 pb-4 border-b border-white/5">
           <div className="min-w-0">
-            <h3 className="font-serif-display text-lg truncate">Pedido — {product.name}</h3>
-            <p className="text-xs text-muted-foreground">
+            <h3 className="font-serif-display text-2xl text-white truncate tracking-tight">Pedido — {product.name}</h3>
+            <p className="text-[10px] font-bold text-white/20 uppercase tracking-[0.3em] mt-1">
               {product.kind === 'criativo' ? 'Criativo' : 'Site Pronto'} · R$ {product.price}
             </p>
           </div>
-          <button onClick={onClose} className="text-muted-foreground hover:text-foreground p-1 rounded hover:bg-secondary"><X size={18} /></button>
+          <button onClick={onClose} className="text-white/40 hover:text-white p-2 rounded-full hover:bg-white/5 transition-all"><X size={20} /></button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-5 space-y-4">
-          <div>
-            <label className="text-xs font-medium text-muted-foreground mb-1 block">Descrição do que deseja no site *</label>
+        <div className="flex-1 overflow-y-auto p-8 space-y-6">
+          <div className="space-y-2">
+            <label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] ml-1">Descrição do que deseja *</label>
             <textarea rows={4} maxLength={2000} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} className={inputCls('description') + ' resize-none'} placeholder="Conte os objetivos, público, oferta, estilo desejado…" />
-            {errors.description && <p className="text-[11px] text-brand-red mt-1">{errors.description}</p>}
+            {errors.description && <p className="text-[11px] text-brand-red ml-1">{errors.description}</p>}
           </div>
-          <div>
-            <label className="text-xs font-medium text-muted-foreground mb-1 block">Link de referência 1 *</label>
+          <div className="space-y-2">
+            <label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] ml-1">Link de referência 1 *</label>
             <input type="url" maxLength={500} value={form.ref_link_1} onChange={e => setForm({ ...form, ref_link_1: e.target.value })} className={inputCls('ref_link_1')} placeholder="https://..." />
-            {errors.ref_link_1 && <p className="text-[11px] text-brand-red mt-1">{errors.ref_link_1}</p>}
+            {errors.ref_link_1 && <p className="text-[11px] text-brand-red ml-1">{errors.ref_link_1}</p>}
           </div>
-          <div>
-            <label className="text-xs font-medium text-muted-foreground mb-1 block">Link de referência 2 *</label>
+          <div className="space-y-2">
+            <label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] ml-1">Link de referência 2 *</label>
             <input type="url" maxLength={500} value={form.ref_link_2} onChange={e => setForm({ ...form, ref_link_2: e.target.value })} className={inputCls('ref_link_2')} placeholder="https://..." />
-            {errors.ref_link_2 && <p className="text-[11px] text-brand-red mt-1">{errors.ref_link_2}</p>}
+            {errors.ref_link_2 && <p className="text-[11px] text-brand-red ml-1">{errors.ref_link_2}</p>}
           </div>
-          <div>
-            <label className="text-xs font-medium text-muted-foreground mb-1 block">WhatsApp para contato *</label>
+          <div className="space-y-2">
+            <label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] ml-1">WhatsApp para contato *</label>
             <input maxLength={20} value={form.whatsapp} onChange={e => setForm({ ...form, whatsapp: e.target.value })} className={inputCls('whatsapp')} placeholder="+55 11 99999-9999" />
-            {errors.whatsapp && <p className="text-[11px] text-brand-red mt-1">{errors.whatsapp}</p>}
+            {errors.whatsapp && <p className="text-[11px] text-brand-red ml-1">{errors.whatsapp}</p>}
           </div>
         </div>
 
-        <div className="p-4 border-t border-border flex gap-2 justify-end">
-          <button onClick={onClose} disabled={submitting} className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground">Cancelar</button>
-          <button onClick={submit} disabled={submitting} className="px-4 py-2 rounded-lg bg-brand-amber text-white text-sm font-medium hover:opacity-90 disabled:opacity-60 inline-flex items-center gap-2">
-            {submitting && <Loader2 size={14} className="animate-spin" />}
-            Enviar pedido e ir para pagamento
+        <div className="p-8 border-t border-white/5 flex gap-4 justify-end bg-white/[0.01]">
+          <button onClick={onClose} disabled={submitting} className="text-xs font-bold text-white/30 hover:text-white/60 uppercase tracking-widest transition-colors">Cancelar</button>
+          <button onClick={submit} disabled={submitting} className="px-8 py-4 rounded-2xl bg-white text-black text-sm font-bold hover:bg-white/90 disabled:opacity-60 transition-all shadow-lg active:scale-[0.98] inline-flex items-center gap-2">
+            {submitting && <Loader2 size={16} className="animate-spin" />}
+            Confirmar Pedido
           </button>
         </div>
       </div>
     </div>
+
   );
 }

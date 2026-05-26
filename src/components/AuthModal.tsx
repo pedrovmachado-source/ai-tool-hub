@@ -59,39 +59,68 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch, onRegistere
   };
 
   return (
-    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4" style={{ background: 'rgba(10,10,30,0.65)' }} onClick={onClose}>
-      <div className="bg-card rounded-2xl w-full max-w-[440px] animate-slide-up overflow-hidden" onClick={e => e.stopPropagation()}>
-        <div className="flex items-center justify-between p-6 pb-4 border-b border-border">
-          <h2 className="text-lg font-medium">
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 backdrop-blur-md" style={{ background: 'rgba(0,0,0,0.8)' }} onClick={onClose}>
+      <div className="bg-[#0D0D0F] border border-white/10 rounded-[2.5rem] w-full max-w-[440px] animate-slide-up overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)]" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between p-8 pb-4 border-b border-white/5">
+          <h2 className="text-2xl font-serif-display text-white tracking-tight">
             {mode === 'login' ? 'Entrar na sua conta' : 'Criar conta gratuita'}
           </h2>
-          <button onClick={onClose} className="text-muted-foreground hover:text-foreground p-1 rounded-md hover:bg-secondary"><X size={18} /></button>
+          <button onClick={onClose} className="text-white/40 hover:text-white p-2 rounded-full hover:bg-white/5 transition-colors"><X size={20} /></button>
         </div>
-        <div className="p-6">
-          {error && <p className="text-sm text-brand-red mb-3">{error}</p>}
-          {success && <p className="text-sm text-green-600 mb-3">{success}</p>}
+        <div className="p-8">
+          {error && (
+            <div className="bg-brand-red/10 border border-brand-red/20 rounded-xl p-3 mb-4 animate-fade-in">
+              <p className="text-xs text-brand-red font-medium">{error}</p>
+            </div>
+          )}
+          {success && (
+            <div className="bg-green-500/10 border border-green-500/20 rounded-xl p-3 mb-4 animate-fade-in">
+              <p className="text-xs text-green-500 font-medium">{success}</p>
+            </div>
+          )}
 
           {mode === 'login' && (
             <>
-              <div className="mb-4">
-                <label className="text-xs font-medium text-muted-foreground mb-1 block">E-mail</label>
-                <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="seu@email.com" className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-card focus:outline-none focus:border-brand-blue" />
+              <div className="mb-5">
+                <label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] mb-2 block ml-1">E-mail</label>
+                <input 
+                  type="email" 
+                  value={email} 
+                  onChange={e => setEmail(e.target.value)} 
+                  placeholder="seu@email.com" 
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-all" 
+                />
               </div>
-              <div className="mb-4">
-                <label className="text-xs font-medium text-muted-foreground mb-1 block">Senha</label>
-                <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-card focus:outline-none focus:border-brand-blue" />
+              <div className="mb-6">
+                <label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] mb-2 block ml-1">Senha</label>
+                <input 
+                  type="password" 
+                  value={password} 
+                  onChange={e => setPassword(e.target.value)} 
+                  placeholder="••••••••" 
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-all" 
+                />
               </div>
-              <button onClick={handleLogin} disabled={submitting} className="w-full py-2.5 bg-navy text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center gap-2">
-                {submitting && <Loader2 size={16} className="animate-spin" />}
-                Entrar
+              <button 
+                onClick={handleLogin} 
+                disabled={submitting} 
+                className="w-full py-4 bg-white text-black rounded-2xl text-sm font-bold hover:bg-white/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-[0_10px_20px_rgba(255,255,255,0.1)] active:scale-[0.98]"
+              >
+                {submitting ? <Loader2 size={18} className="animate-spin" /> : 'Entrar'}
               </button>
-              <div className="flex items-center gap-3 my-4 text-muted-foreground text-xs"><div className="flex-1 border-t border-border" /><span>ou</span><div className="flex-1 border-t border-border" /></div>
+              
+              <div className="flex items-center gap-3 my-6 text-white/20 text-[10px] font-bold uppercase tracking-[0.2em]">
+                <div className="flex-1 border-t border-white/5" />
+                <span>ou</span>
+                <div className="flex-1 border-t border-white/5" />
+              </div>
+              
               <button 
                 onClick={handleGoogleSignIn} 
                 disabled={submitting} 
-                className="w-full py-2.5 bg-white border border-border text-foreground rounded-lg text-sm font-medium hover:bg-secondary transition-colors disabled:opacity-50 flex items-center justify-center gap-2 mb-4"
+                className="w-full py-4 bg-white/5 border border-white/10 text-white rounded-2xl text-sm font-medium hover:bg-white/10 transition-all disabled:opacity-50 flex items-center justify-center gap-3 mb-6 active:scale-[0.98]"
               >
-                <svg className="w-4 h-4" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" viewBox="0 0 24 24">
                   <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
                   <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
                   <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" />
@@ -99,30 +128,74 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch, onRegistere
                 </svg>
                 Continuar com Google
               </button>
-              <p className="text-center text-sm text-muted-foreground">Não tem conta? <button onClick={() => { setError(''); setSuccess(''); onSwitch('register'); }} className="text-brand-blue underline">Cadastre-se grátis</button></p>
+              <p className="text-center text-xs text-white/40 font-light">
+                Não tem conta? <button onClick={() => { setError(''); setSuccess(''); onSwitch('register'); }} className="text-white font-medium underline underline-offset-4 hover:text-white/80 transition-colors">Cadastre-se grátis</button>
+              </p>
             </>
           )}
 
           {mode === 'register' && !success && (
             <>
-              <div className="mb-4"><label className="text-xs font-medium text-muted-foreground mb-1 block">Nome</label><input value={nome} onChange={e => setNome(e.target.value)} placeholder="Seu nome" className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-card focus:outline-none focus:border-brand-blue" /></div>
-              <div className="mb-4"><label className="text-xs font-medium text-muted-foreground mb-1 block">E-mail</label><input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="seu@email.com" className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-card focus:outline-none focus:border-brand-blue" /></div>
-              <div className="mb-4"><label className="text-xs font-medium text-muted-foreground mb-1 block">Senha</label><input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Mínimo 8 caracteres" className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-card focus:outline-none focus:border-brand-blue" /></div>
-              <div className="mb-4"><label className="text-xs font-medium text-muted-foreground mb-1 block">Confirmar senha</label><input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="Digite a senha novamente" className={`w-full px-3 py-2 border rounded-lg text-sm bg-card focus:outline-none focus:border-brand-blue ${confirmPassword && password !== confirmPassword ? 'border-brand-red' : 'border-border'}`} /></div>
-              {confirmPassword && password !== confirmPassword && (
-                <p className="text-xs text-brand-red -mt-2 mb-3">As senhas não coincidem.</p>
-              )}
-              <button onClick={handleRegister} disabled={submitting} className="w-full py-2.5 bg-navy text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center gap-2">
-                {submitting && <Loader2 size={16} className="animate-spin" />}
-                Criar conta grátis
+              <div className="mb-4">
+                <label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] mb-2 block ml-1">Nome</label>
+                <input 
+                  value={nome} 
+                  onChange={e => setNome(e.target.value)} 
+                  placeholder="Seu nome" 
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-all" 
+                />
+              </div>
+              <div className="mb-4">
+                <label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] mb-2 block ml-1">E-mail</label>
+                <input 
+                  type="email" 
+                  value={email} 
+                  onChange={e => setEmail(e.target.value)} 
+                  placeholder="seu@email.com" 
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-all" 
+                />
+              </div>
+              <div className="mb-4">
+                <label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] mb-2 block ml-1">Senha</label>
+                <input 
+                  type="password" 
+                  value={password} 
+                  onChange={e => setPassword(e.target.value)} 
+                  placeholder="Mínimo 8 caracteres" 
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-all" 
+                />
+              </div>
+              <div className="mb-6">
+                <label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] mb-2 block ml-1">Confirmar senha</label>
+                <input 
+                  type="password" 
+                  value={confirmPassword} 
+                  onChange={e => setConfirmPassword(e.target.value)} 
+                  placeholder="Digite a senha novamente" 
+                  className={`w-full px-4 py-3 bg-white/5 border rounded-2xl text-sm text-white placeholder:text-white/20 focus:outline-none transition-all ${confirmPassword && password !== confirmPassword ? 'border-brand-red' : 'border-white/10 focus:border-white/30'}`} 
+                />
+              </div>
+              
+              <button 
+                onClick={handleRegister} 
+                disabled={submitting} 
+                className="w-full py-4 bg-white text-black rounded-2xl text-sm font-bold hover:bg-white/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-[0_10px_20px_rgba(255,255,255,0.1)] active:scale-[0.98]"
+              >
+                {submitting ? <Loader2 size={18} className="animate-spin" /> : 'Criar conta grátis'}
               </button>
-              <div className="flex items-center gap-3 my-4 text-muted-foreground text-xs"><div className="flex-1 border-t border-border" /><span>ou</span><div className="flex-1 border-t border-border" /></div>
+              
+              <div className="flex items-center gap-3 my-6 text-white/20 text-[10px] font-bold uppercase tracking-[0.2em]">
+                <div className="flex-1 border-t border-white/5" />
+                <span>ou</span>
+                <div className="flex-1 border-t border-white/5" />
+              </div>
+              
               <button 
                 onClick={handleGoogleSignIn} 
                 disabled={submitting} 
-                className="w-full py-2.5 bg-white border border-border text-foreground rounded-lg text-sm font-medium hover:bg-secondary transition-colors disabled:opacity-50 flex items-center justify-center gap-2 mb-2"
+                className="w-full py-4 bg-white/5 border border-white/10 text-white rounded-2xl text-sm font-medium hover:bg-white/10 transition-all disabled:opacity-50 flex items-center justify-center gap-3 mb-6 active:scale-[0.98]"
               >
-                <svg className="w-4 h-4" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" viewBox="0 0 24 24">
                   <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
                   <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
                   <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" />
@@ -130,31 +203,36 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch, onRegistere
                 </svg>
                 Cadastrar com Google
               </button>
-              <p className="text-center text-xs text-muted-foreground mt-4">Já tem conta? <button onClick={() => { setError(''); setSuccess(''); onSwitch('login'); }} className="text-brand-blue underline">Entrar</button></p>
+              <p className="text-center text-xs text-white/40 font-light">
+                Já tem conta? <button onClick={() => { setError(''); setSuccess(''); onSwitch('login'); }} className="text-white font-medium underline underline-offset-4 hover:text-white/80 transition-colors">Entrar</button>
+              </p>
             </>
           )}
 
           {mode === 'register' && success && (
-            <div className="flex flex-col items-center text-center py-6 px-2">
-              <div className="w-16 h-16 rounded-full bg-brand-blue/10 flex items-center justify-center mb-4 animate-fade-in">
-                <Mail size={32} className="text-brand-blue" />
+            <div className="flex flex-col items-center text-center py-6 px-2 animate-fade-in">
+              <div className="w-20 h-20 rounded-[2rem] bg-white/5 border border-white/10 flex items-center justify-center mb-6 shadow-xl">
+                <Mail size={36} className="text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-foreground mb-2">Verifique seu e-mail</h3>
-              <p className="text-sm text-muted-foreground mb-3">
-                Enviamos um link de confirmação para:
+              <h3 className="text-3xl font-serif-display text-white mb-3 tracking-tight">Verifique seu e-mail</h3>
+              <p className="text-sm text-white/40 mb-6 font-light">
+                Enviamos um link de confirmação para o seu endereço de e-mail.
               </p>
-              <p className="text-sm font-semibold text-foreground bg-secondary px-4 py-2 rounded-lg mb-4 break-all">
-                {email}
-              </p>
-              <div className="flex items-start gap-2 bg-secondary/50 rounded-lg p-3 mb-5 w-full">
-                <CheckCircle2 size={16} className="text-brand-teal mt-0.5 shrink-0" />
-                <p className="text-xs text-muted-foreground text-left">
-                  Clique no link enviado para ativar sua conta. Verifique também a <span className="font-medium text-foreground">caixa de spam</span> caso não encontre o e-mail.
+              <div className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-4 mb-8">
+                <p className="text-xs font-bold text-white/20 uppercase tracking-[0.2em] mb-1">E-mail enviado para</p>
+                <p className="text-sm font-medium text-white break-all">{email}</p>
+              </div>
+              
+              <div className="flex items-start gap-3 bg-white/5 rounded-2xl p-4 mb-8 w-full border border-white/5">
+                <CheckCircle2 size={18} className="text-green-500 mt-0.5 shrink-0" />
+                <p className="text-xs text-white/40 text-left font-light leading-relaxed">
+                  Clique no link enviado para ativar sua conta. Verifique também a <span className="text-white font-medium">caixa de spam</span> caso não encontre o e-mail em alguns minutos.
                 </p>
               </div>
+              
               <button
                 onClick={() => { setError(''); setSuccess(''); onSwitch('login'); }}
-                className="w-full py-2.5 bg-navy text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
+                className="w-full py-4 bg-white/10 text-white rounded-2xl text-sm font-bold hover:bg-white/20 transition-all border border-white/10 active:scale-[0.98]"
               >
                 Ir para login
               </button>

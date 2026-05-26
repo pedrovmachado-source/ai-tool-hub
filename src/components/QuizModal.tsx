@@ -117,98 +117,100 @@ export default function QuizModal({ isOpen, onClose, onRecommend }: QuizModalPro
   };
 
   return (
-    <div className="fixed inset-0 z-[1100] flex items-center justify-center p-4" style={{ background: 'rgba(10,10,30,0.7)' }} onClick={onClose}>
-      <div className="bg-card rounded-2xl w-full max-w-[520px] animate-slide-up overflow-hidden" onClick={e => e.stopPropagation()}>
+    <div className="fixed inset-0 z-[1100] flex items-center justify-center p-4 backdrop-blur-md" style={{ background: 'rgba(0,0,0,0.85)' }} onClick={onClose}>
+      <div className="bg-[#0D0D0F] border border-white/10 rounded-[2.5rem] w-full max-w-[520px] animate-slide-up overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
         {/* Header */}
-        <div className="flex items-center justify-between p-6 pb-4 border-b border-border">
-          <div className="flex items-center gap-2">
-            <Sparkles size={18} className="text-brand-blue-medium" />
-            <h2 className="text-lg font-medium">
-              {showResult ? 'Sua recomendação personalizada' : 'Descubra a IA ideal para você'}
+        <div className="flex items-center justify-between p-8 pb-4 border-b border-white/5">
+          <div className="flex items-center gap-3">
+            <Sparkles size={22} className="text-white" />
+            <h2 className="text-2xl font-serif-display text-white tracking-tight">
+              {showResult ? 'Sua recomendação' : 'Descubra a IA ideal'}
             </h2>
           </div>
-          <button onClick={onClose} className="text-muted-foreground hover:text-foreground p-1 rounded-md hover:bg-secondary">
-            <X size={18} />
+          <button onClick={onClose} className="text-white/40 hover:text-white p-2 rounded-full hover:bg-white/5 transition-colors">
+            <X size={20} />
           </button>
         </div>
 
-        <div className="p-6">
+        <div className="p-8">
           {!showResult ? (
             <>
               {/* Progress */}
-              <div className="flex gap-1.5 mb-6">
+              <div className="flex gap-2 mb-8">
                 {QUIZ_QUESTIONS.map((_, i) => (
-                  <div key={i} className={`h-1.5 flex-1 rounded-full transition-colors ${i <= step ? 'bg-brand-blue' : 'bg-border'}`} />
+                  <div key={i} className={`h-1 flex-1 rounded-full transition-all duration-500 ${i <= step ? 'bg-white' : 'bg-white/10'}`} />
                 ))}
               </div>
 
               {/* Question */}
-              <p className="text-[15px] font-medium mb-5">{currentQuestion.question}</p>
+              <p className="text-lg font-medium text-white mb-6">{currentQuestion.question}</p>
 
               {/* Options */}
-              <div className="space-y-2.5">
+              <div className="space-y-3">
                 {currentQuestion.options.map(opt => (
                   <button
                     key={opt.value}
                     onClick={() => handleSelect(opt.value)}
-                    className={`w-full text-left px-4 py-3.5 rounded-xl border transition-all flex items-center gap-3 hover:border-brand-blue hover:bg-brand-blue/5 ${
+                    className={`w-full text-left px-5 py-4 rounded-2xl border transition-all flex items-center gap-4 hover:border-white/30 hover:bg-white/5 group ${
                       answers[currentQuestion.id] === opt.value
-                        ? 'border-brand-blue bg-brand-blue/10'
-                        : 'border-border'
+                        ? 'border-white/40 bg-white/10'
+                        : 'border-white/5 bg-white/[0.02]'
                     }`}
                   >
-                    <span className="text-xl">{opt.icon}</span>
-                    <span className="text-sm font-medium">{opt.label}</span>
-                    <ArrowRight size={14} className="ml-auto text-muted-foreground" />
+                    <span className="text-2xl group-hover:scale-110 transition-transform">{opt.icon}</span>
+                    <span className="text-sm font-medium text-white/80 group-hover:text-white transition-colors">{opt.label}</span>
+                    <ArrowRight size={16} className="ml-auto text-white/20 group-hover:text-white/60 transition-all group-hover:translate-x-1" />
                   </button>
                 ))}
               </div>
 
               {/* Back button */}
               {step > 0 && (
-                <button onClick={handleBack} className="flex items-center gap-1.5 mt-4 text-sm text-muted-foreground hover:text-foreground">
+                <button onClick={handleBack} className="flex items-center gap-2 mt-6 text-xs font-bold text-white/30 hover:text-white/60 uppercase tracking-widest transition-colors">
                   <ArrowLeft size={14} /> Voltar
                 </button>
               )}
 
-              <p className="text-[11px] text-muted-foreground/50 mt-4 text-center">
-                Pergunta {step + 1} de {totalSteps}
+              <p className="text-[10px] font-bold text-white/20 uppercase tracking-[0.3em] mt-8 text-center">
+                Etapa {step + 1} de {totalSteps}
               </p>
             </>
           ) : (
             <>
               {/* Results */}
-              <div className="text-center mb-6">
-                <div className="w-14 h-14 rounded-full bg-brand-blue/15 flex items-center justify-center mx-auto mb-3">
-                  <Target size={24} className="text-brand-blue-medium" />
+              <div className="text-center mb-8">
+                <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-4 shadow-xl">
+                  <Target size={28} className="text-white" />
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  Com base nas suas respostas, recomendamos:
+                <p className="text-sm text-white/40 font-light leading-relaxed">
+                  Com base no seu perfil e objetivos,<br />estas são as ferramentas ideais para você:
                 </p>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {recommendations.map((rec, i) => (
                   <button
                     key={rec.toolKey}
                     onClick={() => handleGoToTool(rec.toolKey, rec.categoryKey)}
-                    className="w-full text-left px-4 py-4 rounded-xl border border-border hover:border-brand-blue hover:bg-brand-blue/5 transition-all"
+                    className="w-full text-left px-6 py-5 rounded-2xl border border-white/5 bg-white/[0.02] hover:border-white/20 hover:bg-white/5 transition-all group"
                   >
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-semibold">{i === 0 ? '🥇' : i === 1 ? '🥈' : '🥉'} Recomendação #{i + 1}</span>
-                      <ArrowRight size={14} className="text-brand-blue-medium" />
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-bold text-white/60 uppercase tracking-widest flex items-center gap-2">
+                        {i === 0 ? '🥇 Principal' : '🥈 Alternativa'}
+                      </span>
+                      <ArrowRight size={16} className="text-white/20 group-hover:text-white/60 transition-all group-hover:translate-x-1" />
                     </div>
-                    <p className="text-[13px] text-muted-foreground">{rec.reason}</p>
+                    <p className="text-sm text-white/40 font-light group-hover:text-white/60 transition-colors leading-relaxed">{rec.reason}</p>
                   </button>
                 ))}
               </div>
 
-              <div className="flex gap-3 mt-6">
-                <button onClick={reset} className="flex-1 py-2.5 rounded-lg text-sm font-medium border border-border text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
-                  Refazer quiz
+              <div className="flex gap-4 mt-8">
+                <button onClick={reset} className="flex-1 py-4 rounded-2xl text-xs font-bold uppercase tracking-widest border border-white/5 text-white/40 hover:text-white hover:bg-white/5 transition-all active:scale-[0.98]">
+                  Refazer
                 </button>
-                <button onClick={onClose} className="flex-1 py-2.5 rounded-lg text-sm font-medium bg-navy text-primary-foreground hover:opacity-90 transition-opacity">
-                  Explorar todas as IAs
+                <button onClick={onClose} className="flex-1 py-4 rounded-2xl text-xs font-bold uppercase tracking-widest bg-white text-black hover:bg-white/90 transition-all active:scale-[0.98] shadow-lg">
+                  Explorar
                 </button>
               </div>
             </>
