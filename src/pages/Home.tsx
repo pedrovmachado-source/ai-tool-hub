@@ -53,7 +53,11 @@ export default function Home() {
 
   useEffect(() => {
     if (user) {
-      navigate('/menu');
+      if (user.abuseBlocked) {
+        navigate('/bloqueado');
+      } else {
+        navigate('/menu');
+      }
     }
   }, [user, navigate]);
 

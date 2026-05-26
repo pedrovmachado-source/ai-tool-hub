@@ -24,7 +24,10 @@ export default function Menu() {
 
   useEffect(() => {
     document.title = 'Convert Club — Dashboard';
-  }, []);
+    if (user?.abuseBlocked) {
+      navigate('/bloqueado');
+    }
+  }, [user, navigate]);
 
   const Reveal = ({ children, className = '', as: As = 'div' as any, delay = 0 }: any) => {
     const ref = useRef<HTMLElement | null>(null);
