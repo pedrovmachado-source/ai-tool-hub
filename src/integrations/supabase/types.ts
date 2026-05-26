@@ -50,6 +50,30 @@ export type Database = {
         }
         Relationships: []
       }
+      blocked_devices: {
+        Row: {
+          blocked_at: string
+          fingerprint: string
+          id: string
+          ip_address: string | null
+          reason: string | null
+        }
+        Insert: {
+          blocked_at?: string
+          fingerprint: string
+          id?: string
+          ip_address?: string | null
+          reason?: string | null
+        }
+        Update: {
+          blocked_at?: string
+          fingerprint?: string
+          id?: string
+          ip_address?: string | null
+          reason?: string | null
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           accent: string
@@ -199,6 +223,30 @@ export type Database = {
           sort_order?: number
           title?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      device_logs: {
+        Row: {
+          created_at: string
+          fingerprint: string
+          id: string
+          ip_address: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          fingerprint: string
+          id?: string
+          ip_address?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          fingerprint?: string
+          id?: string
+          ip_address?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -394,6 +442,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          abuse_blocked: boolean | null
           created_at: string
           email: string
           empresa: string | null
@@ -407,6 +456,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          abuse_blocked?: boolean | null
           created_at?: string
           email?: string
           empresa?: string | null
@@ -420,6 +470,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          abuse_blocked?: boolean | null
           created_at?: string
           email?: string
           empresa?: string | null
@@ -658,6 +709,17 @@ export type Database = {
         Returns: boolean
       }
       initialize_admin_invites: { Args: never; Returns: Json }
+      list_abuse_blocks: {
+        Args: never
+        Returns: {
+          blocked_at: string
+          email: string
+          fingerprint: string
+          ip_address: string
+          nome: string
+          user_id: string
+        }[]
+      }
       list_categories_public: {
         Args: never
         Returns: {
@@ -693,10 +755,20 @@ export type Database = {
           url_label: string
         }[]
       }
-      validate_invite_code: {
-        Args: { invite_code_text: string }
+      remove_abuse_block: {
+        Args: { target_fingerprint: string; target_user_id: string }
         Returns: Json
       }
+      validate_invite_code:
+        | { Args: { invite_code_text: string }; Returns: Json }
+        | {
+            Args: {
+              invite_code_text: string
+              p_fingerprint: string
+              p_ip_address: string
+            }
+            Returns: Json
+          }
     }
     Enums: {
       app_role: "admin" | "user"

@@ -34,10 +34,13 @@ export default function Index() {
   const [verifyingAdmin, setVerifyingAdmin] = useState(false);
 
   useEffect(() => {
+    if (user?.abuseBlocked) {
+      navigate('/bloqueado');
+      return;
+    }
     if (initialCat) sessionStorage.removeItem('adai:initialCategory');
     if (initialPage) sessionStorage.removeItem('adai:initialPage');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user, navigate]);
 
   const handleNavigate = (target: string) => {
     if (target === 'home') { navigate('/'); return; }

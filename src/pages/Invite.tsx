@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -6,11 +6,27 @@ import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { Loader2, Ticket } from 'lucide-react';
+import { getFingerprint, getIpAddress } from '@/utils/security';
 
 export default function Invite() {
   const { logout } = useAuth();
   const [code, setCode] = useState('');
   const [isValidating, setIsValidating] = useState(false);
+  const [fingerprint, setFingerprint] = useState<string | null>(null);
+  const [ipAddress, setIpAddress] = useState<string | null>(null);
+
+  useEffect(() => {
+    const initSecurity = async () => {
+      try {
+        const [fp, ip] = await Promise.all([getFingerprint(), getIpAddress()]);
+        setFingerprint(fp);
+        setIpAddress(ip);
+      } catch (err) {
+        console.error('Security check failed:', err);
+      }
+    };
+    initSecurity();
+  }, []);
 
   const handleValidate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,7 +35,9 @@ export default function Invite() {
     setIsValidating(true);
     try {
       const { data, error } = await supabase.rpc('validate_invite_code', {
-        invite_code_text: code.trim().toUpperCase()
+        invite_code_text: code.trim().toUpperCase(),
+        p_fingerprint: fingerprint || 'unknown',
+        p_ip_address: ipAddress || '0.0.0.0'
       });
 
       if (error) throw error;

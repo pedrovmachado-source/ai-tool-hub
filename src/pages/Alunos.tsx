@@ -40,10 +40,16 @@ export default function Alunos() {
   const videoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (user && !isMentorado(user.plano)) {
-      setMentoriaModalOpen(true);
+    if (user) {
+      if (user.abuseBlocked) {
+        navigate('/bloqueado');
+        return;
+      }
+      if (!isMentorado(user.plano)) {
+        setMentoriaModalOpen(true);
+      }
     }
-  }, [user]);
+  }, [user, navigate]);
 
 
   useEffect(() => {

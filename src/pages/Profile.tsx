@@ -35,7 +35,13 @@ export default function Profile() {
 
   useEffect(() => {
     document.title = 'Perfil — AdAI';
-    if (!user) navigate('/');
+    if (!user) {
+      navigate('/');
+      return;
+    }
+    if (user.abuseBlocked) {
+      navigate('/bloqueado');
+    }
   }, [user, navigate]);
 
   if (!user) return null;
