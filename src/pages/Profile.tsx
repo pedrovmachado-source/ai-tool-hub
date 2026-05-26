@@ -416,6 +416,7 @@ function TabConvites() {
   const [invites, setInvites] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [initializing, setInitializing] = useState(false);
+  const [generating, setGenerating] = useState(false);
   const [visibleCodes, setVisibleCodes] = useState<Record<string, boolean>>({});
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
@@ -427,7 +428,7 @@ function TabConvites() {
         .from('invite_codes')
         .select('*')
         .eq('owner_id', user.id)
-        .order('created_at', { ascending: true });
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
       setInvites(data || []);
@@ -436,6 +437,27 @@ function TabConvites() {
       toast.error('Não foi possível carregar seus convites.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const generateNewInvite = async () => {
+    if (!isAdmin || !user) return;
+    setGenerating(true);
+    try {
+      const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+      const { error } = await supabase.from('invite_codes').insert({
+        owner_id: user.id,
+        code: code,
+        is_used: false
+      });
+
+      if (error) throw error;
+      toast.success('Novo convite gerado!');
+      fetchInvites();
+    } catch (error: any) {
+      toast.error('Erro ao gerar convite: ' + error.message);
+    } finally {
+      setGenerating(false);
     }
   };
 
@@ -560,12 +582,109 @@ function TabConvites() {
           </div>
         )}
 
-        {allUsed && (
-          <div className="mt-6 p-4 bg-yellow-50 border border-yellow-100 rounded-lg text-yellow-800 text-sm flex gap-3">
-            <ShieldCheck className="w-5 h-5 flex-shrink-0" />
-            <p>Você já utilizou todos os seus convites disponíveis. Não é possível gerar novos códigos.</p>
+        {(allUsed || isAdmin) && (
+          <div className="mt-6 flex flex-col gap-4">
+            {allUsed && !isAdmin && (
+              <div className="p-4 bg-yellow-50 border border-yellow-100 rounded-lg text-yellow-800 text-sm flex gap-3">
+                <ShieldCheck className="w-5 h-5 flex-shrink-0" />
+                <p>Você já utilizou todos os seus convites disponíveis. Não é possível gerar novos códigos.</p>
+              </div>
+            )}
+            {isAdmin && (
+              <Button onClick={generateNewInvite} disabled={generating} className="bg-brand-blue hover:bg-brand-blue/90 gap-2 self-start">
+                {generating ? <Loader2 size={16} className="animate-spin" /> : <Ticket size={16} />}
+                Gerar novo convite ilimitado
+              </Button>
+            )}
           </div>
         )}
+      </Card>
+    </div>
+  );
+}
+
+function TabPlanos() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const plans = [
+    {
+      name: 'Elite',
+      description: 'Acesso às ferramentas essenciais do Convert Club.',
+      badge: 'bg-gradient-to-r from-brand-amber to-brand-amber/80 text-white',
+      link: '/pro',
+      cta: 'Ver detalhes'
+    },
+    {
+      name: 'Elite Plus',
+      description: 'Ferramentas avançadas e limites ampliados.',
+      badge: 'bg-gradient-to-r from-brand-blue to-brand-teal text-white',
+      link: '/pro',
+      cta: 'Ver detalhes'
+    },
+    {
+      name: 'Max',
+      description: 'Cargo exclusivo para mentorados. Acompanhamento direto e estratégico.',
+      badge: 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white',
+      link: 'https://kayosa.com.br',
+      cta: 'Conhecer Mentoria',
+      external: true
+    }
+  ];
+
+  return (
+    <div className="space-y-6">
+      <Card className="p-7 rounded-xl">
+        <h2 className="font-serif-display text-xl mb-1">Categorias de Planos</h2>
+        <p className="text-sm text-muted-foreground mb-6">Conheça os níveis de acesso disponíveis no Convert Club.</p>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {plans.map((p) => (
+            <div key={p.name} className="flex flex-col border border-border rounded-xl p-5 hover:border-brand-blue/30 transition-colors">
+              <div className="flex justify-between items-start mb-4">
+                <h3 className="font-bold text-lg">{p.name}</h3>
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${p.badge}`}>
+                  PLANO
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground mb-6 flex-1">{p.description}</p>
+              
+              {p.external ? (
+                <a 
+                  href={p.link} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg bg-secondary text-secondary-foreground hover:bg-secondary/80 text-xs font-medium transition-colors"
+                >
+                  {p.cta} <ExternalLink size={14} />
+                </a>
+              ) : (
+                <Button 
+                  onClick={() => navigate(p.link)} 
+                  variant="secondary" 
+                  size="sm" 
+                  className="w-full text-xs"
+                >
+                  {p.cta}
+                </Button>
+              )}
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      <Card className="p-7 rounded-xl bg-brand-blue/[0.03] border-brand-blue/10">
+        <h3 className="font-medium text-sm mb-2">Seu plano atual</h3>
+        <div className="flex items-center gap-3">
+          <span className={`inline-block text-xs font-semibold px-3 py-1 rounded-full ${planBadgeClass(user?.plano)}`}>
+            {planLabel(user?.plano)}
+          </span>
+          <p className="text-xs text-muted-foreground">
+            {user?.plano === 'Free' 
+              ? 'Você está no plano gratuito. Faça upgrade para desbloquear todo o potencial.' 
+              : 'Você já possui um acesso premium ativo.'}
+          </p>
+        </div>
       </Card>
     </div>
   );
