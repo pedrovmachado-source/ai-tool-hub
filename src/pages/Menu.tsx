@@ -83,11 +83,14 @@ export default function Menu() {
         onNavigate={(page) => {
           if (page === 'home') navigate('/');
           else if (page === 'profile') navigate('/perfil');
-          else if (page === 'pro') navigate('/pro');
           else if (page === 'alunos') navigate('/alunos');
-          else if (page === 'lessons') { sessionStorage.setItem('adai:initialPage', 'lessons'); navigate('/ferramentas'); }
-          else navigate('/ferramentas');
+          else if (page === 'mentorias') navigate('/mentorias');
+          else {
+            sessionStorage.setItem('adai:initialPage', page);
+            navigate('/ferramentas');
+          }
         }} 
+
       />
 
       <main className="flex-1 relative pt-32 pb-24 px-6">
