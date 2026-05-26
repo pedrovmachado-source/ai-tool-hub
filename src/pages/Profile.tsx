@@ -9,15 +9,16 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { User, Settings, History, ShieldCheck, Loader2, LogOut, Bookmark, Ticket, Eye, EyeOff, Copy, Check } from 'lucide-react';
+import { User, Settings, History, ShieldCheck, Loader2, LogOut, Bookmark, Ticket, Eye, EyeOff, Copy, Check, CreditCard, Camera, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 import { planLabel, planBadgeClass } from '@/lib/plan';
 
-type Tab = 'dados' | 'preferencias' | 'historico' | 'seguranca' | 'convites';
+type Tab = 'dados' | 'preferencias' | 'historico' | 'seguranca' | 'convites' | 'planos';
 
-const TABS: { key: Tab; label: string; icon: typeof User }[] = [
+const TABS: { key: Tab; label: string; icon: any }[] = [
   { key: 'dados', label: 'Dados pessoais', icon: User },
   { key: 'convites', label: 'Meus Convites', icon: Ticket },
+  { key: 'planos', label: 'Planos', icon: CreditCard },
   { key: 'preferencias', label: 'Preferências', icon: Settings },
   { key: 'historico', label: 'Histórico', icon: History },
   { key: 'seguranca', label: 'Segurança', icon: ShieldCheck },
@@ -69,10 +70,14 @@ export default function Profile() {
           <aside className="space-y-4">
             <Card className="p-5 rounded-xl">
               <div className="flex items-center gap-3 mb-4">
-                <Avatar className="h-12 w-12 bg-brand-blue text-primary-foreground">
-                  <AvatarFallback className="bg-brand-blue text-primary-foreground font-semibold">
-                    {user.nome?.[0]?.toUpperCase() || '?'}
-                  </AvatarFallback>
+                <Avatar className="h-12 w-12 bg-brand-blue text-primary-foreground border-2 border-brand-blue/20">
+                  {user.avatarUrl ? (
+                    <img src={user.avatarUrl} alt={user.nome} className="h-full w-full object-cover" />
+                  ) : (
+                    <AvatarFallback className="bg-brand-blue text-primary-foreground font-semibold">
+                      {user.nome?.[0]?.toUpperCase() || '?'}
+                    </AvatarFallback>
+                  )}
                 </Avatar>
                 <div className="min-w-0">
                   <div className="text-sm font-medium truncate">{user.nome} {user.sobre}</div>
@@ -109,6 +114,7 @@ export default function Profile() {
           <main>
             {tab === 'dados' && <TabDados />}
             {tab === 'convites' && <TabConvites />}
+            {tab === 'planos' && <TabPlanos />}
             {tab === 'preferencias' && <TabPreferencias />}
             {tab === 'historico' && <TabHistorico savedEbooks={savedEbooks} onOpen={(k, c) => navigate(`/ferramentas?tool=${k}&cat=${c}`)} />}
             {tab === 'seguranca' && <TabSeguranca onLogout={logout} />}
