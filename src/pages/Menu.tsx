@@ -113,7 +113,14 @@ export default function Menu() {
             {menuItems.map((item, idx) => (
               <Reveal key={item.title} delay={idx * 150}>
                 <div 
-                  onClick={() => navigate(item.path)}
+                  onClick={() => {
+                    if (item.path === '/alunos' && !isMentorado(user?.plano)) {
+                      setMentoriaModalOpen(true);
+                      return;
+                    }
+                    navigate(item.path);
+                  }}
+
                   className="group relative cursor-pointer p-8 glass-smooth hover:bg-white/10 transition-all duration-500 rounded-[2.5rem] border border-white/5 h-full flex flex-col"
                 >
                   <div className="w-14 h-14 bg-white/5 rounded-2xl mb-8 group-hover:bg-white group-hover:text-black transition-all duration-500 flex items-center justify-center">
