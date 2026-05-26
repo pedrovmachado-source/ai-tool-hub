@@ -1,19 +1,23 @@
 // Plan helpers — single source of truth for tier checks.
-export type Plano = 'Free' | 'Pro' | 'Max';
+export type Plano = 'Free' | 'Pro' | 'Max' | 'Mentorado';
 export type Period = 'mensal' | 'trimestral' | 'vitalicio';
 
-export const isPaid = (plano?: string | null) => plano === 'Pro' || plano === 'Max';
+export const isPaid = (plano?: string | null) => plano === 'Pro' || plano === 'Max' || plano === 'Mentorado';
+export const isMentorado = (plano?: string | null) => plano === 'Mentorado';
 export const isMax = (plano?: string | null) => plano === 'Max';
 export const isPro = (plano?: string | null) => plano === 'Pro';
 
 export const planLabel = (plano?: string | null) =>
-  plano === 'Max' ? 'MAX' : plano === 'Pro' ? 'PRO' : 'FREE';
+  plano === 'Mentorado' ? 'MENTORADO' : plano === 'Max' ? 'MAX' : plano === 'Pro' ? 'PRO' : 'FREE';
+
 
 export const planBadgeClass = (plano?: string | null) => {
+  if (plano === 'Mentorado') return 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-[0_0_15px_rgba(147,51,234,0.5)]';
   if (plano === 'Max') return 'bg-gradient-to-r from-brand-blue to-brand-teal text-white';
   if (plano === 'Pro') return 'bg-gradient-to-r from-brand-amber to-brand-amber/80 text-white';
   return 'bg-white/25 text-white';
 };
+
 
 export const PERIOD_LABEL: Record<Period, string> = {
   mensal: 'Mensal',
@@ -51,7 +55,8 @@ export const DEFAULT_PLANS_CONFIG: PlansConfig = {
 
 // Plan ranking — for min_plan gating logic.
 export const planRank = (plano?: string | null): number =>
-  plano === 'Max' ? 2 : plano === 'Pro' ? 1 : 0;
+  plano === 'Mentorado' ? 3 : plano === 'Max' ? 2 : plano === 'Pro' ? 1 : 0;
+
 
 export const meetsMinPlan = (plano: string | null | undefined, minPlan: string) =>
   planRank(plano) >= planRank(minPlan);
