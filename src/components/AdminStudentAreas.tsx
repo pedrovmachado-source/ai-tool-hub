@@ -52,7 +52,7 @@ export default function AdminStudentAreas() {
     if (error) {
       toast({ title: 'Erro ao buscar alunos', description: error.message, variant: 'destructive' });
     } else {
-      setStudents(data || []);
+      setStudents((data || []) as Student[]);
     }
     setLoading(false);
   };
@@ -70,9 +70,11 @@ export default function AdminStudentAreas() {
     }
 
     if (data) {
-      setStudentArea(data);
+      setStudentArea({
+        ...data,
+        content: (data.content as any) as StudentArea['content']
+      });
     } else {
-      // Create a default area object (not saved yet)
       setStudentArea({
         id: '',
         user_id: studentId,
@@ -95,7 +97,7 @@ export default function AdminStudentAreas() {
 
     const payload = {
       user_id: selectedStudent.id,
-      content: studentArea.content
+      content: studentArea.content as any
     };
 
     let error;
@@ -111,7 +113,12 @@ export default function AdminStudentAreas() {
         .insert(payload)
         .select()
         .single();
-      if (data) setStudentArea(data);
+      if (data) {
+        setStudentArea({
+          ...data,
+          content: (data.content as any) as StudentArea['content']
+        });
+      }
       error = err;
     }
 
@@ -179,7 +186,6 @@ export default function AdminStudentAreas() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row gap-6">
-        {/* Left column: Student List */}
         <div className="w-full md:w-80 space-y-4">
           <div className="relative">
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/20" />
@@ -209,7 +215,6 @@ export default function AdminStudentAreas() {
           </div>
         </div>
 
-        {/* Right column: Editor */}
         <div className="flex-1">
           {selectedStudent ? (
             <div className="space-y-6">
@@ -301,7 +306,6 @@ export default function AdminStudentAreas() {
         </div>
       </div>
 
-      {/* Lesson Modal */}
       {editingLesson && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
           <div className="bg-navy border border-white/10 rounded-[2rem] p-8 w-full max-w-md shadow-2xl" onClick={e => e.stopPropagation()}>
