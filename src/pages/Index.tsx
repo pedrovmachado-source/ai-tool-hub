@@ -95,7 +95,7 @@ export default function Index() {
   const filteredTools = freeOnly ? baseTools.filter(({ tool }) => isFreeTool(tool)) : baseTools;
 
   const handleOpenEbook = (tool: Tool, cat: Category) => {
-    const canAccess = isAdmin || (user && user.plano === 'Pro');
+    const canAccess = isAdmin || (user && (user.plano === 'Elite' || user.plano === 'Elite Plus' || user.plano === 'Max'));
     if (!canAccess) {
       setPage('pro');
       return;
@@ -195,16 +195,16 @@ export default function Index() {
           </button>
         </div>
 
-        {(!user || user.plano !== 'Pro') && (
+        {(!user || (user.plano !== 'Elite' && user.plano !== 'Elite Plus' && user.plano !== 'Max')) && (
           <div className="flex flex-col items-center gap-3 mt-5">
             <div className="flex items-center justify-center gap-2 text-[12px] sm:text-[13px] text-muted-foreground/40 text-center px-2">
-              <Lock size={14} className="shrink-0" /> E-books completos exclusivos para assinantes Pro
+              <Lock size={14} className="shrink-0" /> E-books completos exclusivos para assinantes Elite
             </div>
             <button
               onClick={() => setPage('pro')}
               className="inline-flex items-center gap-2 text-xs px-4 py-2 rounded-full bg-brand-amber/10 border border-brand-amber/25 text-brand-amber hover:bg-brand-amber/20 transition-all"
             >
-              ⚡ Seja Pro · R${plan.price} {plan.period === 'vitalicio' ? '(acesso vitalício)' : ''}
+              ⚡ Seja Elite · R${plan.price} {plan.period === 'vitalicio' ? '(acesso vitalício)' : ''}
             </button>
           </div>
         )}

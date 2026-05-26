@@ -11,7 +11,7 @@ interface Section {
   description: string;
   intro: string;
   cover_url: string | null;
-  min_plan: 'Free' | 'Pro' | 'Max';
+  min_plan: 'Free' | 'Elite' | 'Elite Plus' | 'Max';
   sort_order: number;
 }
 
@@ -72,7 +72,7 @@ export default function AdminContentSections() {
       description: sectionForm.description || '',
       intro: sectionForm.intro || '',
       cover_url: sectionForm.cover_url || null,
-      min_plan: sectionForm.min_plan || 'Pro',
+      min_plan: sectionForm.min_plan || 'Elite',
       sort_order: sectionForm.sort_order ?? sections.length,
     };
     if (sectionForm.id) {
@@ -290,7 +290,7 @@ export default function AdminContentSections() {
           <h1 className="text-xl font-medium text-primary-foreground">Conteúdos</h1>
           <p className="text-[12px] text-muted-foreground/50">Gerencie Ofertas validadas, Criação de site, Edição de criativo e Aulas por assunto.</p>
         </div>
-        <button onClick={() => setSectionForm({ sort_order: sections.length, min_plan: 'Pro' })} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-[12px] bg-brand-blue text-primary-foreground">
+        <button onClick={() => setSectionForm({ sort_order: sections.length, min_plan: 'Elite' })} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-[12px] bg-brand-blue text-primary-foreground">
           <Plus size={14} /> Nova seção
         </button>
       </div>
@@ -330,9 +330,10 @@ export default function AdminContentSections() {
             <Field label="Intro (texto longo)"><textarea value={sectionForm.intro || ''} onChange={e => setSectionForm({ ...sectionForm, intro: e.target.value })} rows={3} className={inputCls + ' resize-none'} /></Field>
             <Field label="URL da capa (opcional)"><input value={sectionForm.cover_url || ''} onChange={e => setSectionForm({ ...sectionForm, cover_url: e.target.value })} placeholder="https://..." className={inputCls} /></Field>
             <Field label="Plano mínimo">
-              <select value={sectionForm.min_plan || 'Pro'} onChange={e => setSectionForm({ ...sectionForm, min_plan: e.target.value as Section['min_plan'] })} className={inputCls}>
+              <select value={sectionForm.min_plan || 'Elite'} onChange={e => setSectionForm({ ...sectionForm, min_plan: e.target.value as Section['min_plan'] })} className={inputCls}>
                 <option value="Free">Free</option>
-                <option value="Pro">Pro</option>
+                <option value="Elite">Elite</option>
+                <option value="Elite Plus">Elite Plus</option>
                 <option value="Max">Max</option>
               </select>
             </Field>

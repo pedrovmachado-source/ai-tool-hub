@@ -13,7 +13,7 @@ interface Section {
   description: string;
   intro: string;
   cover_url: string | null;
-  min_plan: 'Free' | 'Pro' | 'Max';
+  min_plan: 'Free' | 'Elite' | 'Elite Plus' | 'Max';
 }
 
 interface Item {

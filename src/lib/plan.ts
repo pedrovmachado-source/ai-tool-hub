@@ -1,20 +1,20 @@
 // Plan helpers — single source of truth for tier checks.
-export type Plano = 'Free' | 'Pro' | 'Max' | 'Mentorado';
+export type Plano = 'Free' | 'Elite' | 'Elite Plus' | 'Max';
 export type Period = 'mensal' | 'trimestral' | 'vitalicio';
 
-export const isPaid = (plano?: string | null) => plano === 'Pro' || plano === 'Max' || plano === 'Mentorado';
-export const isMentorado = (plano?: string | null) => plano === 'Mentorado';
-export const isMax = (plano?: string | null) => plano === 'Max';
-export const isPro = (plano?: string | null) => plano === 'Pro';
+export const isPaid = (plano?: string | null) => plano === 'Elite' || plano === 'Elite Plus' || plano === 'Max';
+export const isMentorado = (plano?: string | null) => plano === 'Max';
+export const isMax = (plano?: string | null) => plano === 'Elite Plus';
+export const isPro = (plano?: string | null) => plano === 'Elite';
 
 export const planLabel = (plano?: string | null) =>
-  plano === 'Mentorado' ? 'MENTORADO' : plano === 'Max' ? 'MAX' : plano === 'Pro' ? 'PRO' : 'FREE';
+  plano === 'Max' ? 'MAX' : plano === 'Elite Plus' ? 'ELITE PLUS' : plano === 'Elite' ? 'ELITE' : 'FREE';
 
 
 export const planBadgeClass = (plano?: string | null) => {
-  if (plano === 'Mentorado') return 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-[0_0_15px_rgba(147,51,234,0.5)]';
-  if (plano === 'Max') return 'bg-gradient-to-r from-brand-blue to-brand-teal text-white';
-  if (plano === 'Pro') return 'bg-gradient-to-r from-brand-amber to-brand-amber/80 text-white';
+  if (plano === 'Max') return 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-[0_0_15px_rgba(147,51,234,0.5)]';
+  if (plano === 'Elite Plus') return 'bg-gradient-to-r from-brand-blue to-brand-teal text-white';
+  if (plano === 'Elite') return 'bg-gradient-to-r from-brand-amber to-brand-amber/80 text-white';
   return 'bg-white/25 text-white';
 };
 
@@ -36,17 +36,17 @@ export interface PlanOption {
   checkoutUrl: string;
 }
 export interface PlansConfig {
-  pro: Record<Period, PlanOption>;
-  max: Record<Period, PlanOption>;
+  elite: Record<Period, PlanOption>;
+  elitePlus: Record<Period, PlanOption>;
 }
 
 export const DEFAULT_PLANS_CONFIG: PlansConfig = {
-  pro: {
+  elite: {
     mensal:     { price: '19.90',  checkoutUrl: 'https://buy.stripe.com/bJe8wR2JSg00ehN2rf5wI07' },
     trimestral: { price: '49.90',  checkoutUrl: 'https://buy.stripe.com/8x2eVf1FO156flR5Dr5wI06' },
     vitalicio:  { price: '127.90', checkoutUrl: 'https://buy.stripe.com/9B614pbgo156c9F5Dr5wI03' },
   },
-  max: {
+  elitePlus: {
     mensal:     { price: '29.90',  checkoutUrl: 'https://buy.stripe.com/5kQbJ384cbJK1v19TH5wI08' },
     trimestral: { price: '79.90',  checkoutUrl: 'https://buy.stripe.com/00w9AV5W47tuflRd5T5wI05' },
     vitalicio:  { price: '197.90', checkoutUrl: 'https://buy.stripe.com/14AfZjfwE8xy3D99TH5wI02' },
@@ -55,7 +55,7 @@ export const DEFAULT_PLANS_CONFIG: PlansConfig = {
 
 // Plan ranking — for min_plan gating logic.
 export const planRank = (plano?: string | null): number =>
-  plano === 'Mentorado' ? 3 : plano === 'Max' ? 2 : plano === 'Pro' ? 1 : 0;
+  plano === 'Max' ? 3 : plano === 'Elite Plus' ? 2 : plano === 'Elite' ? 1 : 0;
 
 
 export const meetsMinPlan = (plano: string | null | undefined, minPlan: string) =>

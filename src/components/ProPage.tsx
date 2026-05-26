@@ -6,9 +6,9 @@ import { toast } from 'sonner';
 import AuthModal from './AuthModal';
 import type { Period } from '@/lib/plan';
 
-type Tier = 'free' | 'pro' | 'max';
+type Tier = 'free' | 'elite' | 'elitePlus';
 
-const PRO_FEATURES = [
+const ELITE_FEATURES = [
   'Tudo do plano gratuito',
   '24 e-books completos',
   '+200 prompts exclusivos',
@@ -17,8 +17,8 @@ const PRO_FEATURES = [
   'Suporte prioritário',
 ];
 
-const MAX_FEATURES = [
-  'Tudo do plano Pro',
+const ELITE_PLUS_FEATURES = [
+  'Tudo do plano Elite',
   '🎥 Vídeos exclusivos dos e-books',
   '🎓 Aulas e transcrições completas',
   'Novos módulos sempre que lançados',
@@ -49,7 +49,7 @@ export default function ProPage({ onBack, onNavigate: _onNavigate }: { onBack: (
   const [period, setPeriod] = useState<Period>('mensal');
   const [authModal, setAuthModal] = useState<{ open: boolean; mode: 'login' | 'register' }>({ open: false, mode: 'login' });
 
-  const handleSubscribe = (tier: 'pro' | 'max') => {
+  const handleSubscribe = (tier: 'elite' | 'elitePlus') => {
     if (!user) {
       toast.error('Faça login ou crie uma conta para assinar.');
       setAuthModal({ open: true, mode: 'register' });
@@ -67,14 +67,14 @@ export default function ProPage({ onBack, onNavigate: _onNavigate }: { onBack: (
     );
   }
 
-  const proPrice = plans.pro[period].price;
-  const maxPrice = plans.max[period].price;
+  const elitePrice = plans.elite[period].price;
+  const elitePlusPrice = plans.elitePlus[period].price;
   const periodMeta = PERIODS.find(p => p.key === period)!;
   const isLifetime = period === 'vitalicio';
   const periodCopy = isLifetime ? 'pagamento único · acesso vitalício' : periodMeta.suffix;
 
-  const proParts = priceParts(proPrice);
-  const maxParts = priceParts(maxPrice);
+  const eliteParts = priceParts(elitePrice);
+  const elitePlusParts = priceParts(elitePlusPrice);
 
   return (
     <div className="min-h-screen bg-navy">
@@ -148,32 +148,32 @@ export default function ProPage({ onBack, onNavigate: _onNavigate }: { onBack: (
           onCta={onBack}
         />
 
-        {/* Pro */}
+        {/* Elite */}
         <PlanCard
-          tier="pro"
-          title="Pro"
+          tier="elite"
+          title="Elite"
           highlighted
           badge="Mais Popular"
-          price={`R$${proParts.whole}`}
-          cents={proParts.cents}
+          price={`R$${eliteParts.whole}`}
+          cents={eliteParts.cents}
           subtitle={periodCopy}
-          features={PRO_FEATURES}
-          ctaLabel={isLifetime ? `Comprar — R$${proPrice.replace('.', ',')}` : `Assinar — R$${proPrice.replace('.', ',')}${periodMeta.suffix}`}
-          onCta={() => handleSubscribe('pro')}
+          features={ELITE_FEATURES}
+          ctaLabel={isLifetime ? `Comprar — R$${elitePrice.replace('.', ',')}` : `Assinar — R$${elitePrice.replace('.', ',')}${periodMeta.suffix}`}
+          onCta={() => handleSubscribe('elite')}
           accent="amber"
         />
 
-        {/* Max */}
+        {/* Elite Plus */}
         <PlanCard
-          tier="max"
-          title="Max"
+          tier="elitePlus"
+          title="Elite Plus"
           badge="Premium"
-          price={`R$${maxParts.whole}`}
-          cents={maxParts.cents}
+          price={`R$${elitePlusParts.whole}`}
+          cents={elitePlusParts.cents}
           subtitle={periodCopy}
-          features={MAX_FEATURES}
-          ctaLabel={isLifetime ? `Comprar — R$${maxPrice.replace('.', ',')}` : `Assinar — R$${maxPrice.replace('.', ',')}${periodMeta.suffix}`}
-          onCta={() => handleSubscribe('max')}
+          features={ELITE_PLUS_FEATURES}
+          ctaLabel={isLifetime ? `Comprar — R$${elitePlusPrice.replace('.', ',')}` : `Assinar — R$${elitePlusPrice.replace('.', ',')}${periodMeta.suffix}`}
+          onCta={() => handleSubscribe('elitePlus')}
           accent="blue"
         />
       </div>
@@ -183,9 +183,9 @@ export default function ProPage({ onBack, onNavigate: _onNavigate }: { onBack: (
         <h2 className="font-serif-display text-[22px] sm:text-[28px] text-primary-foreground text-center mb-6 sm:mb-8">O que cada plano inclui</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
           {[
-            { icon: '📘', title: 'E-books & Prompts', desc: 'Guias e prompts para todas as ferramentas. Disponível em Pro e Max.' },
-            { icon: '🎥', title: 'Vídeos dos E-books', desc: 'Versão em vídeo de cada e-book, explicada passo a passo. Exclusivo Max.' },
-            { icon: '🎓', title: 'Aulas Exclusivas', desc: 'Módulos de aulas com vídeos e transcrições em PDF. Exclusivo Max.' },
+            { icon: '📘', title: 'E-books & Prompts', desc: 'Guias e prompts para todas as ferramentas. Disponível em Elite e Elite Plus.' },
+            { icon: '🎥', title: 'Vídeos dos E-books', desc: 'Versão em vídeo de cada e-book, explicada passo a passo. Exclusivo Elite Plus.' },
+            { icon: '🎓', title: 'Aulas Exclusivas', desc: 'Módulos de aulas com vídeos e transcrições em PDF. Exclusivo Elite Plus.' },
           ].map(b => (
             <div key={b.title} className="bg-primary-foreground/[0.04] border border-primary-foreground/[0.07] rounded-xl p-5 sm:p-6">
               <div className="text-2xl mb-3">{b.icon}</div>
@@ -282,7 +282,7 @@ function PlanCard({
         className={`w-full py-2.5 rounded-lg text-[13px] sm:text-sm font-semibold transition-opacity hover:opacity-90 flex items-center justify-center gap-2 ${ctaClass}`}
         style={ctaStyle}
       >
-        {tier === 'free' ? ctaLabel : tier === 'max' ? `👑 ${ctaLabel}` : `⚡ ${ctaLabel}`}
+        {tier === 'free' ? ctaLabel : tier === 'elitePlus' ? `👑 ${ctaLabel}` : `⚡ ${ctaLabel}`}
       </button>
     </div>
   );

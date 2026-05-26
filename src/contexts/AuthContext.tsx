@@ -6,7 +6,7 @@ interface Profile {
   nome: string;
   sobre: string;
   email: string;
-  plano: 'Free' | 'Pro' | 'Max';
+  plano: 'Free' | 'Elite' | 'Elite Plus' | 'Max';
   telefone?: string;
   empresa?: string;
   inviteValidated: boolean;
@@ -60,7 +60,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     nome: profile?.nome || (typeof supaUser.user_metadata?.nome === 'string' ? supaUser.user_metadata.nome : ''),
     sobre: profile?.sobre || (typeof supaUser.user_metadata?.sobre === 'string' ? supaUser.user_metadata.sobre : ''),
     email: profile?.email || supaUser.email || '',
-    plano: profile?.plano === 'Max' ? 'Max' : profile?.plano === 'Pro' ? 'Pro' : 'Free',
+    plano: (profile?.plano === 'Max' || profile?.plano === 'Mentorado') ? 'Max' : (profile?.plano === 'Elite Plus' || profile?.plano === 'Max') ? 'Elite Plus' : (profile?.plano === 'Elite' || profile?.plano === 'Pro') ? 'Elite' : 'Free',
     telefone: profile?.telefone || undefined,
     empresa: profile?.empresa || undefined,
     inviteValidated: (profile as ProfileRecord)?.invite_validated ?? (profile as Profile)?.inviteValidated ?? false,
@@ -322,7 +322,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const { data, error } = await supabase.functions.invoke('check-subscription');
       if (!error && data?.subscribed) {
-        setUser(prev => prev ? { ...prev, plano: 'Pro' } : null);
+        setUser(prev => prev ? { ...prev, plano: 'Elite' } : null);
       }
     } catch (e) {
       console.error('Falha ao verificar assinatura', e);

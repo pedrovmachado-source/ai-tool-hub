@@ -25,7 +25,7 @@ interface Plan {
 }
 
 const DEFAULT_PLANS: Plan[] = [
-  { id: '1', name: 'Pro Vitalício', period: 'vitalicio', price: '14.90', active: true, highlight: true, checkoutUrl: 'https://buy.stripe.com/eVqdRb2JS5lmflRc1P5wI01', features: ['Tudo do plano gratuito', '24 e-books completos', '+200 prompts exclusivos', 'Guias passo a passo', 'Atualizações contínuas', 'Suporte prioritário'] },
+  { id: '1', name: 'Elite Vitalício', period: 'vitalicio', price: '14.90', active: true, highlight: true, checkoutUrl: 'https://buy.stripe.com/eVqdRb2JS5lmflRc1P5wI01', features: ['Tudo do plano gratuito', '24 e-books completos', '+200 prompts exclusivos', 'Guias passo a passo', 'Atualizações contínuas', 'Suporte prioritário'] },
 ];
 
 // ── Modals ──────────────────────────────────────────────────────────
@@ -472,8 +472,8 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [newUserNotif, setNewUserNotif] = useState(true);
   const [paymentNotif, setPaymentNotif] = useState(true);
-  const [proPrice, setProPrice] = useState('19.90');
-  const [proAnnualPrice, setProAnnualPrice] = useState('178.80');
+  const [elitePrice, setElitePrice] = useState('19.90');
+  const [eliteAnnualPrice, setEliteAnnualPrice] = useState('178.80');
   const [trialDays, setTrialDays] = useState('7');
   const [showSaved, setShowSaved] = useState('');
   const [plans, setPlans] = useState<Plan[]>(DEFAULT_PLANS);
@@ -488,7 +488,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
         const v = data.value as any;
         setPlans([{
           id: '1',
-          name: v.name || 'Pro Vitalício',
+          name: v.name || 'Elite Vitalício',
           period: v.period || 'vitalicio',
           price: v.price || '14.90',
           active: true,
@@ -504,7 +504,8 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     `${u.nome} ${u.sobre} ${u.email}`.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const proUsers = users.filter(u => u.plano === 'Pro').length;
+  const eliteUsers = users.filter(u => u.plano === 'Elite').length;
+  const elitePlusUsers = users.filter(u => u.plano === 'Elite Plus').length;
   const maxUsers = users.filter(u => u.plano === 'Max').length;
   const totalTools = categories.reduce((sum, c) => sum + c.tools.length, 0);
 
@@ -522,7 +523,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'settings', label: 'Configurações', icon: Settings },
   ];
 
-  const setUserPlan = async (userId: string, newPlano: 'Free' | 'Pro' | 'Max') => {
+  const setUserPlan = async (userId: string, newPlano: 'Free' | 'Elite' | 'Elite Plus' | 'Max') => {
     const user = users.find(u => u.id === userId);
     if (!user || user.plano === newPlano) return;
     const { error } = await supabase.from('profiles').update({ plano: newPlano }).eq('id', userId);
@@ -687,9 +688,10 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
             <h1 className="text-xl sm:text-3xl font-serif-display tracking-tight text-white mb-6 sm:mb-8">Dashboard</h1>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
               {[
-                { label: 'Total de Usuários', value: users.length, change: `${proUsers + maxUsers} pagantes` },
-                { label: 'Assinantes Pro', value: proUsers, change: 'plano intermediário' },
-                { label: 'Assinantes Max', value: maxUsers, change: 'plano premium' },
+                { label: 'Total de Usuários', value: users.length, change: `${eliteUsers + elitePlusUsers + maxUsers} pagantes` },
+                { label: 'Assinantes Elite', value: eliteUsers, change: 'plano inicial' },
+                { label: 'Assinantes Elite Plus', value: elitePlusUsers, change: 'plano intermediário' },
+                { label: 'Assinantes Max', value: maxUsers, change: 'plano mentorados' },
                 { label: 'Ferramentas', value: totalTools, change: `${categories.length} categorias` },
               ].map((s, i) => (
                 <div key={i} className="glass-smooth border border-white/5 rounded-2xl p-5">
@@ -754,18 +756,21 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
                       <td className="px-6 py-4 text-[13px] text-white/80 whitespace-nowrap">{u.sobre}</td>
                       <td className="px-6 py-4 text-[13px] text-white/40 whitespace-nowrap">{u.email}</td>
                       <td className="px-6 py-4">
-                        <span className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full ${u.plano === 'Max' ? 'bg-white/10 text-white' : u.plano === 'Pro' ? 'bg-white/5 text-white/70' : u.plano === 'Cancelado' ? 'bg-red-500/10 text-red-500' : 'bg-white/5 text-white/40'}`}>{u.plano}</span>
+                        <span className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full ${u.plano === 'Max' ? 'bg-purple-500/10 text-purple-500' : u.plano === 'Elite Plus' ? 'bg-blue-500/10 text-blue-500' : u.plano === 'Elite' ? 'bg-brand-amber/10 text-brand-amber' : u.plano === 'Cancelado' ? 'bg-red-500/10 text-red-500' : 'bg-white/5 text-white/40'}`}>
+                          {u.plano}
+                        </span>
                       </td>
                       <td className="px-6 py-4 text-[13px] text-white/40 whitespace-nowrap">{new Date(u.created_at).toLocaleDateString('pt-BR')}</td>
                       <td className="px-6 py-4">
                         <div className="flex flex-wrap gap-2 items-center">
                           <select
-                            value={u.plano === 'Max' || u.plano === 'Pro' ? u.plano : 'Free'}
-                            onChange={e => setUserPlan(u.id, e.target.value as 'Free' | 'Pro' | 'Max')}
+                            value={u.plano}
+                            onChange={e => setUserPlan(u.id, e.target.value as any)}
                             className="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-white/70 focus:outline-none focus:border-white/20 transition-all outline-none"
                           >
                             <option value="Free">Free</option>
-                            <option value="Pro">Pro</option>
+                            <option value="Elite">Elite</option>
+                            <option value="Elite Plus">Elite Plus</option>
                             <option value="Max">Max</option>
                           </select>
                           <button onClick={() => deleteUser(u.id)} className="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors">Excluir</button>

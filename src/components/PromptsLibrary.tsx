@@ -67,7 +67,7 @@ export default function PromptsLibrary({ category }: { category?: Category }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {allPrompts.map((pr, i) => (
             <div key={i} className="bg-secondary rounded-lg p-4" style={{ borderLeft: `3px solid ${category.accent}` }}>
-              <div className="text-[10px] font-medium uppercase tracking-wider mb-1.5" style={{ color: category.accent }}>{pr.label}</div>
+              <div className="text-[10px] font-medium uppercase tracking-wider mb-1.5" style={{ color: category.accent }}>{(pr as any).label || (pr as any).title}</div>
               <p className="text-xs text-muted-foreground leading-relaxed italic">{pr.text}</p>
               <button onClick={() => copyPrompt(pr.text, i)} className="flex items-center gap-1 mt-2 text-[11.5px] font-medium" style={{ color: category.accent }}>
                 {copiedIdx === i ? <><Check size={12} /> Copiado!</> : <><Copy size={12} /> Copiar prompt</>}

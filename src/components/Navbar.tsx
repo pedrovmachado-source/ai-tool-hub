@@ -106,7 +106,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
           ) : !user ? null : (
             <>
               {!isPaid(user.plano) && (
-                <button onClick={() => onNavigate('pro')} className="px-2.5 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-white bg-gradient-to-r from-brand-amber to-brand-amber/80 hover:opacity-90 transition-opacity whitespace-nowrap">⚡<span className="hidden sm:inline"> Assinar</span></button>
+                <button onClick={() => onNavigate('pro')} className="px-2.5 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-white bg-gradient-to-r from-brand-amber to-brand-amber/80 hover:opacity-90 transition-opacity whitespace-nowrap">⚡<span className="hidden sm:inline"> Upgrade Elite</span></button>
               )}
               <button onClick={() => onNavigate('profile')} className="flex items-center gap-1.5 sm:gap-2 bg-white/15 hover:bg-white/25 pl-1 sm:pl-1.5 pr-2 sm:pr-3 py-1 rounded-full transition-colors max-w-[140px] sm:max-w-none">
                 <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-navy flex items-center justify-center text-[11px] font-medium text-white shrink-0">{user.nome[0]}</div>
