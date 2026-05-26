@@ -472,8 +472,8 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [newUserNotif, setNewUserNotif] = useState(true);
   const [paymentNotif, setPaymentNotif] = useState(true);
-  const [proPrice, setProPrice] = useState('19.90');
-  const [proAnnualPrice, setProAnnualPrice] = useState('178.80');
+  const [elitePrice, setElitePrice] = useState('19.90');
+  const [eliteAnnualPrice, setEliteAnnualPrice] = useState('178.80');
   const [trialDays, setTrialDays] = useState('7');
   const [showSaved, setShowSaved] = useState('');
   const [plans, setPlans] = useState<Plan[]>(DEFAULT_PLANS);
@@ -488,7 +488,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
         const v = data.value as any;
         setPlans([{
           id: '1',
-          name: v.name || 'Pro Vitalício',
+          name: v.name || 'Elite Vitalício',
           period: v.period || 'vitalicio',
           price: v.price || '14.90',
           active: true,
