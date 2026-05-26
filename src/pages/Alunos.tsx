@@ -3,6 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
 import MentoriaModal from '@/components/MentoriaModal';
 import { isMentorado } from '@/lib/plan';
+import { supabase } from '@/integrations/supabase/client';
 
 import { Button } from '@/components/ui/button';
 import { 
