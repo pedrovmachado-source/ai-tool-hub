@@ -165,7 +165,7 @@ export default function OfertasValidadas() {
             <div className="p-12 glass-smooth rounded-[3rem] border border-white/10 bg-gradient-to-br from-brand-amber/10 to-transparent relative overflow-hidden">
               <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-12">
                 <div className="max-w-xl text-center md:text-left">
-                  <h2 className="text-3xl font-serif-display text-white mb-4">Tem um produto campeão?</h2>
+                  <h2 className="text-3xl font-serif-display text-white mb-4">Tem um produto campeão? - Receba brindes por nos ajudar!</h2>
                   <p className="text-white/40 text-sm font-light leading-relaxed">
                     Nossa equipe está sempre em busca de novas ofertas para validar e escalar. Se você tem um produto com métricas sólidas, entre em contato para análise.
                   </p>
