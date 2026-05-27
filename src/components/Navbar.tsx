@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Menu, Bookmark, X, GraduationCap, Sparkles, Globe2, Wand2, BookOpen, Shield, ChevronRight, LogOut, Video, CreditCard, Star, Zap, Rocket, Users, Facebook, PenTool, Layout } from 'lucide-react';
-import AuthModal from './AuthModal';
+// Remove AuthModal import if not needed
 import QuizModal from './QuizModal';
 import NicheLessonsModal from './NicheLessonsModal';
 import { supabase } from '@/integrations/supabase/client';
@@ -27,7 +27,7 @@ const DEFAULT_ITEMS: NavItem[] = [
 
 export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onNavigate: (page: string) => void; onOpenSavedEbook?: (toolKey: string, categoryKey: string) => void; hideAuth?: boolean }) {
   const { user, isAdmin, logout, savedEbooks, unsaveEbook } = useAuth();
-  const [authModal, setAuthModal] = useState<{ open: boolean; mode: 'login' | 'register' }>({ open: false, mode: 'login' });
+  const navigate = (path: string) => onNavigate(path.replace('/', '')); // Helper to use internal navigation
   const [showSaved, setShowSaved] = useState(false);
   const [showQuiz, setShowQuiz] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
@@ -102,8 +102,8 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
           )}
           {!user && !hideAuth ? (
             <>
-              <button onClick={() => setAuthModal({ open: true, mode: 'login' })} className="px-2.5 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-white bg-white/15 hover:bg-white/25 transition-colors">Acessar</button>
-              <button onClick={() => setAuthModal({ open: true, mode: 'register' })} className="px-2.5 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-black bg-white hover:bg-white/90 transition-colors">Inscrever-se</button>
+              <button onClick={() => onNavigate('auth')} className="px-2.5 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-white bg-white/15 hover:bg-white/25 transition-colors">Acessar</button>
+              <button onClick={() => onNavigate('auth')} className="px-2.5 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-black bg-white hover:bg-white/90 transition-colors">Inscrever-se</button>
             </>
           ) : !user ? null : (
             <>
@@ -240,15 +240,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
         </div>
       )}
 
-      <AuthModal
-        isOpen={authModal.open}
-        mode={authModal.mode}
-        onClose={() => setAuthModal({ ...authModal, open: false })}
-        onSwitch={mode => setAuthModal({ open: true, mode })}
-        onRegistered={() => {
-          setTimeout(() => setShowQuiz(true), 500);
-        }}
-      />
+      {/* Auth UI is now handled by the /auth page */}
 
       <QuizModal
         isOpen={showQuiz}

@@ -17,6 +17,7 @@ import AbuseBlocks from "./pages/AbuseBlocks.tsx";
 import Mentorias from "./pages/Mentorias.tsx";
 import CompleteProfile from "./pages/CompleteProfile.tsx";
 import OfertasValidadas from "./pages/OfertasValidadas.tsx";
+import Auth from "./pages/Auth.tsx";
 
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/auth" element={<Auth />} />
             <Route path="/convite" element={<ProtectedRoute><Invite /></ProtectedRoute>} />
             <Route path="/ferramentas" element={<ProtectedRoute><Tools /></ProtectedRoute>} />
             <Route path="/menu" element={<ProtectedRoute><Menu /></ProtectedRoute>} />
