@@ -16,8 +16,10 @@ import {
   ChevronUp,
   GraduationCap,
   Calendar,
-  Lock
+  Lock,
+  Music
 } from 'lucide-react';
+import SpotifyPlayer from '@/components/SpotifyPlayer';
 import { useEffect, useRef, useState } from 'react';
 import {
   Accordion,
@@ -408,7 +410,8 @@ export default function Alunos() {
       </main>
 
       <footer className="py-12 px-6 border-t border-white/5 text-center">
-        <div className="text-[9px] text-white/10 font-bold uppercase tracking-[0.5em]">
+        <SpotifyPlayer />
+        <div className="text-[9px] text-white/10 font-bold uppercase tracking-[0.5em] mt-8">
           &copy; 2026 CONVERT CLUB · BUILT FOR THE 1%
         </div>
       </footer>

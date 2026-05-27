@@ -15,8 +15,10 @@ import {
   Calendar, 
   Info,
   ChevronRight,
-  Plus
+  Plus,
+  Music
 } from 'lucide-react';
+import SpotifyPlayer from '@/components/SpotifyPlayer';
 
 interface MentorLesson {
   id: string;
@@ -294,14 +296,18 @@ export default function Mentorias() {
       </main>
 
       <footer className="py-12 px-6 border-t border-white/5 bg-black">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6 opacity-30">
-          <div className="text-[9px] font-bold uppercase tracking-[0.5em]">
-            &copy; 2026 CONVERT CLUB · BUILT FOR THE 1%
-          </div>
-          <div className="flex gap-8 text-[9px] font-bold uppercase tracking-widest">
-            <a href="#" className="hover:text-white transition-colors">Termos</a>
-            <a href="#" className="hover:text-white transition-colors">Privacidade</a>
-            <a href="#" className="hover:text-white transition-colors">Ajuda</a>
+        <div className="max-w-7xl mx-auto flex flex-col items-center gap-12">
+          <SpotifyPlayer />
+          
+          <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-6 opacity-30">
+            <div className="text-[9px] font-bold uppercase tracking-[0.5em]">
+              &copy; 2026 CONVERT CLUB · BUILT FOR THE 1%
+            </div>
+            <div className="flex gap-8 text-[9px] font-bold uppercase tracking-widest">
+              <a href="#" className="hover:text-white transition-colors">Termos</a>
+              <a href="#" className="hover:text-white transition-colors">Privacidade</a>
+              <a href="#" className="hover:text-white transition-colors">Ajuda</a>
+            </div>
           </div>
         </div>
       </footer>
