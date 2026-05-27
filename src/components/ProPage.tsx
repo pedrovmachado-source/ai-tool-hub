@@ -97,10 +97,10 @@ export default function ProPage({ onBack, onNavigate: _onNavigate }: { onBack: (
               Você precisa de uma conta para assinar. Entre ou cadastre-se gratuitamente.
             </p>
             <div className="flex gap-2 shrink-0">
-              <button onClick={() => setAuthModal({ open: true, mode: 'login' })} className="px-3 sm:px-4 py-2 rounded-lg text-[12px] sm:text-[13px] font-semibold text-primary-foreground bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors flex items-center gap-1.5">
+              <button onClick={() => navigate('/auth')} className="px-3 sm:px-4 py-2 rounded-lg text-[12px] sm:text-[13px] font-semibold text-primary-foreground bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors flex items-center gap-1.5">
                 <LogIn size={14} /> Entrar
               </button>
-              <button onClick={() => setAuthModal({ open: true, mode: 'register' })} className="px-3 sm:px-4 py-2 rounded-lg text-[12px] sm:text-[13px] font-semibold text-navy bg-brand-amber hover:opacity-90 transition-opacity flex items-center gap-1.5">
+              <button onClick={() => navigate('/auth')} className="px-3 sm:px-4 py-2 rounded-lg text-[12px] sm:text-[13px] font-semibold text-navy bg-brand-amber hover:opacity-90 transition-opacity flex items-center gap-1.5">
                 <UserPlus size={14} /> Criar conta grátis
               </button>
             </div>
