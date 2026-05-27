@@ -200,12 +200,6 @@ export default function ProPage({ onBack, onNavigate: _onNavigate }: { onBack: (
         <button onClick={onBack} className="px-6 py-2 rounded-lg text-sm bg-primary-foreground/[0.08] text-muted-foreground/60 border border-primary-foreground/10 hover:bg-primary-foreground/[0.15] transition-colors">← Voltar às ferramentas</button>
       </div>
 
-      <AuthModal
-        mode={authModal.mode}
-        isOpen={authModal.open}
-        onClose={() => setAuthModal({ ...authModal, open: false })}
-        onSwitch={mode => setAuthModal({ open: true, mode })}
-      />
     </div>
   );
 }
