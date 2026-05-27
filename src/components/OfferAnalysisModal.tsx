@@ -24,7 +24,7 @@ export default function OfferAnalysisModal({ isOpen, onClose }: OfferAnalysisMod
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!user) return;
+    if (!user || loading) return;
 
     if (!formData.ad_library_url || !formData.website_url) {
       toast({

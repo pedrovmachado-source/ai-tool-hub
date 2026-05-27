@@ -89,19 +89,29 @@ export function useCategories() {
   }, [fetchCategories]);
 
   const updateCategory = useCallback(async (cat: Category) => {
-    await supabase.from('categories').update({
-      label: cat.label,
-      accent: cat.accent,
-      accent_light: cat.accentLight,
-      accent_dark: cat.accentDark,
-      intro_title: cat.introTitle,
-      intro_text: cat.introText,
-      when_tags: cat.whenTags as any,
-      stats: cat.stats as any,
-      prompts_extra: (cat.promptsExtra || null) as any,
-    }).eq('key', cat.key);
+    try {
+      const { error } = await supabase.from('categories').update({
+        label: cat.label,
+        accent: cat.accent,
+        accent_light: cat.accentLight,
+        accent_dark: cat.accentDark,
+        intro_title: cat.introTitle,
+        intro_text: cat.introText,
+        when_tags: cat.whenTags as any,
+        stats: cat.stats as any,
+        prompts_extra: (cat.promptsExtra || null) as any,
+      }).eq('key', cat.key);
 
-    setCategories(prev => prev.map(c => c.key === cat.key ? { ...cat, tools: c.tools } : c));
+      if (error) throw error;
+      setCategories(prev => prev.map(c => c.key === cat.key ? { ...cat, tools: c.tools } : c));
+    } catch (err: any) {
+      console.error('Falha ao atualizar categoria:', err);
+      toast({
+        variant: 'destructive',
+        title: 'Erro ao salvar categoria',
+        description: err.message
+      });
+    }
   }, []);
 
   const saveTool = useCallback(async (tool: Tool, categoryKey: string, isNew: boolean) => {
