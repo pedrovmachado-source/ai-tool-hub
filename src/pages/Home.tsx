@@ -377,14 +377,30 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="py-24 px-6 border-t border-white/5 text-center bg-black">
-        <div className="max-w-7xl mx-auto">
-          <div className="font-serif-display text-4xl text-white mb-6 tracking-tighter">CONVERT CLUB</div>
-          <p className="text-white/20 text-sm mb-12 max-w-md mx-auto leading-relaxed font-light">
-            The elite layer of digital entrepreneurship. Glass smooth experience, razor sharp results.
-          </p>
-          <div className="text-[10px] text-white/10 font-bold uppercase tracking-[0.5em]">
-            &copy; 2026 CONVERT CLUB · BUILT FOR THE 1%
+      <footer className="py-24 px-6 border-t border-white/5 bg-black/50 backdrop-blur-xl">
+        <div className="max-w-7xl mx-auto flex flex-col items-center">
+          {/* Spotify Player */}
+          <div className="w-full max-w-3xl mb-16 rounded-[2rem] overflow-hidden glass-smooth p-1 shadow-2xl">
+            <iframe 
+              style={{ borderRadius: '28px' }}
+              src="https://open.spotify.com/embed/playlist/37i9dQZF1DWWQRwui0Ex3X?utm_source=generator&theme=0" 
+              width="100%" 
+              height="152" 
+              frameBorder="0" 
+              allowFullScreen={true} 
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+              loading="lazy"
+            ></iframe>
+          </div>
+
+          <div className="text-center">
+            <div className="font-serif-display text-4xl text-white mb-6 tracking-tighter">CONVERT CLUB</div>
+            <p className="text-white/20 text-sm mb-12 max-w-md mx-auto leading-relaxed font-light">
+              The elite layer of digital entrepreneurship. Glass smooth experience, razor sharp results.
+            </p>
+            <div className="text-[10px] text-white/10 font-bold uppercase tracking-[0.5em]">
+              &copy; 2026 CONVERT CLUB · BUILT FOR THE 1%
+            </div>
           </div>
         </div>
       </footer>
