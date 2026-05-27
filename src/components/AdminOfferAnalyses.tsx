@@ -11,7 +11,7 @@ import {
   Globe,
   Library,
   User as UserIcon,
-  Filter
+  Trash2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -38,6 +38,7 @@ export default function AdminOfferAnalyses() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
   const [search, setSearch] = useState('');
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
 
   useEffect(() => {
     fetchAnalyses();
@@ -209,12 +210,21 @@ export default function AdminOfferAnalyses() {
                         <p className="text-white/30 text-xs">{analysis.profiles?.email}</p>
                       </div>
                     </div>
-                    <div className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border ${
-                      analysis.status === 'pending' ? 'bg-brand-amber/10 border-brand-amber/20 text-brand-amber' :
-                      analysis.status === 'approved' ? 'bg-brand-green/10 border-brand-green/20 text-brand-green' :
-                      'bg-brand-red/10 border-brand-red/20 text-brand-red'
-                    }`}>
-                      {analysis.status === 'pending' ? 'Pendente' : analysis.status === 'approved' ? 'Aprovada' : 'Rejeitada'}
+                    <div className="flex items-center gap-3">
+                      <div className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border ${
+                        analysis.status === 'pending' ? 'bg-brand-amber/10 border-brand-amber/20 text-brand-amber' :
+                        analysis.status === 'approved' ? 'bg-brand-green/10 border-brand-green/20 text-brand-green' :
+                        'bg-brand-red/10 border-brand-red/20 text-brand-red'
+                      }`}>
+                        {analysis.status === 'pending' ? 'Pendente' : analysis.status === 'approved' ? 'Aprovada' : 'Rejeitada'}
+                      </div>
+                      <button 
+                        onClick={() => setConfirmDelete(analysis.id)}
+                        className="p-2 rounded-lg bg-white/5 text-white/20 hover:text-brand-red hover:bg-brand-red/10 transition-all"
+                        title="Excluir registro"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
 
@@ -287,6 +297,20 @@ export default function AdminOfferAnalyses() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Delete Confirmation */}
+      {confirmDelete && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" onClick={() => setConfirmDelete(null)}>
+          <div className="glass-smooth border border-white/10 rounded-[2rem] p-8 w-full max-w-sm" onClick={e => e.stopPropagation()}>
+            <h3 className="text-xl font-serif-display text-white mb-4">Excluir Registro?</h3>
+            <p className="text-white/40 text-sm mb-8">Esta ação removerá permanentemente esta solicitação de análise do banco de dados.</p>
+            <div className="flex gap-3">
+              <button onClick={() => setConfirmDelete(null)} className="flex-1 px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest text-white/40 hover:text-white">Cancelar</button>
+              <button onClick={() => deleteAnalysis(confirmDelete)} className="flex-1 px-6 py-3 bg-brand-red text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-brand-red/90">Excluir</button>
+            </div>
+          </div>
         </div>
       )}
     </div>
