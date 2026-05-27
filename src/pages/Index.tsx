@@ -270,8 +270,27 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
       </div>
 
       {/* Footer */}
-      <footer className="bg-navy py-8 text-center mt-12">
-        <p className="text-xs text-muted-foreground/40">AdAI · Guia de Inteligência Artificial para Empreendedores · Todos os links são externos e oficiais de cada plataforma</p>
+      <footer className="bg-navy py-10 px-4 mt-12 border-t border-white/5">
+        <div className="max-w-[1100px] mx-auto flex flex-col items-center gap-8">
+          {/* Spotify Player */}
+          <div className="w-full max-w-[800px] rounded-xl overflow-hidden shadow-2xl bg-black/40 backdrop-blur-sm p-1">
+            <iframe 
+              style={{ borderRadius: '12px' }}
+              src="https://open.spotify.com/embed/playlist/37i9dQZF1DWWQRwui0Ex3X?utm_source=generator&theme=0" 
+              width="100%" 
+              height="152" 
+              frameBorder="0" 
+              allowFullScreen={true} 
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+              loading="lazy"
+            ></iframe>
+          </div>
+          
+          <div className="text-center space-y-2">
+            <p className="text-xs text-muted-foreground/40">AdAI · Guia de Inteligência Artificial para Empreendedores</p>
+            <p className="text-[10px] text-muted-foreground/20">Todos os links são externos e oficiais de cada plataforma</p>
+          </div>
+        </div>
       </footer>
 
       {/* Ebook Modal */}
