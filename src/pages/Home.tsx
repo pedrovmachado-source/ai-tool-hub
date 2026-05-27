@@ -59,10 +59,12 @@ export default function Home() {
   }, [user, navigate]);
 
   useEffect(() => {
-    document.title = 'Convert Club — Comunidade de Alta Conversão';
-    const desc = document.querySelector('meta[name="description"]');
+    document.title = 'Convert Club | Comunidade de Alta Conversão';
+    const metaDesc = document.querySelector('meta[name="description"]');
     const content = 'Acesse a Convert Club: A maior comunidade de infoprodutores e estrategistas digitais focados em escala e alta conversão.';
-    if (desc) desc.setAttribute('content', content);
+    if (metaDesc) {
+      metaDesc.setAttribute('content', content);
+    }
   }, []);
 
   const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -144,9 +146,11 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-black text-white selection:bg-white/20 font-sans overflow-x-hidden pt-[72px] sm:pt-[88px]">
-      <Navbar
-        onNavigate={handleNavigate}
-      />
+      <header>
+        <Navbar
+          onNavigate={handleNavigate}
+        />
+      </header>
 
       {/* Hero Section */}
       <section className="relative pt-12 pb-16 sm:pt-16 sm:pb-24 lg:pt-24 lg:pb-32">

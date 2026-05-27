@@ -37,7 +37,11 @@ export default function OfertasValidadas() {
   const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false);
 
   useEffect(() => {
-    document.title = 'Convert Club — Ofertas Validadas';
+    document.title = 'Ofertas Validadas | Convert Club';
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute('content', 'Produtos minerados com alto potencial de escala e conversão imediata para assinantes Elite.');
+    }
     fetchOffers();
   }, []);
 

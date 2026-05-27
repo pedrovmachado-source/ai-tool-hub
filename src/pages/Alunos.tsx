@@ -50,6 +50,12 @@ export default function Alunos() {
   const videoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    document.title = 'Área do Mentorado | Convert Club';
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute('content', 'Área exclusiva para alunos da Convert Club. Acesse suas aulas, transcrições e materiais de apoio personalizados.');
+    }
+
     if (user) {
       if (user.abuseBlocked) {
         navigate('/bloqueado');
@@ -211,22 +217,23 @@ export default function Alunos() {
 
   return (
     <div className="flex flex-col min-h-screen bg-black text-white selection:bg-white/20 font-sans overflow-x-hidden">
-      <Navbar 
-        onNavigate={(page) => {
-          if (page === 'home') navigate('/');
-          else if (page === 'profile') navigate('/perfil');
-          else if (page === 'pro') navigate('/pro');
-          else if (page === 'alunos' || page === 'lessons') navigate('/alunos');
-          else if (page === 'menu') navigate('/menu');
-          else if (page === 'mentorias') navigate('/mentorias');
-          else if (page === 'ofertas' || page === 'offers') navigate('/ofertas');
-          else {
-            sessionStorage.setItem('adai:initialPage', page);
-            navigate('/ferramentas');
-          }
-        }}
-
-      />
+      <header>
+        <Navbar 
+          onNavigate={(page) => {
+            if (page === 'home') navigate('/');
+            else if (page === 'profile') navigate('/perfil');
+            else if (page === 'pro') navigate('/pro');
+            else if (page === 'alunos' || page === 'lessons') navigate('/alunos');
+            else if (page === 'menu') navigate('/menu');
+            else if (page === 'mentorias') navigate('/mentorias');
+            else if (page === 'ofertas' || page === 'offers') navigate('/ofertas');
+            else {
+              sessionStorage.setItem('adai:initialPage', page);
+              navigate('/ferramentas');
+            }
+          }}
+        />
+      </header>
 
       <main className="flex-1 relative pt-32 pb-24 px-6">
         {/* Background Gradients */}

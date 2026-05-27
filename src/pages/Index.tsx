@@ -167,20 +167,22 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
 
   return (
     <div className="flex flex-col min-h-screen pt-[72px] sm:pt-[88px]">
-      <Navbar onNavigate={handleNavigate} onOpenSavedEbook={(toolKey, categoryKey) => {
-        const cat = categories.find(c => c.key === categoryKey);
-        const tool = cat?.tools.find(t => t.key === toolKey);
-        if (tool && cat) setEbookModal({ tool, category: cat });
-      }} />
+      <header>
+        <Navbar onNavigate={handleNavigate} onOpenSavedEbook={(toolKey, categoryKey) => {
+          const cat = categories.find(c => c.key === categoryKey);
+          const tool = cat?.tools.find(t => t.key === toolKey);
+          if (tool && cat) setEbookModal({ tool, category: cat });
+        }} />
+      </header>
 
       {/* Hero */}
       <div className="bg-navy py-10 sm:py-14 px-4 sm:px-8 text-center">
         <div className="inline-flex items-center gap-2 bg-brand-blue/15 border border-brand-blue/30 text-brand-blue-medium text-[10px] sm:text-xs px-3 sm:px-4 py-1 sm:py-1.5 rounded-full mb-4 sm:mb-5">
           ✨ Curadoria atualizada em 2026
         </div>
-        <h1 className="font-serif-display text-2xl sm:text-3xl md:text-4xl leading-tight text-primary-foreground tracking-tight mb-3">
+        <h2 className="font-serif-display text-2xl sm:text-3xl md:text-4xl leading-tight text-primary-foreground tracking-tight mb-3">
           Descubra as melhores <em className="text-brand-blue-medium italic">IAs</em> para<br className="hidden sm:inline" /> turbinar seu negócio
-        </h1>
+        </h2>
         <p className="text-[13px] sm:text-[15px] text-muted-foreground/60 max-w-[520px] mx-auto leading-relaxed">
           Guia completo com as ferramentas de inteligência artificial mais poderosas para empreendedores. Com e-books, prompts prontos e passo a passo.
         </p>
@@ -191,6 +193,7 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
           <input
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
+            aria-label="Buscar ferramentas de IA"
             placeholder="Buscar ferramentas de IA..."
             className="w-full pl-10 pr-4 py-2.5 rounded-lg text-sm bg-primary-foreground/10 text-primary-foreground placeholder:text-muted-foreground/40 border border-primary-foreground/10 focus:outline-none focus:border-brand-blue"
           />

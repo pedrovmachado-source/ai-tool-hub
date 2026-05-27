@@ -80,6 +80,7 @@ export default function CategoryTabs({ activeCategory, onSelect, categories: cat
             <button
               key={cat.key}
               onClick={() => onSelect(cat.key)}
+              aria-label={`Ver categoria ${cat.label}`}
               className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 sm:py-3.5 text-[12px] sm:text-[13.5px] whitespace-nowrap border-b-2 transition-colors ${
                 activeCategory === cat.key
                   ? 'text-foreground font-medium'
