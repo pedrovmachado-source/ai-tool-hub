@@ -10,6 +10,14 @@ import Index from './Index';
 export default function Tools() {
   const [params] = useSearchParams();
 
+  useEffect(() => {
+    document.title = 'Ferramentas de IA | Convert Club';
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute('content', 'O maior guia de Inteligência Artificial para empreendedores. Encontre as melhores IAs para seu negócio.');
+    }
+  }, []);
+
   const initialPage = params.get('page');
   const initialCategory = params.get('cat');
 
