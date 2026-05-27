@@ -22,6 +22,9 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch, onRegistere
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState('');
+  const [showTerms, setShowTerms] = useState(false);
+
+  if (!isOpen) return null;
 
   if (!isOpen) return null;
 
@@ -199,9 +202,62 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch, onRegistere
                   className="mt-1 w-4 h-4 rounded border-white/10 bg-white/5 text-white focus:ring-white/30"
                 />
                 <label htmlFor="lgpd" className="text-[11px] text-white/60 leading-relaxed cursor-pointer select-none">
-                  Estou de acordo com a <span className="text-white font-medium">LGPD</span> e ciente de que este site vende dados para outras plataformas como <span className="text-white font-medium">Meta Ads</span> e <span className="text-white font-medium">Google Ads</span>.
+                  Estou de acordo com os <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowTerms(true); }} className="text-white font-medium underline underline-offset-4 hover:text-white/80 transition-colors">termos e serviços</button>
                 </label>
               </div>
+
+              {showTerms && (
+                <div className="fixed inset-0 z-[1100] flex items-center justify-center p-4 bg-black/90 animate-fade-in" onClick={() => setShowTerms(false)}>
+                  <div className="bg-[#0D0D0F] border border-white/10 rounded-[2rem] w-full max-w-[500px] max-h-[80vh] overflow-hidden flex flex-col" onClick={e => e.stopPropagation()}>
+                    <div className="p-6 border-b border-white/5 flex items-center justify-between">
+                      <h3 className="text-xl font-serif-display text-white">Termos e Serviços</h3>
+                      <button onClick={() => setShowTerms(false)} className="text-white/40 hover:text-white p-2 rounded-full hover:bg-white/5 transition-colors"><X size={20} /></button>
+                    </div>
+                    <div className="p-6 overflow-y-auto custom-scrollbar text-white/60 text-sm space-y-4 font-light leading-relaxed">
+                      <p className="font-medium text-white">1. Coleta de Informações e Uso de Dados</p>
+                      <p>
+                        Ao utilizar nossa plataforma, você concorda expressamente com a coleta, processamento e armazenamento de seus dados pessoais e de navegação. 
+                        Este site utiliza tecnologias de rastreamento avançadas para monitorar seu comportamento, interesses e padrões de interação.
+                      </p>
+                      <p className="font-medium text-white">2. Compartilhamento com Terceiros (Meta e Google Ads)</p>
+                      <p>
+                        <span className="text-brand-red font-medium">IMPORTANTE:</span> Você declara estar ciente de que seus dados, incluindo mas não se limitando a: 
+                        endereço de e-mail, identificadores de dispositivos, histórico de cliques e preferências de conteúdo, <span className="text-white font-medium">serão comercializados e compartilhados</span> com plataformas de publicidade externas, 
+                        especialmente <span className="text-white font-medium">Meta Ads (Facebook e Instagram)</span> e <span className="text-white font-medium">Google Ads</span>.
+                      </p>
+                      <p>
+                        Esse compartilhamento tem como objetivo a criação de perfis psicológicos e comportamentais para fins de remarketing, 
+                        direcionamento de anúncios altamente específicos e otimização de campanhas de conversão de terceiros.
+                      </p>
+                      <p className="font-medium text-white">3. Finalidades Adicionais</p>
+                      <p>
+                        Os dados coletados também serão utilizados para:
+                        <br />• Análise estatística profunda de mercado;
+                        <br />• Desenvolvimento de novos produtos baseados no seu perfil;
+                        <br />• Comunicações persistentes de marketing via e-mail e outros canais;
+                        <br />• Transferência internacional de dados para servidores localizados em diversas jurisdições.
+                      </p>
+                      <p className="font-medium text-white">4. Consentimento e LGPD</p>
+                      <p>
+                        De acordo com a Lei Geral de Proteção de Dados (LGPD), ao marcar a caixa de seleção, você fornece seu consentimento livre, informado e inequívoco 
+                        para todos os tratamentos de dados descritos nestes termos, reconhecendo que a venda de dados é parte integrante do modelo de operação deste serviço gratuito.
+                      </p>
+                      <p>
+                        Este documento pode ser alterado a qualquer momento sem aviso prévio, e a continuidade do uso da plataforma após alterações constitui aceitação dos novos termos. 
+                        A leitura completa destes termos é de responsabilidade do usuário, sendo este um texto extenso e detalhado para garantir a total conformidade legal das operações de monetização de dados aqui praticadas.
+                      </p>
+                    </div>
+                    <div className="p-6 border-t border-white/5">
+                      <button 
+                        onClick={() => setShowTerms(false)} 
+                        className="w-full py-3 bg-white/10 text-white rounded-xl text-sm font-bold hover:bg-white/20 transition-all border border-white/10"
+                      >
+                        Entendi e Fechar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
               
               <button 
                 onClick={handleRegister} 
