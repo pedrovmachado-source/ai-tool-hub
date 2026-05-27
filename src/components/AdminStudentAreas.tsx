@@ -200,7 +200,7 @@ export default function AdminStudentAreas() {
           
           <div className="bg-navy border border-white/5 rounded-2xl overflow-hidden max-h-[600px] overflow-y-auto">
             {filteredStudents.length === 0 ? (
-              <p className="p-4 text-center text-xs text-white/20">Nenhum aluno Max encontrado.</p>
+              <p className="p-4 text-center text-xs text-white/20">Nenhum mentorado Max encontrado.</p>
             ) : (
               filteredStudents.map(student => (
                 <button
