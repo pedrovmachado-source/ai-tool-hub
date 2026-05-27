@@ -371,7 +371,7 @@ export default function Home() {
                 size="lg" 
                 onClick={() => {
                   if (user) navigate('/menu');
-                  else setAuthModal({ open: true, mode: 'login' });
+                  else navigate('/auth');
                 }}
                 className="w-full sm:w-auto bg-white hover:bg-white/90 text-black h-20 px-16 rounded-full text-xl font-bold transition-all hover:scale-105"
               >

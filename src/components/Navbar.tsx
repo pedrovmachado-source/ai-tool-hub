@@ -240,15 +240,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
         </div>
       )}
 
-      <AuthModal
-        isOpen={authModal.open}
-        mode={authModal.mode}
-        onClose={() => setAuthModal({ ...authModal, open: false })}
-        onSwitch={mode => setAuthModal({ open: true, mode })}
-        onRegistered={() => {
-          setTimeout(() => setShowQuiz(true), 500);
-        }}
-      />
+      {/* Auth UI is now handled by the /auth page */}
 
       <QuizModal
         isOpen={showQuiz}
