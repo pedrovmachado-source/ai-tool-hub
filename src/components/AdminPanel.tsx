@@ -942,9 +942,10 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
         {section === 'site-creation' && <AdminSiteCreation initialTab={siteCreationInitialTab} />}
         {section === 'menu' && <AdminMenu />}
         {section === 'student-areas' && <AdminStudentAreas />}
-        {section === 'offers' && <AdminOffers />}
+        { section === 'offers' && <AdminOffers /> }
+        { section === 'offer-analyses' && <AdminOfferAnalyses /> }
 
-        {section === 'activity' && <ActivityLogView />}
+        { section === 'activity' && <ActivityLogView /> }
 
         {section === 'settings' && (
           <>
