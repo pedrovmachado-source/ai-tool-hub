@@ -182,7 +182,7 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
         </div>
         <h2 className="font-serif-display text-2xl sm:text-3xl md:text-4xl leading-tight text-primary-foreground tracking-tight mb-3">
           Descubra as melhores <em className="text-brand-blue-medium italic">IAs</em> para<br className="hidden sm:inline" /> turbinar seu negócio
-        </h1>
+        </h2>
         <p className="text-[13px] sm:text-[15px] text-muted-foreground/60 max-w-[520px] mx-auto leading-relaxed">
           Guia completo com as ferramentas de inteligência artificial mais poderosas para empreendedores. Com e-books, prompts prontos e passo a passo.
         </p>
