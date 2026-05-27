@@ -171,43 +171,6 @@ export default function Menu() {
             ))}
           </div>
 
-          {/* Quick Access Section */}
-          <section className="mt-32">
-            <Reveal>
-              <div className="p-12 glass-smooth rounded-[3rem] border border-white/5 relative overflow-hidden group">
-                <div className="absolute inset-0 bg-gradient-to-r from-white/[0.02] to-transparent pointer-events-none" />
-                
-                <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                  <div>
-                    <h2 className="text-3xl font-serif-display text-white mb-6">Últimas Atualizações</h2>
-                    <div className="space-y-6">
-                      {[
-                        { title: "Novas gravações de mentorias", date: "2 horas atrás", icon: PlayCircle },
-                        { title: "Prompt de escala V4 atualizado", date: "1 dia atrás", icon: BookOpen },
-                        { title: "Área de transcrição otimizada", date: "3 dias atrás", icon: Users }
-                      ].map((update, i) => (
-                        <div key={i} className="flex items-center gap-4 text-white/40 group/item">
-                          <update.icon className="w-5 h-5 group-hover/item:text-white transition-colors" />
-                          <span className="text-sm font-light group-hover/item:text-white/70 transition-colors">{update.title}</span>
-                          <span className="text-[10px] uppercase tracking-widest ml-auto opacity-50">{update.date}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <div className="lg:text-right">
-                    <Button 
-                      onClick={() => navigate('/perfil')}
-                      variant="outline"
-                      className="border-white/10 text-white hover:bg-white/5 h-14 px-10 rounded-full text-sm font-bold glass-smooth"
-                    >
-                      Configurações do Perfil
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </Reveal>
-          </section>
         </div>
       </main>
 
