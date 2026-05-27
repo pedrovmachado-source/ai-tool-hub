@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
 import MentoriaModal from '@/components/MentoriaModal';
-import AuthModal from '@/components/AuthModal';
 import { isMentorado } from '@/lib/plan';
 
 import hoteducaRef from '@/assets/hoteduca-ref.png';
@@ -40,6 +39,7 @@ export default function Home() {
     else if (page === 'menu') navigate('/menu');
     else if (page === 'ofertas' || page === 'offers') navigate('/ofertas');
     else if (page === 'ferramentas') navigate('/ferramentas');
+    else if (page === 'auth') navigate('/auth');
     else if (['copywrite', 'site-creation', 'creative-edit', 'fb-accounts'].includes(page)) {
       navigate(`/${page}`);
     }

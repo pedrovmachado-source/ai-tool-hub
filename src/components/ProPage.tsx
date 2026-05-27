@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { Check, X, Loader2, LogIn, UserPlus } from 'lucide-react';
 import { usePlansConfig } from '@/hooks/usePlanConfig';
 import { toast } from 'sonner';
-import AuthModal from './AuthModal';
 import type { Period } from '@/lib/plan';
 
 type Tier = 'free' | 'elite' | 'elitePlus';
@@ -45,14 +45,14 @@ function priceParts(price: string) {
 
 export default function ProPage({ onBack, onNavigate: _onNavigate }: { onBack: () => void; onNavigate: (page: string) => void }) {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const { plans, loading } = usePlansConfig();
   const [period, setPeriod] = useState<Period>('mensal');
-  const [authModal, setAuthModal] = useState<{ open: boolean; mode: 'login' | 'register' }>({ open: false, mode: 'login' });
 
   const handleSubscribe = (tier: 'elite' | 'elitePlus') => {
     if (!user) {
       toast.error('Faça login ou crie uma conta para assinar.');
-      setAuthModal({ open: true, mode: 'register' });
+      navigate('/auth');
       return;
     }
     const url = plans[tier][period].checkoutUrl;
@@ -97,10 +97,10 @@ export default function ProPage({ onBack, onNavigate: _onNavigate }: { onBack: (
               Você precisa de uma conta para assinar. Entre ou cadastre-se gratuitamente.
             </p>
             <div className="flex gap-2 shrink-0">
-              <button onClick={() => setAuthModal({ open: true, mode: 'login' })} className="px-3 sm:px-4 py-2 rounded-lg text-[12px] sm:text-[13px] font-semibold text-primary-foreground bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors flex items-center gap-1.5">
+              <button onClick={() => navigate('/auth')} className="px-3 sm:px-4 py-2 rounded-lg text-[12px] sm:text-[13px] font-semibold text-primary-foreground bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors flex items-center gap-1.5">
                 <LogIn size={14} /> Entrar
               </button>
-              <button onClick={() => setAuthModal({ open: true, mode: 'register' })} className="px-3 sm:px-4 py-2 rounded-lg text-[12px] sm:text-[13px] font-semibold text-navy bg-brand-amber hover:opacity-90 transition-opacity flex items-center gap-1.5">
+              <button onClick={() => navigate('/auth')} className="px-3 sm:px-4 py-2 rounded-lg text-[12px] sm:text-[13px] font-semibold text-navy bg-brand-amber hover:opacity-90 transition-opacity flex items-center gap-1.5">
                 <UserPlus size={14} /> Criar conta grátis
               </button>
             </div>
@@ -200,12 +200,6 @@ export default function ProPage({ onBack, onNavigate: _onNavigate }: { onBack: (
         <button onClick={onBack} className="px-6 py-2 rounded-lg text-sm bg-primary-foreground/[0.08] text-muted-foreground/60 border border-primary-foreground/10 hover:bg-primary-foreground/[0.15] transition-colors">← Voltar às ferramentas</button>
       </div>
 
-      <AuthModal
-        mode={authModal.mode}
-        isOpen={authModal.open}
-        onClose={() => setAuthModal({ ...authModal, open: false })}
-        onSwitch={mode => setAuthModal({ open: true, mode })}
-      />
     </div>
   );
 }
