@@ -93,7 +93,7 @@ export default function Mentorias() {
     },
     {
       id: 'm5',
-      title: 'Análise de Oferta de Alunos',
+      title: 'Análise de Oferta do Mentorado',
       category: 'Análise',
       videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
       duration: '42min',
