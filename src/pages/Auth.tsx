@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import { 
   X, 
   Loader2, 
@@ -26,7 +27,9 @@ export default function Auth() {
   const { login, register, user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const [mode, setMode] = useState<'login' | 'register' | 'forgot'>('login');
+  const queryParams = new URLSearchParams(location.search);
+  const initialMode = queryParams.get('mode') as 'login' | 'register' | 'forgot' | 'reset' || 'login';
+  const [mode, setMode] = useState<'login' | 'register' | 'forgot' | 'reset'>(initialMode);
   
   // Form states
   const [email, setEmail] = useState('');
@@ -105,16 +108,47 @@ export default function Auth() {
     }
   };
 
+  const handleReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!password) { setError('Digite a nova senha.'); return; }
+    if (password !== confirmPassword) { setError('As senhas não coincidem.'); return; }
+    
+    setSubmitting(true);
+    setError('');
+    try {
+      const { error } = await supabase.auth.updateUser({ password });
+      if (error) {
+        setError(error.message);
+      } else {
+        setSuccess('Senha atualizada com sucesso! Você já pode entrar.');
+        setTimeout(() => setMode('login'), 2000);
+      }
+    } catch (err) {
+      setError('Erro ao atualizar senha.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const handleForgot = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) { setError('Digite seu e-mail.'); return; }
     
     setSubmitting(true);
     setError('');
-    // For now we don't have a reset function in AuthContext, but we can call supabase directly
-    // Or just show a message. I'll add resetPassword to AuthContext in next step.
-    setSuccess('Se o e-mail estiver correto, você receberá um link de recuperação.');
-    setSubmitting(false);
+    const { resetPassword } = useAuth(); // Need to use the context function
+    try {
+      const err = await resetPassword(email);
+      if (err) {
+        setError(err);
+      } else {
+        setSuccess('Se o e-mail estiver correto, você receberá um link de recuperação.');
+      }
+    } catch (err) {
+      setError('Erro ao solicitar recuperação.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -178,12 +212,13 @@ export default function Auth() {
         <div className="w-full max-w-[440px] animate-in fade-in slide-in-from-bottom-8 duration-700">
           <div className="text-center mb-10">
             <h1 className="text-3xl sm:text-4xl font-serif-display text-white mb-3">
-              {mode === 'login' ? 'Bem-vindo de volta' : mode === 'register' ? 'Comece sua jornada' : 'Recuperar senha'}
+              {mode === 'login' ? 'Bem-vindo de volta' : mode === 'register' ? 'Comece sua jornada' : mode === 'forgot' ? 'Recuperar senha' : 'Nova senha'}
             </h1>
             <p className="text-white/40 font-light">
               {mode === 'login' ? 'Entre com suas credenciais para acessar o club.' : 
                mode === 'register' ? 'Junte-se a maior comunidade de infoprodutores.' : 
-               'Digite seu e-mail para receber as instruções.'}
+               mode === 'forgot' ? 'Digite seu e-mail para receber as instruções.' :
+               'Escolha uma nova senha forte para sua conta.'}
             </p>
           </div>
 
@@ -227,7 +262,7 @@ export default function Auth() {
               </>
             )}
 
-            <form onSubmit={mode === 'login' ? handleLogin : mode === 'register' ? handleRegister : handleForgot} className="space-y-5">
+            <form onSubmit={mode === 'login' ? handleLogin : mode === 'register' ? handleRegister : mode === 'forgot' ? handleForgot : handleReset} className="space-y-5">
               {mode === 'register' && (
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
