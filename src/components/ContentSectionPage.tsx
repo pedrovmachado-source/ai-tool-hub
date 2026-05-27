@@ -228,21 +228,39 @@ function ItemCard({ item, isOffers, onVideo, onPdf, onImage, onOffer }: {
 
   if (item.kind === 'text') {
     return (
-      <div className="bg-card border border-border rounded-xl p-4">
-        <div className="flex items-center gap-2 mb-1.5">{icon}<h4 className="font-medium text-sm">{item.title}</h4></div>
-        {item.description && <p className="text-xs text-muted-foreground mb-2">{item.description}</p>}
-        {item.body && <p className="text-sm whitespace-pre-wrap leading-6">{item.body}</p>}
+      <div className="group relative p-8 glass-smooth hover:bg-white/10 transition-all duration-500 rounded-[2.5rem] border border-white/5 h-full flex flex-col">
+        <div className="w-12 h-12 bg-white/5 rounded-2xl mb-6 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
+          {icon}
+        </div>
+        <h4 className="text-xl font-serif-display text-white mb-4">{item.title}</h4>
+        {item.description && <p className="text-white/30 text-xs font-light mb-4 leading-relaxed">{item.description}</p>}
+        {item.body && (
+          <div className="mt-auto pt-6 border-t border-white/5">
+             <p className="text-sm text-white/50 whitespace-pre-wrap leading-relaxed italic">"{item.body}"</p>
+          </div>
+        )}
       </div>
     );
   }
 
   return (
-    <button onClick={handleClick} className="text-left bg-card border border-border rounded-xl p-4 hover:border-brand-blue transition-colors">
+    <button onClick={handleClick} className="group relative text-left p-6 glass-smooth hover:bg-white/10 transition-all duration-500 rounded-[2.5rem] border border-white/5 flex flex-col h-full">
       {item.kind === 'image' && item.image_url && (
-        <img src={item.image_url} alt={item.title} className="w-full h-32 object-cover rounded-lg mb-3" />
+        <div className="w-full aspect-video rounded-[1.5rem] overflow-hidden mb-6">
+           <img src={item.image_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+        </div>
       )}
-      <div className="flex items-center gap-2 mb-1">{icon}<h4 className="font-medium text-sm">{item.title}</h4></div>
-      {item.description && <p className="text-xs text-muted-foreground line-clamp-2">{item.description}</p>}
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
+          {icon}
+        </div>
+        <h4 className="text-lg font-serif-display text-white">{item.title}</h4>
+      </div>
+      {item.description && <p className="text-white/30 text-xs font-light leading-relaxed line-clamp-2">{item.description}</p>}
+      
+      <div className="mt-auto pt-6 flex items-center text-[10px] font-bold text-white/40 uppercase tracking-[0.2em]">
+         Ver Detalhes <ArrowRight size={12} className="ml-2 group-hover:translate-x-1 transition-transform" />
+      </div>
     </button>
   );
 }
