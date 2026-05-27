@@ -209,6 +209,8 @@ export default function OfertasValidadas() {
             onClose={() => setIsAnalysisModalOpen(false)} 
           />
         </div>
+      </main>
+
       <OffersRanking />
 
       <footer className="py-12 px-6 border-t border-white/5 text-center">
@@ -217,6 +219,7 @@ export default function OfertasValidadas() {
         </div>
       </footer>
     </div>
+
 
   );
 }
