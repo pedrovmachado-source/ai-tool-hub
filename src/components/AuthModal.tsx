@@ -26,8 +26,6 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch, onRegistere
 
   if (!isOpen) return null;
 
-  if (!isOpen) return null;
-
   const handleGoogleSignIn = async () => {
     setSubmitting(true);
     setError('');
@@ -52,15 +50,24 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch, onRegistere
     if (!lgpdAccepted) { setError('Você deve aceitar os termos da LGPD para continuar.'); return; }
     if (password.length < 8) { setError('Senha deve ter no mínimo 8 caracteres.'); return; }
     if (password !== confirmPassword) { setError('As senhas não coincidem. Verifique e tente novamente.'); return; }
+    
     setSubmitting(true);
     setError('');
     const err = await register(nome, sobrenome, email, password, lgpdAccepted);
     setSubmitting(false);
+    
     if (err) {
       setError(err);
     } else {
-      setSuccess('Conta criada! Verifique seu e-mail para confirmar o cadastro.');
+      // With auto-confirm, the session might be established immediately.
+      // If we're not redirected automatically by AuthProvider, we show a success or close.
+      setSuccess('Conta criada com sucesso!');
       onRegistered?.();
+      
+      // Give a small delay to show success before closing/redirecting
+      setTimeout(() => {
+        onClose();
+      }, 1500);
     }
   };
 
