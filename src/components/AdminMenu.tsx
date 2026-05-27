@@ -24,7 +24,7 @@ const COLOR_OPTIONS = [
 ];
 const TARGET_OPTIONS = [
   { value: 'menu', label: 'Ais' },
-  { value: 'offers', label: 'Ofertas validadas' },
+  { value: 'ofertas', label: 'Ofertas validadas' },
   { value: 'site-creation', label: 'Comprar Site' },
   { value: 'creative-edit', label: 'Comprar Criativo' },
   { value: 'niche-lessons', label: 'Aulas por nicho' },
