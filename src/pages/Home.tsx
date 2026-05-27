@@ -41,6 +41,9 @@ export default function Home() {
     else if (page === 'menu') navigate('/menu');
     else if (page === 'ofertas' || page === 'offers') navigate('/ofertas');
     else if (page === 'ferramentas') navigate('/ferramentas');
+    else if (page === 'copywrite' || page === 'site-creation' || page === 'creative-edit') {
+      navigate(`/${page}`);
+    }
     else {
       sessionStorage.setItem('adai:initialPage', page);
       navigate('/ferramentas');

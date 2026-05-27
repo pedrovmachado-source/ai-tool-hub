@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { meetsMinPlan } from '@/lib/plan';
-import { ArrowLeft, Play, FileText, Image as ImageIcon, Lock, FileText as TextIcon, ShoppingCart } from 'lucide-react';
+import { ArrowLeft, Play, FileText, Image as ImageIcon, Lock, FileText as TextIcon, ShoppingCart, ArrowRight } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { PdfModal, VideoModal, ImageModal } from '@/lib/lessonViewers';
 import OfferModal from './OfferModal';
@@ -84,16 +84,22 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
 
   if (!canAccess) {
     return (
-      <div className="min-h-screen bg-background">
-        <div className="max-w-3xl mx-auto py-20 px-6 text-center">
-          <Lock size={42} className="mx-auto mb-4 text-muted-foreground/50" />
-          <h1 className="font-serif-display text-3xl mb-3">{section.title}</h1>
-          <p className="text-muted-foreground mb-6">
-            Conteúdo exclusivo para assinantes <strong>{section.min_plan}</strong>.
+      <div className="min-h-screen bg-black text-white flex items-center justify-center p-6">
+        <div className="max-w-md w-full glass-smooth p-12 rounded-[2.5rem] border border-white/5 text-center relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-4">
+             <Lock size={24} className="text-white/10" />
+          </div>
+          <h2 className="text-3xl font-serif-display mb-4">{section.title}</h2>
+          <p className="text-white/40 font-light mb-8">
+            Este conteúdo é reservado para membros <strong className="text-white">{section.min_plan}</strong>. Eleve seu nível para acessar.
           </p>
-          <div className="flex gap-2 justify-center">
-            <button onClick={onBack} className="px-4 py-2 rounded-lg border border-border text-sm">Voltar</button>
-            <button onClick={onUpgrade} className="px-4 py-2 rounded-lg bg-brand-amber text-white text-sm font-medium">⚡ Assinar</button>
+          <div className="flex flex-col gap-4">
+            <button onClick={() => onUpgrade()} className="w-full py-4 rounded-full bg-white text-black font-bold hover:scale-[1.02] transition-transform">
+              Fazer Upgrade Agora
+            </button>
+            <button onClick={onBack} className="w-full py-4 rounded-full border border-white/5 text-white/40 text-sm font-bold hover:bg-white/5 transition-colors">
+              Voltar ao Menu
+            </button>
           </div>
         </div>
       </div>
@@ -120,25 +126,59 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
   );
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="bg-navy py-10 px-6">
-        <div className="max-w-5xl mx-auto">
-          <button onClick={onBack} className="flex items-center gap-2 text-white/80 hover:text-white text-sm mb-4">
-            <ArrowLeft size={16} /> Voltar
+    <div className="min-h-screen bg-black text-white selection:bg-white/20 font-sans overflow-x-hidden">
+      {/* Header Section */}
+      <div className="relative pt-32 pb-16 sm:pt-40 sm:pb-24 px-6 border-b border-white/5 overflow-hidden">
+        {/* Background Gradients */}
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-[10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-white/5 blur-[120px]" />
+          <div className="absolute bottom-[10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-white/5 blur-[120px]" />
+        </div>
+
+        <div className="relative z-10 max-w-5xl mx-auto">
+          <button onClick={onBack} className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-smooth mb-10 border border-white/5 text-white/50 hover:text-white transition-colors group">
+            <ArrowLeft size={14} className="transform group-hover:-translate-x-1 transition-transform" />
+            <span className="text-[10px] font-bold tracking-[0.2em] uppercase">Voltar ao Menu</span>
           </button>
-          <h1 className="font-serif-display text-3xl text-white mb-2">{section.title}</h1>
-          <p className="text-sm text-white/60">{section.intro || section.description}</p>
+          
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-smooth mb-6 border border-white/5">
+            {slug === 'copywrite' ? <TextIcon className="w-3 h-3 text-white/50" /> : <ImageIcon className="w-3 h-3 text-white/50" />}
+            <span className="text-[10px] font-bold text-white/50 tracking-[0.2em] uppercase">
+              {slug === 'copywrite' ? 'Copywriting de Elite' : 'Visual Assets'}
+            </span>
+          </div>
+          
+          <h1 className="text-4xl md:text-6xl font-serif-display tracking-tight text-white mb-6 leading-tight">
+            {section.title.split(' ').map((word, i) => (
+              i === section.title.split(' ').length - 1 ? <em key={i} className="italic font-normal"> {word}</em> : <span key={i}>{word} </span>
+            ))}
+          </h1>
+          <p className="text-white/40 text-lg max-w-2xl font-light leading-relaxed">
+            {section.intro || section.description}
+          </p>
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-6 py-8">
+      <div className="max-w-5xl mx-auto px-6 py-12 relative z-10">
         {items.length === 0 ? (
           <p className="text-center text-muted-foreground py-16">Nenhum conteúdo disponível ainda.</p>
         ) : grouped ? (
-          <Tabs defaultValue={topics[0]}>
-            <TabsList className="flex-wrap h-auto">
-              {topics.map(t => <TabsTrigger key={t} value={t}>{t}</TabsTrigger>)}
-              {untopiced.length > 0 && <TabsTrigger value="__other">Outros</TabsTrigger>}
+          <Tabs defaultValue={topics[0]} className="w-full">
+            <TabsList className="inline-flex h-auto p-1 bg-white/5 rounded-full mb-12 border border-white/5">
+              {topics.map(t => (
+                <TabsTrigger 
+                  key={t} 
+                  value={t}
+                  className="px-6 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] data-[state=active]:bg-white data-[state=active]:text-black transition-all"
+                >
+                  {t}
+                </TabsTrigger>
+              ))}
+              {untopiced.length > 0 && (
+                <TabsTrigger value="__other" className="px-6 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] data-[state=active]:bg-white data-[state=active]:text-black transition-all">
+                  Outros
+                </TabsTrigger>
+              )}
             </TabsList>
             {topics.map(t => (
               <TabsContent key={t} value={t} className="mt-4">
@@ -188,21 +228,39 @@ function ItemCard({ item, isOffers, onVideo, onPdf, onImage, onOffer }: {
 
   if (item.kind === 'text') {
     return (
-      <div className="bg-card border border-border rounded-xl p-4">
-        <div className="flex items-center gap-2 mb-1.5">{icon}<h4 className="font-medium text-sm">{item.title}</h4></div>
-        {item.description && <p className="text-xs text-muted-foreground mb-2">{item.description}</p>}
-        {item.body && <p className="text-sm whitespace-pre-wrap leading-6">{item.body}</p>}
+      <div className="group relative p-8 glass-smooth hover:bg-white/10 transition-all duration-500 rounded-[2.5rem] border border-white/5 h-full flex flex-col">
+        <div className="w-12 h-12 bg-white/5 rounded-2xl mb-6 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
+          {icon}
+        </div>
+        <h4 className="text-xl font-serif-display text-white mb-4">{item.title}</h4>
+        {item.description && <p className="text-white/30 text-xs font-light mb-4 leading-relaxed">{item.description}</p>}
+        {item.body && (
+          <div className="mt-auto pt-6 border-t border-white/5">
+             <p className="text-sm text-white/50 whitespace-pre-wrap leading-relaxed italic">"{item.body}"</p>
+          </div>
+        )}
       </div>
     );
   }
 
   return (
-    <button onClick={handleClick} className="text-left bg-card border border-border rounded-xl p-4 hover:border-brand-blue transition-colors">
+    <button onClick={handleClick} className="group relative text-left p-6 glass-smooth hover:bg-white/10 transition-all duration-500 rounded-[2.5rem] border border-white/5 flex flex-col h-full">
       {item.kind === 'image' && item.image_url && (
-        <img src={item.image_url} alt={item.title} className="w-full h-32 object-cover rounded-lg mb-3" />
+        <div className="w-full aspect-video rounded-[1.5rem] overflow-hidden mb-6">
+           <img src={item.image_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+        </div>
       )}
-      <div className="flex items-center gap-2 mb-1">{icon}<h4 className="font-medium text-sm">{item.title}</h4></div>
-      {item.description && <p className="text-xs text-muted-foreground line-clamp-2">{item.description}</p>}
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
+          {icon}
+        </div>
+        <h4 className="text-lg font-serif-display text-white">{item.title}</h4>
+      </div>
+      {item.description && <p className="text-white/30 text-xs font-light leading-relaxed line-clamp-2">{item.description}</p>}
+      
+      <div className="mt-auto pt-6 flex items-center text-[10px] font-bold text-white/40 uppercase tracking-[0.2em]">
+         Ver Detalhes <ArrowRight size={12} className="ml-2 group-hover:translate-x-1 transition-transform" />
+      </div>
     </button>
   );
 }
