@@ -16,8 +16,10 @@ import {
   ChevronUp,
   GraduationCap,
   Calendar,
-  Lock
+  Lock,
+  Music
 } from 'lucide-react';
+import SpotifyPlayer from '@/components/SpotifyPlayer';
 import { useEffect, useRef, useState } from 'react';
 import {
   Accordion,
