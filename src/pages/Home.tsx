@@ -379,9 +379,8 @@ export default function Home() {
       {/* Footer */}
       <footer className="py-24 px-6 border-t border-white/5 bg-black/50 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto flex flex-col items-center">
-
-
           <div className="text-center">
+
             <div className="font-serif-display text-4xl text-white mb-6 tracking-tighter">CONVERT CLUB</div>
             <p className="text-white/20 text-sm mb-12 max-w-md mx-auto leading-relaxed font-light">
               The elite layer of digital entrepreneurship. Glass smooth experience, razor sharp results.
