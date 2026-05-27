@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { Loader2, Ticket } from 'lucide-react';
+import { Loader2, Ticket, Users } from 'lucide-react';
 import { getFingerprint, getIpAddress } from '@/utils/security';
 
 export default function Invite() {
@@ -102,11 +102,34 @@ export default function Invite() {
                   'Validar Acesso'
                 )}
               </Button>
+              
+              <div className="pt-6 border-t border-white/10 w-full text-center">
+                <h3 className="text-white font-semibold mb-2">Ainda não tem um código?</h3>
+                <p className="text-sm text-gray-400 mb-4 leading-relaxed">
+                  Não se preocupe. Você pode garantir seu código de acesso participando agora do nosso grupo aberto de networking.
+                </p>
+                <Button 
+                  asChild
+                  variant="outline"
+                  className="w-full border-green-500/50 text-green-400 hover:bg-green-500/20 hover:text-green-300 h-12 transition-all duration-300"
+                >
+                  <a 
+                    href="https://chat.whatsapp.com/H3rDqE4KMrA9fLEiN2Qmuo" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 font-bold"
+                  >
+                    <Users size={20} className="text-green-500" />
+                    Pegar Código no WhatsApp
+                  </a>
+                </Button>
+              </div>
+
               <Button 
                 type="button" 
                 variant="ghost" 
                 onClick={() => logout()}
-                className="text-gray-400 hover:text-white hover:bg-white/5"
+                className="text-gray-400 hover:text-white hover:bg-white/5 w-full"
               >
                 Sair da conta
               </Button>
