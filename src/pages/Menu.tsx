@@ -12,7 +12,8 @@ import {
   ArrowRight,
   BookOpen,
   Layout,
-  PlayCircle
+  PlayCircle,
+  Tag
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
@@ -65,11 +66,18 @@ export default function Menu() {
       badge: "Full Access"
     },
     {
+      title: "Ofertas Validadas",
+      description: "Produtos e infoprodutos minerados com alto potencial de escala.",
+      icon: Tag,
+      path: "/ofertas",
+      badge: "Curadoria"
+    },
+    {
       title: "Aulas Gravadas",
       description: "Gravações das mentorias exclusivas com estratégias de escala e conversão.",
       icon: Video,
       path: "/mentorias",
-      badge: "Conteúdo VIP"
+      badge: "Membro"
     },
     {
       title: "Área do Aluno",
@@ -89,11 +97,14 @@ export default function Menu() {
           else if (page === 'alunos') navigate('/alunos');
           else if (page === 'mentorias') navigate('/mentorias');
           else if (page === 'menu') navigate('/menu');
+          else if (page === 'ofertas') navigate('/ofertas');
+          else if (page === 'ferramentas') navigate('/ferramentas');
           else {
             sessionStorage.setItem('adai:initialPage', page);
             navigate('/ferramentas');
           }
         }} 
+
 
       />
 

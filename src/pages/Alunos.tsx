@@ -217,8 +217,10 @@ export default function Alunos() {
           else if (page === 'alunos' || page === 'lessons') navigate('/alunos');
           else if (page === 'menu') navigate('/menu');
           else if (page === 'mentorias') navigate('/mentorias');
+          else if (page === 'ofertas') navigate('/ofertas');
           else navigate('/ferramentas');
         }} 
+
       />
 
       <main className="flex-1 relative pt-32 pb-24 px-6">
