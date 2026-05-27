@@ -868,8 +868,8 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
                       <td className="px-3 sm:px-5 py-3"><div className="w-4 h-4 rounded" style={{ background: c.accent }} /></td>
                       <td className="px-3 sm:px-5 py-3">
                         <div className="flex gap-2">
-                          <button onClick={() => setViewingCategory(c)} className="text-[11px] px-2 py-1 rounded bg-brand-blue/20 text-brand-blue-medium hover:bg-brand-blue/30 flex items-center gap-1 whitespace-nowrap"><Eye size={11} /> Ver</button>
-                          <button onClick={() => setEditingCategory(c)} className="text-[11px] px-2 py-1 rounded bg-brand-amber/20 text-brand-amber hover:bg-brand-amber/30 flex items-center gap-1 whitespace-nowrap"><Palette size={11} /> Editar</button>
+                          <button onClick={() => setViewingCategory(c)} className="text-[11px] px-2 py-1 rounded bg-brand-blue/20 text-brand-blue-medium hover:bg-brand-blue/30 flex items-center gap-1 whitespace-nowrap" aria-label={`Ver ferramentas da categoria ${c.label}`}><Eye size={11} /> Ver</button>
+                          <button onClick={() => setEditingCategory(c)} className="text-[11px] px-2 py-1 rounded bg-brand-amber/20 text-brand-amber hover:bg-brand-amber/30 flex items-center gap-1 whitespace-nowrap" aria-label={`Editar categoria ${c.label}`}><Palette size={11} /> Editar</button>
                         </div>
                       </td>
                     </tr>
@@ -877,57 +877,6 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
                 </tbody>
               </table>
               </div>
-            </div>
-          </>
-        )}
-
-        {section === 'content' && !viewingCategory && (
-          <>
-            <h1 className="text-xl font-medium text-primary-foreground mb-6">Conteúdo</h1>
-            <div className="grid grid-cols-3 gap-4 mb-8">
-              <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-5">
-                <div className="text-[11px] text-muted-foreground/40 uppercase tracking-wider mb-2">Ferramentas de IA</div>
-                <div className="text-[28px] font-medium text-primary-foreground">{totalTools}</div>
-              </div>
-              <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-5">
-                <div className="text-[11px] text-muted-foreground/40 uppercase tracking-wider mb-2">Categorias</div>
-                <div className="text-[28px] font-medium text-primary-foreground">{categories.length}</div>
-              </div>
-              <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-5">
-                <div className="text-[11px] text-muted-foreground/40 uppercase tracking-wider mb-2">E-books</div>
-                <div className="text-[28px] font-medium text-primary-foreground">{totalTools}</div>
-              </div>
-            </div>
-
-            <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl overflow-hidden">
-              <div className="flex items-center justify-between px-5 py-4 border-b border-primary-foreground/[0.07]">
-                <h3 className="text-sm font-medium text-primary-foreground">Ferramentas por Categoria</h3>
-                <div className="flex gap-2">
-                  <button onClick={() => {/* could add new category */}} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium bg-brand-green/20 text-brand-green hover:bg-brand-green/30">
-                    <Plus size={12} /> Nova Categoria
-                  </button>
-                </div>
-              </div>
-              <table className="w-full">
-                <thead><tr className="border-b border-primary-foreground/[0.07]">
-                  {['Categoria', 'Ferramentas', 'Cor', 'Ações'].map(h => <th key={h} className="px-5 py-3 text-left text-[11px] font-semibold text-muted-foreground/40 uppercase tracking-wider">{h}</th>)}
-                </tr></thead>
-                <tbody>
-                  {categories.map(c => (
-                    <tr key={c.key} className="border-b border-primary-foreground/[0.04] hover:bg-primary-foreground/[0.02]">
-                      <td className="px-5 py-3 text-[13px] text-primary-foreground/80">{c.label}</td>
-                      <td className="px-5 py-3 text-[13px] text-muted-foreground/50">{c.tools.length} ferramentas</td>
-                      <td className="px-5 py-3"><div className="w-4 h-4 rounded" style={{ background: c.accent }} /></td>
-                      <td className="px-5 py-3">
-                        <div className="flex gap-2">
-                          <button onClick={() => setViewingCategory(c)} className="text-[11px] px-2 py-1 rounded bg-brand-blue/20 text-brand-blue-medium hover:bg-brand-blue/30 flex items-center gap-1"><Eye size={11} /> Ver</button>
-                          <button onClick={() => setEditingCategory(c)} className="text-[11px] px-2 py-1 rounded bg-brand-amber/20 text-brand-amber hover:bg-brand-amber/30 flex items-center gap-1"><Palette size={11} /> Editar</button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
             </div>
           </>
         )}

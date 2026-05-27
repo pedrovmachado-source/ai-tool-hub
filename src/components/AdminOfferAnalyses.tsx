@@ -85,25 +85,23 @@ export default function AdminOfferAnalyses() {
 
       // Se for aprovado, insere automaticamente na tabela de ofertas validadas
       if (status === 'approved') {
-        // Verificar se já existe uma oferta com o mesmo link para evitar duplicidade
-        const { data: existingOffer } = await supabase
+        const { error: insertError } = await supabase
           .from('validated_offers')
-          .select('id')
-          .eq('link', currentAnalysis.website_url)
-          .maybeSingle();
+          .insert({
+            title: `Sugestão: ${currentAnalysis.profiles?.nome || 'Usuário'}`,
+            description: currentAnalysis.observations || 'Nenhuma descrição fornecida.',
+            link: currentAnalysis.website_url,
+            category: 'Sugestão',
+            price: 'Consultar'
+          });
 
-        if (!existingOffer) {
-          const { error: insertError } = await supabase
-            .from('validated_offers')
-            .insert({
-              title: `Sugestão: ${currentAnalysis.profiles?.nome || 'Usuário'}`,
-              description: currentAnalysis.observations || 'Nenhuma descrição fornecida.',
-              link: currentAnalysis.website_url,
-              category: 'Sugestão',
-              price: 'Consultar'
+        if (insertError) {
+          if (insertError.code === '23505') { // unique_violation
+            toast({
+              title: "Oferta já existe",
+              description: "Esta análise foi marcada como aprovada, mas a oferta já constava em /ofertas."
             });
-
-          if (insertError) {
+          } else {
             console.error('Erro ao inserir oferta validada:', insertError);
             toast({
               variant: "destructive",
@@ -111,11 +109,6 @@ export default function AdminOfferAnalyses() {
               description: "Análise aprovada, mas houve um erro ao criar a oferta em /ofertas."
             });
           }
-        } else {
-          toast({
-            title: "Oferta já existe",
-            description: "Esta análise foi marcada como aprovada, mas a oferta já constava em /ofertas."
-          });
         }
 
         if (openEditor) {

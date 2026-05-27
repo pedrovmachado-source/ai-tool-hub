@@ -80,8 +80,8 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
           </button>
         </div>
 
-        <button onClick={() => onNavigate('home')} className="flex flex-col text-center justify-self-center text-white min-w-0">
-          <span className="block text-base sm:text-xl font-semibold tracking-tighter leading-none">CONVERT CLUB</span>
+        <button onClick={() => onNavigate('home')} className="flex flex-col text-center justify-self-center text-white min-w-0" aria-label="Convert Club Home">
+          <h1 className="block text-base sm:text-xl font-semibold tracking-tighter leading-none">CONVERT CLUB</h1>
           <span className="block text-[9px] font-bold text-white/40 tracking-[0.3em] uppercase leading-none mt-2">Elite Community</span>
         </button>
 
