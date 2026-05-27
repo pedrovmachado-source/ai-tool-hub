@@ -18,7 +18,7 @@ import {
   Plus,
   Music
 } from 'lucide-react';
-import SpotifyPlayer from '@/components/SpotifyPlayer';
+
 
 interface MentorLesson {
   id: string;
@@ -297,7 +297,7 @@ export default function Mentorias() {
 
       <footer className="py-12 px-6 border-t border-white/5 bg-black">
         <div className="max-w-7xl mx-auto flex flex-col items-center gap-12">
-          <SpotifyPlayer />
+
           
           <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-6 opacity-30">
             <div className="text-[9px] font-bold uppercase tracking-[0.5em]">
