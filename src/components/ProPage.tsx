@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { Check, X, Loader2, LogIn, UserPlus } from 'lucide-react';
 import { usePlansConfig } from '@/hooks/usePlanConfig';
 import { toast } from 'sonner';
-import AuthModal from './AuthModal';
 import type { Period } from '@/lib/plan';
 
 type Tier = 'free' | 'elite' | 'elitePlus';
