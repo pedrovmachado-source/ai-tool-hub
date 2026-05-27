@@ -80,7 +80,7 @@ export default function Menu() {
       badge: "Membro"
     },
     {
-      title: "Área do Aluno",
+      title: "Área do Mentorado",
       description: "Gravação de aulas, transcrição de reuniões e materiais de apoio.",
       icon: Users,
       path: "/alunos",

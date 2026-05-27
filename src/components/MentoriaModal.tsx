@@ -41,7 +41,7 @@ export default function MentoriaModal({ isOpen, onClose }: MentoriaModalProps) {
           
           <div className="space-y-6 mb-10 text-left bg-white/[0.02] p-6 rounded-3xl border border-white/5">
             <p className="text-white/60 leading-relaxed font-light">
-              A Área do Aluno é um portal exclusivo para os membros do plano <span className="text-brand-purple font-medium">MAX</span>.
+              A Área do Mentorado é um portal exclusivo para os membros do plano <span className="text-brand-purple font-medium">MAX</span>.
             </p>
             
             <div className="grid grid-cols-1 gap-4">
