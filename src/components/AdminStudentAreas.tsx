@@ -51,7 +51,7 @@ export default function AdminStudentAreas() {
       .order('nome');
     
     if (error) {
-      toast({ title: 'Erro ao buscar alunos', description: error.message, variant: 'destructive' });
+      toast({ title: 'Erro ao buscar mentorados', description: error.message, variant: 'destructive' });
     } else {
       setStudents((data || []) as Student[]);
     }
