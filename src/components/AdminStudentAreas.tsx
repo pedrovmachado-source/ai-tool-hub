@@ -300,8 +300,9 @@ export default function AdminStudentAreas() {
           ) : (
             <div className="h-full flex flex-col items-center justify-center p-12 text-center border border-dashed border-white/5 rounded-[2rem]">
               <GraduationCap className="w-12 h-12 text-white/5 mb-6" />
-              <h3 className="text-xl font-serif-display text-white/40 mb-2">Selecione um aluno Max</h3>
-              <p className="text-[11px] text-white/20 max-w-xs uppercase tracking-widest">Escolha um aluno na lista ao lado para personalizar sua área de aulas.</p>
+              <h3 className="text-xl font-serif-display text-white/40 mb-2">Selecione um mentorado Max</h3>
+              <p className="text-[11px] text-white/20 max-w-xs uppercase tracking-widest">Escolha um mentorado na lista ao lado para personalizar sua área de aulas.</p>
+
             </div>
           )}
         </div>
