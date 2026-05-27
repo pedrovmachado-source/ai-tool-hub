@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import { type Tool, type Category } from '@/data/tools-data';
 import { useCategories } from '@/hooks/useCategories';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, LayoutDashboard, Users, CreditCard, FileText, Settings, LogOut, Search, Download, Plus, Pencil, Trash2, X, Check, Palette, Eye, EyeOff, Globe, Bell, Shield, Database, Mail, Play, Video, GraduationCap, Activity, Menu, Folder } from 'lucide-react';
+import { ArrowLeft, LayoutDashboard, Users, CreditCard, FileText, Settings, LogOut, Search, Download, Plus, Pencil, Trash2, X, Check, Palette, Eye, EyeOff, Globe, Bell, Shield, Database, Mail, Play, Video, GraduationCap, Activity, Menu, Folder, Tag } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import AdminOffers from './AdminOffers';
 import AdminLessons from './AdminLessons';
 import AdminContentSections from './AdminContentSections';
 import AdminNicheLessons from './AdminNicheLessons';
@@ -519,6 +520,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'niche-lessons', label: 'Aulas por nicho', icon: Video },
     { key: 'site-creation', label: 'Comprar Site', icon: Folder },
     { key: 'sections', label: 'Conteúdos', icon: Folder },
+    { key: 'offers', label: 'Ofertas Validadas', icon: Tag },
     { key: 'menu', label: 'Menu Lateral', icon: Menu },
     { key: 'student-areas', label: 'Área do Aluno (Max)', icon: GraduationCap },
     { key: 'activity', label: 'Atividade', icon: Activity },
