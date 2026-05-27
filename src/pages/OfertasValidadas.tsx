@@ -162,7 +162,7 @@ export default function OfertasValidadas() {
                         <button 
                           onClick={() => {
                             sessionStorage.setItem('adai:initialAdminSection', 'offers');
-                            navigate('/admin');
+                            navigate('/ferramentas?page=admin');
                           }}
                           className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white/40 hover:bg-brand-blue hover:text-white transition-all duration-300 group/edit"
                           title="Editar no Painel Admin"
