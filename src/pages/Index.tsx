@@ -56,7 +56,7 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
   const handleNavigate = (target: string) => {
     if (target === 'home') { navigate('/'); return; }
     if (target === 'profile') { navigate('/perfil'); return; }
-    if (target === 'ofertas') { navigate('/ofertas'); return; }
+    if (target === 'ofertas' || target === 'offers') { navigate('/ofertas'); return; }
     if (target === 'mentorias') { navigate('/mentorias'); return; }
     if (target === 'alunos') { navigate('/alunos'); return; }
     setPage(target);
