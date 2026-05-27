@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
 import OfferAnalysisModal from '@/components/OfferAnalysisModal';
+import OffersRanking from '@/components/OffersRanking';
 import { supabase } from '@/integrations/supabase/client';
 
 import { 
@@ -13,7 +14,8 @@ import {
   ArrowRight,
   Loader2,
   Send,
-  Pencil
+  Pencil,
+  Trophy
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -103,9 +105,11 @@ export default function OfertasValidadas() {
             <p className="text-white/40 text-lg max-w-2xl font-light leading-relaxed">
               Produtos e infoprodutos minerados pela nossa equipe com alto potencial de escala e conversão imediata.
             </p>
-          </header>
+            </header>
 
-          {loading ? (
+            <OffersRanking />
+
+            {loading ? (
             <div className="flex flex-col items-center justify-center py-20">
               <Loader2 className="w-8 h-8 text-brand-amber animate-spin mb-4" />
               <p className="text-white/20 text-sm font-medium uppercase tracking-widest">Minerando ofertas...</p>
