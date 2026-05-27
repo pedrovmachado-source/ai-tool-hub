@@ -32,6 +32,7 @@ const TARGET_OPTIONS = [
   { value: 'alunos', label: 'Área do Mentorado' },
   { value: 'pro', label: 'Página Pro' },
   { value: 'profile', label: 'Perfil' },
+  { value: 'copywrite', label: 'Copywrite' },
   { value: 'mentorias', label: 'Mentorias' },
 ];
 
