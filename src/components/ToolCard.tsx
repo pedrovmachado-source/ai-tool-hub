@@ -1,4 +1,4 @@
-import { ExternalLink, Sparkles, BookOpen } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import type { Tool, Category } from '@/data/tools-data';
 
 interface ToolCardProps {
@@ -13,56 +13,43 @@ export default function ToolCard({ tool, category, onOpenEbook }: ToolCardProps)
 
   return (
     <div
-      className={`group relative flex flex-col glass-morphism transition-all duration-500 rounded-[2.5rem] border border-white/5 overflow-hidden hover:scale-[1.02] hover:shadow-2xl hover:bg-white/5`}
+      className={`bg-card border rounded-xl overflow-hidden transition-all hover:shadow-brand-sm group relative ${isFree ? 'border-brand-green/60 ring-1 ring-brand-green/20' : 'border-border'}`}
+      style={{ '--card-accent': category.accent } as React.CSSProperties}
     >
       {isFree && (
-        <div className="absolute top-6 right-6 z-10 inline-flex items-center gap-1.5 text-[10px] font-bold px-3 py-1 rounded-full bg-brand-emerald text-black shadow-lg uppercase tracking-wider animate-pulse">
-          <Sparkles size={10} /> Free
+        <div className="absolute top-2 right-2 z-10 inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-green text-primary-foreground shadow-brand-sm">
+          🆓 100% Grátis
         </div>
       )}
-      
-      <div className="p-8 flex-1 flex flex-col">
-        <div className="mb-6">
-          <div className="flex items-center gap-2 mb-3">
-             <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: category.accent }} />
-             <span className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em]">{category.label}</span>
-          </div>
-          <h3 className="text-2xl font-serif-display text-white group-hover:text-brand-violet transition-colors duration-300">
-            {tool.name}
-          </h3>
+      <div className="p-4 pb-3.5">
+        <div className="flex items-start justify-between mb-2">
+          <span className="text-[15px] font-medium">{tool.name}</span>
+          {!isFree && (
+            <span className="text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ background: category.accentLight, color: category.accentDark }}>{tool.badge}</span>
+          )}
         </div>
-
-        <p className="text-white/30 text-sm font-light leading-relaxed mb-8 flex-1 line-clamp-3">
-          {tool.desc}
-        </p>
-
-        {tool.stats && tool.stats.length > 0 && (
-          <div className="grid grid-cols-2 gap-4 mb-8 pt-6 border-t border-white/5">
-            {tool.stats.slice(0, 2).map((s, i) => (
-              <div key={i} className="flex flex-col">
-                <span className="text-lg font-serif-display text-white">{s.num}</span>
-                <span className="text-[10px] text-white/20 font-bold uppercase tracking-widest">{s.lbl}</span>
+        <a href={tool.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs font-medium mb-2 hover:underline" style={{ color: category.accent }}>
+          <ExternalLink size={11} /> {tool.urlLabel}
+        </a>
+        <p className="text-[13px] text-muted-foreground leading-relaxed">{tool.desc}</p>
+        {tool.stats && (
+          <div className="flex gap-3 mt-3">
+            {tool.stats.slice(0, 3).map((s, i) => (
+              <div key={i} className="text-center">
+                <div className="text-sm font-medium" style={{ color: category.accentDark }}>{s.num}</div>
+                <div className="text-[10px] text-muted-foreground">{s.lbl}</div>
               </div>
             ))}
           </div>
         )}
-
-        <div className="flex gap-3 mt-auto">
-          <a 
-            href={tool.url} 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="flex-1 py-4 rounded-2xl text-[11px] font-bold uppercase tracking-widest text-center glass-morphism border-white/10 hover:bg-white/10 hover:text-white transition-all flex items-center justify-center gap-2"
-          >
-            Acessar <ExternalLink size={12} />
-          </a>
-          <button 
-            onClick={onOpenEbook} 
-            className="flex-1 py-4 rounded-2xl text-[11px] font-bold uppercase tracking-widest text-center bg-white text-black hover:bg-white/90 transition-all flex items-center justify-center gap-2 hover-glow"
-          >
-            <BookOpen size={12} /> E-Book
-          </button>
-        </div>
+      </div>
+      <div className="flex gap-2 px-4 py-3 bg-secondary/50 border-t border-border">
+        <a href={tool.url} target="_blank" rel="noopener noreferrer" className="flex-1 py-2 rounded-lg text-xs font-medium text-center bg-card border border-border hover:border-brand-blue transition-colors">
+          Acessar
+        </a>
+        <button onClick={onOpenEbook} className="flex-1 py-2 rounded-lg text-xs font-medium text-center text-primary-foreground transition-opacity hover:opacity-90" style={{ background: category.accent }}>
+          📘 E-Book
+        </button>
       </div>
     </div>
   );

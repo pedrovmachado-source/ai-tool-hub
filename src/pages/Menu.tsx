@@ -168,7 +168,7 @@ export default function Menu() {
                     navigate(item.path);
                   }}
 
-                  className="group relative cursor-pointer p-8 glass-morphism hover:bg-white/10 transition-all duration-500 rounded-[2.5rem] border border-white/5 h-full flex flex-col hover:scale-[1.02] hover:shadow-2xl"
+                  className="group relative cursor-pointer p-8 glass-smooth hover:bg-white/10 transition-all duration-500 rounded-[2.5rem] border border-white/5 h-full flex flex-col"
                 >
                   <div className="w-14 h-14 bg-white/5 rounded-2xl mb-8 group-hover:bg-white group-hover:text-black transition-all duration-500 flex items-center justify-center">
                     <item.icon className="w-7 h-7" />

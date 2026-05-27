@@ -15,7 +15,7 @@ export default {
         sans: ['DM Sans', 'sans-serif'],
         'serif-display': ['DM Serif Display', 'serif'],
       },
-        colors: {
+      colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -48,8 +48,6 @@ export default {
           "purple-dark": "hsl(var(--purple-dark))",
           green: "hsl(var(--green))",
           red: "hsl(var(--red))",
-          emerald: "#10b981",
-          violet: "#7c3aed",
         },
         "gray-text": "hsl(var(--gray-text))",
         sidebar: {
