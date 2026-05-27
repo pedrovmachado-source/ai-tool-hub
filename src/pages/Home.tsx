@@ -143,7 +143,7 @@ export default function Home() {
 
 
   return (
-    <div className="flex flex-col min-h-screen bg-black text-white selection:bg-white/20 font-sans overflow-x-hidden">
+    <div className="flex flex-col min-h-screen bg-black text-white selection:bg-white/20 font-sans overflow-x-hidden pt-[72px] sm:pt-[88px]">
       <Navbar
         onNavigate={handleNavigate}
       />

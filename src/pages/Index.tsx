@@ -165,7 +165,7 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen pt-[72px] sm:pt-[88px]">
       <Navbar onNavigate={handleNavigate} onOpenSavedEbook={(toolKey, categoryKey) => {
         const cat = categories.find(c => c.key === categoryKey);
         const tool = cat?.tools.find(t => t.key === toolKey);
