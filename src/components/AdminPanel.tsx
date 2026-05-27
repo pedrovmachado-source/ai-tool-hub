@@ -11,6 +11,7 @@ import AdminNicheLessons from './AdminNicheLessons';
 import AdminSiteCreation from './AdminSiteCreation';
 import AdminMenu from './AdminMenu';
 import AdminStudentAreas from './AdminStudentAreas';
+import AdminOfferAnalyses from './AdminOfferAnalyses';
 import ActivityLogView from './ActivityLogView';
 import { logActivity } from '@/lib/activity-log';
 
@@ -521,6 +522,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'site-creation', label: 'Comprar Site', icon: Folder },
     { key: 'sections', label: 'Conteúdos', icon: Folder },
     { key: 'offers', label: 'Ofertas Validadas', icon: Tag },
+    { key: 'offer-analyses', label: 'Análises de Ofertas', icon: Search },
     { key: 'menu', label: 'Menu Lateral', icon: Menu },
     { key: 'student-areas', label: 'Área do Aluno (Max)', icon: GraduationCap },
     { key: 'activity', label: 'Atividade', icon: Activity },
@@ -940,9 +942,10 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
         {section === 'site-creation' && <AdminSiteCreation initialTab={siteCreationInitialTab} />}
         {section === 'menu' && <AdminMenu />}
         {section === 'student-areas' && <AdminStudentAreas />}
-        {section === 'offers' && <AdminOffers />}
+        { section === 'offers' && <AdminOffers /> }
+        { section === 'offer-analyses' && <AdminOfferAnalyses /> }
 
-        {section === 'activity' && <ActivityLogView />}
+        { section === 'activity' && <ActivityLogView /> }
 
         {section === 'settings' && (
           <>

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
+import OfferAnalysisModal from '@/components/OfferAnalysisModal';
 import { supabase } from '@/integrations/supabase/client';
 import { 
   Sparkles, 
@@ -9,7 +10,8 @@ import {
   Tag, 
   Package, 
   ArrowRight,
-  Loader2
+  Loader2,
+  Send
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -30,6 +32,7 @@ export default function OfertasValidadas() {
   const { toast } = useToast();
   const [offers, setOffers] = useState<ValidatedOffer[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false);
 
   useEffect(() => {
     document.title = 'Convert Club — Ofertas Validadas';
@@ -167,12 +170,20 @@ export default function OfertasValidadas() {
                     Nossa equipe está sempre em busca de novas ofertas para validar e escalar. Se você tem um produto com métricas sólidas, entre em contato para análise.
                   </p>
                 </div>
-                <Button className="h-14 px-10 rounded-full bg-white text-black hover:bg-white/90 font-bold text-sm tracking-tight glass-smooth">
+                <Button 
+                  onClick={() => setIsAnalysisModalOpen(true)}
+                  className="h-14 px-10 rounded-full bg-white text-black hover:bg-white/90 font-bold text-sm tracking-tight glass-smooth"
+                >
                   Submeter para Análise
                 </Button>
               </div>
             </div>
           </section>
+
+          <OfferAnalysisModal 
+            isOpen={isAnalysisModalOpen} 
+            onClose={() => setIsAnalysisModalOpen(false)} 
+          />
         </div>
       </main>
 

@@ -440,6 +440,47 @@ export type Database = {
         }
         Relationships: []
       }
+      offer_analyses: {
+        Row: {
+          ad_library_url: string
+          created_at: string
+          id: string
+          observations: string | null
+          status: string
+          updated_at: string
+          user_id: string
+          website_url: string
+        }
+        Insert: {
+          ad_library_url: string
+          created_at?: string
+          id?: string
+          observations?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+          website_url: string
+        }
+        Update: {
+          ad_library_url?: string
+          created_at?: string
+          id?: string
+          observations?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+          website_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "offer_analyses_user_id_fkey_profiles"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           abuse_blocked: boolean | null
