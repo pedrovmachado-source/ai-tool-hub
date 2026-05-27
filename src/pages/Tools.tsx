@@ -15,6 +15,10 @@ export default function Tools() {
   useEffect(() => {
     const cat = params.get('cat');
     if (cat) sessionStorage.setItem('adai:initialCategory', cat);
+    
+    const page = params.get('page');
+    if (page) sessionStorage.setItem('adai:initialPage', page);
+
     document.title = 'Ferramentas — AdAI';
   }, [params]);
 
