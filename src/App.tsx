@@ -44,6 +44,7 @@ const App = () => (
             <Route path="/copywrite" element={<ProtectedRoute><Tools page="copywrite" /></ProtectedRoute>} />
             <Route path="/site-creation" element={<ProtectedRoute><Tools page="site-creation" /></ProtectedRoute>} />
             <Route path="/creative-edit" element={<ProtectedRoute><Tools page="creative-edit" /></ProtectedRoute>} />
+            <Route path="/fb-accounts" element={<ProtectedRoute><Tools page="fb-accounts" /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
