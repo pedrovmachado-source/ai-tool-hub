@@ -23,7 +23,7 @@ const COLOR_OPTIONS = [
   { value: 'text-brand-red', label: 'Vermelho' },
 ];
 const TARGET_OPTIONS = [
-  { value: 'menu', label: 'Ais' },
+  { value: 'ferramentas', label: 'Ais' },
   { value: 'ofertas', label: 'Ofertas validadas' },
   { value: 'site-creation', label: 'Comprar Site' },
   { value: 'creative-edit', label: 'Comprar Criativo' },
