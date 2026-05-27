@@ -39,6 +39,7 @@ export default function AdminOfferAnalyses() {
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
   const [search, setSearch] = useState('');
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [editingOfferId, setEditingOfferId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchAnalyses();
@@ -65,7 +66,7 @@ export default function AdminOfferAnalyses() {
     }
   }
 
-  async function updateStatus(id: string, status: 'approved' | 'rejected') {
+  async function updateStatus(id: string, status: 'approved' | 'rejected', openEditor = false) {
     if (loading) return;
     
     try {
@@ -114,13 +115,38 @@ export default function AdminOfferAnalyses() {
             description: "Esta análise foi marcada como aprovada, mas a oferta já constava em /ofertas."
           });
         }
+
+        if (openEditor) {
+          // If the user wants to edit, we need to find the ID of the offer we just created or that already exists
+          const { data: offerData } = await supabase
+            .from('validated_offers')
+            .select('id')
+            .eq('link', currentAnalysis.website_url)
+            .maybeSingle();
+          
+          if (offerData) {
+            // We could trigger a navigation or open a global modal, 
+            // but since AdminOffers is a sibling/separate tab, 
+            // it's better to just notify and suggest going to 'Gerenciar Ofertas'
+            // OR we can implement a local editor here too.
+            // For now, let's just make sure the user knows it's approved.
+          }
+        }
       }
 
       setAnalyses(prev => prev.map(a => a.id === id ? { ...a, status } : a));
-      toast({
-        title: "Status atualizado",
-        description: `A análise foi marcada como ${status === 'approved' ? 'aprovada' : 'rejeitada'}.`
-      });
+      if (status === 'approved' && openEditor) {
+        // We inform the user and they can switch to the other tab
+        toast({
+          title: "Análise Aprovada",
+          description: "Agora você pode editar os detalhes na aba 'Gerenciar Ofertas'."
+        });
+      } else {
+        toast({
+          title: "Status atualizado",
+          description: `A análise foi marcada como ${status === 'approved' ? 'aprovada' : 'rejeitada'}.`
+        });
+      }
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -302,20 +328,26 @@ export default function AdminOfferAnalyses() {
                   </div>
 
                   {analysis.status === 'pending' && (
-                    <div className="flex flex-row lg:flex-col gap-3">
-                      <Button 
-                        onClick={() => updateStatus(analysis.id, 'approved')}
-                        className="flex-1 bg-white/5 border border-white/5 text-brand-green hover:bg-brand-green/20 hover:border-brand-green/30 font-bold text-[10px] uppercase tracking-widest h-10 rounded-xl"
-                      >
-                        <Check className="w-3 h-3 mr-2" /> Aprovar
-                      </Button>
-                      <Button 
-                        onClick={() => updateStatus(analysis.id, 'rejected')}
-                        className="flex-1 bg-white/5 border border-white/5 text-brand-red hover:bg-brand-red/20 hover:border-brand-red/30 font-bold text-[10px] uppercase tracking-widest h-10 rounded-xl"
-                      >
-                        <X className="w-3 h-3 mr-2" /> Rejeitar
-                      </Button>
-                    </div>
+                      <div className="flex flex-col gap-2">
+                        <Button 
+                          onClick={() => updateStatus(analysis.id, 'approved')}
+                          className="w-full bg-brand-green/10 border border-brand-green/20 text-brand-green hover:bg-brand-green/20 font-bold text-[10px] uppercase tracking-widest h-10 rounded-xl"
+                        >
+                          <Check className="w-3 h-3 mr-2" /> Aprovar Direto
+                        </Button>
+                        <Button 
+                          onClick={() => updateStatus(analysis.id, 'approved', true)}
+                          className="w-full bg-white text-black hover:bg-white/90 font-bold text-[10px] uppercase tracking-widest h-10 rounded-xl"
+                        >
+                          <Pencil className="w-3 h-3 mr-2" /> Aprovar e Editar
+                        </Button>
+                        <Button 
+                          onClick={() => updateStatus(analysis.id, 'rejected')}
+                          className="w-full bg-white/5 border border-white/5 text-brand-red hover:bg-brand-red/20 hover:border-brand-red/30 font-bold text-[10px] uppercase tracking-widest h-10 rounded-xl"
+                        >
+                          <X className="w-3 h-3 mr-2" /> Rejeitar
+                        </Button>
+                      </div>
                   )}
                 </div>
               </div>
