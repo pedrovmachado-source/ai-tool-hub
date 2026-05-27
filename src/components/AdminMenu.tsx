@@ -29,7 +29,7 @@ const TARGET_OPTIONS = [
   { value: 'creative-edit', label: 'Comprar Criativo' },
   { value: 'niche-lessons', label: 'Aulas por nicho' },
   { value: 'lessons', label: 'Aulas gravadas' },
-  { value: 'alunos', label: 'Área do Aluno' },
+  { value: 'alunos', label: 'Área do Mentorado' },
   { value: 'pro', label: 'Página Pro' },
   { value: 'profile', label: 'Perfil' },
   { value: 'mentorias', label: 'Mentorias' },

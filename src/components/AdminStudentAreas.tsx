@@ -66,7 +66,7 @@ export default function AdminStudentAreas() {
       .maybeSingle();
 
     if (error) {
-      toast({ title: 'Erro ao buscar área do aluno', description: error.message, variant: 'destructive' });
+      toast({ title: 'Erro ao buscar área do mentorado', description: error.message, variant: 'destructive' });
       return;
     }
 
@@ -126,7 +126,7 @@ export default function AdminStudentAreas() {
     if (error) {
       toast({ title: 'Erro ao salvar', description: error.message, variant: 'destructive' });
     } else {
-      toast({ title: 'Área do aluno salva com sucesso!' });
+      toast({ title: 'Área do mentorado salva com sucesso!' });
       void logActivity({
         action: 'update',
         entity_type: 'student_area',

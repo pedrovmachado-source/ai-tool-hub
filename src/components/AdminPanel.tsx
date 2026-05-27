@@ -524,7 +524,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'offers', label: 'Ofertas Validadas', icon: Tag },
     { key: 'offer-analyses', label: 'Análises de Ofertas', icon: Search },
     { key: 'menu', label: 'Menu Lateral', icon: Menu },
-    { key: 'student-areas', label: 'Área do Aluno (Max)', icon: GraduationCap },
+    { key: 'student-areas', label: 'Área do Mentorado (Max)', icon: GraduationCap },
     { key: 'activity', label: 'Atividade', icon: Activity },
     { key: 'settings', label: 'Configurações', icon: Settings },
   ];
