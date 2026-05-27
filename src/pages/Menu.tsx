@@ -17,7 +17,8 @@ import {
   Tag,
   Globe2,
   Wand2,
-  Facebook
+  Facebook,
+  PenTool
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
@@ -94,6 +95,13 @@ export default function Menu() {
       icon: Wand2,
       path: "/creative-edit",
       badge: "Design"
+    },
+    {
+      title: "Copywrite",
+      description: "Textos de alta conversão para seus anúncios e páginas de vendas.",
+      icon: PenTool,
+      path: "/copywrite",
+      badge: "Copy"
     },
     {
       title: "Contas de Facebook Ads",

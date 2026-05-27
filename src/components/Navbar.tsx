@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { Menu, Bookmark, X, GraduationCap, Sparkles, Globe2, Wand2, BookOpen, Shield, ChevronRight, LogOut, Video, CreditCard, Star, Zap, Rocket, Users, Facebook } from 'lucide-react';
+import { Menu, Bookmark, X, GraduationCap, Sparkles, Globe2, Wand2, BookOpen, Shield, ChevronRight, LogOut, Video, CreditCard, Star, Zap, Rocket, Users, Facebook, PenTool } from 'lucide-react';
 import AuthModal from './AuthModal';
 import QuizModal from './QuizModal';
 import NicheLessonsModal from './NicheLessonsModal';
@@ -9,7 +9,7 @@ import logoAdai from '@/assets/logo.png';
 import { planLabel, planBadgeClass, isPaid } from '@/lib/plan';
 
 const ICON_MAP: Record<string, typeof Sparkles> = {
-  Sparkles, Globe2, Wand2, BookOpen, GraduationCap, Shield, Video, CreditCard, Star, Zap, Rocket, Users, Facebook,
+  Sparkles, Globe2, Wand2, BookOpen, GraduationCap, Shield, Video, CreditCard, Star, Zap, Rocket, Users, Facebook, PenTool
 };
 
 interface NavItem { key: string; label: string; icon: string; color: string; target: string; enabled: boolean; sort_order: number; }
@@ -19,9 +19,10 @@ const DEFAULT_ITEMS: NavItem[] = [
   { key: 'offers', label: 'Ofertas validadas', icon: 'Sparkles', color: 'text-brand-amber', target: 'ofertas', enabled: true, sort_order: 2 },
   { key: 'alunos', label: 'Área do Mentorado', icon: 'Users', color: 'text-brand-purple', target: 'alunos', enabled: true, sort_order: 3 },
   { key: 'creative-edit', label: 'Comprar Criativo', icon: 'Wand2', color: 'text-brand-teal', target: 'creative-edit', enabled: true, sort_order: 4 },
-  { key: 'fb-accounts', label: 'Contas de Facebook Ads', icon: 'Facebook', color: 'text-brand-blue', target: 'fb-accounts', enabled: true, sort_order: 5 },
-  { key: 'site-creation', label: 'Comprar Site', icon: 'Globe2', color: 'text-brand-blue-medium', target: 'site-creation', enabled: true, sort_order: 6 },
-  { key: 'lessons', label: 'Aulas gravadas', icon: 'GraduationCap', color: 'text-brand-blue-medium', target: 'mentorias', enabled: true, sort_order: 7 },
+  { key: 'copywrite', label: 'Copywrite', icon: 'PenTool', color: 'text-brand-amber', target: 'copywrite', enabled: true, sort_order: 5 },
+  { key: 'fb-accounts', label: 'Contas de Facebook Ads', icon: 'Facebook', color: 'text-brand-blue', target: 'fb-accounts', enabled: true, sort_order: 6 },
+  { key: 'site-creation', label: 'Comprar Site', icon: 'Globe2', color: 'text-brand-blue-medium', target: 'site-creation', enabled: true, sort_order: 7 },
+  { key: 'lessons', label: 'Aulas gravadas', icon: 'GraduationCap', color: 'text-brand-blue-medium', target: 'mentorias', enabled: true, sort_order: 8 },
 ];
 
 export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onNavigate: (page: string) => void; onOpenSavedEbook?: (toolKey: string, categoryKey: string) => void; hideAuth?: boolean }) {

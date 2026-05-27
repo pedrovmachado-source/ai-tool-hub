@@ -136,7 +136,7 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
   if (page === 'pro') return <ProPage onBack={() => navigate('/menu')} onNavigate={handleNavigate} />;
   if (page === 'lessons') return <LessonsPage onBack={() => navigate('/menu')} />;
   if (page === 'site-creation') return <SiteCreationPage onBack={() => navigate('/menu')} />;
-  if (page === 'offers' || page === 'creative-edit') {
+  if (page === 'offers' || page === 'creative-edit' || page === 'copywrite') {
     return <ContentSectionPage slug={page} onBack={() => navigate('/menu')} onUpgrade={() => setPage('pro')} />;
   }
 

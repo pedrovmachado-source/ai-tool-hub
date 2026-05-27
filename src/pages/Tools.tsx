@@ -7,7 +7,7 @@ import Index from './Index';
  * Mantém todo o fluxo atual: catálogo, busca, prompts, modal de e-book,
  * Pro e Admin. Apenas garante navegação por rotas.
  */
-export default function Tools() {
+export default function Tools({ page: propPage }: { page?: string }) {
   const [params] = useSearchParams();
 
   useEffect(() => {
@@ -18,7 +18,7 @@ export default function Tools() {
     }
   }, []);
 
-  const initialPage = params.get('page');
+  const initialPage = propPage || params.get('page');
   const initialCategory = params.get('cat');
 
   return <Index initialPage={initialPage} initialCategory={initialCategory} />;
