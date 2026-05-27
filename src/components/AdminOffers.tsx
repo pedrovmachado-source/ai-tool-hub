@@ -210,6 +210,11 @@ export default function AdminOffers() {
                   placeholder="https://images.unsplash.com/..."
                 />
               </div>
+              {editingOffer.image_url && (
+                <div className="mt-2 w-full h-32 rounded-xl overflow-hidden bg-white/5 border border-white/5">
+                  <img src={editingOffer.image_url} alt="Preview" className="w-full h-full object-contain" />
+                </div>
+              )}
               <div>
                 <label className="text-[10px] font-bold text-white/20 uppercase tracking-widest mb-1.5 block">Descrição</label>
                 <textarea 
