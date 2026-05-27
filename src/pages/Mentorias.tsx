@@ -43,9 +43,6 @@ export default function Mentorias() {
         navigate('/bloqueado');
         return;
       }
-      if (!isMentorado(user.plano)) {
-        setMentoriaModalOpen(true);
-      }
     }
   }, [user, navigate]);
 
