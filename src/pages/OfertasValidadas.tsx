@@ -107,7 +107,6 @@ export default function OfertasValidadas() {
             </p>
             </header>
 
-            <OffersRanking />
 
             {loading ? (
             <div className="flex flex-col items-center justify-center py-20">
@@ -212,12 +211,15 @@ export default function OfertasValidadas() {
         </div>
       </main>
 
+      <OffersRanking />
+
       <footer className="py-12 px-6 border-t border-white/5 text-center">
-        
         <div className="text-[9px] text-white/10 font-bold uppercase tracking-[0.5em]">
           &copy; 2026 CONVERT CLUB · BUILT FOR THE 1%
         </div>
       </footer>
     </div>
+
+
   );
 }
