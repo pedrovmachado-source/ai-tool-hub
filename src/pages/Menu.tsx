@@ -14,7 +14,10 @@ import {
   BookOpen,
   Layout,
   PlayCircle,
-  Tag
+  Tag,
+  Globe2,
+  Wand2,
+  Facebook
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
@@ -72,6 +75,27 @@ export default function Menu() {
       icon: Tag,
       path: "/ofertas",
       badge: "Curadoria"
+    },
+    {
+      title: "Comprar Site",
+      description: "Landing pages, quizzes e funis de alta conversão para o seu negócio.",
+      icon: Globe2,
+      path: "/site-creation",
+      badge: "Escala"
+    },
+    {
+      title: "Comprar Criativo",
+      description: "Criativos validados para parar o scroll e converter seu público.",
+      icon: Wand2,
+      path: "/creative-edit",
+      badge: "Design"
+    },
+    {
+      title: "Contas de Facebook Ads",
+      description: "Contas e BM's prontas para rodar suas campanhas com segurança.",
+      icon: Facebook,
+      path: "/fb-accounts",
+      badge: "Ads"
     },
     {
       title: "Aulas Gravadas",
