@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
+import OfferAnalysisModal from '@/components/OfferAnalysisModal';
 import { supabase } from '@/integrations/supabase/client';
 import { 
   Sparkles, 
@@ -9,7 +10,8 @@ import {
   Tag, 
   Package, 
   ArrowRight,
-  Loader2
+  Loader2,
+  Send
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
