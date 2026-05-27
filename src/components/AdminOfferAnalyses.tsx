@@ -40,6 +40,7 @@ export default function AdminOfferAnalyses() {
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
   const [search, setSearch] = useState('');
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [processingId, setProcessingId] = useState<string | null>(null);
   const [editingOfferId, setEditingOfferId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -68,10 +69,10 @@ export default function AdminOfferAnalyses() {
   }
 
   async function updateStatus(id: string, status: 'approved' | 'rejected', openEditor = false) {
-    if (loading) return;
+    if (processingId) return;
     
     try {
-      setLoading(true);
+      setProcessingId(id);
       const currentAnalysis = analyses.find(a => a.id === id);
       if (!currentAnalysis) throw new Error("Análise não encontrada");
 
@@ -155,7 +156,7 @@ export default function AdminOfferAnalyses() {
         description: error.message
       });
     } finally {
-      setLoading(false);
+      setProcessingId(null);
     }
   }
 
@@ -332,21 +333,24 @@ export default function AdminOfferAnalyses() {
                       <div className="flex flex-col gap-2">
                         <Button 
                           onClick={() => updateStatus(analysis.id, 'approved')}
+                          disabled={!!processingId}
                           className="w-full bg-brand-green/10 border border-brand-green/20 text-brand-green hover:bg-brand-green/20 font-bold text-[10px] uppercase tracking-widest h-10 rounded-xl"
                         >
-                          <Check className="w-3 h-3 mr-2" /> Aprovar Direto
+                          {processingId === analysis.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <><Check className="w-3 h-3 mr-2" /> Aprovar Direto</>}
                         </Button>
                         <Button 
                           onClick={() => updateStatus(analysis.id, 'approved', true)}
+                          disabled={!!processingId}
                           className="w-full bg-white text-black hover:bg-white/90 font-bold text-[10px] uppercase tracking-widest h-10 rounded-xl"
                         >
-                          <Pencil className="w-3 h-3 mr-2" /> Aprovar e Editar
+                          {processingId === analysis.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <><Pencil className="w-3 h-3 mr-2" /> Aprovar e Editar</>}
                         </Button>
                         <Button 
                           onClick={() => updateStatus(analysis.id, 'rejected')}
+                          disabled={!!processingId}
                           className="w-full bg-white/5 border border-white/5 text-brand-red hover:bg-brand-red/20 hover:border-brand-red/30 font-bold text-[10px] uppercase tracking-widest h-10 rounded-xl"
                         >
-                          <X className="w-3 h-3 mr-2" /> Rejeitar
+                          {processingId === analysis.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <><X className="w-3 h-3 mr-2" /> Rejeitar</>}
                         </Button>
                       </div>
                   )}
