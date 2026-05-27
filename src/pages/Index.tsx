@@ -116,17 +116,17 @@ export default function Index() {
       );
     }
     if (isAdmin || serverAdminVerified) {
-      return <AdminPanel onBack={() => { setServerAdminVerified(null); setPage('home'); }} onCategoriesChanged={fetchCategories} />;
+      return <AdminPanel onBack={() => { setServerAdminVerified(null); navigate('/menu'); }} onCategoriesChanged={fetchCategories} />;
     }
-    // Not an admin — bounce back home
-    if (page === 'admin') setPage('home');
+    // Not an admin — bounce back
+    navigate('/menu');
     return null;
   }
-  if (page === 'pro') return <ProPage onBack={() => setPage('home')} onNavigate={handleNavigate} />;
-  if (page === 'lessons') return <LessonsPage onBack={() => setPage('home')} />;
-  if (page === 'site-creation') return <SiteCreationPage onBack={() => setPage('home')} />;
+  if (page === 'pro') return <ProPage onBack={() => navigate('/menu')} onNavigate={handleNavigate} />;
+  if (page === 'lessons') return <LessonsPage onBack={() => navigate('/menu')} />;
+  if (page === 'site-creation') return <SiteCreationPage onBack={() => navigate('/menu')} />;
   if (page === 'offers' || page === 'creative-edit') {
-    return <ContentSectionPage slug={page} onBack={() => setPage('home')} onUpgrade={() => setPage('pro')} />;
+    return <ContentSectionPage slug={page} onBack={() => navigate('/menu')} onUpgrade={() => setPage('pro')} />;
   }
 
   if (loading) {
