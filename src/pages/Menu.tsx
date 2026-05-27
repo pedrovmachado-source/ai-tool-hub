@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
 import MentoriaModal from '@/components/MentoriaModal';
+import SpotifyPlayer from '@/components/SpotifyPlayer';
 import { isMentorado } from '@/lib/plan';
 
 import { Button } from '@/components/ui/button';
@@ -211,6 +212,7 @@ export default function Menu() {
       </main>
 
       <footer className="py-12 px-6 border-t border-white/5 text-center">
+        <SpotifyPlayer />
         <div className="text-[9px] text-white/10 font-bold uppercase tracking-[0.5em]">
           &copy; 2026 CONVERT CLUB · BUILT FOR THE 1%
         </div>

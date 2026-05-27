@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
 import OfferAnalysisModal from '@/components/OfferAnalysisModal';
 import { supabase } from '@/integrations/supabase/client';
+import SpotifyPlayer from '@/components/SpotifyPlayer';
 import { 
   Sparkles, 
   ExternalLink, 
@@ -191,6 +192,7 @@ export default function OfertasValidadas() {
       </main>
 
       <footer className="py-12 px-6 border-t border-white/5 text-center">
+        <SpotifyPlayer />
         <div className="text-[9px] text-white/10 font-bold uppercase tracking-[0.5em]">
           &copy; 2026 CONVERT CLUB · BUILT FOR THE 1%
         </div>
