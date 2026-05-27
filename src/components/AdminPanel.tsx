@@ -427,6 +427,10 @@ interface DbUser {
 }
 
 export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: () => void; onCategoriesChanged: () => Promise<void> }) {
+  useEffect(() => {
+    document.title = 'Painel Administrativo | Convert Club';
+  }, []);
+
   const { categories, updateCategory: updateCategoryDb, saveTool: saveToolDb, deleteTool: deleteToolDb } = useCategories();
   const [params, setParams] = useState(() => new URLSearchParams(window.location.search));
   const initialSection = params.get('adminSection') || sessionStorage.getItem('adai:initialAdminSection') || 'dashboard';
