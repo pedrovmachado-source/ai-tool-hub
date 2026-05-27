@@ -37,13 +37,21 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
   const [verifyingAdmin, setVerifyingAdmin] = useState(false);
 
   useEffect(() => {
+    if (propPage) setPage(propPage);
+  }, [propPage]);
+
+  useEffect(() => {
+    if (propCat) setActiveCategory(propCat);
+  }, [propCat]);
+
+  useEffect(() => {
     if (user?.abuseBlocked) {
       navigate('/bloqueado');
       return;
     }
     if (initialCat) sessionStorage.removeItem('adai:initialCategory');
     if (initialPage) sessionStorage.removeItem('adai:initialPage');
-  }, [user, navigate]);
+  }, [user, navigate, initialCat, initialPage]);
 
   const handleNavigate = (target: string) => {
     if (target === 'home') { navigate('/'); return; }
