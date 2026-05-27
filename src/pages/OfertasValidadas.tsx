@@ -32,6 +32,7 @@ export default function OfertasValidadas() {
   const { toast } = useToast();
   const [offers, setOffers] = useState<ValidatedOffer[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false);
 
   useEffect(() => {
     document.title = 'Convert Club — Ofertas Validadas';
