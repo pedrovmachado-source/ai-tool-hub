@@ -66,17 +66,47 @@ export default function AdminOfferAnalyses() {
 
   async function updateStatus(id: string, status: 'approved' | 'rejected') {
     try {
-      const { error } = await supabase
+      const { data: analysis, error: fetchError } = await supabase
+        .from('offer_analyses')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (fetchError) throw fetchError;
+
+      const { error: updateError } = await supabase
         .from('offer_analyses')
         .update({ status })
         .eq('id', id);
 
-      if (error) throw error;
+      if (updateError) throw updateError;
+
+      // Se for aprovado, insere automaticamente na tabela de ofertas validadas
+      if (status === 'approved' && analysis) {
+        const { error: insertError } = await supabase
+          .from('validated_offers')
+          .insert({
+            title: `Oferta sugerida por ${analysis.profiles?.nome || 'Usuário'}`,
+            description: analysis.observations || 'Nenhuma descrição fornecida.',
+            link: analysis.website_url,
+            category: 'Sugestão',
+            price: 'Consultar'
+          });
+
+        if (insertError) {
+          console.error('Erro ao inserir oferta validada:', insertError);
+          toast({
+            variant: "destructive",
+            title: "Status atualizado, mas houve erro ao criar oferta",
+            description: "A análise foi aprovada, mas não conseguimos criar o registro em Ofertas Validadas automaticamente."
+          });
+        }
+      }
 
       setAnalyses(prev => prev.map(a => a.id === id ? { ...a, status } : a));
       toast({
         title: "Status atualizado",
-        description: `A análise foi marcada como ${status === 'approved' ? 'aprovada' : 'rejeitada'}.`
+        description: `A análise foi marcada como ${status === 'approved' ? 'aprovada e adicionada às ofertas' : 'rejeitada'}.`
       });
     } catch (error: any) {
       toast({
