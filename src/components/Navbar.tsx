@@ -185,7 +185,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
               {isAdmin && (
                 <>
                   <div className="my-2 border-t border-white/5" />
-                  <button onClick={() => go('admin')} className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/5 transition-colors text-left group">
+                  <button onClick={() => go('ferramentas?page=admin')} className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/5 transition-colors text-left group">
                     <span className="flex items-center gap-3">
                       <Shield size={18} className="text-white/60 group-hover:text-white transition-colors" />
                       <span className="text-sm font-light text-white/70 group-hover:text-white transition-colors">Painel administrativo</span>
