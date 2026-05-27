@@ -60,7 +60,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
 
   return (
     <>
-      <nav className="bg-black/80 backdrop-blur-xl h-[72px] sm:h-[88px] px-6 sm:px-12 grid grid-cols-3 items-center sticky top-0 z-[200] gap-4 border-b border-white/5">
+      <nav className="bg-black/80 backdrop-blur-xl h-[72px] sm:h-[88px] px-6 sm:px-12 grid grid-cols-3 items-center fixed top-0 left-0 right-0 z-[200] gap-4 border-b border-white/5">
         <div className="flex items-center gap-4 justify-self-start">
           {user && (
             <button
@@ -132,9 +132,9 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
             className={`absolute left-0 top-0 h-full w-full max-w-[320px] bg-black shadow-2xl flex flex-col border-r border-white/5 ${isMenuExiting ? 'animate-slide-out-left' : 'animate-slide-in-left'}`} 
             onClick={e => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between p-5 border-b border-white/5">
+            <div className="flex items-center justify-between p-5 border-b border-white/5 cursor-pointer hover:bg-white/5 transition-colors" onClick={() => go('menu')}>
               <h3 className="text-base font-serif-display text-white">Menu</h3>
-              <button onClick={closeMenu} className="text-white/40 hover:text-white p-1 rounded-md hover:bg-white/10"><X size={18} /></button>
+              <button onClick={(e) => { e.stopPropagation(); closeMenu(); }} className="text-white/40 hover:text-white p-1 rounded-md hover:bg-white/10"><X size={18} /></button>
             </div>
             <div className="flex-1 overflow-y-auto py-2 relative">
               {menuItems.map(({ key, label, icon, color, target }) => {
