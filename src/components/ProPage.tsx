@@ -45,14 +45,14 @@ function priceParts(price: string) {
 
 export default function ProPage({ onBack, onNavigate: _onNavigate }: { onBack: () => void; onNavigate: (page: string) => void }) {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const { plans, loading } = usePlansConfig();
   const [period, setPeriod] = useState<Period>('mensal');
-  const [authModal, setAuthModal] = useState<{ open: boolean; mode: 'login' | 'register' }>({ open: false, mode: 'login' });
 
   const handleSubscribe = (tier: 'elite' | 'elitePlus') => {
     if (!user) {
       toast.error('Faça login ou crie uma conta para assinar.');
-      setAuthModal({ open: true, mode: 'register' });
+      navigate('/auth');
       return;
     }
     const url = plans[tier][period].checkoutUrl;
