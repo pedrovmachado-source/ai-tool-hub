@@ -45,6 +45,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<string | null>;
   register: (nome: string, sobrenome: string, email: string, password: string, lgpdAccepted: boolean) => Promise<string | null>;
   logout: () => Promise<void>;
+  resetPassword: (email: string) => Promise<string | null>;
   upgradeToPro: () => Promise<void>;
   updateUser: (data: Partial<Omit<Profile, 'inviteValidated' | 'abuseBlocked'>>) => Promise<void>;
   saveEbook: (toolKey: string, toolName: string, categoryKey: string) => Promise<void>;
@@ -339,6 +340,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setSavedEbooks([]);
   }, []);
 
+  const resetPassword = useCallback(async (email: string): Promise<string | null> => {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+        redirectTo: `${window.location.origin}/auth?mode=reset`,
+      });
+      return error ? translateAuthError(error.message) : null;
+    } catch (err) {
+      console.error('Reset password error:', err);
+      return 'Erro inesperado ao solicitar recuperação. Tente novamente.';
+    }
+  }, []);
+
   const upgradeToPro = useCallback(async () => {
     if (!user) return;
     try {
@@ -403,7 +416,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [savedEbooks]);
 
   return (
-    <AuthContext.Provider value={{ user, isAdmin, savedEbooks, loading, login, register, logout, upgradeToPro, updateUser, saveEbook, unsaveEbook, isEbookSaved }}>
+    <AuthContext.Provider value={{ user, isAdmin, savedEbooks, loading, login, register, logout, resetPassword, upgradeToPro, updateUser, saveEbook, unsaveEbook, isEbookSaved }}>
       {children}
     </AuthContext.Provider>
   );

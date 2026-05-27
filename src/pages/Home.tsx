@@ -31,7 +31,6 @@ export default function Home() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [mentoriaModalOpen, setMentoriaModalOpen] = useState(false);
-  const [authModal, setAuthModal] = useState<{ open: boolean; mode: 'login' | 'register' }>({ open: false, mode: 'login' });
 
   const handleNavigate = (page: string) => {
     if (page === 'home') navigate('/');
@@ -189,7 +188,7 @@ export default function Home() {
               size="lg" 
               onClick={() => {
                 if (user) navigate('/menu');
-                else setAuthModal({ open: true, mode: 'login' });
+                else navigate('/auth');
               }}
               className="w-full sm:w-auto bg-white hover:bg-white/90 text-black h-16 px-12 rounded-full text-lg font-bold transition-all hover:scale-[1.05] shadow-[0_0_40px_rgba(255,255,255,0.2)]"
             >
