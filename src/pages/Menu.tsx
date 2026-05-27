@@ -69,7 +69,7 @@ export default function Menu() {
       description: "Gravações das mentorias exclusivas com estratégias de escala e conversão.",
       icon: Video,
       path: "/mentorias",
-      badge: "Conteúdo VIP"
+      badge: "Membro"
     },
     {
       title: "Área do Aluno",
