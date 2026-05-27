@@ -76,50 +76,75 @@ export default function SiteCreationPage({ onBack }: { onBack: () => void }) {
   const Card = ({ p }: { p: Product }) => {
     const buyLabel = p.kind === 'criativo' ? 'Quero esse criativo' : 'Quero esse site agora';
     return (
-      <div className="bg-card border border-border rounded-xl p-5 hover:border-brand-blue transition-colors flex flex-col">
-        <div className="flex items-baseline justify-between mb-2 gap-2">
-          <h3 className="font-medium text-base">{p.name}</h3>
-          <span className="text-xl font-semibold whitespace-nowrap">R${p.price}</span>
+      <div className="group relative p-8 glass-smooth hover:bg-white/10 transition-all duration-500 rounded-[2.5rem] border border-white/5 h-full flex flex-col">
+        <div className="flex items-baseline justify-between mb-6 gap-2">
+          <h3 className="text-2xl font-serif-display text-white">{p.name}</h3>
+          <div className="flex flex-col items-end">
+            <span className="text-2xl font-bold text-white">R${p.price}</span>
+            <span className="text-[10px] font-bold text-white/20 uppercase tracking-widest">Investimento</span>
+          </div>
         </div>
-        <p className="text-xs text-muted-foreground line-clamp-3 mb-4 min-h-[3rem]">{p.short_desc}</p>
-        <div className="flex gap-2 mt-auto">
+        
+        <p className="text-white/30 text-sm leading-relaxed font-light mb-8 flex-1">
+          {p.short_desc}
+        </p>
+
+        <div className="flex flex-col gap-3 mt-auto">
           {p.example_url && (
             <a href={p.example_url} target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border text-xs hover:bg-secondary transition-colors">
-              <ExternalLink size={12} /> Exemplo
+              className="inline-flex items-center justify-center gap-2 w-full py-3 rounded-full border border-white/5 text-xs font-bold text-white/40 hover:bg-white/5 transition-all">
+              <ExternalLink size={14} /> Ver Exemplo Real
             </a>
           )}
           <button onClick={() => openOrder(p)}
-            className="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-gradient-to-r from-brand-amber via-orange-500 to-brand-red text-white text-sm font-semibold shadow-[0_4px_14px_-2px_hsl(var(--brand-amber)/0.55)] hover:shadow-[0_6px_20px_-2px_hsl(var(--brand-amber)/0.85)] hover:scale-[1.02] active:scale-[0.98] transition-all">
-            <ShoppingCart size={14} /> {buyLabel}
+            className="group/btn relative w-full inline-flex items-center justify-center gap-2 py-4 rounded-full bg-white text-black text-sm font-bold transition-all hover:scale-[1.02] active:scale-[0.98]">
+            <ShoppingCart size={16} /> {buyLabel}
           </button>
         </div>
       </div>
     );
   };
 
-  const ColumnHeader = ({ title, subtitle, icon: Icon, accent }: { title: string; subtitle: string; icon: typeof Sparkles; accent: string }) => (
-    <div className="text-center mb-5">
-      <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs ${accent} mb-2`}>
-        <Icon size={14} /> {title}
+  const ColumnHeader = ({ title, subtitle, icon: Icon, accent }: { title: string; subtitle: string; icon: any; accent: string }) => (
+    <div className="text-left mb-12">
+      <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-bold tracking-[0.1em] uppercase ${accent} mb-4`}>
+        <Icon size={12} /> {title}
       </div>
-      <p className="text-xs text-muted-foreground">{subtitle}</p>
+      <p className="text-white/30 text-sm font-light">{subtitle}</p>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="bg-navy py-10 px-6">
-        <div className="max-w-5xl mx-auto">
-          <button onClick={onBack} className="flex items-center gap-2 text-white/80 hover:text-white text-sm mb-4">
-            <ArrowLeft size={16} /> Voltar
+    <div className="min-h-screen bg-black text-white selection:bg-white/20 font-sans overflow-x-hidden">
+      {/* Header Section */}
+      <div className="relative pt-32 pb-16 sm:pt-40 sm:pb-24 px-6 border-b border-white/5 overflow-hidden">
+        {/* Background Gradients */}
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-[10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-white/5 blur-[120px]" />
+          <div className="absolute bottom-[10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-white/5 blur-[120px]" />
+        </div>
+
+        <div className="relative z-10 max-w-5xl mx-auto">
+          <button onClick={onBack} className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-smooth mb-10 border border-white/5 text-white/50 hover:text-white transition-colors group">
+            <ArrowLeft size={14} className="transform group-hover:-translate-x-1 transition-transform" />
+            <span className="text-[10px] font-bold tracking-[0.2em] uppercase">Voltar ao Menu</span>
           </button>
-          <h1 className="font-serif-display text-3xl text-white mb-2">Comprar Site</h1>
-          <p className="text-sm text-white/60">Escolha entre copy gerada por IA (mais rápido) ou copy escrita à mão (mais personalizada).</p>
+          
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-smooth mb-6 border border-white/5">
+            <Globe2 className="w-3 h-3 text-white/50" />
+            <span className="text-[10px] font-bold text-white/50 tracking-[0.2em] uppercase">Escala Digital</span>
+          </div>
+          
+          <h1 className="text-4xl md:text-6xl font-serif-display tracking-tight text-white mb-6 leading-tight">
+            Seu Site Pronto para <em className="italic font-normal">Escalar</em>.
+          </h1>
+          <p className="text-white/40 text-lg max-w-2xl font-light leading-relaxed">
+            Landing pages, quizzes e funis de alta conversão. Escolha entre a velocidade da IA ou o toque refinado de nossos copywriters profissionais.
+          </p>
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-6 py-10">
+      <div className="max-w-5xl mx-auto px-6 py-20 relative z-10">
         {loading ? (
           <p className="text-center text-muted-foreground py-10">Carregando…</p>
         ) : siteProducts.length === 0 && criativoProducts.length === 0 ? (
@@ -129,10 +154,10 @@ export default function SiteCreationPage({ onBack }: { onBack: () => void }) {
             {/* Sites: linha-a-linha com banner divisor */}
             {siteRows.length > 0 && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 mb-12">
-                <ColumnHeader title="Copy com IA" subtitle="Mais rápido e econômico" icon={Sparkles}
-                  accent="bg-brand-blue/15 text-brand-blue-medium" />
-                <ColumnHeader title="Copy à Mão" subtitle="Escrita por copywriter profissional" icon={Pencil}
-                  accent="bg-brand-amber/15 text-brand-amber" />
+                <ColumnHeader title="Copy com IA" subtitle="A solução rápida para quem precisa estar no ar agora com eficiência e baixo custo." icon={Sparkles}
+                  accent="bg-white/5 text-white/50 border border-white/5" />
+                <ColumnHeader title="Copy à Mão" subtitle="Textos psicológicos desenhados palavra por palavra por especialistas em conversão." icon={Pencil}
+                  accent="bg-white/5 text-white/50 border border-white/5" />
 
                 {siteRows.map(([rowKey, items], idx) => {
                   const ia = items.find(i => i.col === 'ia');
@@ -144,21 +169,27 @@ export default function SiteCreationPage({ onBack }: { onBack: () => void }) {
 
                       {banner.enabled && banner.after_row_key === rowKey && idx < siteRows.length - 1 && (
                         <div className="md:col-span-2 my-3">
-                          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-navy via-brand-blue-dark to-brand-teal px-6 py-8 sm:px-10 sm:py-10 shadow-[0_10px_40px_-10px_hsl(var(--brand-blue)/0.5)]">
-                            <div className="absolute inset-0 opacity-[0.08] [background-image:radial-gradient(circle_at_20%_20%,#fff_1px,transparent_1px),radial-gradient(circle_at_80%_70%,#fff_1px,transparent_1px)] [background-size:24px_24px]" />
-                            <div className="absolute -top-8 -right-8 w-40 h-40 bg-brand-amber/20 rounded-full blur-3xl" />
-                            <div className="relative text-center text-white max-w-2xl mx-auto">
-                              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-brand-amber/20 text-brand-amber text-[10px] font-semibold uppercase tracking-wider mb-3">
-                                <Wand2 size={11} /> Feito sob medida pra você
+                          <div className="relative overflow-hidden rounded-[2.5rem] glass-smooth px-8 py-12 sm:px-12 sm:py-16 border border-white/5 shadow-2xl">
+                            <div className="absolute inset-0 opacity-[0.03] [background-image:radial-gradient(circle_at_20%_20%,#fff_1px,transparent_1px),radial-gradient(circle_at_80%_70%,#fff_1px,transparent_1px)] [background-size:24px_24px]" />
+                            <div className="absolute -top-20 -right-20 w-80 h-80 bg-white/5 rounded-full blur-[100px]" />
+                            
+                            <div className="relative text-center text-white max-w-3xl mx-auto">
+                              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-smooth text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] mb-8">
+                                <Wand2 size={12} className="text-white/50" />
+                                <span>Soluções Sob Medida</span>
                               </div>
-                              <h3 className="font-serif-display text-xl sm:text-2xl md:text-3xl leading-tight mb-2">
+                              <h3 className="text-3xl sm:text-5xl font-serif-display leading-[1.1] mb-8">
                                 {banner.title || banner.text || DEFAULT_BANNER.title}
                               </h3>
                               {(banner.subtitle || DEFAULT_BANNER.subtitle) && (
-                                <p className="text-sm sm:text-[15px] text-white/75 leading-relaxed">
+                                <p className="text-white/40 text-lg font-light leading-relaxed mb-10">
                                   {banner.subtitle || DEFAULT_BANNER.subtitle}
                                 </p>
                               )}
+                              <button className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white text-black text-sm font-bold hover:scale-105 transition-transform">
+                                {banner.cta_label || DEFAULT_BANNER.cta_label}
+                                <ArrowRight size={16} />
+                              </button>
                             </div>
                           </div>
                         </div>
@@ -172,11 +203,13 @@ export default function SiteCreationPage({ onBack }: { onBack: () => void }) {
             {/* Criativos: 3ª seção */}
             {criativoProducts.length > 0 && (
               <div>
-                <div className="text-center mb-6">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs bg-brand-teal/15 text-brand-teal mb-2">
-                    <ImageIcon size={14} /> Criativos
+                <div className="text-center mb-16">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-smooth text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] mb-6">
+                    <ImageIcon size={14} className="text-white/50" /> 
+                    <span>Visual Assets</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">Criativos prontos para suas campanhas</p>
+                  <h2 className="text-4xl md:text-5xl font-serif-display text-white mb-4">Criativos de <em className="italic font-normal">Alta Performance</em></h2>
+                  <p className="text-white/30 text-lg font-light">Peças desenhadas para parar o scroll e converter cliques em vendas.</p>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                   {criativoProducts.map(p => <Card key={p.id} p={p} />)}
