@@ -142,7 +142,7 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch, onRegistere
                 Continuar com Google
               </button>
               <p className="text-center text-xs text-white/40 font-light">
-                Não tem conta? <button onClick={() => { setError(''); setSuccess(''); onSwitch('register'); }} className="text-white font-medium underline underline-offset-4 hover:text-white/80 transition-colors">Cadastre-se grátis</button>
+                Não tem conta? <button onClick={() => { setError(''); setSuccess(''); setEmail(''); setPassword(''); onSwitch('register'); }} className="text-white font-medium underline underline-offset-4 hover:text-white/80 transition-colors">Cadastre-se grátis</button>
               </p>
             </>
           )}
@@ -294,7 +294,7 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch, onRegistere
                 Cadastrar com Google
               </button>
               <p className="text-center text-xs text-white/40 font-light">
-                Já tem conta? <button onClick={() => { setError(''); setSuccess(''); onSwitch('login'); }} className="text-white font-medium underline underline-offset-4 hover:text-white/80 transition-colors">Entrar</button>
+                Já tem conta? <button onClick={() => { setError(''); setSuccess(''); setEmail(''); setPassword(''); onSwitch('login'); }} className="text-white font-medium underline underline-offset-4 hover:text-white/80 transition-colors">Entrar</button>
               </p>
             </>
           )}
