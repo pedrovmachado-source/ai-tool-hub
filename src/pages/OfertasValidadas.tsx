@@ -71,7 +71,10 @@ export default function OfertasValidadas() {
           else if (page === 'mentorias') navigate('/mentorias');
           else if (page === 'menu') navigate('/menu');
           else if (page === 'ofertas') navigate('/ofertas');
-          else navigate('/ferramentas');
+          else {
+            sessionStorage.setItem('adai:initialPage', page);
+            navigate('/ferramentas');
+          }
         }}
       />
 

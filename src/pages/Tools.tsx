@@ -8,20 +8,10 @@ import Index from './Index';
  * Pro e Admin. Apenas garante navegação por rotas.
  */
 export default function Tools() {
-  const navigate = useNavigate();
   const [params] = useSearchParams();
 
-  // Se vier ?cat= ou ?tool=, repassamos via storage simples para o Index pegar.
-  useEffect(() => {
-    const cat = params.get('cat');
-    if (cat) sessionStorage.setItem('adai:initialCategory', cat);
-    
-    const page = params.get('page');
-    if (page) sessionStorage.setItem('adai:initialPage', page);
+  const initialPage = params.get('page');
+  const initialCategory = params.get('cat');
 
-    document.title = 'Ferramentas — AdAI';
-  }, [params]);
-
-  // O Index já controla seu próprio estado interno. Aqui só o renderizamos.
-  return <Index />;
+  return <Index initialPage={initialPage} initialCategory={initialCategory} />;
 }

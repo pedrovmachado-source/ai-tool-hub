@@ -19,14 +19,16 @@ import { Search, Lock } from 'lucide-react';
 import type { Tool, Category } from '@/data/tools-data';
 import { isPaid } from '@/lib/plan';
 
-export default function Index() {
+export default function Index({ initialPage: propPage, initialCategory: propCat }: { initialPage?: string | null; initialCategory?: string | null }) {
   const navigate = useNavigate();
   const { plan } = usePlanConfig();
   const { user, isAdmin } = useAuth();
   const { categories, loading, error, fetchCategories } = useCategories();
-  const initialPage = typeof window !== 'undefined' ? sessionStorage.getItem('adai:initialPage') : null;
+  
+  const initialPage = propPage || (typeof window !== 'undefined' ? sessionStorage.getItem('adai:initialPage') : null);
   const [page, setPage] = useState(initialPage || 'home');
-  const initialCat = typeof window !== 'undefined' ? sessionStorage.getItem('adai:initialCategory') : null;
+  
+  const initialCat = propCat || (typeof window !== 'undefined' ? sessionStorage.getItem('adai:initialCategory') : null);
   const [activeCategory, setActiveCategory] = useState(initialCat || 'texto');
   const [searchQuery, setSearchQuery] = useState('');
   const [freeOnly, setFreeOnly] = useState(false);
@@ -35,13 +37,21 @@ export default function Index() {
   const [verifyingAdmin, setVerifyingAdmin] = useState(false);
 
   useEffect(() => {
+    if (propPage) setPage(propPage);
+  }, [propPage]);
+
+  useEffect(() => {
+    if (propCat) setActiveCategory(propCat);
+  }, [propCat]);
+
+  useEffect(() => {
     if (user?.abuseBlocked) {
       navigate('/bloqueado');
       return;
     }
     if (initialCat) sessionStorage.removeItem('adai:initialCategory');
     if (initialPage) sessionStorage.removeItem('adai:initialPage');
-  }, [user, navigate]);
+  }, [user, navigate, initialCat, initialPage]);
 
   const handleNavigate = (target: string) => {
     if (target === 'home') { navigate('/'); return; }
