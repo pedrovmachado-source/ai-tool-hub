@@ -48,11 +48,11 @@ export default function AdminOffers() {
     try {
       const { id, ...data } = editingOffer;
       if (id) {
-        const { error } = await supabase.from('validated_offers').update(data).eq('id', id);
+        const { error } = await supabase.from('validated_offers').update(data as any).eq('id', id);
         if (error) throw error;
         toast({ title: 'Oferta atualizada com sucesso' });
       } else {
-        const { error } = await supabase.from('validated_offers').insert(data);
+        const { error } = await supabase.from('validated_offers').insert(data as any);
         if (error) throw error;
         toast({ title: 'Oferta criada com sucesso' });
       }
