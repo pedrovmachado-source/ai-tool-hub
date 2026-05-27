@@ -26,8 +26,6 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch, onRegistere
 
   if (!isOpen) return null;
 
-  if (!isOpen) return null;
-
   const handleGoogleSignIn = async () => {
     setSubmitting(true);
     setError('');
@@ -52,15 +50,24 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch, onRegistere
     if (!lgpdAccepted) { setError('Você deve aceitar os termos da LGPD para continuar.'); return; }
     if (password.length < 8) { setError('Senha deve ter no mínimo 8 caracteres.'); return; }
     if (password !== confirmPassword) { setError('As senhas não coincidem. Verifique e tente novamente.'); return; }
+    
     setSubmitting(true);
     setError('');
     const err = await register(nome, sobrenome, email, password, lgpdAccepted);
     setSubmitting(false);
+    
     if (err) {
       setError(err);
     } else {
-      setSuccess('Conta criada! Verifique seu e-mail para confirmar o cadastro.');
+      // With auto-confirm, the session might be established immediately.
+      // If we're not redirected automatically by AuthProvider, we show a success or close.
+      setSuccess('Conta criada com sucesso!');
       onRegistered?.();
+      
+      // Give a small delay to show success before closing/redirecting
+      setTimeout(() => {
+        onClose();
+      }, 1500);
     }
   };
 
@@ -135,7 +142,7 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch, onRegistere
                 Continuar com Google
               </button>
               <p className="text-center text-xs text-white/40 font-light">
-                Não tem conta? <button onClick={() => { setError(''); setSuccess(''); onSwitch('register'); }} className="text-white font-medium underline underline-offset-4 hover:text-white/80 transition-colors">Cadastre-se grátis</button>
+                Não tem conta? <button onClick={() => { setError(''); setSuccess(''); setEmail(''); setPassword(''); onSwitch('register'); }} className="text-white font-medium underline underline-offset-4 hover:text-white/80 transition-colors">Cadastre-se grátis</button>
               </p>
             </>
           )}
@@ -287,7 +294,7 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch, onRegistere
                 Cadastrar com Google
               </button>
               <p className="text-center text-xs text-white/40 font-light">
-                Já tem conta? <button onClick={() => { setError(''); setSuccess(''); onSwitch('login'); }} className="text-white font-medium underline underline-offset-4 hover:text-white/80 transition-colors">Entrar</button>
+                Já tem conta? <button onClick={() => { setError(''); setSuccess(''); setEmail(''); setPassword(''); onSwitch('login'); }} className="text-white font-medium underline underline-offset-4 hover:text-white/80 transition-colors">Entrar</button>
               </p>
             </>
           )}
