@@ -93,12 +93,12 @@ export default function Mentorias() {
     },
     {
       id: 'm5',
-      title: 'Análise de Oferta de Alunos',
+      title: 'Análise de Oferta do Mentorado',
       category: 'Análise',
       videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
       duration: '42min',
       thumbnail: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=2670&auto=format&fit=crop',
-      description: 'Sessão prática corrigindo e otimizando as ofertas dos alunos Max em tempo real.',
+      description: 'Sessão prática corrigindo e otimizando as ofertas dos mentorados Max em tempo real.',
       transcription: 'Transcrição sobre análise de ofertas...'
     }
   ];

@@ -51,7 +51,7 @@ export default function AdminStudentAreas() {
       .order('nome');
     
     if (error) {
-      toast({ title: 'Erro ao buscar alunos', description: error.message, variant: 'destructive' });
+      toast({ title: 'Erro ao buscar mentorados', description: error.message, variant: 'destructive' });
     } else {
       setStudents((data || []) as Student[]);
     }
@@ -182,7 +182,7 @@ export default function AdminStudentAreas() {
     s.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  if (loading) return <p className="text-white/40">Carregando alunos Max...</p>;
+  if (loading) return <p className="text-white/40">Carregando mentorados Max...</p>;
 
   return (
     <div className="space-y-6">
@@ -193,14 +193,14 @@ export default function AdminStudentAreas() {
             <input 
               value={searchQuery} 
               onChange={e => setSearchQuery(e.target.value)} 
-              placeholder="Buscar aluno..." 
+              placeholder="Buscar mentorado..." 
               className="w-full pl-9 pr-4 py-2 bg-white/5 border border-white/10 rounded-xl text-xs text-white focus:outline-none focus:border-white/20"
             />
           </div>
           
           <div className="bg-navy border border-white/5 rounded-2xl overflow-hidden max-h-[600px] overflow-y-auto">
             {filteredStudents.length === 0 ? (
-              <p className="p-4 text-center text-xs text-white/20">Nenhum aluno Max encontrado.</p>
+              <p className="p-4 text-center text-xs text-white/20">Nenhum mentorado Max encontrado.</p>
             ) : (
               filteredStudents.map(student => (
                 <button
@@ -300,8 +300,9 @@ export default function AdminStudentAreas() {
           ) : (
             <div className="h-full flex flex-col items-center justify-center p-12 text-center border border-dashed border-white/5 rounded-[2rem]">
               <GraduationCap className="w-12 h-12 text-white/5 mb-6" />
-              <h3 className="text-xl font-serif-display text-white/40 mb-2">Selecione um aluno Max</h3>
-              <p className="text-[11px] text-white/20 max-w-xs uppercase tracking-widest">Escolha um aluno na lista ao lado para personalizar sua área de aulas.</p>
+              <h3 className="text-xl font-serif-display text-white/40 mb-2">Selecione um mentorado Max</h3>
+              <p className="text-[11px] text-white/20 max-w-xs uppercase tracking-widest">Escolha um mentorado na lista ao lado para personalizar sua área de aulas.</p>
+
             </div>
           )}
         </div>

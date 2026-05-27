@@ -238,7 +238,7 @@ export default function Alunos() {
             <Reveal>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-smooth mb-6 border border-white/5">
                 <GraduationCap className="w-3 h-3 text-white/50" />
-                <span className="text-[10px] font-bold text-white/50 tracking-[0.2em] uppercase">Área Exclusiva para Alunos</span>
+                <span className="text-[10px] font-bold text-white/50 tracking-[0.2em] uppercase">Área Exclusiva do Mentorado</span>
               </div>
               <h1 className="text-4xl md:text-6xl font-serif-display tracking-tight text-white mb-6">
                 Bem-vindo à sua <em className="italic font-normal">Formação</em>.
