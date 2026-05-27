@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
 import MentoriaModal from '@/components/MentoriaModal';
-import AuthModal from '@/components/AuthModal';
 import { isMentorado } from '@/lib/plan';
 
 import hoteducaRef from '@/assets/hoteduca-ref.png';
