@@ -132,9 +132,9 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
             className={`absolute left-0 top-0 h-full w-full max-w-[320px] bg-black shadow-2xl flex flex-col border-r border-white/5 ${isMenuExiting ? 'animate-slide-out-left' : 'animate-slide-in-left'}`} 
             onClick={e => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between p-5 border-b border-white/5">
+            <div className="flex items-center justify-between p-5 border-b border-white/5 cursor-pointer hover:bg-white/5 transition-colors" onClick={() => go('menu')}>
               <h3 className="text-base font-serif-display text-white">Menu</h3>
-              <button onClick={closeMenu} className="text-white/40 hover:text-white p-1 rounded-md hover:bg-white/10"><X size={18} /></button>
+              <button onClick={(e) => { e.stopPropagation(); closeMenu(); }} className="text-white/40 hover:text-white p-1 rounded-md hover:bg-white/10"><X size={18} /></button>
             </div>
             <div className="flex-1 overflow-y-auto py-2 relative">
               {menuItems.map(({ key, label, icon, color, target }) => {
