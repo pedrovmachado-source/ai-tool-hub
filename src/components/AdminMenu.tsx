@@ -23,10 +23,13 @@ const COLOR_OPTIONS = [
   { value: 'text-brand-red', label: 'Vermelho' },
 ];
 const TARGET_OPTIONS = [
+  { value: 'home', label: 'Início (Landing Page)' },
+  { value: 'menu', label: 'Menu Principal' },
   { value: 'ferramentas', label: 'Ais' },
   { value: 'ofertas', label: 'Ofertas validadas' },
   { value: 'site-creation', label: 'Comprar Site' },
   { value: 'creative-edit', label: 'Comprar Criativo' },
+  { value: 'fb-accounts', label: 'Contas de Facebook Ads' },
   { value: 'niche-lessons', label: 'Aulas por nicho' },
   { value: 'lessons', label: 'Aulas gravadas' },
   { value: 'alunos', label: 'Área do Mentorado' },

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { Menu, Bookmark, X, GraduationCap, Sparkles, Globe2, Wand2, BookOpen, Shield, ChevronRight, LogOut, Video, CreditCard, Star, Zap, Rocket, Users, Facebook, PenTool } from 'lucide-react';
+import { Menu, Bookmark, X, GraduationCap, Sparkles, Globe2, Wand2, BookOpen, Shield, ChevronRight, LogOut, Video, CreditCard, Star, Zap, Rocket, Users, Facebook, PenTool, Layout } from 'lucide-react';
 import AuthModal from './AuthModal';
 import QuizModal from './QuizModal';
 import NicheLessonsModal from './NicheLessonsModal';
@@ -9,7 +9,7 @@ import logoAdai from '@/assets/logo.png';
 import { planLabel, planBadgeClass, isPaid } from '@/lib/plan';
 
 const ICON_MAP: Record<string, typeof Sparkles> = {
-  Sparkles, Globe2, Wand2, BookOpen, GraduationCap, Shield, Video, CreditCard, Star, Zap, Rocket, Users, Facebook, PenTool
+  Sparkles, Globe2, Wand2, BookOpen, GraduationCap, Shield, Video, CreditCard, Star, Zap, Rocket, Users, Facebook, PenTool, Layout
 };
 
 interface NavItem { key: string; label: string; icon: string; color: string; target: string; enabled: boolean; sort_order: number; }
