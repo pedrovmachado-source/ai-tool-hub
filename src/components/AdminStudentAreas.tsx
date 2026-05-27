@@ -193,7 +193,7 @@ export default function AdminStudentAreas() {
             <input 
               value={searchQuery} 
               onChange={e => setSearchQuery(e.target.value)} 
-              placeholder="Buscar aluno..." 
+              placeholder="Buscar mentorado..." 
               className="w-full pl-9 pr-4 py-2 bg-white/5 border border-white/10 rounded-xl text-xs text-white focus:outline-none focus:border-white/20"
             />
           </div>
