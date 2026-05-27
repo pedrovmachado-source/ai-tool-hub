@@ -428,12 +428,16 @@ interface DbUser {
 
 export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: () => void; onCategoriesChanged: () => Promise<void> }) {
   const { categories, updateCategory: updateCategoryDb, saveTool: saveToolDb, deleteTool: deleteToolDb } = useCategories();
-  const initialSection = sessionStorage.getItem('adai:initialAdminSection') || 'dashboard';
+  const [params, setParams] = useState(() => new URLSearchParams(window.location.search));
+  const initialSection = params.get('adminSection') || sessionStorage.getItem('adai:initialAdminSection') || 'dashboard';
   const [section, setSection] = useState(initialSection);
   
   useEffect(() => {
+    const newParams = new URLSearchParams(window.location.search);
+    newParams.set('adminSection', section);
+    window.history.replaceState({}, '', `${window.location.pathname}?${newParams.toString()}`);
     sessionStorage.removeItem('adai:initialAdminSection');
-  }, []);
+  }, [section]);
   const [unreadOrders, setUnreadOrders] = useState(0);
   const [siteCreationInitialTab, setSiteCreationInitialTab] = useState<'products' | 'orders'>('products');
   const goToOrders = () => {
