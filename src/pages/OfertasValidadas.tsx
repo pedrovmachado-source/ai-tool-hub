@@ -170,12 +170,20 @@ export default function OfertasValidadas() {
                     Nossa equipe está sempre em busca de novas ofertas para validar e escalar. Se você tem um produto com métricas sólidas, entre em contato para análise.
                   </p>
                 </div>
-                <Button className="h-14 px-10 rounded-full bg-white text-black hover:bg-white/90 font-bold text-sm tracking-tight glass-smooth">
+                <Button 
+                  onClick={() => setIsAnalysisModalOpen(true)}
+                  className="h-14 px-10 rounded-full bg-white text-black hover:bg-white/90 font-bold text-sm tracking-tight glass-smooth"
+                >
                   Submeter para Análise
                 </Button>
               </div>
             </div>
           </section>
+
+          <OfferAnalysisModal 
+            isOpen={isAnalysisModalOpen} 
+            onClose={() => setIsAnalysisModalOpen(false)} 
+          />
         </div>
       </main>
 
