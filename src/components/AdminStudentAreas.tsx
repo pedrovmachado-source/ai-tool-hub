@@ -182,7 +182,7 @@ export default function AdminStudentAreas() {
     s.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  if (loading) return <p className="text-white/40">Carregando alunos Max...</p>;
+  if (loading) return <p className="text-white/40">Carregando mentorados Max...</p>;
 
   return (
     <div className="space-y-6">
