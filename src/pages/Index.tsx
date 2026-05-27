@@ -138,6 +138,7 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
     navigate('/menu');
     return null;
   }
+  if (page === 'pro') return <ProPage onBack={() => navigate('/menu')} onNavigate={handleNavigate} />;
   if (page === 'lessons') return <LessonsPage onBack={() => navigate('/menu')} />;
   
   const constructionPages = ['site-creation', 'creative-edit', 'copywrite', 'fb-accounts'];
