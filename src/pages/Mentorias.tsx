@@ -120,6 +120,7 @@ export default function Mentorias() {
           else if (page === 'alunos' || page === 'lessons') navigate('/alunos');
           else if (page === 'mentorias') navigate('/mentorias');
           else if (page === 'menu') navigate('/menu');
+          else if (page === 'ofertas') navigate('/ofertas');
           else navigate('/ferramentas');
         }}
       />
