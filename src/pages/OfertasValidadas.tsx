@@ -12,7 +12,8 @@ import {
   Package, 
   ArrowRight,
   Loader2,
-  Send
+  Send,
+  Pencil
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -29,7 +30,7 @@ interface ValidatedOffer {
 
 export default function OfertasValidadas() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const { toast } = useToast();
   const [offers, setOffers] = useState<ValidatedOffer[]>([]);
   const [loading, setLoading] = useState(true);
@@ -157,6 +158,18 @@ export default function OfertasValidadas() {
                       >
                         <ExternalLink className="w-5 h-5 group-hover/link:scale-110 transition-transform" />
                       </a>
+                      {isAdmin && (
+                        <button 
+                          onClick={() => {
+                            sessionStorage.setItem('adai:initialAdminSection', 'offers');
+                            navigate('/admin');
+                          }}
+                          className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white/40 hover:bg-brand-blue hover:text-white transition-all duration-300 group/edit"
+                          title="Editar no Painel Admin"
+                        >
+                          <Pencil className="w-5 h-5 group-hover/edit:scale-110 transition-transform" />
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
