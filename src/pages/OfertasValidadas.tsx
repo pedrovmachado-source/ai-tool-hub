@@ -116,7 +116,7 @@ export default function OfertasValidadas() {
               {offers.map((offer) => (
                 <div 
                   key={offer.id}
-                  className="group relative flex flex-col glass-smooth hover:bg-white/5 transition-all duration-500 rounded-[2.5rem] border border-white/5 overflow-hidden"
+                  className="group relative flex flex-col glass-morphism hover:bg-white/10 transition-all duration-500 rounded-[2.5rem] border border-white/5 overflow-hidden hover:scale-[1.02] hover:shadow-2xl"
                 >
                   <div className="aspect-[16/10] overflow-hidden relative">
                     {offer.image_url ? (

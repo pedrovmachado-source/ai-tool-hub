@@ -167,7 +167,7 @@ export default function Home() {
           
           <Reveal delay={200}>
             <h1 className="text-5xl sm:text-7xl lg:text-8xl font-serif-display text-white tracking-tighter leading-[0.9] mb-10">
-              Transforme Cliques em <em className="italic font-normal">Escala Brutal</em>.
+              Transforme Cliques em <em className="italic font-normal gradient-text">Escala Brutal</em>.
             </h1>
           </Reveal>
           
@@ -218,7 +218,7 @@ export default function Home() {
             {services.map((service, idx) => (
               <Reveal key={service.title} delay={idx * 150}>
                 <div 
-                  className="group relative h-full p-10 glass-smooth hover:bg-white/10 transition-all duration-700 rounded-[2.5rem]"
+                  className="group relative h-full p-10 glass-morphism hover:bg-white/10 transition-all duration-700 rounded-[2.5rem] hover:scale-[1.02] hover:shadow-2xl"
                 >
                   <div className={`w-16 h-16 ${service.bg} rounded-2xl mb-10 group-hover:rotate-[10deg] transition-transform duration-500 flex items-center justify-center`}>
                     <service.icon className={`w-8 h-8 ${service.color}`} />
@@ -355,7 +355,7 @@ export default function Home() {
         <div className="relative z-10 max-w-5xl mx-auto text-center">
           <Reveal>
             <h2 className="text-5xl sm:text-8xl font-serif-display text-white mb-12 tracking-tighter leading-[0.9]">
-              Torne-se <em className="italic font-normal">Inegociável</em>.
+              Torne-se <em className="italic font-normal gradient-text">Inegociável</em>.
             </h2>
             <p className="text-white/40 text-xl mb-16 max-w-2xl mx-auto font-light">
               A Convert Club não é para todos. É para aqueles que entenderam que no digital, ou você domina a conversão, ou você é dominado por ela.

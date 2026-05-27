@@ -61,7 +61,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
 
   return (
     <>
-      <nav className="bg-black/80 backdrop-blur-xl h-[72px] sm:h-[88px] px-6 sm:px-12 grid grid-cols-3 items-center fixed top-0 left-0 right-0 z-[200] gap-4 border-b border-white/5">
+      <nav className="bg-black/40 backdrop-blur-xl h-[72px] sm:h-[88px] px-6 sm:px-12 grid grid-cols-3 items-center fixed top-0 left-0 right-0 z-[200] gap-4 border-b border-white/5">
         <div className="flex items-center gap-4 justify-self-start">
           {user && (
             <button
@@ -74,7 +74,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
           )}
 
           <button onClick={() => onNavigate('home')} className="flex items-center gap-3 text-white text-xl font-semibold tracking-tight">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl overflow-hidden flex items-center justify-center bg-white/5 border border-white/10 glass-smooth">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl overflow-hidden flex items-center justify-center bg-white/5 border border-white/10 glass-morphism hover:scale-105 transition-transform duration-300">
               <img src={logoAdai} alt="AdAI" className="w-full h-full object-cover" />
             </div>
           </button>
