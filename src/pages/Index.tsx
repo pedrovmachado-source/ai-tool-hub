@@ -13,7 +13,7 @@ import ContentSectionPage from '@/components/ContentSectionPage';
 import SiteCreationPage from '@/components/SiteCreationPage';
 import PromptsLibrary from '@/components/PromptsLibrary';
 import UserProfile from '@/components/UserProfile';
-import SpotifyPlayer from '@/components/SpotifyPlayer';
+
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Search, Lock } from 'lucide-react';
@@ -273,7 +273,7 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
       {/* Footer */}
       <footer className="bg-navy py-10 px-4 mt-12 border-t border-white/5">
         <div className="max-w-[1100px] mx-auto flex flex-col items-center gap-8">
-          <SpotifyPlayer />
+
           
           <div className="text-center space-y-2">
             <p className="text-xs text-muted-foreground/40">AdAI · Guia de Inteligência Artificial para Empreendedores</p>

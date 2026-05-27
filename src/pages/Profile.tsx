@@ -12,7 +12,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { User, Settings, History, ShieldCheck, Loader2, LogOut, Bookmark, Ticket, Eye, EyeOff, Copy, Check, CreditCard, Camera, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 import { planLabel, planBadgeClass } from '@/lib/plan';
-import SpotifyPlayer from '@/components/SpotifyPlayer';
+
 
 type Tab = 'dados' | 'preferencias' | 'historico' | 'seguranca' | 'convites' | 'planos';
 
@@ -126,7 +126,7 @@ export default function Profile() {
           </main>
         </div>
         <footer className="py-12 px-6 border-t border-white/5 text-center mt-12">
-          <SpotifyPlayer />
+          
           <div className="text-[9px] text-white/10 font-bold uppercase tracking-[0.5em] mt-8">
             &copy; 2026 CONVERT CLUB · BUILT FOR THE 1%
           </div>
