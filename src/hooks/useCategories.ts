@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import type { Category, Tool } from '@/data/tools-data';
+import { toast } from '@/hooks/use-toast';
 
 function mapDbToolToTool(dbTool: any): Tool {
   const data = dbTool.data || {};

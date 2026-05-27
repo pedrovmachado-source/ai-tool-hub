@@ -44,10 +44,21 @@ export default function ToolCard({ tool, category, onOpenEbook }: ToolCardProps)
         )}
       </div>
       <div className="flex gap-2 px-4 py-3 bg-secondary/50 border-t border-border">
-        <a href={tool.url} target="_blank" rel="noopener noreferrer" className="flex-1 py-2 rounded-lg text-xs font-medium text-center bg-card border border-border hover:border-brand-blue transition-colors">
+        <a 
+          href={tool.url} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          aria-label={`Acessar ${tool.name}`}
+          className="flex-1 py-2 rounded-lg text-xs font-medium text-center bg-card border border-border hover:border-brand-blue transition-colors"
+        >
           Acessar
         </a>
-        <button onClick={onOpenEbook} className="flex-1 py-2 rounded-lg text-xs font-medium text-center text-primary-foreground transition-opacity hover:opacity-90" style={{ background: category.accent }}>
+        <button 
+          onClick={onOpenEbook} 
+          aria-label={`Abrir e-book de ${tool.name}`}
+          className="flex-1 py-2 rounded-lg text-xs font-medium text-center text-primary-foreground transition-opacity hover:opacity-90" 
+          style={{ background: category.accent }}
+        >
           📘 E-Book
         </button>
       </div>
