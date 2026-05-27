@@ -103,23 +103,24 @@ export default function Invite() {
                 )}
               </Button>
               
-              <div className="pt-4 border-t border-white/10 w-full text-center">
+              <div className="pt-6 border-t border-white/10 w-full text-center">
+                <h3 className="text-white font-semibold mb-2">Ainda não tem um código?</h3>
                 <p className="text-sm text-gray-400 mb-4 leading-relaxed">
-                  Não possui um convite? Você pode conseguir o código para acessar a plataforma participando do nosso grupo aberto de networking.
+                  Não se preocupe. Você pode garantir seu código de acesso participando agora do nosso grupo aberto de networking.
                 </p>
                 <Button 
                   asChild
                   variant="outline"
-                  className="w-full border-green-500/50 text-green-400 hover:bg-green-500/10 hover:text-green-300"
+                  className="w-full border-green-500/50 text-green-400 hover:bg-green-500/20 hover:text-green-300 h-12 transition-all duration-300"
                 >
                   <a 
                     href="https://chat.whatsapp.com/H3rDqE4KMrA9fLEiN2Qmuo" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2"
+                    className="flex items-center justify-center gap-2 font-bold"
                   >
-                    <Users size={18} />
-                    Entrar no Grupo de Networking
+                    <Users size={20} className="text-green-500" />
+                    Pegar Código no WhatsApp
                   </a>
                 </Button>
               </div>
@@ -128,7 +129,7 @@ export default function Invite() {
                 type="button" 
                 variant="ghost" 
                 onClick={() => logout()}
-                className="text-gray-400 hover:text-white hover:bg-white/5"
+                className="text-gray-400 hover:text-white hover:bg-white/5 w-full"
               >
                 Sair da conta
               </Button>
