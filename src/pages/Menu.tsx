@@ -138,7 +138,7 @@ export default function Menu() {
             else if (page === 'menu') navigate('/menu');
             else if (page === 'ofertas' || page === 'offers') navigate('/ofertas');
             else if (page === 'ferramentas') navigate('/ferramentas');
-            else if (page === 'copywrite' || page === 'site-creation' || page === 'creative-edit') {
+            else if (['copywrite', 'site-creation', 'creative-edit', 'fb-accounts'].includes(page)) {
               navigate(`/${page}`);
             }
             else {
@@ -146,6 +146,7 @@ export default function Menu() {
               navigate('/ferramentas');
             }
           }} 
+
         />
       </header>
 

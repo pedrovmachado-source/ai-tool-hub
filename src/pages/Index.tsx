@@ -60,6 +60,10 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
     if (target === 'ofertas' || target === 'offers') { navigate('/ofertas'); return; }
     if (target === 'mentorias') { navigate('/mentorias'); return; }
     if (target === 'alunos') { navigate('/alunos'); return; }
+    if (['copywrite', 'site-creation', 'creative-edit', 'fb-accounts'].includes(target)) {
+      navigate(`/${target}`);
+      return;
+    }
     setPage(target);
   };
 
