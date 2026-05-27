@@ -90,7 +90,7 @@ export default function Menu() {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen bg-black text-white selection:bg-white/20 font-sans overflow-x-hidden pb-[100px]">
+    <div className="flex flex-col min-h-screen bg-black text-white selection:bg-white/20 font-sans overflow-x-hidden">
       <Navbar 
         onNavigate={(page) => {
           if (page === 'home') navigate('/');
@@ -105,6 +105,8 @@ export default function Menu() {
             navigate('/ferramentas');
           }
         }} 
+
+
       />
 
       <main className="flex-1 relative pt-32 pb-24 px-6">
@@ -173,23 +175,13 @@ export default function Menu() {
       </main>
 
       <footer className="py-12 px-6 border-t border-white/5 text-center">
+        
         <div className="text-[9px] text-white/10 font-bold uppercase tracking-[0.5em]">
           &copy; 2026 CONVERT CLUB · BUILT FOR THE 1%
         </div>
       </footer>
-
-      <div id="spotify-bar" className="fixed bottom-0 left-0 w-full bg-[#121212] p-[10px_20px] shadow-[0_-4px_20px_rgba(0,0,0,0.4)] z-[9999] flex justify-center items-center">
-        <iframe
-          src="https://open.spotify.com/embed/playlist/37i9dQZF1DWWQbWtD7E1GE?utm_source=generator&theme=0"
-          className="rounded-[10px] w-full max-w-[700px] h-[80px]"
-          frameBorder="0"
-          allowFullScreen
-          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-          loading="lazy"
-        ></iframe>
-      </div>
-
       <MentoriaModal isOpen={mentoriaModalOpen} onClose={() => setMentoriaModalOpen(false)} />
     </div>
+
   );
 }
