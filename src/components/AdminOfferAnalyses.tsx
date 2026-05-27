@@ -132,6 +132,30 @@ export default function AdminOfferAnalyses() {
     }
   }
 
+  async function deleteAnalysis(id: string) {
+    try {
+      const { error } = await supabase
+        .from('offer_analyses')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      setAnalyses(prev => prev.filter(a => a.id !== id));
+      setConfirmDelete(null);
+      toast({
+        title: "Registro removido",
+        description: "A solicitação de análise foi excluída permanentemente."
+      });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Erro ao excluir",
+        description: error.message
+      });
+    }
+  }
+
   const filteredAnalyses = analyses.filter(a => {
     const matchesFilter = filter === 'all' || a.status === filter;
     const matchesSearch = 
