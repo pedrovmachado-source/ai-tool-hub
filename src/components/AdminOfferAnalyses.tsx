@@ -65,8 +65,12 @@ export default function AdminOfferAnalyses() {
   }
 
   async function updateStatus(id: string, status: 'approved' | 'rejected') {
+    if (loading) return;
+    
     try {
+      setLoading(true);
       const currentAnalysis = analyses.find(a => a.id === id);
+      if (!currentAnalysis) throw new Error("Análise não encontrada");
 
       const { error: updateError } = await supabase
         .from('offer_analyses')
@@ -76,23 +80,37 @@ export default function AdminOfferAnalyses() {
       if (updateError) throw updateError;
 
       // Se for aprovado, insere automaticamente na tabela de ofertas validadas
-      if (status === 'approved' && currentAnalysis) {
-        const { error: insertError } = await supabase
+      if (status === 'approved') {
+        // Verificar se já existe uma oferta com o mesmo link para evitar duplicidade
+        const { data: existingOffer } = await supabase
           .from('validated_offers')
-          .insert({
-            title: `Sugestão: ${currentAnalysis.profiles?.nome || 'Usuário'}`,
-            description: currentAnalysis.observations || 'Nenhuma descrição fornecida.',
-            link: currentAnalysis.website_url,
-            category: 'Sugestão',
-            price: 'Consultar'
-          });
+          .select('id')
+          .eq('link', currentAnalysis.website_url)
+          .maybeSingle();
 
-        if (insertError) {
-          console.error('Erro ao inserir oferta validada:', insertError);
+        if (!existingOffer) {
+          const { error: insertError } = await supabase
+            .from('validated_offers')
+            .insert({
+              title: `Sugestão: ${currentAnalysis.profiles?.nome || 'Usuário'}`,
+              description: currentAnalysis.observations || 'Nenhuma descrição fornecida.',
+              link: currentAnalysis.website_url,
+              category: 'Sugestão',
+              price: 'Consultar'
+            });
+
+          if (insertError) {
+            console.error('Erro ao inserir oferta validada:', insertError);
+            toast({
+              variant: "destructive",
+              title: "Atenção",
+              description: "Análise aprovada, mas houve um erro ao criar a oferta em /ofertas."
+            });
+          }
+        } else {
           toast({
-            variant: "destructive",
-            title: "Atenção",
-            description: "Análise aprovada, mas houve um erro ao criar a oferta em /ofertas."
+            title: "Oferta já existe",
+            description: "Esta análise foi marcada como aprovada, mas a oferta já constava em /ofertas."
           });
         }
       }
@@ -100,7 +118,7 @@ export default function AdminOfferAnalyses() {
       setAnalyses(prev => prev.map(a => a.id === id ? { ...a, status } : a));
       toast({
         title: "Status atualizado",
-        description: `A análise foi marcada como ${status === 'approved' ? 'aprovada e adicionada às ofertas' : 'rejeitada'}.`
+        description: `A análise foi marcada como ${status === 'approved' ? 'aprovada' : 'rejeitada'}.`
       });
     } catch (error: any) {
       toast({
@@ -108,6 +126,8 @@ export default function AdminOfferAnalyses() {
         title: "Erro ao atualizar",
         description: error.message
       });
+    } finally {
+      setLoading(false);
     }
   }
 
