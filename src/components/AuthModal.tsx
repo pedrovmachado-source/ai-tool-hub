@@ -205,8 +205,8 @@ export default function AuthModal({ mode, isOpen, onClose, onSwitch, onRegistere
               
               <button 
                 onClick={handleRegister} 
-                disabled={submitting} 
-                className="w-full py-4 bg-white text-black rounded-2xl text-sm font-bold hover:bg-white/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-[0_10px_20px_rgba(255,255,255,0.1)] active:scale-[0.98]"
+                disabled={submitting || !lgpdAccepted} 
+                className="w-full py-4 bg-white text-black rounded-2xl text-sm font-bold hover:bg-white/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-[0_10px_20px_rgba(255,255,255,0.1)] active:scale-[0.98]"
               >
                 {submitting ? <Loader2 size={18} className="animate-spin" /> : 'Criar conta grátis'}
               </button>
