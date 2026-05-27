@@ -24,11 +24,12 @@ import { Checkbox } from '@/components/ui/checkbox';
 import logoAdai from '@/assets/logo.png';
 
 export default function Auth() {
-  const { login, register, user, loading: authLoading } = useAuth();
+  const { login, register, resetPassword, user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const initialMode = queryParams.get('mode') as 'login' | 'register' | 'forgot' | 'reset' || 'login';
+  
   const [mode, setMode] = useState<'login' | 'register' | 'forgot' | 'reset'>(initialMode);
   
   // Form states
@@ -43,13 +44,12 @@ export default function Auth() {
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState('');
-  const [showTerms, setShowTerms] = useState(false);
 
   useEffect(() => {
-    if (user && !authLoading) {
+    if (user && !authLoading && mode !== 'reset') {
       navigate('/menu');
     }
-  }, [user, authLoading, navigate]);
+  }, [user, authLoading, navigate, mode]);
 
   const handleGoogleSignIn = async () => {
     setSubmitting(true);
@@ -78,7 +78,6 @@ export default function Auth() {
         setError(err);
         setSubmitting(false);
       }
-      // If success, AuthContext useEffect will handle navigation
     } catch (err) {
       setError('Erro inesperado. Tente novamente.');
       setSubmitting(false);
@@ -97,13 +96,37 @@ export default function Auth() {
     try {
       const err = await register(nome, sobrenome, email, password, lgpdAccepted);
       if (err) {
-        setError(err);
+        if (err.toLowerCase().includes('disabled')) {
+          setError('O registro de novas contas por e-mail está temporariamente desativado. Por favor, use o login com Google.');
+        } else {
+          setError(err);
+        }
         setSubmitting(false);
       } else {
         setSuccess('Conta criada com sucesso! Redirecionando...');
       }
     } catch (err) {
       setError('Erro ao criar conta. Tente novamente.');
+      setSubmitting(false);
+    }
+  };
+
+  const handleForgot = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) { setError('Digite seu e-mail.'); return; }
+    
+    setSubmitting(true);
+    setError('');
+    try {
+      const err = await resetPassword(email);
+      if (err) {
+        setError(err);
+      } else {
+        setSuccess('Se o e-mail estiver correto, você receberá um link de recuperação.');
+      }
+    } catch (err) {
+      setError('Erro ao solicitar recuperação.');
+    } finally {
       setSubmitting(false);
     }
   };
@@ -125,27 +148,6 @@ export default function Auth() {
       }
     } catch (err) {
       setError('Erro ao atualizar senha.');
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const handleForgot = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) { setError('Digite seu e-mail.'); return; }
-    
-    setSubmitting(true);
-    setError('');
-    const { resetPassword } = useAuth(); // Need to use the context function
-    try {
-      const err = await resetPassword(email);
-      if (err) {
-        setError(err);
-      } else {
-        setSuccess('Se o e-mail estiver correto, você receberá um link de recuperação.');
-      }
-    } catch (err) {
-      setError('Erro ao solicitar recuperação.');
     } finally {
       setSubmitting(false);
     }
@@ -194,8 +196,8 @@ export default function Auth() {
 
         <div className="relative z-10 flex items-center gap-8 text-white/20 text-[10px] font-bold uppercase tracking-[0.3em]">
           <span>© 2026 Convert Club</span>
-          <span>Privacy Policy</span>
-          <span>Terms of Service</span>
+          <span>Privacidade</span>
+          <span>Termos</span>
         </div>
       </div>
 
@@ -237,7 +239,7 @@ export default function Auth() {
               </div>
             )}
 
-            {mode !== 'forgot' && (
+            {(mode === 'login' || mode === 'register') && (
               <>
                 <Button 
                   onClick={handleGoogleSignIn}
@@ -289,21 +291,23 @@ export default function Auth() {
                 </div>
               )}
 
-              <div className="space-y-2">
-                <Label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] ml-1">E-mail</Label>
-                <div className="relative">
-                  <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" />
-                  <Input 
-                    type="email"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    placeholder="seu@email.com"
-                    className="h-13 pl-11 bg-white/5 border-white/10 rounded-2xl focus:border-white/30 transition-all text-sm"
-                  />
+              {(mode === 'login' || mode === 'register' || mode === 'forgot') && (
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] ml-1">E-mail</Label>
+                  <div className="relative">
+                    <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" />
+                    <Input 
+                      type="email"
+                      value={email}
+                      onChange={e => setEmail(e.target.value)}
+                      placeholder="seu@email.com"
+                      className="h-13 pl-11 bg-white/5 border-white/10 rounded-2xl focus:border-white/30 transition-all text-sm"
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
 
-              {mode !== 'forgot' && (
+              {(mode === 'login' || mode === 'reset') && (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between ml-1">
                     <Label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em]">Senha</Label>
@@ -324,31 +328,31 @@ export default function Auth() {
                 </div>
               )}
 
-              {mode === 'register' && (
-                <>
-                  <div className="space-y-2">
-                    <Label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] ml-1">Confirmar Senha</Label>
-                    <Input 
-                      type="password"
-                      value={confirmPassword}
-                      onChange={e => setConfirmPassword(e.target.value)}
-                      placeholder="••••••••"
-                      className={`h-13 bg-white/5 border rounded-2xl focus:outline-none transition-all text-sm ${confirmPassword && password !== confirmPassword ? 'border-red-500/50' : 'border-white/10 focus:border-white/30'}`}
-                    />
-                  </div>
+              {(mode === 'register' || mode === 'reset') && (
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] ml-1">{mode === 'reset' ? 'Confirmar Nova Senha' : 'Confirmar Senha'}</Label>
+                  <Input 
+                    type="password"
+                    value={confirmPassword}
+                    onChange={e => setConfirmPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className={`h-13 bg-white/5 border rounded-2xl focus:outline-none transition-all text-sm ${confirmPassword && password !== confirmPassword ? 'border-red-500/50' : 'border-white/10 focus:border-white/30'}`}
+                  />
+                </div>
+              )}
 
-                  <div className="flex items-start gap-3 pt-2">
-                    <Checkbox 
-                      id="lgpd" 
-                      checked={lgpdAccepted}
-                      onCheckedChange={(checked) => setLgpdAccepted(checked === true)}
-                      className="mt-1 border-white/20 data-[state=checked]:bg-white data-[state=checked]:text-black"
-                    />
-                    <label htmlFor="lgpd" className="text-[11px] text-white/50 leading-relaxed cursor-pointer select-none">
-                      Concordo com os <button type="button" className="text-white underline underline-offset-4 font-medium hover:text-white/80 transition-colors">Termos e Serviços</button> e a política de privacidade.
-                    </label>
-                  </div>
-                </>
+              {mode === 'register' && (
+                <div className="flex items-start gap-3 pt-2">
+                  <Checkbox 
+                    id="lgpd" 
+                    checked={lgpdAccepted}
+                    onCheckedChange={(checked) => setLgpdAccepted(checked === true)}
+                    className="mt-1 border-white/20 data-[state=checked]:bg-white data-[state=checked]:text-black"
+                  />
+                  <label htmlFor="lgpd" className="text-[11px] text-white/50 leading-relaxed cursor-pointer select-none">
+                    Concordo com os <button type="button" className="text-white underline underline-offset-4 font-medium hover:text-white/80 transition-colors">Termos e Serviços</button> e a política de privacidade.
+                  </label>
+                </div>
               )}
 
               <Button 
@@ -360,7 +364,7 @@ export default function Auth() {
                   <Loader2 size={18} className="animate-spin" />
                 ) : (
                   <>
-                    {mode === 'login' ? 'Entrar no Club' : mode === 'register' ? 'Criar Conta' : 'Enviar Link'}
+                    {mode === 'login' ? 'Entrar no Club' : mode === 'register' ? 'Criar Conta' : mode === 'forgot' ? 'Enviar Link' : 'Redefinir Senha'}
                     <ArrowRight size={18} className="ml-2 group-hover:translate-x-1 transition-transform" />
                   </>
                 )}
