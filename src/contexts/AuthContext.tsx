@@ -269,45 +269,68 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [clearAuthState, syncSession]);
 
   const login = useCallback(async (email: string, password: string): Promise<string | null> => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    return error ? translateAuthError(error.message) : null;
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+      return error ? translateAuthError(error.message) : null;
+    } catch (err) {
+      console.error('Login error:', err);
+      return 'Erro inesperado ao fazer login. Tente novamente.';
+    }
   }, []);
 
   const translateAuthError = (msg: string): string => {
     const m = msg.toLowerCase();
-    if (m.includes('password is known to be weak') || m.includes('pwned') || m.includes('weak') && m.includes('password')) {
+    if (m.includes('password is known to be weak') || m.includes('pwned') || (m.includes('weak') && m.includes('password'))) {
       return 'Esta senha é considerada fraca ou já vazada em outros sites. Escolha uma senha mais forte (use letras, números e símbolos).';
     }
     if (m.includes('password should be at least')) return 'A senha deve ter no mínimo 8 caracteres.';
-    if (m.includes('user already registered') || m.includes('already registered') || m.includes('already exists')) {
+    if (m.includes('user already registered') || m.includes('already registered') || m.includes('already exists') || m.includes('email already taken')) {
       return 'Este e-mail já está cadastrado. Tente fazer login.';
     }
-    if (m.includes('invalid login credentials')) return 'E-mail ou senha incorretos.';
+    if (m.includes('invalid login credentials') || m.includes('invalid credentials')) return 'E-mail ou senha incorretos.';
     if (m.includes('email not confirmed')) return 'Confirme seu e-mail antes de entrar. Verifique sua caixa de entrada.';
-    if (m.includes('invalid email')) return 'E-mail inválido.';
+    if (m.includes('invalid email') || m.includes('email is invalid')) return 'E-mail inválido. Verifique se digitou corretamente.';
     if (m.includes('rate limit') || m.includes('too many')) return 'Muitas tentativas. Aguarde um momento e tente novamente.';
-    if (m.includes('network')) return 'Erro de conexão. Verifique sua internet e tente novamente.';
+    if (m.includes('network') || m.includes('failed to fetch')) return 'Erro de conexão. Verifique sua internet e tente novamente.';
+    
+    // Add translations for common Portuguese messages if any are returned by Supabase
+    if (m.includes('email já cadastrado')) return 'Este e-mail já está cadastrado. Tente fazer login.';
+    if (m.includes('credenciais inválidas')) return 'E-mail ou senha incorretos.';
+    
     return msg;
   };
 
   const register = useCallback(async (nome: string, sobrenome: string, email: string, password: string, lgpdAccepted: boolean): Promise<string | null> => {
     const redirectUrl = `${window.location.origin}/`;
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { 
-        data: { 
-          nome, 
-          sobrenome,
-          sobre: '',
-          lgpd_accepted: lgpdAccepted,
-          lgpd_accepted_at: lgpdAccepted ? new Date().toISOString() : null
-        }, 
-        emailRedirectTo: redirectUrl 
-      },
-    });
-    return error ? translateAuthError(error.message) : null;
-  }, []);
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email: email.trim(),
+        password,
+        options: { 
+          data: { 
+            nome: nome.trim(), 
+            sobrenome: sobrenome.trim(),
+            sobre: '',
+            lgpd_accepted: lgpdAccepted,
+            lgpd_accepted_at: lgpdAccepted ? new Date().toISOString() : null
+          }, 
+          emailRedirectTo: redirectUrl 
+        },
+      });
+      
+      if (error) return translateAuthError(error.message);
+      
+      // If auto-confirm is enabled, we might already have a session
+      if (data?.session) {
+        await syncSession(data.session);
+      }
+      
+      return null;
+    } catch (err) {
+      console.error('Registration error:', err);
+      return 'Erro inesperado ao criar conta. Tente novamente.';
+    }
+  }, [syncSession]);
 
   const logout = useCallback(async () => {
     await supabase.auth.signOut();
