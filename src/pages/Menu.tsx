@@ -65,6 +65,13 @@ export default function Menu() {
       badge: "Full Access"
     },
     {
+      title: "Ofertas Validadas",
+      description: "Produtos e infoprodutos minerados com alto potencial de escala.",
+      icon: Tag,
+      path: "/ofertas",
+      badge: "Curadoria"
+    },
+    {
       title: "Aulas Gravadas",
       description: "Gravações das mentorias exclusivas com estratégias de escala e conversão.",
       icon: Video,
