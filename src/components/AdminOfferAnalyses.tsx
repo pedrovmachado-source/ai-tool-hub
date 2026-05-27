@@ -52,7 +52,7 @@ export default function AdminOfferAnalyses() {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setAnalyses(data || []);
+      setAnalyses((data as any) || []);
     } catch (error: any) {
       toast({
         variant: "destructive",
