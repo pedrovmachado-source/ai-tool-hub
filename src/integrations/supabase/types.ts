@@ -821,6 +821,15 @@ export type Database = {
     }
     Functions: {
       generate_unique_invite_code: { Args: never; Returns: string }
+      get_monthly_offer_ranking: {
+        Args: never
+        Returns: {
+          avatar_url: string
+          count: number
+          nome: string
+          rank_position: number
+        }[]
+      }
       get_tool_premium: { Args: { _tool_key: string }; Returns: Json }
       has_role: {
         Args: {

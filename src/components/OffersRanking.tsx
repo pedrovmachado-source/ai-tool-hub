@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Trophy, Medal, Loader2 } from 'lucide-react';
-import { startOfMonth, endOfMonth } from 'date-fns';
 
 interface RankingUser {
   user_id: string;
@@ -21,39 +20,15 @@ export default function OffersRanking() {
   async function fetchRanking() {
     try {
       setLoading(true);
-      const start = startOfMonth(new Date()).toISOString();
-      const end = endOfMonth(new Date()).toISOString();
-
-      const { data, error } = await supabase
-        .from('offer_analyses')
-        .select('user_id, profiles(nome, avatar_url)')
-        .eq('status', 'approved')
-        .gte('created_at', start)
-        .lte('created_at', end);
-
+      const { data, error } = await supabase.rpc('get_monthly_offer_ranking');
       if (error) throw error;
 
-      const counts: Record<string, { count: number; nome: string; avatar_url?: string }> = {};
-      
-      data?.forEach((item: any) => {
-        const userId = item.user_id;
-        if (!counts[userId]) {
-          counts[userId] = { 
-            count: 0, 
-            nome: item.profiles?.nome || 'Usuário',
-            avatar_url: item.profiles?.avatar_url
-          };
-        }
-        counts[userId].count++;
-      });
-
-      const sortedRanking = Object.entries(counts)
-        .map(([user_id, data]) => ({
-          user_id,
-          ...data
-        }))
-        .sort((a, b) => b.count - a.count)
-        .slice(0, 3);
+      const sortedRanking: RankingUser[] = (data || []).map((row: any) => ({
+        user_id: String(row.rank_position),
+        count: Number(row.count),
+        nome: row.nome || 'Usuário',
+        avatar_url: row.avatar_url || undefined,
+      }));
 
       setRanking(sortedRanking);
     } catch (error) {
