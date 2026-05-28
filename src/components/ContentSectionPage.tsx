@@ -234,14 +234,25 @@ function ItemCard({ item, isOffers, onVideo, onPdf, onImage, onOffer }: {
   onImage: () => void;
   onOffer?: () => void;
 }) {
-  const handleBuy = (e: React.MouseEvent) => {
+  const handleBuy = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    const url = item.buy_url || 'https://buy.stripe.com/test_eVqdRb2JS5lmflRc1P5wI01';
-    const width = 500;
-    const height = 700;
-    const left = (window.innerWidth - width) / 2;
-    const top = (window.innerHeight - height) / 2;
-    window.open(url, 'StripeCheckout', `width=${width},height=${height},top=${top},left=${left}`);
+    try {
+      // Use the Price ID stored in item.body (fallback to a dummy if empty)
+      const priceId = (item.body && item.body.startsWith('price_')) 
+        ? item.body 
+        : 'price_1Tc4wzQP3tL0cIWnFFTaNhgJ';
+        
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: { priceId, mode: 'payment' }
+      });
+
+      if (error) throw error;
+      if (data?.url) {
+        window.location.href = data.url;
+      }
+    } catch (err) {
+      console.error('Checkout error:', err);
+    }
   };
 
   const handleClick = () => {

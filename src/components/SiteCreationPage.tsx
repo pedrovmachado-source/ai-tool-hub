@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, ExternalLink, ShoppingCart, Sparkles, Pencil, Wand2, Image as ImageIcon, Globe2, ArrowRight } from 'lucide-react';
 import SiteOrderModal, { SiteOrderProduct } from './SiteOrderModal';
+import { toast } from 'sonner';
 
 interface Product {
   id: string;
@@ -69,9 +70,32 @@ export default function SiteCreationPage({ onBack }: { onBack: () => void }) {
     return Array.from(map.entries()); // [rowKey, items[]]
   }, [siteProducts]);
 
-  const openOrder = (p: Product) => setOrderingProduct({
-    slug: p.slug, name: p.name, price: p.price, buy_url: p.buy_url, kind: p.kind,
-  });
+  const openOrder = async (p: Product) => {
+    // If the product has a Stripe Price ID in its buy_url field (it should look like price_...)
+    // we can skip the form and go straight to checkout if it's a direct purchase.
+    // However, SiteOrderModal usually collects WhatsApp/references which are important.
+    // The user asked for "integrated checkout" (pop-up/no new page).
+    
+    if (p.buy_url?.startsWith('price_')) {
+      try {
+        const { data, error } = await supabase.functions.invoke('create-checkout', {
+          body: { priceId: p.buy_url, mode: 'payment' }
+        });
+        if (error) throw error;
+        if (data?.url) {
+          window.location.href = data.url;
+          return;
+        }
+      } catch (err) {
+        console.error('Checkout error:', err);
+        toast.error('Erro ao iniciar checkout');
+      }
+    }
+
+    setOrderingProduct({
+      slug: p.slug, name: p.name, price: p.price, buy_url: p.buy_url, kind: p.kind,
+    });
+  };
 
   const Card = ({ p }: { p: Product }) => {
     const buyLabel = p.kind === 'criativo' ? 'Quero esse criativo' : 'Quero esse site agora';
