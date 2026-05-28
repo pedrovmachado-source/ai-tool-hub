@@ -142,7 +142,7 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
   if (page === 'pro') return <ProPage onBack={() => navigate('/menu')} onNavigate={handleNavigate} />;
   if (page === 'lessons') return <LessonsPage onBack={() => navigate('/menu')} />;
   
-  const constructionPages = ['site-creation', 'creative-edit', 'copywrite', 'fb-accounts'];
+  const constructionPages = ['site-creation', 'creative-edit', 'copywrite'];
   
   if (page === 'site-creation') {
     return (
@@ -152,6 +152,10 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
     );
   }
   
+  if (page === 'fb-accounts') {
+    return <ContentSectionPage slug={page} onBack={() => navigate('/menu')} onUpgrade={() => setPage('pro')} />;
+  }
+
   if (constructionPages.includes(page)) {
     return (
       <UnderConstruction>
