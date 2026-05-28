@@ -34,6 +34,7 @@ export const PERIOD_SUFFIX: Record<Period, string> = {
 export interface PlanOption {
   price: string;
   checkoutUrl: string;
+  priceId: string;
 }
 export interface PlansConfig {
   elite: Record<Period, PlanOption>;
@@ -42,14 +43,14 @@ export interface PlansConfig {
 
 export const DEFAULT_PLANS_CONFIG: PlansConfig = {
   elite: {
-    mensal:     { price: '19.90',  checkoutUrl: 'https://buy.stripe.com/bJe8wR2JSg00ehN2rf5wI07' },
-    trimestral: { price: '49.90',  checkoutUrl: 'https://buy.stripe.com/8x2eVf1FO156flR5Dr5wI06' },
-    vitalicio:  { price: '127.90', checkoutUrl: 'https://buy.stripe.com/9B614pbgo156c9F5Dr5wI03' },
+    mensal:     { price: '19.90',  checkoutUrl: 'https://buy.stripe.com/bJe8wR2JSg00ehN2rf5wI07', priceId: 'price_1TJPm9QP3tL0cIWnWzswoc4l' },
+    trimestral: { price: '49.90',  checkoutUrl: 'https://buy.stripe.com/8x2eVf1FO156flR5Dr5wI06', priceId: 'price_1TJPm9QP3tL0cIWnWzswoc4l_tri' },
+    vitalicio:  { price: '127.90', checkoutUrl: 'https://buy.stripe.com/9B614pbgo156c9F5Dr5wI03', priceId: 'price_1TJPm9QP3tL0cIWnWzswoc4l_vit' },
   },
   elitePlus: {
-    mensal:     { price: '29.90',  checkoutUrl: 'https://buy.stripe.com/5kQbJ384cbJK1v19TH5wI08' },
-    trimestral: { price: '79.90',  checkoutUrl: 'https://buy.stripe.com/00w9AV5W47tuflRd5T5wI05' },
-    vitalicio:  { price: '197.90', checkoutUrl: 'https://buy.stripe.com/14AfZjfwE8xy3D99TH5wI02' },
+    mensal:     { price: '29.90',  checkoutUrl: 'https://buy.stripe.com/5kQbJ384cbJK1v19TH5wI08', priceId: 'price_1TJPm9QP3tL0cIWnWzswoc4l_plus' },
+    trimestral: { price: '79.90',  checkoutUrl: 'https://buy.stripe.com/00w9AV5W47tuflRd5T5wI05', priceId: 'price_1TJPm9QP3tL0cIWnWzswoc4l_plus_tri' },
+    vitalicio:  { price: '197.90', checkoutUrl: 'https://buy.stripe.com/14AfZjfwE8xy3D99TH5wI02', priceId: 'price_1TJPm9QP3tL0cIWnWzswoc4l_plus_vit' },
   },
 };
 
