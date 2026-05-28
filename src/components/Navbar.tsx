@@ -21,8 +21,9 @@ const DEFAULT_ITEMS: NavItem[] = [
   { key: 'creative-edit', label: 'Comprar Criativo', icon: 'Wand2', color: 'text-brand-teal', target: 'creative-edit', enabled: true, sort_order: 4 },
   { key: 'copywrite', label: 'Copywrite', icon: 'PenTool', color: 'text-brand-amber', target: 'copywrite', enabled: true, sort_order: 5 },
   { key: 'fb-accounts', label: 'Contas de Facebook Ads', icon: 'Facebook', color: 'text-brand-blue', target: 'fb-accounts', enabled: true, sort_order: 6 },
-  { key: 'site-creation', label: 'Comprar Site', icon: 'Globe2', color: 'text-brand-blue-medium', target: 'site-creation', enabled: true, sort_order: 7 },
-  { key: 'lessons', label: 'Aulas gravadas', icon: 'GraduationCap', color: 'text-brand-blue-medium', target: 'mentorias', enabled: true, sort_order: 8 },
+  { key: 'purchased', label: 'Contas Compradas', icon: 'CreditCard', color: 'text-brand-blue-medium', target: 'https://billing.stripe.com/p/login/test_6oE8xU1v0fXn5EYcMM', enabled: true, sort_order: 7 },
+  { key: 'site-creation', label: 'Comprar Site', icon: 'Globe2', color: 'text-brand-blue-medium', target: 'site-creation', enabled: true, sort_order: 8 },
+  { key: 'lessons', label: 'Aulas gravadas', icon: 'GraduationCap', color: 'text-brand-blue-medium', target: 'mentorias', enabled: true, sort_order: 9 },
 ];
 
 export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onNavigate: (page: string) => void; onOpenSavedEbook?: (toolKey: string, categoryKey: string) => void; hideAuth?: boolean }) {
@@ -56,6 +57,10 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
 
   const go = (target: string) => {
     closeMenu();
+    if (target.startsWith('http')) {
+      window.open(target, '_blank');
+      return;
+    }
     if (target === 'niche-lessons') { setShowNiche(true); return; }
     onNavigate(target);
   };
