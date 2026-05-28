@@ -238,7 +238,15 @@ function ItemCard({ item, isOffers, onVideo, onPdf, onImage, onOffer }: {
           {icon}
         </div>
         <h4 className="text-xl font-serif-display text-white mb-4">{item.title}</h4>
-        {item.description && <p className="text-white/30 text-xs font-light mb-4 leading-relaxed">{item.description}</p>}
+        {item.description && (
+          <p className={`mb-4 leading-relaxed ${
+            item.section_slug === 'fb-accounts' 
+              ? 'text-brand-blue-medium text-lg font-bold' 
+              : 'text-white/30 text-xs font-light'
+          }`}>
+            {item.description}
+          </p>
+        )}
         {item.body && (
           <div className="mt-auto pt-6 border-t border-white/5">
              <p className="text-sm text-white/50 whitespace-pre-wrap leading-relaxed italic">"{item.body}"</p>
