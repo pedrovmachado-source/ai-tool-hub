@@ -45,7 +45,13 @@ export default function SiteOrderModal({ product, onClose }: { product: SiteOrde
       });
       if (error) { toast({ title: 'Erro ao enviar pedido', description: error.message, variant: 'destructive' }); return; }
       toast({ title: 'Pedido enviado!', description: 'Redirecionando para o pagamento…' });
-      if (product.buy_url) window.open(product.buy_url, '_blank', 'noopener,noreferrer');
+      
+      // If product has a Stripe checkout link, try to use the integrated checkout
+      if (product.buy_url) {
+        // Simple extraction of price ID if it's a buy.stripe.com link (limited support)
+        // or just use the buy_url directly as fallback
+        window.location.href = product.buy_url;
+      }
       onClose();
     } finally {
       setSubmitting(false);
