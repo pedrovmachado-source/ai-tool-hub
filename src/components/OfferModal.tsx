@@ -1,4 +1,6 @@
 import { X, ExternalLink, ShoppingCart } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 export interface OfferData {
   title: string;
@@ -9,6 +11,25 @@ export interface OfferData {
 }
 
 export default function OfferModal({ offer, onClose }: { offer: OfferData; onClose: () => void }) {
+  const handleBuy = async (e: React.MouseEvent) => {
+    // If buy_url contains a Price ID (price_...)
+    if (offer.buy_url?.includes('price_')) {
+      e.preventDefault();
+      try {
+        const priceId = offer.buy_url.split('/').pop() || ''; // rudimentary extraction
+        const { data, error } = await supabase.functions.invoke('create-checkout', {
+          body: { priceId: priceId.startsWith('price_') ? priceId : offer.buy_url, mode: 'payment' }
+        });
+        if (error) throw error;
+        if (data?.url) {
+          window.location.href = data.url;
+        }
+      } catch (err) {
+        console.error('Checkout error:', err);
+        window.open(offer.buy_url, '_self');
+      }
+    }
+  };
   return (
     <div className="fixed inset-0 z-[400] bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6" onClick={onClose}>
       <div className="bg-[#0D0D0F] border border-white/10 rounded-[2.5rem] w-full max-w-lg overflow-hidden shadow-2xl animate-slide-up" onClick={e => e.stopPropagation()}>
@@ -31,7 +52,7 @@ export default function OfferModal({ offer, onClose }: { offer: OfferData; onClo
               </a>
             )}
             {offer.buy_url && (
-              <a href={offer.buy_url} target="_blank" rel="noopener noreferrer"
+              <a href={offer.buy_url} onClick={handleBuy}
                 className="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-white text-black text-xs font-bold uppercase tracking-widest hover:bg-white/90 transition-all flex-1 shadow-lg active:scale-[0.98]">
                 <ShoppingCart size={16} /> Comprar agora
               </a>
