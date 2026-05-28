@@ -6,7 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Key, User, Facebook, ShieldCheck, ExternalLink, Copy, Check } from 'lucide-react';
+import { Facebook, ShieldCheck, ExternalLink, Copy, Check } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface PurchasedAccount {
@@ -43,7 +43,15 @@ export default function PurchasedAccountsModal({ isOpen, onClose }: { isOpen: bo
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setAccounts(data || []);
+      
+      const typedAccounts = (data || []).map(acc => ({
+        ...acc,
+        credentials: (typeof acc.credentials === 'object' && acc.credentials !== null) 
+          ? acc.credentials as PurchasedAccount['credentials']
+          : {}
+      })) as PurchasedAccount[];
+      
+      setAccounts(typedAccounts);
     } catch (error) {
       console.error('Error fetching accounts:', error);
       toast.error('Não foi possível carregar suas contas.');
@@ -63,7 +71,7 @@ export default function PurchasedAccountsModal({ isOpen, onClose }: { isOpen: bo
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl bg-black border-white/10 text-white max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-serif-display flex items-center gap-2">
+          <DialogTitle className="text-2xl font-serif-display flex items-center gap-2 text-white">
             <ShieldCheck className="text-brand-blue-medium" />
             Minhas Contas & BMs
           </DialogTitle>

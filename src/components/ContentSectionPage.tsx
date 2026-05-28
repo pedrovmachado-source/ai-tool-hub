@@ -6,6 +6,7 @@ import { ArrowLeft, Play, FileText, Image as ImageIcon, Lock, FileText as TextIc
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { PdfModal, VideoModal, ImageModal } from '@/lib/lessonViewers';
 import OfferModal from './OfferModal';
+import PurchasedAccountsModal from './PurchasedAccountsModal';
 
 interface Section {
   slug: string;
@@ -41,6 +42,7 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
   const [pdf, setPdf] = useState<Item | null>(null);
   const [image, setImage] = useState<Item | null>(null);
   const [offer, setOffer] = useState<Item | null>(null);
+  const [showPurchasedModal, setShowPurchasedModal] = useState(false);
   const isOffers = slug === 'offers';
 
   useEffect(() => {
@@ -144,7 +146,7 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
 
             {slug === 'fb-accounts' && (
               <button 
-                onClick={() => window.open('https://billing.stripe.com/p/login/test_6oE8xU1v0fXn5EYcMM', '_blank')}
+                onClick={() => setShowPurchasedModal(true)}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-blue/20 border border-brand-blue/30 text-brand-blue-medium hover:bg-brand-blue/30 transition-all group"
               >
                 <ShoppingCart size={14} className="text-brand-blue-medium" />
@@ -219,6 +221,7 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
       {image && image.image_url && (
         <ImageModal title={image.title} url={image.image_url} onClose={() => setImage(null)} />
       )}
+      <PurchasedAccountsModal isOpen={showPurchasedModal} onClose={() => setShowPurchasedModal(false)} />
     </div>
   );
 }
