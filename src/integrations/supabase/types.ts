@@ -538,6 +538,39 @@ export type Database = {
         }
         Relationships: []
       }
+      purchased_accounts: {
+        Row: {
+          account_data: Json | null
+          account_type: string
+          created_at: string
+          credentials: Json | null
+          id: string
+          status: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          account_data?: Json | null
+          account_type: string
+          created_at?: string
+          credentials?: Json | null
+          id?: string
+          status?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          account_data?: Json | null
+          account_type?: string
+          created_at?: string
+          credentials?: Json | null
+          id?: string
+          status?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       saved_ebooks: {
         Row: {
           category_key: string
