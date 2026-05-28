@@ -4,6 +4,7 @@ import { Menu, Bookmark, X, GraduationCap, Sparkles, Globe2, Wand2, BookOpen, Sh
 
 import QuizModal from './QuizModal';
 import NicheLessonsModal from './NicheLessonsModal';
+import PurchasedAccountsModal from './PurchasedAccountsModal';
 import { supabase } from '@/integrations/supabase/client';
 import logoAdai from '@/assets/logo.png';
 import { planLabel, planBadgeClass, isPaid } from '@/lib/plan';
@@ -36,6 +37,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
   const [showNiche, setShowNiche] = useState(false);
   const [menuItems, setMenuItems] = useState<NavItem[]>(DEFAULT_ITEMS);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const [showPurchasedModal, setShowPurchasedModal] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -61,6 +63,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
       window.open(target, '_blank');
       return;
     }
+    if (target === 'purchased') { setShowPurchasedModal(true); return; }
     if (target === 'niche-lessons') { setShowNiche(true); return; }
     onNavigate(target);
   };
@@ -251,6 +254,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
           onOpenSavedEbook?.(toolKey, categoryKey);
         }}
       />
+      <PurchasedAccountsModal isOpen={showPurchasedModal} onClose={() => setShowPurchasedModal(false)} />
 
       {showNiche && (
         <NicheLessonsModal onClose={() => setShowNiche(false)} onUpgrade={() => { setShowNiche(false); onNavigate('pro'); }} />
