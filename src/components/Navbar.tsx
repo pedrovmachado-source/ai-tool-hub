@@ -101,10 +101,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
             </button>
           )}
           {!user && !hideAuth ? (
-            <>
-              <button onClick={() => onNavigate('auth')} className="px-2.5 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-white bg-white/15 hover:bg-white/25 transition-colors">Acessar</button>
-              <button onClick={() => onNavigate('auth')} className="px-2.5 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-black bg-white hover:bg-white/90 transition-colors">Inscrever-se</button>
-            </>
+            <button onClick={() => onNavigate('auth')} className="px-2.5 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-black bg-white hover:bg-white/90 transition-colors">Acessar</button>
           ) : !user ? null : (
             <>
               {!isPaid(user.plano) && (
