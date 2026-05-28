@@ -142,9 +142,13 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
           </button>
           
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-smooth mb-6 border border-white/5">
-            {slug === 'copywrite' ? <TextIcon className="w-3 h-3 text-white/50" /> : <ImageIcon className="w-3 h-3 text-white/50" />}
+            {slug === 'copywrite' ? <TextIcon className="w-3 h-3 text-white/50" /> : 
+             slug === 'fb-accounts' ? <ShoppingCart className="w-3 h-3 text-white/50" /> :
+             <ImageIcon className="w-3 h-3 text-white/50" />}
             <span className="text-[10px] font-bold text-white/50 tracking-[0.2em] uppercase">
-              {slug === 'copywrite' ? 'Copywriting de Elite' : 'Visual Assets'}
+              {slug === 'copywrite' ? 'Copywriting de Elite' : 
+               slug === 'fb-accounts' ? 'Contas & BMs' :
+               'Visual Assets'}
             </span>
           </div>
           
@@ -224,6 +228,7 @@ function ItemCard({ item, isOffers, onVideo, onPdf, onImage, onOffer }: {
   const icon = item.kind === 'video' ? <Play size={16} className="text-brand-blue-medium" />
     : item.kind === 'pdf' ? <FileText size={16} className="text-brand-green" />
     : item.kind === 'image' ? <ImageIcon size={16} className="text-brand-amber" />
+    : item.section_slug === 'fb-accounts' ? <ShoppingCart size={16} className="text-brand-blue-medium" />
     : <TextIcon size={16} className="text-muted-foreground" />;
 
   if (item.kind === 'text') {
@@ -233,7 +238,15 @@ function ItemCard({ item, isOffers, onVideo, onPdf, onImage, onOffer }: {
           {icon}
         </div>
         <h4 className="text-xl font-serif-display text-white mb-4">{item.title}</h4>
-        {item.description && <p className="text-white/30 text-xs font-light mb-4 leading-relaxed">{item.description}</p>}
+        {item.description && (
+          <p className={`mb-4 leading-relaxed ${
+            item.section_slug === 'fb-accounts' 
+              ? 'text-brand-blue-medium text-lg font-bold' 
+              : 'text-white/30 text-xs font-light'
+          }`}>
+            {item.description}
+          </p>
+        )}
         {item.body && (
           <div className="mt-auto pt-6 border-t border-white/5">
              <p className="text-sm text-white/50 whitespace-pre-wrap leading-relaxed italic">"{item.body}"</p>
