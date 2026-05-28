@@ -136,10 +136,22 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
         </div>
 
         <div className="relative z-10 max-w-5xl mx-auto">
-          <button onClick={onBack} className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-smooth mb-10 border border-white/5 text-white/50 hover:text-white transition-colors group">
-            <ArrowLeft size={14} className="transform group-hover:-translate-x-1 transition-transform" />
-            <span className="text-[10px] font-bold tracking-[0.2em] uppercase">Voltar ao Menu</span>
-          </button>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
+            <button onClick={onBack} className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-smooth border border-white/5 text-white/50 hover:text-white transition-colors group">
+              <ArrowLeft size={14} className="transform group-hover:-translate-x-1 transition-transform" />
+              <span className="text-[10px] font-bold tracking-[0.2em] uppercase">Voltar ao Menu</span>
+            </button>
+
+            {slug === 'fb-accounts' && (
+              <button 
+                onClick={() => window.open('https://billing.stripe.com/p/login/test_6oE8xU1v0fXn5EYcMM', '_blank')}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-blue/20 border border-brand-blue/30 text-brand-blue-medium hover:bg-brand-blue/30 transition-all group"
+              >
+                <ShoppingCart size={14} className="text-brand-blue-medium" />
+                <span className="text-[10px] font-bold tracking-[0.1em] uppercase">Acessar Contas Compradas</span>
+              </button>
+            )}
+          </div>
           
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-smooth mb-6 border border-white/5">
             {slug === 'copywrite' ? <TextIcon className="w-3 h-3 text-white/50" /> : 
@@ -219,12 +231,23 @@ function ItemCard({ item, isOffers, onVideo, onPdf, onImage, onOffer }: {
   onImage: () => void;
   onOffer?: () => void;
 }) {
+  const handleBuy = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const url = item.buy_url || 'https://buy.stripe.com/test_eVqdRb2JS5lmflRc1P5wI01';
+    const width = 500;
+    const height = 700;
+    const left = (window.innerWidth - width) / 2;
+    const top = (window.innerHeight - height) / 2;
+    window.open(url, 'StripeCheckout', `width=${width},height=${height},top=${top},left=${left}`);
+  };
+
   const handleClick = () => {
     if (isOffers && onOffer) return onOffer();
     if (item.kind === 'video') return onVideo();
     if (item.kind === 'pdf') return onPdf();
     if (item.kind === 'image') return onImage();
   };
+
   const icon = item.kind === 'video' ? <Play size={16} className="text-brand-blue-medium" />
     : item.kind === 'pdf' ? <FileText size={16} className="text-brand-green" />
     : item.kind === 'image' ? <ImageIcon size={16} className="text-brand-amber" />
@@ -247,6 +270,16 @@ function ItemCard({ item, isOffers, onVideo, onPdf, onImage, onOffer }: {
             {item.description}
           </p>
         )}
+
+        {item.section_slug === 'fb-accounts' && (
+          <button 
+            onClick={handleBuy}
+            className="w-full py-3 px-6 rounded-2xl bg-white text-black font-bold text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all mb-6 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
+          >
+            Comprar Agora
+          </button>
+        )}
+
         {item.body && (
           <div className="mt-auto pt-6 border-t border-white/5">
              <p className="text-sm text-white/50 whitespace-pre-wrap leading-relaxed italic">"{item.body}"</p>
@@ -257,23 +290,36 @@ function ItemCard({ item, isOffers, onVideo, onPdf, onImage, onOffer }: {
   }
 
   return (
-    <button onClick={handleClick} className="group relative text-left p-6 glass-smooth hover:bg-white/10 transition-all duration-500 rounded-[2.5rem] border border-white/5 flex flex-col h-full">
+    <div className="group relative text-left glass-smooth hover:bg-white/10 transition-all duration-500 rounded-[2.5rem] border border-white/5 flex flex-col h-full overflow-hidden">
       {item.kind === 'image' && item.image_url && (
-        <div className="w-full aspect-video rounded-[1.5rem] overflow-hidden mb-6">
+        <div className="w-full aspect-video overflow-hidden mb-6">
            <img src={item.image_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
         </div>
       )}
-      <div className="flex items-center gap-3 mb-4">
-        <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
-          {icon}
-        </div>
-        <h4 className="text-lg font-serif-display text-white">{item.title}</h4>
-      </div>
-      {item.description && <p className="text-white/30 text-xs font-light leading-relaxed line-clamp-2">{item.description}</p>}
       
-      <div className="mt-auto pt-6 flex items-center text-[10px] font-bold text-white/40 uppercase tracking-[0.2em]">
-         Ver Detalhes <ArrowRight size={12} className="ml-2 group-hover:translate-x-1 transition-transform" />
+      <div className="p-8 flex flex-col flex-1">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
+            {icon}
+          </div>
+          <h4 className="text-lg font-serif-display text-white">{item.title}</h4>
+        </div>
+        
+        {item.description && <p className="text-white/30 text-xs font-light leading-relaxed mb-6">{item.description}</p>}
+        
+        {item.section_slug === 'fb-accounts' ? (
+          <button 
+            onClick={handleBuy}
+            className="w-full py-3 px-6 rounded-2xl bg-white text-black font-bold text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all mt-auto"
+          >
+            Comprar Agora
+          </button>
+        ) : (
+          <button onClick={handleClick} className="mt-auto pt-6 flex items-center text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] group/btn">
+             Ver Detalhes <ArrowRight size={12} className="ml-2 group-hover/btn:translate-x-1 transition-transform" />
+          </button>
+        )}
       </div>
-    </button>
+    </div>
   );
 }
