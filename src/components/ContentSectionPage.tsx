@@ -142,9 +142,13 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
           </button>
           
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-smooth mb-6 border border-white/5">
-            {slug === 'copywrite' ? <TextIcon className="w-3 h-3 text-white/50" /> : <ImageIcon className="w-3 h-3 text-white/50" />}
+            {slug === 'copywrite' ? <TextIcon className="w-3 h-3 text-white/50" /> : 
+             slug === 'fb-accounts' ? <ShoppingCart className="w-3 h-3 text-white/50" /> :
+             <ImageIcon className="w-3 h-3 text-white/50" />}
             <span className="text-[10px] font-bold text-white/50 tracking-[0.2em] uppercase">
-              {slug === 'copywrite' ? 'Copywriting de Elite' : 'Visual Assets'}
+              {slug === 'copywrite' ? 'Copywriting de Elite' : 
+               slug === 'fb-accounts' ? 'Contas & BMs' :
+               'Visual Assets'}
             </span>
           </div>
           
