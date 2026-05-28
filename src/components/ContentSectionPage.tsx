@@ -228,6 +228,7 @@ function ItemCard({ item, isOffers, onVideo, onPdf, onImage, onOffer }: {
   const icon = item.kind === 'video' ? <Play size={16} className="text-brand-blue-medium" />
     : item.kind === 'pdf' ? <FileText size={16} className="text-brand-green" />
     : item.kind === 'image' ? <ImageIcon size={16} className="text-brand-amber" />
+    : item.section_slug === 'fb-accounts' ? <ShoppingCart size={16} className="text-brand-blue-medium" />
     : <TextIcon size={16} className="text-muted-foreground" />;
 
   if (item.kind === 'text') {
