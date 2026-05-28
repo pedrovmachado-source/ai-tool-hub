@@ -49,14 +49,32 @@ export default function ProPage({ onBack, onNavigate: _onNavigate }: { onBack: (
   const { plans, loading } = usePlansConfig();
   const [period, setPeriod] = useState<Period>('mensal');
 
-  const handleSubscribe = (tier: 'elite' | 'elitePlus') => {
+  const handleSubscribe = async (tier: 'elite' | 'elitePlus') => {
     if (!user) {
       toast.error('Faça login ou crie uma conta para assinar.');
       navigate('/auth');
       return;
     }
-    const url = plans[tier][period].checkoutUrl;
-    if (url) window.open(url, '_blank');
+    
+    try {
+      const planConfig = plans[tier][period];
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: { 
+          priceId: planConfig.priceId, 
+          mode: period === 'vitalicio' ? 'payment' : 'subscription' 
+        }
+      });
+
+      if (error) throw error;
+      if (data?.url) {
+        window.location.href = data.url;
+      }
+    } catch (err) {
+      console.error('Checkout error:', err);
+      // Fallback to buy URL if function fails
+      const url = plans[tier][period].checkoutUrl;
+      if (url) window.open(url, '_self');
+    }
   };
 
   if (loading) {
