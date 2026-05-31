@@ -107,7 +107,7 @@ export default function ComprarCash() {
 
   return (
     <div className="min-h-screen bg-black text-white font-sans selection:bg-white/20 overflow-x-hidden">
-      <Navbar onNavigate={(p) => navigate(p === 'home' ? '/' : `/${p}`)} />
+      <Navbar onNavigate={(p) => navigate(p === 'home' ? '/' : p === 'profile' ? '/perfil' : `/${p}`)} />
 
       <main className="pt-32 pb-24 px-6 max-w-7xl mx-auto relative z-10">
         <button 
