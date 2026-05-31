@@ -57,14 +57,21 @@ serve(async (req) => {
 
         if (purchaseError) console.error("Error logging purchase:", purchaseError);
 
-        // Fetch product details to create the "account" entry
-        const { data: product } = await supabaseClient.from('content_items').select('*').eq('id', productId).single();
+        // Check both content_items and site_products
+        let productName = "";
+        const { data: contentProd } = await supabaseClient.from('content_items').select('title').eq('id', productId).maybeSingle();
+        if (contentProd) {
+          productName = contentProd.title;
+        } else {
+          const { data: siteProd } = await supabaseClient.from('site_products' as any).select('name').eq('id', productId).maybeSingle();
+          if (siteProd) productName = (siteProd as any).name;
+        }
 
-        if (product) {
+        if (productName) {
           // Create entry in purchased_accounts so it shows up for the user
           const { error: accError } = await supabaseClient.from('purchased_accounts').insert({
             user_id: userId,
-            account_type: product.title,
+            account_type: productName,
             status: 'active',
             credentials: {
               info: "Seu acesso será liberado em breve. Verifique seu e-mail ou entre em contato com o suporte.",
