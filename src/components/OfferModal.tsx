@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 export interface OfferData {
+  id: string;
   title: string;
   description: string;
   example_url?: string | null;
@@ -21,7 +22,7 @@ export default function OfferModal({ offer, onClose }: { offer: OfferData; onClo
         const priceId = parts.find(p => p.startsWith('price_')) || url;
         
         const { data, error } = await supabase.functions.invoke('create-checkout', {
-          body: { priceId, mode: 'payment' }
+          body: { priceId, productId: offer.id, mode: 'payment' }
         });
         if (error) throw error;
         if (data?.url) {
