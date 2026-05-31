@@ -17,19 +17,11 @@ interface CashPackage {
 }
 
 const CashIconLarge = ({ className = "w-12 h-12" }: { className?: string }) => (
-  <svg 
-    viewBox="0 0 24 24" 
-    fill="none" 
+  <img 
+    src="https://framerusercontent.com/images/3m5C87T8Wwz7N3qE9pIuB9y6yM.png" 
+    alt="Cash"
     className={className}
-    stroke="currentColor" 
-    strokeWidth="1.5" 
-    strokeLinecap="round" 
-    strokeLinejoin="round"
-  >
-    
-    <path d="M11 8c-1.5 0-3 .5-3 2s1.5 2 3 2 3 .5 3 2-1.5 2-3 2" />
-    <path d="M12 6v12" />
-  </svg>
+  />
 );
 
 export default function ComprarCash() {
