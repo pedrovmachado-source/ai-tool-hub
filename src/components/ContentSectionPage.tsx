@@ -7,6 +7,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { PdfModal, VideoModal, ImageModal } from '@/lib/lessonViewers';
 import OfferModal from './OfferModal';
 import PurchasedAccountsModal from './PurchasedAccountsModal';
+import PaymentSelectionModal from './PaymentSelectionModal';
 
 interface Section {
   slug: string;
