@@ -130,6 +130,7 @@ export default function OfertasValidadas() {
                       <img 
                         src={offer.image_url} 
                         alt={offer.title} 
+                        loading="lazy"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                       />
                     ) : (

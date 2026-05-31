@@ -1068,16 +1068,14 @@ export type Database = {
         Args: { p_amount: number; p_product: string; p_user: string }
         Returns: Json
       }
-      validate_invite_code:
-        | { Args: { invite_code_text: string }; Returns: Json }
-        | {
-            Args: {
-              invite_code_text: string
-              p_fingerprint: string
-              p_ip_address: string
-            }
-            Returns: Json
-          }
+      validate_invite_code: {
+        Args: {
+          invite_code_text: string
+          p_fingerprint?: string
+          p_ip_address?: string
+        }
+        Returns: Json
+      }
     }
     Enums: {
       app_role: "admin" | "user"
