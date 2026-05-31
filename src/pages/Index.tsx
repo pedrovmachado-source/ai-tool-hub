@@ -61,6 +61,7 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
     if (target === 'ofertas' || target === 'offers') { navigate('/ofertas'); return; }
     if (target === 'mentorias') { navigate('/mentorias'); return; }
     if (target === 'alunos') { navigate('/alunos'); return; }
+    if (target === 'comprar-cash') { navigate('/comprar-cash'); return; }
     if (target === 'auth') { navigate('/auth'); return; }
     if (['copywrite', 'site-creation', 'creative-edit', 'fb-accounts'].includes(target)) {
       navigate(`/${target}`);
