@@ -58,7 +58,14 @@ export default function OfferModal({ offer, onClose }: { offer: OfferData; onClo
           )}
         </div>
       </div>
-    </div>
 
+      <PaymentSelectionModal 
+        isOpen={showPaymentSelection}
+        onClose={() => setShowPaymentSelection(false)}
+        priceId={selectedPriceId}
+        productId={offer.id}
+        productTitle={offer.title}
+      />
+    </div>
   );
 }
