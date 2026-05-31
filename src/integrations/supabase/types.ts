@@ -1064,10 +1064,15 @@ export type Database = {
         Args: { target_fingerprint: string; target_user_id: string }
         Returns: Json
       }
-      spend_cash: {
-        Args: { p_amount: number; p_product: string; p_user: string }
-        Returns: Json
-      }
+      spend_cash:
+        | {
+            Args: { p_amount: number; p_product: string; p_user: string }
+            Returns: Json
+          }
+        | {
+            Args: { p_amount: number; p_product: string; p_user: string }
+            Returns: Json
+          }
       validate_invite_code: {
         Args: {
           invite_code_text: string
