@@ -34,14 +34,24 @@ serve(async (req) => {
       .eq('id', user.id)
       .single();
 
-    // Get admins (those with admin=true in metadata or check by your logic)
-    // For now, we'll send to the system configured email or query profiles with high access if applicable.
-    // Since we don't have a clear 'is_admin' column, we can use a hardcoded notification or check roles.
-    
-    console.log(`Notification: User ${profile?.nome} (${profile?.email}) clicked 'Already Paid' for ${packageName}.`);
+    // Get admins from user_roles
+    const { data: admins } = await supabaseClient
+      .from('user_roles')
+      .select('user_id')
+      .eq('role', 'admin');
 
-    // In a real scenario, you'd use a mailer here.
-    // If you have Resend or similar configured in env:
+    const adminIds = admins?.map(a => a.user_id) || [];
+    
+    // Get admin emails
+    const { data: adminProfiles } = await supabaseClient
+      .from('profiles')
+      .select('email')
+      .in('user_id', adminIds);
+
+    const adminEmails = adminProfiles?.map(p => p.email).filter(Boolean) as string[] || ["kayodesouzaapj@gmail.com"];
+
+    console.log(`Notification: User ${profile?.nome} (${profile?.email}) clicked 'Already Paid' for ${packageName}. Notifying ${adminEmails.join(', ')}`);
+
     const resendKey = Deno.env.get("RESEND_API_KEY");
     
     if (resendKey) {
@@ -53,7 +63,7 @@ serve(async (req) => {
         },
         body: JSON.stringify({
           from: "Convert Club <noreply@convertclub.com>",
-          to: ["admin@convertclub.com"], // Replace with actual admin email
+          to: adminEmails,
           subject: "Novo Aviso de Pagamento PIX",
           html: `
             <h1>Aviso de Pagamento PIX Realizado</h1>
