@@ -233,33 +233,21 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
   );
 }
 
-function ItemCard({ item, isOffers, onVideo, onPdf, onImage, onOffer }: {
+function ItemCard({ item, isOffers, onVideo, onPdf, onImage, onOffer, onBuy }: {
   item: Item;
   isOffers?: boolean;
   onVideo: () => void;
   onPdf: () => void;
   onImage: () => void;
   onOffer?: () => void;
+  onBuy: (priceId: string, productId: string, title: string) => void;
 }) {
-  const handleBuy = async (e: React.MouseEvent) => {
+  const handleBuy = (e: React.MouseEvent) => {
     e.stopPropagation();
-    try {
-      // Use the Price ID stored in item.body (fallback to a dummy if empty)
-      const priceId = (item.body && item.body.startsWith('price_')) 
-        ? item.body 
-        : 'price_1Tc4wzQP3tL0cIWnFFTaNhgJ';
-        
-      const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { priceId, productId: item.id, mode: 'payment' }
-      });
-
-      if (error) throw error;
-      if (data?.url) {
-        window.location.href = data.url;
-      }
-    } catch (err) {
-      console.error('Checkout error:', err);
-    }
+    const priceId = (item.body && item.body.startsWith('price_')) 
+      ? item.body 
+      : 'price_1Tc4wzQP3tL0cIWnFFTaNhgJ';
+    onBuy(priceId, item.id, item.title);
   };
 
   const handleClick = () => {
