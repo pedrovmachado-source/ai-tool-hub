@@ -26,7 +26,7 @@ const CashIconLarge = ({ className = "w-12 h-12" }: { className?: string }) => (
     strokeLinecap="round" 
     strokeLinejoin="round"
   >
-    <circle cx="12" cy="12" r="10" fill="currentColor" fillOpacity="0.1" />
+    
     <path d="M11 8c-1.5 0-3 .5-3 2s1.5 2 3 2 3 .5 3 2-1.5 2-3 2" />
     <path d="M12 6v12" />
   </svg>
