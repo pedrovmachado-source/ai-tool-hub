@@ -104,7 +104,13 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
 
   return (
     <>
-      <nav className="bg-black/80 backdrop-blur-xl h-[72px] sm:h-[88px] px-6 sm:px-12 grid grid-cols-3 items-center fixed top-0 left-0 right-0 z-[200] gap-4 border-b border-white/5">
+      <nav className="bg-black/80 backdrop-blur-xl fixed top-0 left-0 right-0 z-[200] border-b border-white/5 flex flex-col">
+        {location.pathname !== '/' && (
+          <div className="bg-brand-red text-white text-[9px] sm:text-[10px] font-bold py-1.5 text-center uppercase tracking-[0.2em] border-b border-white/5">
+            Versão Beta 0.1v - Este site pode conter bugs
+          </div>
+        )}
+        <div className="h-[72px] sm:h-[88px] px-6 sm:px-12 grid grid-cols-3 items-center w-full gap-4">
         <div className="flex items-center gap-4 justify-self-start">
           {user && (
             <button
@@ -181,6 +187,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
               </button>
             </>
           )}
+        </div>
         </div>
       </nav>
 
