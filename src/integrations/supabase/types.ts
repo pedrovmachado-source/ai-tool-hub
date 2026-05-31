@@ -74,6 +74,39 @@ export type Database = {
         }
         Relationships: []
       }
+      cash_packages: {
+        Row: {
+          active: boolean | null
+          base_cash: number
+          created_at: string | null
+          id: string
+          is_popular: boolean | null
+          name: string
+          price_brl_cents: number
+          sort_order: number | null
+        }
+        Insert: {
+          active?: boolean | null
+          base_cash: number
+          created_at?: string | null
+          id?: string
+          is_popular?: boolean | null
+          name: string
+          price_brl_cents: number
+          sort_order?: number | null
+        }
+        Update: {
+          active?: boolean | null
+          base_cash?: number
+          created_at?: string | null
+          id?: string
+          is_popular?: boolean | null
+          name?: string
+          price_brl_cents?: number
+          sort_order?: number | null
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           accent: string
@@ -136,6 +169,7 @@ export type Database = {
           image_url: string | null
           kind: string
           pdf_path: string | null
+          price_cash: number | null
           section_slug: string
           sort_order: number
           title: string
@@ -153,6 +187,7 @@ export type Database = {
           image_url?: string | null
           kind: string
           pdf_path?: string | null
+          price_cash?: number | null
           section_slug: string
           sort_order?: number
           title: string
@@ -170,6 +205,7 @@ export type Database = {
           image_url?: string | null
           kind?: string
           pdf_path?: string | null
+          price_cash?: number | null
           section_slug?: string
           sort_order?: number
           title?: string
@@ -485,6 +521,7 @@ export type Database = {
         Row: {
           abuse_blocked: boolean | null
           avatar_url: string | null
+          cash_balance: number | null
           created_at: string
           email: string
           empresa: string | null
@@ -503,6 +540,7 @@ export type Database = {
         Insert: {
           abuse_blocked?: boolean | null
           avatar_url?: string | null
+          cash_balance?: number | null
           created_at?: string
           email?: string
           empresa?: string | null
@@ -521,6 +559,7 @@ export type Database = {
         Update: {
           abuse_blocked?: boolean | null
           avatar_url?: string | null
+          cash_balance?: number | null
           created_at?: string
           email?: string
           empresa?: string | null
@@ -692,6 +731,7 @@ export type Database = {
           kind: string
           name: string
           price: string
+          price_cash: number | null
           row_key: string | null
           short_desc: string
           slug: string
@@ -708,6 +748,7 @@ export type Database = {
           kind?: string
           name: string
           price: string
+          price_cash?: number | null
           row_key?: string | null
           short_desc?: string
           slug: string
@@ -724,6 +765,7 @@ export type Database = {
           kind?: string
           name?: string
           price?: string
+          price_cash?: number | null
           row_key?: string | null
           short_desc?: string
           slug?: string
@@ -838,6 +880,53 @@ export type Database = {
           },
         ]
       }
+      transactions: {
+        Row: {
+          amount: number
+          created_at: string | null
+          id: string
+          product_id: string | null
+          reason: string
+          status: string
+          stripe_event_id: string | null
+          stripe_session_id: string | null
+          type: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          id?: string
+          product_id?: string | null
+          reason: string
+          status: string
+          stripe_event_id?: string | null
+          stripe_session_id?: string | null
+          type: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          id?: string
+          product_id?: string | null
+          reason?: string
+          status?: string
+          stripe_event_id?: string | null
+          stripe_session_id?: string | null
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string
@@ -916,6 +1005,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_cash_balance: {
+        Args: { p_amount: number; p_user: string }
+        Returns: undefined
+      }
       initialize_admin_invites: { Args: never; Returns: Json }
       list_abuse_blocks: {
         Args: never
@@ -969,6 +1062,10 @@ export type Database = {
       }
       remove_abuse_block: {
         Args: { target_fingerprint: string; target_user_id: string }
+        Returns: Json
+      }
+      spend_cash: {
+        Args: { p_amount: number; p_product: string; p_user: string }
         Returns: Json
       }
       validate_invite_code:

@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, ExternalLink, ShoppingCart, Sparkles, Pencil, Wand2, Image as ImageIcon, Globe2, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ExternalLink, ShoppingCart, Sparkles, Pencil, Wand2, Image as ImageIcon, Globe2, ArrowRight, Coins } from 'lucide-react';
 import SiteOrderModal, { SiteOrderProduct } from './SiteOrderModal';
+import SpendCashModal from './SpendCashModal';
 import { toast } from 'sonner';
 
 interface Product {
@@ -17,6 +18,7 @@ interface Product {
   buy_url: string | null;
   sort_order: number;
   active: boolean;
+  price_cash: number | null;
 }
 
 interface BannerCfg {
@@ -41,6 +43,7 @@ export default function SiteCreationPage({ onBack }: { onBack: () => void }) {
   const [banner, setBanner] = useState<BannerCfg>(DEFAULT_BANNER);
   const [loading, setLoading] = useState(true);
   const [orderingProduct, setOrderingProduct] = useState<SiteOrderProduct | null>(null);
+  const [spendingProduct, setSpendingProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -117,6 +120,14 @@ export default function SiteCreationPage({ onBack }: { onBack: () => void }) {
         </p>
 
         <div className="flex flex-col gap-3 mt-auto">
+          {p.price_cash && (
+            <button 
+              onClick={() => setSpendingProduct(p)}
+              className="group/cash relative w-full inline-flex items-center justify-center gap-2 py-3 rounded-full bg-brand-amber/10 border border-brand-amber/20 text-brand-amber text-[11px] font-bold tracking-widest uppercase hover:bg-brand-amber/20 transition-all"
+            >
+              <Coins size={14} /> Comprar com {p.price_cash} Cash
+            </button>
+          )}
           {p.example_url && (
             <a href={p.example_url} target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 w-full py-3 rounded-full border border-white/5 text-xs font-bold text-white/40 hover:bg-white/5 transition-all">
@@ -249,6 +260,16 @@ export default function SiteCreationPage({ onBack }: { onBack: () => void }) {
 
       {orderingProduct && (
         <SiteOrderModal product={orderingProduct} onClose={() => setOrderingProduct(null)} />
+      )}
+
+      {spendingProduct && (
+        <SpendCashModal 
+          isOpen={!!spendingProduct}
+          onClose={() => setSpendingProduct(null)}
+          productId={spendingProduct.id}
+          productName={spendingProduct.name}
+          priceCash={spendingProduct.price_cash || 0}
+        />
       )}
     </div>
   );

@@ -24,8 +24,8 @@ serve(async (req) => {
     
     if (!user?.email) throw new Error("User not authenticated");
 
-    const { priceId, productId, mode = "payment", isPix = false } = await req.json();
-    if (!priceId) throw new Error("Price ID is required");
+    const body = await req.json();
+    const { packageId, paymentMethod = "card", priceId, productId, mode = "payment", isPix = false } = body;
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
@@ -35,25 +35,69 @@ serve(async (req) => {
     let customerId = customers.data.length > 0 ? customers.data[0].id : null;
 
     let lineItems: any[] = [];
+    let metadata: any = {
+      userId: user.id,
+    };
 
-    if (isPix) {
-      // Fetch the price to get amount and currency
-      const price = await stripe.prices.retrieve(priceId);
-      if (!price.unit_amount) throw new Error("Price amount not found");
+    // If it's a Cash package
+    if (packageId) {
+      const { data: pkg, error: pkgError } = await supabaseClient
+        .from('cash_packages')
+        .select('*')
+        .eq('id', packageId)
+        .single();
+      
+      if (pkgError || !pkg) throw new Error("Pacote de Cash não encontrado");
 
-      // Apply 10% discount
-      const discountedAmount = Math.round(price.unit_amount * 0.9);
+      const isPixMethod = paymentMethod === 'pix';
+      const cashToCredit = isPixMethod ? Math.floor(pkg.base_cash * 1.1) : pkg.base_cash;
 
       lineItems = [{
         price_data: {
-          currency: price.currency,
-          product: price.product,
-          unit_amount: discountedAmount,
+          currency: 'brl',
+          product_data: {
+            name: `Recarga de ${pkg.name} - ${cashToCredit} Cash`,
+            description: isPixMethod ? "Inclui bônus de 10% por pagamento via PIX" : "Pagamento via Cartão",
+          },
+          unit_amount: pkg.price_brl_cents,
         },
         quantity: 1,
       }];
+
+      metadata = {
+        ...metadata,
+        packageId: pkg.id,
+        cashToCredit: cashToCredit.toString(),
+        paymentMethod: paymentMethod,
+        type: 'cash_deposit'
+      };
     } else {
-      lineItems = [{ price: priceId, quantity: 1 }];
+      // Handle regular product purchase
+      if (!priceId) throw new Error("Price ID or Package ID is required");
+      
+      if (isPix) {
+        const price = await stripe.prices.retrieve(priceId);
+        if (!price.unit_amount) throw new Error("Price amount not found");
+        const discountedAmount = Math.round(price.unit_amount * 0.9);
+
+        lineItems = [{
+          price_data: {
+            currency: price.currency,
+            product: price.product,
+            unit_amount: discountedAmount,
+          },
+          quantity: 1,
+        }];
+      } else {
+        lineItems = [{ price: priceId, quantity: 1 }];
+      }
+
+      metadata = {
+        ...metadata,
+        productId: productId || "",
+        paymentType: isPix ? "pix" : "card",
+        type: 'product_purchase'
+      };
     }
 
     const sessionOptions: any = {
@@ -61,16 +105,16 @@ serve(async (req) => {
       customer_email: customerId ? undefined : user.email,
       line_items: lineItems,
       mode: mode as "payment" | "subscription",
-      metadata: {
-        userId: user.id,
-        productId: productId || "",
-        paymentType: isPix ? "pix" : "card",
-      },
-      success_url: `${req.headers.get("origin")}/menu?checkout=success`,
-      cancel_url: `${req.headers.get("origin")}/menu?checkout=canceled`,
+      metadata: metadata,
+      success_url: packageId 
+        ? `${req.headers.get("origin")}/comprar-cash/sucesso?session_id={CHECKOUT_SESSION_ID}`
+        : `${req.headers.get("origin")}/menu?checkout=success`,
+      cancel_url: packageId
+        ? `${req.headers.get("origin")}/comprar-cash/cancelado`
+        : `${req.headers.get("origin")}/menu?checkout=canceled`,
     };
 
-    if (isPix) {
+    if (paymentMethod === 'pix' || isPix) {
       sessionOptions.payment_method_types = ['pix'];
     }
 

@@ -39,46 +39,104 @@ serve(async (req) => {
       return new Response(`Webhook Error: ${err.message}`, { status: 400 });
     }
 
-    if (event.type === "checkout.session.completed") {
+    const relevantEvents = new Set([
+      "checkout.session.completed",
+      "checkout.session.async_payment_succeeded",
+      "checkout.session.async_payment_failed",
+      "checkout.session.expired"
+    ]);
+
+    if (relevantEvents.has(event.type)) {
       const session = event.data.object;
-      const userId = session.metadata?.userId;
-      const productId = session.metadata?.productId;
+      const metadata = session.metadata;
+      const type = metadata?.type;
+      const userId = metadata?.userId;
 
-      if (userId && productId) {
-        // Log the purchase
-        const { error: purchaseError } = await supabaseClient.from('purchases').insert({
-          user_id: userId,
-          product_id: productId,
-          stripe_session_id: session.id,
-          amount_total: session.amount_total,
-          currency: session.currency,
-          status: 'completed'
-        });
+      if (!userId) return new Response("Missing userId", { status: 200 });
 
-        if (purchaseError) console.error("Error logging purchase:", purchaseError);
+      // Handle Failures
+      if (event.type === "checkout.session.async_payment_failed" || event.type === "checkout.session.expired") {
+         await supabaseClient.from('transactions').update({ status: 'failed' }).eq('stripe_session_id', session.id);
+         return new Response(JSON.stringify({ received: true }), { status: 200 });
+      }
 
-        // Check both content_items and site_products
-        let productName = "";
-        const { data: contentProd } = await supabaseClient.from('content_items').select('title').eq('id', productId).maybeSingle();
-        if (contentProd) {
-          productName = contentProd.title;
-        } else {
-          const { data: siteProd } = await supabaseClient.from('site_products' as any).select('name').eq('id', productId).maybeSingle();
-          if (siteProd) productName = (siteProd as any).name;
+      // Handle Success
+      if (event.type === "checkout.session.completed" || event.type === "checkout.session.async_payment_succeeded") {
+        
+        // Ensure it's paid for non-async completion
+        if (event.type === "checkout.session.completed" && session.payment_status !== 'paid' && session.payment_method_types?.includes('card')) {
+           return new Response("Not paid yet", { status: 200 });
         }
 
-        if (productName) {
-          // Create entry in purchased_accounts so it shows up for the user
-          const { error: accError } = await supabaseClient.from('purchased_accounts').insert({
-            user_id: userId,
-            account_type: productName,
-            status: 'active',
-            credentials: {
-              info: "Seu acesso será liberado em breve. Verifique seu e-mail ou entre em contato com o suporte.",
-              purchase_id: session.id
-            }
+        // Idempotency check
+        const { data: existingTx } = await supabaseClient
+          .from('transactions')
+          .select('id')
+          .eq('stripe_event_id', event.id)
+          .maybeSingle();
+        
+        if (existingTx) return new Response("Already processed", { status: 200 });
+
+        if (type === 'cash_deposit') {
+          const cashAmount = parseInt(metadata.cashToCredit);
+          
+          // Use RPC for atomic credit
+          const { error: rpcError } = await supabaseClient.rpc('increment_cash_balance', {
+            p_user: userId,
+            p_amount: cashAmount
           });
-          if (accError) console.error("Error creating purchased account record:", accError);
+
+          if (rpcError) throw rpcError;
+
+          // Log transaction
+          const { error: txError } = await supabaseClient.from('transactions').insert({
+            user_id: userId,
+            type: 'credit',
+            amount: cashAmount,
+            reason: 'deposit',
+            status: 'completed',
+            stripe_session_id: session.id,
+            stripe_event_id: event.id
+          });
+
+          if (txError) console.error("Error logging transaction:", txError);
+
+        } else if (type === 'product_purchase' || !type) {
+          // Existing product purchase logic
+          const productId = metadata?.productId;
+          if (productId) {
+            const { error: purchaseError } = await supabaseClient.from('purchases').insert({
+              user_id: userId,
+              product_id: productId,
+              stripe_session_id: session.id,
+              amount_total: session.amount_total,
+              currency: session.currency,
+              status: 'completed'
+            });
+
+            if (purchaseError) console.error("Error logging purchase:", purchaseError);
+
+            let productName = "";
+            const { data: contentProd } = await supabaseClient.from('content_items').select('title').eq('id', productId).maybeSingle();
+            if (contentProd) {
+              productName = contentProd.title;
+            } else {
+              const { data: siteProd } = await supabaseClient.from('site_products' as any).select('name').eq('id', productId).maybeSingle();
+              if (siteProd) productName = (siteProd as any).name;
+            }
+
+            if (productName) {
+              await supabaseClient.from('purchased_accounts').insert({
+                user_id: userId,
+                account_type: productName,
+                status: 'active',
+                credentials: {
+                  info: "Seu acesso será liberado em breve. Verifique seu e-mail ou entre em contato com o suporte.",
+                  purchase_id: session.id
+                }
+              });
+            }
+          }
         }
       }
     }

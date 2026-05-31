@@ -18,6 +18,9 @@ import Mentorias from "./pages/Mentorias.tsx";
 import CompleteProfile from "./pages/CompleteProfile.tsx";
 import OfertasValidadas from "./pages/OfertasValidadas.tsx";
 import Auth from "./pages/Auth.tsx";
+import ComprarCash from "./pages/ComprarCash.tsx";
+import CashSuccess from "./pages/CashSuccess.tsx";
+import CashCancel from "./pages/CashCancel.tsx";
 
 
 const queryClient = new QueryClient();
@@ -42,6 +45,9 @@ const App = () => (
             <Route path="/admin/bloqueios" element={<ProtectedRoute><AbuseBlocks /></ProtectedRoute>} />
             <Route path="/mentorias" element={<ProtectedRoute><Mentorias /></ProtectedRoute>} />
             <Route path="/ofertas" element={<ProtectedRoute><OfertasValidadas /></ProtectedRoute>} />
+            <Route path="/comprar-cash" element={<ProtectedRoute><ComprarCash /></ProtectedRoute>} />
+            <Route path="/comprar-cash/sucesso" element={<ProtectedRoute><CashSuccess /></ProtectedRoute>} />
+            <Route path="/comprar-cash/cancelado" element={<ProtectedRoute><CashCancel /></ProtectedRoute>} />
 
             <Route path="/copywrite" element={<ProtectedRoute><Tools page="copywrite" /></ProtectedRoute>} />
             <Route path="/site-creation" element={<ProtectedRoute><Tools page="site-creation" /></ProtectedRoute>} />
