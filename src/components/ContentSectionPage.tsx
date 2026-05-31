@@ -309,19 +309,12 @@ function ItemCard({ item, isOffers, onVideo, onPdf, onImage, onOffer, onBuy, onB
 
         {item.section_slug === 'fb-accounts' && (
           <div className="flex flex-col gap-3 mb-6">
-            {item.price_cash && (
-              <button 
-                onClick={(e) => { e.stopPropagation(); onBuyWithCash(item); }}
-                className="w-full py-2.5 px-4 rounded-xl bg-brand-amber/10 border border-brand-amber/20 text-brand-amber font-bold text-[10px] uppercase tracking-widest hover:bg-brand-amber/20 transition-all flex items-center justify-center gap-2"
-              >
-                <Coins size={12} /> {item.price_cash} Cash
-              </button>
-            )}
             <button 
               onClick={handleBuy}
-              className="w-full py-3 px-6 rounded-2xl bg-white text-black font-bold text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)]"
+              className="w-full py-3 px-6 rounded-2xl bg-white text-black font-bold text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] flex items-center justify-center gap-2"
             >
-              Comprar Agora
+              <Coins size={14} className="text-brand-amber" />
+              Comprar por {item.price_cash} Cash
             </button>
           </div>
         )}
@@ -350,19 +343,12 @@ function ItemCard({ item, isOffers, onVideo, onPdf, onImage, onOffer, onBuy, onB
         
         {item.section_slug === 'fb-accounts' ? (
           <div className="flex flex-col gap-3 mt-auto">
-            {item.price_cash && (
-              <button 
-                onClick={(e) => { e.stopPropagation(); onBuyWithCash(item); }}
-                className="w-full py-2.5 px-4 rounded-xl bg-brand-amber/10 border border-brand-amber/20 text-brand-amber font-bold text-[10px] uppercase tracking-widest hover:bg-brand-amber/20 transition-all flex items-center justify-center gap-2"
-              >
-                <Coins size={12} /> {item.price_cash} Cash
-              </button>
-            )}
             <button 
               onClick={handleBuy}
-              className="w-full py-3 px-6 rounded-2xl bg-white text-black font-bold text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all"
+              className="w-full py-3 px-6 rounded-2xl bg-white text-black font-bold text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
             >
-              Comprar Agora
+              <Coins size={14} className="text-brand-amber" />
+              Comprar por {item.price_cash} Cash
             </button>
           </div>
         ) : (
