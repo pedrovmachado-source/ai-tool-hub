@@ -96,7 +96,7 @@ export default function SpendCashModal({ isOpen, onClose, productId, productName
               <Button
                 onClick={handlePurchase}
                 disabled={loading}
-                className="w-full h-14 rounded-full bg-white text-black text-xs font-bold tracking-[0.2em] uppercase hover:bg-white/90 transition-all"
+                className="w-full h-14 rounded-xl bg-white text-black text-xs font-bold tracking-[0.2em] uppercase hover:bg-white/90 transition-all"
               >
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Confirmar e Debitar"}
               </Button>
@@ -121,7 +121,7 @@ export default function SpendCashModal({ isOpen, onClose, productId, productName
             </p>
             <Button
               onClick={() => { onClose(); navigate('/menu'); }}
-              className="w-full h-14 rounded-full bg-white text-black text-xs font-bold tracking-[0.2em] uppercase"
+              className="w-full h-14 rounded-xl bg-white text-black text-xs font-bold tracking-[0.2em] uppercase"
             >
               Acessar Agora <ArrowRight size={14} className="ml-2" />
             </Button>
@@ -144,7 +144,7 @@ export default function SpendCashModal({ isOpen, onClose, productId, productName
                 </p>
                 <Button
                   onClick={() => { onClose(); navigate('/comprar-cash'); }}
-                  className="w-full h-14 rounded-full bg-brand-amber text-black text-xs font-bold tracking-[0.2em] uppercase"
+                  className="w-full h-14 rounded-xl bg-brand-amber text-black text-xs font-bold tracking-[0.2em] uppercase"
                 >
                   Recarregar Carteira
                 </Button>
@@ -154,7 +154,7 @@ export default function SpendCashModal({ isOpen, onClose, productId, productName
                 <p className="text-white/40 text-sm font-light mb-10">{errorMessage}</p>
                 <Button
                   onClick={() => setStatus('idle')}
-                  className="w-full h-14 rounded-full bg-white/10 text-white text-xs font-bold tracking-[0.2em] uppercase"
+                  className="w-full h-14 rounded-xl bg-white/10 text-white text-xs font-bold tracking-[0.2em] uppercase"
                 >
                   Tentar Novamente
                 </Button>
