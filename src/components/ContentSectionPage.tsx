@@ -7,6 +7,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { PdfModal, VideoModal, ImageModal } from '@/lib/lessonViewers';
 import OfferModal from './OfferModal';
 import PurchasedAccountsModal from './PurchasedAccountsModal';
+import PaymentSelectionModal from './PaymentSelectionModal';
 
 interface Section {
   slug: string;
@@ -43,6 +44,12 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
   const [image, setImage] = useState<Item | null>(null);
   const [offer, setOffer] = useState<Item | null>(null);
   const [showPurchasedModal, setShowPurchasedModal] = useState(false);
+  const [paymentSelection, setPaymentSelection] = useState<{ isOpen: boolean; priceId: string; productId: string; productTitle: string }>({
+    isOpen: false,
+    priceId: '',
+    productId: '',
+    productTitle: ''
+  });
   const isOffers = slug === 'offers';
 
   useEffect(() => {
@@ -122,6 +129,7 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
           onPdf={() => setPdf(i)}
           onImage={() => setImage(i)}
           onOffer={() => setOffer(i)}
+          onBuy={(priceId, productId, title) => setPaymentSelection({ isOpen: true, priceId, productId, productTitle: title })}
         />
       ))}
     </div>
@@ -222,37 +230,32 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
         <ImageModal title={image.title} url={image.image_url} onClose={() => setImage(null)} />
       )}
       <PurchasedAccountsModal isOpen={showPurchasedModal} onClose={() => setShowPurchasedModal(false)} />
+      <PaymentSelectionModal 
+        isOpen={paymentSelection.isOpen}
+        onClose={() => setPaymentSelection(prev => ({ ...prev, isOpen: false }))}
+        priceId={paymentSelection.priceId}
+        productId={paymentSelection.productId}
+        productTitle={paymentSelection.productTitle}
+      />
     </div>
   );
 }
 
-function ItemCard({ item, isOffers, onVideo, onPdf, onImage, onOffer }: {
+function ItemCard({ item, isOffers, onVideo, onPdf, onImage, onOffer, onBuy }: {
   item: Item;
   isOffers?: boolean;
   onVideo: () => void;
   onPdf: () => void;
   onImage: () => void;
   onOffer?: () => void;
+  onBuy: (priceId: string, productId: string, title: string) => void;
 }) {
-  const handleBuy = async (e: React.MouseEvent) => {
+  const handleBuy = (e: React.MouseEvent) => {
     e.stopPropagation();
-    try {
-      // Use the Price ID stored in item.body (fallback to a dummy if empty)
-      const priceId = (item.body && item.body.startsWith('price_')) 
-        ? item.body 
-        : 'price_1Tc4wzQP3tL0cIWnFFTaNhgJ';
-        
-      const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { priceId, productId: item.id, mode: 'payment' }
-      });
-
-      if (error) throw error;
-      if (data?.url) {
-        window.location.href = data.url;
-      }
-    } catch (err) {
-      console.error('Checkout error:', err);
-    }
+    const priceId = (item.body && item.body.startsWith('price_')) 
+      ? item.body 
+      : 'price_1Tc4wzQP3tL0cIWnFFTaNhgJ';
+    onBuy(priceId, item.id, item.title);
   };
 
   const handleClick = () => {

@@ -1,6 +1,6 @@
 import { X, ExternalLink, ShoppingCart } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
+import { useState } from 'react';
+import PaymentSelectionModal from './PaymentSelectionModal';
 
 export interface OfferData {
   id: string;
@@ -12,26 +12,17 @@ export interface OfferData {
 }
 
 export default function OfferModal({ offer, onClose }: { offer: OfferData; onClose: () => void }) {
-  const handleBuy = async (e: React.MouseEvent) => {
-    // For offers, we might also use the integrated checkout
+  const [showPaymentSelection, setShowPaymentSelection] = useState(false);
+  const [selectedPriceId, setSelectedPriceId] = useState('');
+
+  const handleBuy = (e: React.MouseEvent) => {
     const url = offer.buy_url || '';
     if (url.includes('price_')) {
       e.preventDefault();
-      try {
-        const parts = url.split('/');
-        const priceId = parts.find(p => p.startsWith('price_')) || url;
-        
-        const { data, error } = await supabase.functions.invoke('create-checkout', {
-          body: { priceId, productId: offer.id, mode: 'payment' }
-        });
-        if (error) throw error;
-        if (data?.url) {
-          window.location.href = data.url;
-        }
-      } catch (err) {
-        console.error('Checkout error:', err);
-        window.open(url, '_self');
-      }
+      const parts = url.split('/');
+      const priceId = parts.find(p => p.startsWith('price_')) || url;
+      setSelectedPriceId(priceId);
+      setShowPaymentSelection(true);
     }
   };
   return (
@@ -67,7 +58,14 @@ export default function OfferModal({ offer, onClose }: { offer: OfferData; onClo
           )}
         </div>
       </div>
-    </div>
 
+      <PaymentSelectionModal 
+        isOpen={showPaymentSelection}
+        onClose={() => setShowPaymentSelection(false)}
+        priceId={selectedPriceId}
+        productId={offer.id}
+        productTitle={offer.title}
+      />
+    </div>
   );
 }

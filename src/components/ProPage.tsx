@@ -6,6 +6,7 @@ import { Check, X, Loader2, LogIn, UserPlus } from 'lucide-react';
 import { usePlansConfig } from '@/hooks/usePlanConfig';
 import { toast } from 'sonner';
 import type { Period } from '@/lib/plan';
+import PaymentSelectionModal from './PaymentSelectionModal';
 
 type Tier = 'free' | 'elite' | 'elitePlus';
 
@@ -49,6 +50,12 @@ export default function ProPage({ onBack, onNavigate: _onNavigate }: { onBack: (
   const navigate = useNavigate();
   const { plans, loading } = usePlansConfig();
   const [period, setPeriod] = useState<Period>('mensal');
+  const [paymentSelection, setPaymentSelection] = useState<{ isOpen: boolean; priceId: string; productId: string; productTitle: string }>({
+    isOpen: false,
+    priceId: '',
+    productId: '',
+    productTitle: ''
+  });
 
   const handleSubscribe = async (tier: 'elite' | 'elitePlus') => {
     if (!user) {
@@ -57,12 +64,24 @@ export default function ProPage({ onBack, onNavigate: _onNavigate }: { onBack: (
       return;
     }
     
+    const planConfig = plans[tier][period];
+    const isOneTime = period === 'vitalicio';
+
+    if (isOneTime) {
+      setPaymentSelection({
+        isOpen: true,
+        priceId: planConfig.priceId,
+        productId: `plan_${tier}`,
+        productTitle: `Plano ${tier === 'elite' ? 'Elite' : 'Elite Plus'} Vitalício`
+      });
+      return;
+    }
+
     try {
-      const planConfig = plans[tier][period];
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: { 
           priceId: planConfig.priceId, 
-          mode: period === 'vitalicio' ? 'payment' : 'subscription' 
+          mode: 'subscription' 
         }
       });
 
@@ -72,8 +91,7 @@ export default function ProPage({ onBack, onNavigate: _onNavigate }: { onBack: (
       }
     } catch (err) {
       console.error('Checkout error:', err);
-      // Fallback to buy URL if function fails
-      const url = plans[tier][period].checkoutUrl;
+      const url = planConfig.checkoutUrl;
       if (url) window.open(url, '_self');
     }
   };
@@ -219,6 +237,13 @@ export default function ProPage({ onBack, onNavigate: _onNavigate }: { onBack: (
         <button onClick={onBack} className="px-6 py-2 rounded-lg text-sm bg-primary-foreground/[0.08] text-muted-foreground/60 border border-primary-foreground/10 hover:bg-primary-foreground/[0.15] transition-colors">← Voltar às ferramentas</button>
       </div>
 
+      <PaymentSelectionModal 
+        isOpen={paymentSelection.isOpen}
+        onClose={() => setPaymentSelection(prev => ({ ...prev, isOpen: false }))}
+        priceId={paymentSelection.priceId}
+        productId={paymentSelection.productId}
+        productTitle={paymentSelection.productTitle}
+      />
     </div>
   );
 }
