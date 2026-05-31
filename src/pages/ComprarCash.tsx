@@ -268,7 +268,7 @@ export default function ComprarCash() {
               <div className="w-full space-y-4">
                 <Button 
                   onClick={() => {
-                    navigator.clipboard.writeText("SUA_CHAVE_PIX_COPIA_E_COLA_AQUI");
+                    navigator.clipboard.writeText("00020126580014br.gov.bcb.pix013654c3601f-4872-44bc-81d4-b8f61de5d2cd5204000053039865802BR5909SOLZAKAYO6009Sao Paulo610901227-20062230519daqr2924465906051116304C37F");
                     toast.success("Código PIX copiado!");
                   }}
                   variant="outline"
