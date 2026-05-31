@@ -16,20 +16,30 @@ interface CashPackage {
   sort_order: number;
 }
 
-const CashIconLarge = ({ className = "w-12 h-12" }: { className?: string }) => (
-  <div className={`${className} flex items-center justify-center relative`}>
-    <img 
-      src="https://framerusercontent.com/images/3m5C87T8Wwz7N3qE9pIuB9y6yM.png" 
-      alt="Cash"
-      className="w-full h-full object-contain relative z-10"
-      loading="eager"
-      crossOrigin="anonymous"
-    />
-    <span className="absolute inset-0 flex items-center justify-center text-brand-amber font-serif-display text-xl z-0">
-      $
-    </span>
-  </div>
-);
+const CashIconLarge = ({ className = "w-12 h-12", variant = "coin" }: { className?: string; variant?: string }) => {
+  const getIconUrl = (v: string) => {
+    switch (v) {
+      case 'coin': return "https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Coin/3D/coin_3d.png";
+      case 'bag': return "https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Money%20bag/3D/money_bag_3d.png";
+      case 'wings': return "https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Money%20with%20wings/3D/money_with_wings_3d.png";
+      case 'gem': return "https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Gem%20stone/3D/gem_stone_3d.png";
+      case 'trophy': return "https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Trophy/3D/trophy_3d.png";
+      default: return "https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Coin/3D/coin_3d.png";
+    }
+  };
+
+  return (
+    <div className={`${className} flex items-center justify-center relative`}>
+      <img 
+        src={getIconUrl(variant)}
+        alt="Cash"
+        className="w-full h-full object-contain relative z-10 drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]"
+        loading="eager"
+      />
+      <div className="absolute inset-0 bg-brand-amber/20 blur-2xl rounded-full scale-50 z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+    </div>
+  );
+};
 
 export default function ComprarCash() {
   const navigate = useNavigate();
