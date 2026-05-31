@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
+import Meta from '@/components/Meta';
 import MentoriaModal from '@/components/MentoriaModal';
 
 import { isMentorado } from '@/lib/plan';
