@@ -51,7 +51,7 @@ export default function CashSuccess() {
 
   return (
     <div className="min-h-screen bg-black text-white font-sans flex flex-col overflow-hidden">
-      <Navbar onNavigate={(p) => navigate(p === 'home' ? '/' : `/${p}`)} />
+      <Navbar onNavigate={(p) => navigate(p === 'home' ? '/' : p === 'profile' ? '/perfil' : `/${p}`)} />
 
       <main className="flex-1 flex items-center justify-center p-6 relative">
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">

@@ -8,7 +8,7 @@ export default function CashCancel() {
 
   return (
     <div className="min-h-screen bg-black text-white font-sans flex flex-col">
-      <Navbar onNavigate={(p) => navigate(p === 'home' ? '/' : `/${p}`)} />
+      <Navbar onNavigate={(p) => navigate(p === 'home' ? '/' : p === 'profile' ? '/perfil' : `/${p}`)} />
 
       <main className="flex-1 flex items-center justify-center p-6 relative">
         <div className="max-w-md w-full glass-smooth p-12 rounded-[3rem] border border-white/5 text-center animate-fade-in">
