@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
+import Meta from '@/components/Meta';
 import MentoriaModal from '@/components/MentoriaModal';
 import { isMentorado } from '@/lib/plan';
 import { supabase } from '@/integrations/supabase/client';
@@ -50,12 +51,6 @@ export default function Alunos() {
   const videoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    document.title = 'Área do Mentorado | Convert Club';
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) {
-      metaDesc.setAttribute('content', 'Área exclusiva para alunos da Convert Club. Acesse suas aulas, transcrições e materiais de apoio personalizados.');
-    }
-
     if (user) {
       if (user.abuseBlocked) {
         navigate('/bloqueado');
@@ -217,6 +212,7 @@ export default function Alunos() {
 
   return (
     <div className="flex flex-col min-h-screen bg-black text-white selection:bg-white/20 font-sans overflow-x-hidden">
+      <Meta title="Área do Mentorado | Convert Club" description="Área exclusiva para alunos da Convert Club. Acesse suas aulas, transcrições e materiais de apoio personalizados." />
       <header>
         <Navbar 
           onNavigate={(page) => {

@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
+import Meta from '@/components/Meta';
 import MentoriaModal from '@/components/MentoriaModal';
 import { isMentorado } from '@/lib/plan';
 
@@ -61,14 +62,8 @@ export default function Home() {
     }
   }, [user, navigate]);
 
-  useEffect(() => {
-    document.title = 'Convert Club | Comunidade de Alta Conversão';
-    const metaDesc = document.querySelector('meta[name="description"]');
-    const content = 'Acesse a Convert Club: A maior comunidade de infoprodutores e estrategistas digitais focados em escala e alta conversão.';
-    if (metaDesc) {
-      metaDesc.setAttribute('content', content);
-    }
-  }, []);
+  // Meta tags handled by the Meta component in the return
+
 
   const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
@@ -140,6 +135,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-black text-white selection:bg-white/20 font-sans overflow-x-hidden pt-[72px] sm:pt-[88px]">
+      <Meta />
       <header>
         <Navbar
           onNavigate={handleNavigate}
