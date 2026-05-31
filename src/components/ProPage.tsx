@@ -50,6 +50,12 @@ export default function ProPage({ onBack, onNavigate: _onNavigate }: { onBack: (
   const navigate = useNavigate();
   const { plans, loading } = usePlansConfig();
   const [period, setPeriod] = useState<Period>('mensal');
+  const [paymentSelection, setPaymentSelection] = useState<{ isOpen: boolean; priceId: string; productId: string; productTitle: string }>({
+    isOpen: false,
+    priceId: '',
+    productId: '',
+    productTitle: ''
+  });
 
   const handleSubscribe = async (tier: 'elite' | 'elitePlus') => {
     if (!user) {
@@ -58,12 +64,24 @@ export default function ProPage({ onBack, onNavigate: _onNavigate }: { onBack: (
       return;
     }
     
+    const planConfig = plans[tier][period];
+    const isOneTime = period === 'vitalicio';
+
+    if (isOneTime) {
+      setPaymentSelection({
+        isOpen: true,
+        priceId: planConfig.priceId,
+        productId: `plan_${tier}`,
+        productTitle: `Plano ${tier === 'elite' ? 'Elite' : 'Elite Plus'} Vitalício`
+      });
+      return;
+    }
+
     try {
-      const planConfig = plans[tier][period];
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: { 
           priceId: planConfig.priceId, 
-          mode: period === 'vitalicio' ? 'payment' : 'subscription' 
+          mode: 'subscription' 
         }
       });
 
@@ -73,8 +91,7 @@ export default function ProPage({ onBack, onNavigate: _onNavigate }: { onBack: (
       }
     } catch (err) {
       console.error('Checkout error:', err);
-      // Fallback to buy URL if function fails
-      const url = plans[tier][period].checkoutUrl;
+      const url = planConfig.checkoutUrl;
       if (url) window.open(url, '_self');
     }
   };
