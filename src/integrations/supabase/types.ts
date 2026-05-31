@@ -169,6 +169,7 @@ export type Database = {
           image_url: string | null
           kind: string
           pdf_path: string | null
+          price_cash: number | null
           section_slug: string
           sort_order: number
           title: string
@@ -186,6 +187,7 @@ export type Database = {
           image_url?: string | null
           kind: string
           pdf_path?: string | null
+          price_cash?: number | null
           section_slug: string
           sort_order?: number
           title: string
@@ -203,6 +205,7 @@ export type Database = {
           image_url?: string | null
           kind?: string
           pdf_path?: string | null
+          price_cash?: number | null
           section_slug?: string
           sort_order?: number
           title?: string

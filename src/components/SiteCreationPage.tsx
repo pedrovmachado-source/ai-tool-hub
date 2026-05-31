@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, ExternalLink, ShoppingCart, Sparkles, Pencil, Wand2, Image as ImageIcon, Globe2, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ExternalLink, ShoppingCart, Sparkles, Pencil, Wand2, Image as ImageIcon, Globe2, ArrowRight, Coins } from 'lucide-react';
 import SiteOrderModal, { SiteOrderProduct } from './SiteOrderModal';
 import SpendCashModal from './SpendCashModal';
 import { toast } from 'sonner';

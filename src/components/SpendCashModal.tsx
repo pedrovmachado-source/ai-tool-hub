@@ -51,13 +51,15 @@ export default function SpendCashModal({ isOpen, onClose, productId, productName
 
       if (error) throw error;
 
-      if (data.success) {
+      const result = data as { success: boolean; error?: string; missing?: number };
+
+      if (result.success) {
         setStatus('success');
         toast.success("Compra realizada com sucesso!");
       } else {
         setStatus('error');
-        setErrorMessage(data.error);
-        if (data.missing) setMissingCash(data.missing);
+        setErrorMessage(result.error || "Erro desconhecido");
+        if (result.missing) setMissingCash(result.missing);
       }
     } catch (err: any) {
       console.error(err);
