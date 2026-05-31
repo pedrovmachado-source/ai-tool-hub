@@ -24,7 +24,7 @@ serve(async (req) => {
     
     if (!user?.email) throw new Error("User not authenticated");
 
-    const { priceId, productId, mode = "payment" } = await req.json();
+    const { priceId, productId, mode = "payment", isPix = false } = await req.json();
     if (!priceId) throw new Error("Price ID is required");
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
@@ -34,18 +34,47 @@ serve(async (req) => {
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     let customerId = customers.data.length > 0 ? customers.data[0].id : null;
 
-    const session = await stripe.checkout.sessions.create({
+    let lineItems: any[] = [];
+
+    if (isPix) {
+      // Fetch the price to get amount and currency
+      const price = await stripe.prices.retrieve(priceId);
+      if (!price.unit_amount) throw new Error("Price amount not found");
+
+      // Apply 10% discount
+      const discountedAmount = Math.round(price.unit_amount * 0.9);
+
+      lineItems = [{
+        price_data: {
+          currency: price.currency,
+          product: price.product,
+          unit_amount: discountedAmount,
+        },
+        quantity: 1,
+      }];
+    } else {
+      lineItems = [{ price: priceId, quantity: 1 }];
+    }
+
+    const sessionOptions: any = {
       customer: customerId || undefined,
       customer_email: customerId ? undefined : user.email,
-      line_items: [{ price: priceId, quantity: 1 }],
+      line_items: lineItems,
       mode: mode as "payment" | "subscription",
       metadata: {
         userId: user.id,
         productId: productId || "",
+        paymentType: isPix ? "pix" : "card",
       },
       success_url: `${req.headers.get("origin")}/menu?checkout=success`,
       cancel_url: `${req.headers.get("origin")}/menu?checkout=canceled`,
-    });
+    };
+
+    if (isPix) {
+      sessionOptions.payment_method_types = ['pix'];
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionOptions);
 
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
