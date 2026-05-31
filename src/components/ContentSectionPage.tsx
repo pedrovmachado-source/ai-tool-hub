@@ -230,6 +230,13 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
         <ImageModal title={image.title} url={image.image_url} onClose={() => setImage(null)} />
       )}
       <PurchasedAccountsModal isOpen={showPurchasedModal} onClose={() => setShowPurchasedModal(false)} />
+      <PaymentSelectionModal 
+        isOpen={paymentSelection.isOpen}
+        onClose={() => setPaymentSelection(prev => ({ ...prev, isOpen: false }))}
+        priceId={paymentSelection.priceId}
+        productId={paymentSelection.productId}
+        productTitle={paymentSelection.productTitle}
+      />
     </div>
   );
 }
