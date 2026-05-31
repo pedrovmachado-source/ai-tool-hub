@@ -144,13 +144,18 @@ export default function PaymentSelectionModal({
                 <Coins size={28} />
               </div>
               <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="font-bold text-lg">Recarregar Cash</span>
+                <div className="flex flex-col gap-0.5 mb-1">
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-lg">Recarregar Cash</span>
+                    <span className="bg-brand-amber/20 text-brand-amber text-[9px] font-black px-1.5 py-0.5 rounded-md uppercase tracking-wider border border-brand-amber/10">
+                      CASHBACK DISPONÍVEL
+                    </span>
+                  </div>
                   {userBalance !== null && (
-                    <span className="text-[10px] text-white/40 font-mono">Saldo: {userBalance.toLocaleString('pt-BR')}</span>
+                    <span className="text-[11px] text-brand-amber/60 font-medium">Seu Saldo Atual: {userBalance.toLocaleString('pt-BR')} Cash</span>
                   )}
                 </div>
-                <p className="text-white/40 text-xs font-light">Abata o valor usando seu saldo acumulado</p>
+                <p className="text-white/40 text-xs font-light">Abata o valor ou facilite compras futuras com Cash</p>
               </div>
               <ArrowRight size={20} className="text-white/10 group-hover:text-brand-amber group-hover:translate-x-1 transition-all" />
             </div>
