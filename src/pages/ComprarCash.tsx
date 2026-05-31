@@ -79,6 +79,11 @@ export default function ComprarCash() {
       return;
     }
 
+    if (paymentMethod === 'pix') {
+      setShowPixModal(true);
+      return;
+    }
+
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke('create-checkout', {
