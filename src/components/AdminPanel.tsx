@@ -539,6 +539,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'offer-analyses', label: 'Análises de Ofertas', icon: Search },
     { key: 'menu', label: 'Menu Lateral', icon: Menu },
     { key: 'student-areas', label: 'Área do Mentorado', icon: GraduationCap },
+    { key: 'purchased-accounts', label: 'Contas Compradas', icon: Shield },
     { key: 'activity', label: 'Atividade', icon: Activity },
     { key: 'settings', label: 'Configurações', icon: Settings },
   ];
