@@ -907,6 +907,8 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
         {section === 'menu' && <AdminMenu />}
         {section === 'student-areas' && <AdminStudentAreas />}
         {section === 'purchased-accounts' && <AdminPurchasedAccounts />}
+        {section === 'offers' && <AdminOffers />}
+        {section === 'offer-analyses' && <AdminOfferAnalyses />}
         {section === 'activity' && <ActivityLogView />}
 
         {section === 'settings' && (
