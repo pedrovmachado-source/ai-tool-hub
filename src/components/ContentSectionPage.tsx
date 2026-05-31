@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { meetsMinPlan } from '@/lib/plan';
-import { ArrowLeft, Play, FileText, Image as ImageIcon, Lock, FileText as TextIcon, ShoppingCart, ArrowRight, Coins } from 'lucide-react';
+import { ArrowLeft, Play, FileText, Image as ImageIcon, Lock, FileText as TextIcon, ShoppingCart, ArrowRight, Coins, Wallet } from 'lucide-react';
+import CashBalance from './CashBalance';
 import SpendCashModal from './SpendCashModal';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { PdfModal, VideoModal, ImageModal } from '@/lib/lessonViewers';
@@ -156,15 +157,26 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
               <span className="text-[10px] font-bold tracking-[0.2em] uppercase">Voltar ao Menu</span>
             </button>
 
-            {slug === 'fb-accounts' && (
-              <button 
-                onClick={() => setShowPurchasedModal(true)}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-blue/20 border border-brand-blue/30 text-brand-blue-medium hover:bg-brand-blue/30 transition-all group"
-              >
-                <ShoppingCart size={14} className="text-brand-blue-medium" />
-                <span className="text-[10px] font-bold tracking-[0.1em] uppercase">Acessar Contas Compradas</span>
-              </button>
-            )}
+            <div className="flex items-center gap-4">
+              {slug === 'fb-accounts' && (
+                <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 border border-white/10 glass-smooth">
+                  <Wallet size={14} className="text-brand-amber" />
+                  <div className="flex flex-col">
+                    <span className="text-[8px] font-bold text-white/30 uppercase tracking-widest leading-none mb-1">Seu Saldo</span>
+                    <CashBalance />
+                  </div>
+                </div>
+              )}
+              {slug === 'fb-accounts' && (
+                <button 
+                  onClick={() => setShowPurchasedModal(true)}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-blue/20 border border-brand-blue/30 text-brand-blue-medium hover:bg-brand-blue/30 transition-all group"
+                >
+                  <ShoppingCart size={14} className="text-brand-blue-medium" />
+                  <span className="text-[10px] font-bold tracking-[0.1em] uppercase">Contas Compradas</span>
+                </button>
+              )}
+            </div>
           </div>
           
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-smooth mb-6 border border-white/5">
