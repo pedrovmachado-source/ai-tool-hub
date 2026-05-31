@@ -136,6 +136,7 @@ export default function Menu() {
             else if (page === 'alunos') navigate('/alunos');
             else if (page === 'mentorias') navigate('/mentorias');
             else if (page === 'menu') navigate('/menu');
+            else if (page === 'comprar-cash') navigate('/comprar-cash');
             else if (page === 'ofertas' || page === 'offers') navigate('/ofertas');
             else if (page === 'ferramentas') navigate('/ferramentas');
             else if (['copywrite', 'site-creation', 'creative-edit', 'fb-accounts'].includes(page)) {
