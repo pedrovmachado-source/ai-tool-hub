@@ -12,7 +12,7 @@ import AdminSiteCreation from './AdminSiteCreation';
 import AdminMenu from './AdminMenu';
 import AdminStudentAreas from './AdminStudentAreas';
 import AdminOfferAnalyses from './AdminOfferAnalyses';
-import ActivityLogView from './ActivityLogView';
+import AdminPurchasedAccounts from './AdminPurchasedAccounts';
 import { logActivity } from '@/lib/activity-log';
 
 // ── Plan type ───────────────────────────────────────────────────────
