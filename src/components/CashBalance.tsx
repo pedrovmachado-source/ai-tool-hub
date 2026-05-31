@@ -81,7 +81,7 @@ export default function CashBalance() {
       <div className="flex items-center gap-1.5">
         <CashIcon className="w-4 h-4 text-brand-amber" />
         <span className="text-[13px] font-bold text-white tracking-tight">
-          {balance.toLocaleString('pt-BR')}
+          {balance >= 1000 ? `${(balance / 1000).toFixed(balance % 1000 >= 100 ? 1 : 0)}k` : balance}
         </span>
       </div>
       
