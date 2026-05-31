@@ -8,6 +8,7 @@ import { Suspense, lazy } from "react";
 import { Loader2 } from "lucide-react";
 import ErrorBoundary from "./components/ErrorBoundary";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
+import BetaBanner from "./components/BetaBanner";
 
 // Lazy loading pages for better performance
 const Home = lazy(() => import("./pages/Home.tsx"));
@@ -50,6 +51,7 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <BetaBanner />
             <Suspense fallback={<LoadingFallback />}>
               <Routes>
                 <Route path="/" element={<Home />} />
