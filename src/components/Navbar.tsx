@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { Menu, Bookmark, X, GraduationCap, Sparkles, Globe2, Wand2, BookOpen, Shield, ChevronRight, LogOut, Video, CreditCard, Star, Zap, Rocket, Users, Facebook, PenTool, Layout } from 'lucide-react';
+import { Menu, Bookmark, X, GraduationCap, Sparkles, Globe2, Wand2, BookOpen, Shield, ChevronRight, LogOut, Video, CreditCard, Star, Zap, Rocket, Users, Facebook, PenTool, Layout, Coins } from 'lucide-react';
+import CashBalance from './CashBalance';
 
 import QuizModal from './QuizModal';
 import NicheLessonsModal from './NicheLessonsModal';
@@ -96,17 +97,22 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
 
         <div className="flex items-center gap-1 sm:gap-2 justify-self-end">
           {user && (
-            <button
-              onClick={() => setShowSaved(true)}
-              className="relative p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg text-white/90 hover:text-white hover:bg-white/15 transition-colors"
-              title="E-books salvos"
-            >
-              <Bookmark size={16} className="sm:hidden" />
-              <Bookmark size={18} className="hidden sm:inline" />
-              {savedEbooks.length > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-brand-amber text-[9px] font-bold text-white flex items-center justify-center">{savedEbooks.length}</span>
-              )}
-            </button>
+            <div className="flex items-center gap-2">
+              <div className="hidden xs:block">
+                <CashBalance />
+              </div>
+              <button
+                onClick={() => setShowSaved(true)}
+                className="relative p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg text-white/90 hover:text-white hover:bg-white/15 transition-colors"
+                title="E-books salvos"
+              >
+                <Bookmark size={16} className="sm:hidden" />
+                <Bookmark size={18} className="hidden sm:inline" />
+                {savedEbooks.length > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-brand-amber text-[9px] font-bold text-white flex items-center justify-center">{savedEbooks.length}</span>
+                )}
+              </button>
+            </div>
           )}
           {!user && !hideAuth ? (
             <button onClick={() => onNavigate('auth')} className="px-2.5 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-black bg-white hover:bg-white/90 transition-colors">Acessar</button>
