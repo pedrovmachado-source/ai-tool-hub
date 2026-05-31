@@ -148,7 +148,16 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
             </div>
           )}
           {!user && !hideAuth ? (
-            <button onClick={() => onNavigate('auth')} className="px-2.5 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-black bg-white hover:bg-white/90 transition-colors">Acessar</button>
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={() => onNavigate('comprar-cash')} 
+                className="flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-white bg-white/10 border border-white/10 hover:bg-white/20 transition-all hover:scale-105 whitespace-nowrap"
+              >
+                <Coins size={14} className="text-brand-amber" />
+                <span>Comprar Cash</span>
+              </button>
+              <button onClick={() => onNavigate('auth')} className="px-2.5 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-black bg-white hover:bg-white/90 transition-colors">Acessar</button>
+            </div>
           ) : !user ? null : (
             <>
                 <button 
