@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { meetsMinPlan } from '@/lib/plan';
-import { ArrowLeft, Play, FileText, Image as ImageIcon, Lock, FileText as TextIcon, ShoppingCart, ArrowRight } from 'lucide-react';
+import { ArrowLeft, Play, FileText, Image as ImageIcon, Lock, FileText as TextIcon, ShoppingCart, ArrowRight, Coins } from 'lucide-react';
+import SpendCashModal from './SpendCashModal';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { PdfModal, VideoModal, ImageModal } from '@/lib/lessonViewers';
 import OfferModal from './OfferModal';
@@ -32,6 +33,7 @@ interface Item {
   example_url: string | null;
   buy_url: string | null;
   sort_order: number;
+  price_cash?: number | null;
 }
 
 export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: string; onBack: () => void; onUpgrade: () => void }) {
@@ -44,6 +46,7 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
   const [image, setImage] = useState<Item | null>(null);
   const [offer, setOffer] = useState<Item | null>(null);
   const [showPurchasedModal, setShowPurchasedModal] = useState(false);
+  const [spendingProduct, setSpendingProduct] = useState<Item | null>(null);
   const [paymentSelection, setPaymentSelection] = useState<{ isOpen: boolean; priceId: string; productId: string; productTitle: string }>({
     isOpen: false,
     priceId: '',
@@ -130,6 +133,7 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
           onImage={() => setImage(i)}
           onOffer={() => setOffer(i)}
           onBuy={(priceId, productId, title) => setPaymentSelection({ isOpen: true, priceId, productId, productTitle: title })}
+          onBuyWithCash={(item) => setSpendingProduct(item)}
         />
       ))}
     </div>
@@ -237,11 +241,21 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
         productId={paymentSelection.productId}
         productTitle={paymentSelection.productTitle}
       />
+      
+      {spendingProduct && (
+        <SpendCashModal 
+          isOpen={!!spendingProduct}
+          onClose={() => setSpendingProduct(null)}
+          productId={spendingProduct.id}
+          productName={spendingProduct.title}
+          priceCash={spendingProduct.price_cash || 0}
+        />
+      )}
     </div>
   );
 }
 
-function ItemCard({ item, isOffers, onVideo, onPdf, onImage, onOffer, onBuy }: {
+function ItemCard({ item, isOffers, onVideo, onPdf, onImage, onOffer, onBuy, onBuyWithCash }: {
   item: Item;
   isOffers?: boolean;
   onVideo: () => void;
@@ -249,6 +263,7 @@ function ItemCard({ item, isOffers, onVideo, onPdf, onImage, onOffer, onBuy }: {
   onImage: () => void;
   onOffer?: () => void;
   onBuy: (priceId: string, productId: string, title: string) => void;
+  onBuyWithCash: (item: Item) => void;
 }) {
   const handleBuy = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -289,12 +304,22 @@ function ItemCard({ item, isOffers, onVideo, onPdf, onImage, onOffer, onBuy }: {
         )}
 
         {item.section_slug === 'fb-accounts' && (
-          <button 
-            onClick={handleBuy}
-            className="w-full py-3 px-6 rounded-2xl bg-white text-black font-bold text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all mb-6 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
-          >
-            Comprar Agora
-          </button>
+          <div className="flex flex-col gap-3 mb-6">
+            {item.price_cash && (
+              <button 
+                onClick={(e) => { e.stopPropagation(); onBuyWithCash(item); }}
+                className="w-full py-2.5 px-4 rounded-xl bg-brand-amber/10 border border-brand-amber/20 text-brand-amber font-bold text-[10px] uppercase tracking-widest hover:bg-brand-amber/20 transition-all flex items-center justify-center gap-2"
+              >
+                <Coins size={12} /> {item.price_cash} Cash
+              </button>
+            )}
+            <button 
+              onClick={handleBuy}
+              className="w-full py-3 px-6 rounded-2xl bg-white text-black font-bold text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)]"
+            >
+              Comprar Agora
+            </button>
+          </div>
         )}
 
       </div>
@@ -320,12 +345,22 @@ function ItemCard({ item, isOffers, onVideo, onPdf, onImage, onOffer, onBuy }: {
         {item.description && <p className="text-white/30 text-xs font-light leading-relaxed mb-6">{item.description}</p>}
         
         {item.section_slug === 'fb-accounts' ? (
-          <button 
-            onClick={handleBuy}
-            className="w-full py-3 px-6 rounded-2xl bg-white text-black font-bold text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all mt-auto"
-          >
-            Comprar Agora
-          </button>
+          <div className="flex flex-col gap-3 mt-auto">
+            {item.price_cash && (
+              <button 
+                onClick={(e) => { e.stopPropagation(); onBuyWithCash(item); }}
+                className="w-full py-2.5 px-4 rounded-xl bg-brand-amber/10 border border-brand-amber/20 text-brand-amber font-bold text-[10px] uppercase tracking-widest hover:bg-brand-amber/20 transition-all flex items-center justify-center gap-2"
+              >
+                <Coins size={12} /> {item.price_cash} Cash
+              </button>
+            )}
+            <button 
+              onClick={handleBuy}
+              className="w-full py-3 px-6 rounded-2xl bg-white text-black font-bold text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all"
+            >
+              Comprar Agora
+            </button>
+          </div>
         ) : (
           <button onClick={handleClick} className="mt-auto pt-6 flex items-center text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] group/btn">
              Ver Detalhes <ArrowRight size={12} className="ml-2 group-hover/btn:translate-x-1 transition-transform" />
