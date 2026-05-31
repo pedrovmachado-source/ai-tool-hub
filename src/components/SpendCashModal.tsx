@@ -77,7 +77,7 @@ export default function SpendCashModal({ isOpen, onClose, productId, productName
       <div className="relative w-full max-w-md bg-[#0D0D0F] border border-white/10 rounded-[3rem] p-10 text-center animate-scale-in">
         {status === 'idle' && (
           <>
-            <div className="w-20 h-20 bg-white/5 rounded-3xl mx-auto mb-8 flex items-center justify-center text-brand-amber">
+            <div className="w-20 h-20 bg-white/5 rounded-2xl mx-auto mb-8 flex items-center justify-center text-brand-amber">
               <CashIcon className="w-10 h-10" />
             </div>
             
@@ -86,7 +86,7 @@ export default function SpendCashModal({ isOpen, onClose, productId, productName
               Você está adquirindo <span className="text-white font-medium">{productName}</span> por:
             </p>
 
-            <div className="bg-white/5 rounded-2xl p-6 mb-10 flex items-center justify-center gap-3 border border-white/5">
+            <div className="bg-white/5 rounded-xl p-6 mb-10 flex items-center justify-center gap-3 border border-white/5">
               <CashIcon className="text-brand-amber" />
               <span className="text-4xl font-serif-display text-white">{priceCash.toLocaleString('pt-BR')}</span>
               <span className="text-[10px] font-bold text-white/20 uppercase tracking-widest mt-2">Cash</span>

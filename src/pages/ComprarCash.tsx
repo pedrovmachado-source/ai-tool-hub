@@ -110,7 +110,7 @@ export default function ComprarCash() {
             Recarregue sua carteira e use seu Cash em tudo dentro do Convert Club.
           </p>
 
-          <div className="mt-8 inline-flex items-center gap-4 bg-white/5 border border-white/10 px-6 py-4 rounded-[2rem] glass-smooth">
+          <div className="mt-8 inline-flex items-center gap-4 bg-white/5 border border-white/10 px-6 py-4 rounded-2xl glass-smooth">
             <div className="text-sm font-medium text-white/50">Saldo atual:</div>
             <div className="flex items-center gap-2">
               <CashIconLarge className="w-6 h-6 text-brand-amber" />
@@ -151,7 +151,7 @@ export default function ComprarCash() {
                 key={pkg.id}
                 onClick={() => setSelectedPackage(pkg.id)}
                 className={`
-                  relative cursor-pointer group p-8 rounded-[2rem] border transition-all duration-500 flex flex-col items-center text-center
+                  relative cursor-pointer group p-8 rounded-2xl border transition-all duration-500 flex flex-col items-center text-center
                   ${isSelected ? 'bg-white/10 border-brand-blue shadow-[0_0_30px_rgba(110,143,214,0.15)]' : 'bg-white/5 border-white/5 hover:bg-white/10'}
                 `}
               >
@@ -161,7 +161,7 @@ export default function ComprarCash() {
                   </div>
                 )}
 
-                <div className="mb-8 p-6 bg-white/5 rounded-3xl group-hover:scale-110 transition-transform duration-500">
+                <div className="mb-8 p-6 bg-white/5 rounded-2xl group-hover:scale-110 transition-transform duration-500">
                   <CashIconLarge className="text-brand-amber" />
                 </div>
 
