@@ -237,6 +237,13 @@ export default function ProPage({ onBack, onNavigate: _onNavigate }: { onBack: (
         <button onClick={onBack} className="px-6 py-2 rounded-lg text-sm bg-primary-foreground/[0.08] text-muted-foreground/60 border border-primary-foreground/10 hover:bg-primary-foreground/[0.15] transition-colors">← Voltar às ferramentas</button>
       </div>
 
+      <PaymentSelectionModal 
+        isOpen={paymentSelection.isOpen}
+        onClose={() => setPaymentSelection(prev => ({ ...prev, isOpen: false }))}
+        priceId={paymentSelection.priceId}
+        productId={paymentSelection.productId}
+        productTitle={paymentSelection.productTitle}
+      />
     </div>
   );
 }
