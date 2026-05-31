@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import Navbar from '@/components/Navbar';
-import { ArrowLeft, Coins, CreditCard, QrCode, Check, Star, X } from 'lucide-react';
+import { ArrowLeft, Coins, CreditCard, QrCode, Check, Star, X, Bell } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -266,10 +266,31 @@ export default function ComprarCash() {
                   Copiar Código PIX
                 </Button>
                 <Button 
-                  onClick={() => setShowPixModal(false)}
-                  className="w-full bg-white text-black hover:bg-white/90 h-12 rounded-xl text-xs font-bold tracking-widest uppercase"
+                  onClick={async () => {
+                    const pkg = packages.find(p => p.id === selectedPackage);
+                    if (pkg) {
+                      const cashAmount = Math.floor(pkg.base_cash * 1.1);
+                      const amount = (pkg.price_brl_cents / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+                      
+                      try {
+                        await supabase.functions.invoke('notify-pix-payment', {
+                          body: { 
+                            packageName: pkg.name,
+                            amount: amount,
+                            cashAmount: cashAmount
+                          }
+                        });
+                        toast.success("Admins notificados! Seu cash será creditado em breve.");
+                        setShowPixModal(false);
+                      } catch (err) {
+                        console.error(err);
+                        toast.error("Erro ao notificar admins.");
+                      }
+                    }
+                  }}
+                  className="w-full bg-white text-black hover:bg-white/90 h-12 rounded-xl text-xs font-bold tracking-widest uppercase flex items-center justify-center gap-2"
                 >
-                  Já realizei o pagamento
+                  Já realizei o pagamento <Bell size={14} className="animate-pulse" />
                 </Button>
               </div>
 
