@@ -48,6 +48,7 @@ export default function ComprarCash() {
   const [paymentMethod, setPaymentMethod] = useState<'pix' | 'card'>('pix');
   const [selectedPackage, setSelectedPackage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showPixModal, setShowPixModal] = useState(false);
   const [currentBalance, setCurrentBalance] = useState<number>(user?.cashBalance || 0);
 
   useEffect(() => {
