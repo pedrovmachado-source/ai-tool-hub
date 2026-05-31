@@ -14,20 +14,17 @@ interface SpendCashModalProps {
 }
 
 const CashIcon = ({ className = "w-6 h-6" }: { className?: string }) => (
-  <div className={`${className} flex items-center justify-center`}>
+  <div className={`${className} flex items-center justify-center relative`}>
     <img 
       src="https://framerusercontent.com/images/3m5C87T8Wwz7N3qE9pIuB9y6yM.png" 
       alt="Cash"
-      className="w-full h-full object-contain"
-      onError={(e) => {
-        const target = e.target as HTMLImageElement;
-        target.style.display = 'none';
-        const parent = target.parentElement;
-        if (parent) {
-          parent.innerHTML = '<span class="text-brand-amber text-sm font-bold">$</span>';
-        }
-      }}
+      className="w-full h-full object-contain relative z-10"
+      loading="eager"
+      crossOrigin="anonymous"
     />
+    <span className="absolute inset-0 flex items-center justify-center text-brand-amber text-sm font-bold z-0">
+      $
+    </span>
   </div>
 );
 
