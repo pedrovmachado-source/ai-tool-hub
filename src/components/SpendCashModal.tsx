@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Coins, AlertCircle, CheckCircle2, Loader2, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -30,6 +30,28 @@ export default function SpendCashModal({ isOpen, onClose, productId, productName
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const [missingCash, setMissingCash] = useState(0);
+  const [currentBalance, setCurrentBalance] = useState(0);
+
+  useEffect(() => {
+    const fetchBalance = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data } = await supabase
+        .from('profiles')
+        .select('cash_balance')
+        .eq('id', user.id)
+        .single();
+      
+      if (data) {
+        setCurrentBalance(Number(data.cash_balance));
+      }
+    };
+    
+    if (isOpen) {
+      fetchBalance();
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -134,8 +156,18 @@ export default function SpendCashModal({ isOpen, onClose, productId, productName
             
             {errorMessage === 'Insufficient balance' ? (
               <>
+                <div className="bg-white/5 rounded-xl p-4 mb-6 border border-white/5 space-y-2">
+                  <div className="flex justify-between text-xs uppercase tracking-wider">
+                    <span className="text-white/40">Seu Saldo</span>
+                    <span className="text-white font-mono">{currentBalance.toLocaleString('pt-BR')} Cash</span>
+                  </div>
+                  <div className="flex justify-between text-xs uppercase tracking-wider">
+                    <span className="text-brand-red/60 font-bold">Faltam</span>
+                    <span className="text-brand-red font-mono font-bold">{missingCash.toLocaleString('pt-BR')} Cash</span>
+                  </div>
+                </div>
                 <p className="text-white/40 text-sm font-light mb-8">
-                  Faltam <span className="text-white font-medium">{missingCash.toLocaleString('pt-BR')} Cash</span> para completar esta compra.
+                  Adicione créditos para completar esta compra agora.
                 </p>
                 <div className="flex flex-col gap-3">
                   <Button
