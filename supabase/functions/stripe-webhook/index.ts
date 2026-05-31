@@ -121,8 +121,8 @@ serve(async (req) => {
             if (contentProd) {
               productName = contentProd.title;
             } else {
-              const { data: siteProd } = await supabaseClient.from('site_products' as any).select('name').eq('id', productId).maybeSingle();
-              if (siteProd) productName = (siteProd as any).name;
+              const { data: siteProd } = await supabaseClient.from('site_products').select('name').eq('id', productId).maybeSingle();
+              if (siteProd) productName = siteProd.name;
             }
 
             if (productName) {
