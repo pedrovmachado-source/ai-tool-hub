@@ -110,7 +110,7 @@ export default function ComprarCash() {
             Recarregue sua carteira e use seu Cash em tudo dentro do Convert Club.
           </p>
 
-          <div className="mt-8 inline-flex items-center gap-4 bg-white/5 border border-white/10 px-6 py-4 rounded-[2rem] glass-smooth">
+          <div className="mt-8 inline-flex items-center gap-4 bg-white/5 border border-white/10 px-6 py-4 rounded-2xl glass-smooth">
             <div className="text-sm font-medium text-white/50">Saldo atual:</div>
             <div className="flex items-center gap-2">
               <CashIconLarge className="w-6 h-6 text-brand-amber" />
@@ -121,18 +121,18 @@ export default function ComprarCash() {
 
         {/* Payment Method Toggle */}
         <div className="mb-16">
-          <div className="bg-white/5 p-1 rounded-full w-fit flex items-center border border-white/10">
+          <div className="bg-white/5 p-1 rounded-xl w-fit flex items-center border border-white/10">
             <button 
               onClick={() => setPaymentMethod('pix')}
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold transition-all ${paymentMethod === 'pix' ? 'bg-white text-black' : 'text-white/40 hover:text-white/60'}`}
+              className={`flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold transition-all ${paymentMethod === 'pix' ? 'bg-white text-black' : 'text-white/40 hover:text-white/60'}`}
             >
               <QrCode size={16} />
               PIX
-              <span className={`text-[9px] px-1.5 py-0.5 rounded-full ${paymentMethod === 'pix' ? 'bg-brand-purple text-white' : 'bg-white/10 text-white/40'}`}>+10% BÔNUS</span>
+              <span className={`text-[9px] px-1.5 py-0.5 rounded-md ${paymentMethod === 'pix' ? 'bg-brand-purple text-white' : 'bg-white/10 text-white/40'}`}>+10% BÔNUS</span>
             </button>
             <button 
               onClick={() => setPaymentMethod('card')}
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold transition-all ${paymentMethod === 'card' ? 'bg-white text-black' : 'text-white/40 hover:text-white/60'}`}
+              className={`flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold transition-all ${paymentMethod === 'card' ? 'bg-white text-black' : 'text-white/40 hover:text-white/60'}`}
             >
               <CreditCard size={16} />
               CARTÃO
@@ -151,17 +151,17 @@ export default function ComprarCash() {
                 key={pkg.id}
                 onClick={() => setSelectedPackage(pkg.id)}
                 className={`
-                  relative cursor-pointer group p-8 rounded-[2rem] border transition-all duration-500 flex flex-col items-center text-center
+                  relative cursor-pointer group p-8 rounded-2xl border transition-all duration-500 flex flex-col items-center text-center
                   ${isSelected ? 'bg-white/10 border-brand-blue shadow-[0_0_30px_rgba(110,143,214,0.15)]' : 'bg-white/5 border-white/5 hover:bg-white/10'}
                 `}
               >
                 {pkg.is_popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-brand-purple text-white text-[9px] font-bold tracking-[0.1em] uppercase z-20">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-md bg-brand-purple text-white text-[9px] font-bold tracking-[0.1em] uppercase z-20">
                     Mais Popular
                   </div>
                 )}
 
-                <div className="mb-8 p-6 bg-white/5 rounded-3xl group-hover:scale-110 transition-transform duration-500">
+                <div className="mb-8 p-6 bg-white/5 rounded-2xl group-hover:scale-110 transition-transform duration-500">
                   <CashIconLarge className="text-brand-amber" />
                 </div>
 
@@ -197,7 +197,7 @@ export default function ComprarCash() {
           <Button
             onClick={handleDeposit}
             disabled={loading || !selectedPackage}
-            className="w-full max-w-md h-16 rounded-full bg-white text-black text-sm font-bold tracking-[0.2em] uppercase hover:bg-white/90 transition-all shadow-2xl disabled:opacity-50"
+            className="w-full max-w-md h-16 rounded-xl bg-white text-black text-sm font-bold tracking-[0.2em] uppercase hover:bg-white/90 transition-all shadow-2xl disabled:opacity-50"
           >
             {loading ? "Processando..." : "Depositar"}
           </Button>

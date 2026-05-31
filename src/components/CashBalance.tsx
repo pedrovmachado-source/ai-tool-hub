@@ -78,7 +78,7 @@ export default function CashBalance() {
       onClick={() => navigate('/comprar-cash')}
       className={`
         flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 
-        pl-2 pr-1 py-1 rounded-full cursor-pointer transition-all group
+        pl-2 pr-1 py-1 rounded-xl cursor-pointer transition-all group
         ${isAnimating ? 'ring-2 ring-brand-amber/50 scale-105' : ''}
       `}
       title="Comprar Cash"
@@ -90,7 +90,7 @@ export default function CashBalance() {
         </span>
       </div>
       
-      <button className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-white group-hover:bg-brand-amber group-hover:text-black transition-colors">
+      <button className="w-6 h-6 rounded-md bg-white/10 flex items-center justify-center text-white group-hover:bg-brand-amber group-hover:text-black transition-colors">
         <Plus size={14} />
       </button>
     </div>

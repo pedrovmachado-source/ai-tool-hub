@@ -23,7 +23,7 @@ export default function CashCancel() {
 
           <Button 
             onClick={() => navigate('/comprar-cash')}
-            className="w-full h-14 rounded-full bg-white/5 text-white text-xs font-bold tracking-[0.2em] uppercase hover:bg-white/10 border border-white/10 transition-all"
+            className="w-full h-14 rounded-xl bg-white/5 text-white text-xs font-bold tracking-[0.2em] uppercase hover:bg-white/10 border border-white/10 transition-all"
           >
             <ArrowLeft size={14} className="mr-2" /> Tentar novamente
           </Button>
