@@ -645,14 +645,18 @@ function TabPlanos() {
       description: 'Acesso às ferramentas essenciais do Convert Club.',
       badge: 'bg-gradient-to-r from-brand-amber to-brand-amber/80 text-white',
       link: '/pro',
-      cta: 'Ver detalhes'
+      cta: 'Em breve',
+      blocked: true,
+      tag: 'Versão de testes'
     },
     {
       name: 'Elite Plus',
       description: 'Ferramentas avançadas e limites ampliados.',
       badge: 'bg-gradient-to-r from-brand-blue to-brand-teal text-white',
       link: '/pro',
-      cta: 'Ver detalhes'
+      cta: 'Em breve',
+      blocked: true,
+      tag: 'Versão de testes'
     },
     {
       name: 'Max',
