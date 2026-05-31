@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocation } from 'react-router-dom';
 import { Menu, Bookmark, X, GraduationCap, Sparkles, Globe2, Wand2, BookOpen, Shield, ChevronRight, LogOut, Video, CreditCard, Star, Zap, Rocket, Users, Facebook, PenTool, Layout, Coins } from 'lucide-react';
@@ -42,6 +42,36 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
   const [menuItems, setMenuItems] = useState<NavItem[]>(DEFAULT_ITEMS);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [showPurchasedModal, setShowPurchasedModal] = useState(false);
+  const [realTimeBalance, setRealTimeBalance] = useState<number>(user?.cashBalance || 0);
+
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const fetchBalance = async () => {
+      const { data } = await supabase
+        .from('profiles')
+        .select('cash_balance')
+        .eq('id', user.id)
+        .single();
+      if (data) setRealTimeBalance(Number(data.cash_balance));
+    };
+
+    fetchBalance();
+
+    const channel = supabase
+      .channel(`navbar-balance-${user.id}`)
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'profiles',
+        filter: `id=eq.${user.id}`,
+      }, (payload) => {
+        setRealTimeBalance(Number(payload.new.cash_balance));
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [user?.id]);
 
   useEffect(() => {
     (async () => {
@@ -124,13 +154,13 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
               {!isPaid(user.plano) && (
                 <button onClick={() => onNavigate('pro')} className="px-2.5 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-white bg-gradient-to-r from-brand-amber to-brand-amber/80 hover:opacity-90 transition-opacity whitespace-nowrap">⚡<span className="hidden sm:inline"> Upgrade Elite</span></button>
               )}
-              <button 
-                onClick={() => onNavigate('comprar-cash')} 
-                className="hidden md:flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-white bg-white/10 border border-white/10 hover:bg-white/20 transition-all hover:scale-105 whitespace-nowrap"
-              >
-                <Coins size={14} className="text-brand-amber" />
-                <span>Comprar Cash - ${user.cashBalance?.toLocaleString('pt-BR') || '0'}</span>
-              </button>
+                <button 
+                  onClick={() => onNavigate('comprar-cash')} 
+                  className="hidden md:flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-white bg-white/10 border border-white/10 hover:bg-white/20 transition-all hover:scale-105 whitespace-nowrap"
+                >
+                  <Coins size={14} className="text-brand-amber" />
+                  <span>Comprar Cash - ${realTimeBalance.toLocaleString('pt-BR')}</span>
+                </button>
               <button onClick={() => onNavigate('profile')} className="flex items-center gap-1.5 sm:gap-2 bg-white/15 hover:bg-white/25 pl-1 sm:pl-1.5 pr-2 sm:pr-3 py-1 rounded-full transition-colors max-w-[140px] sm:max-w-none">
                 <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-navy flex items-center justify-center text-[11px] font-medium text-white shrink-0 overflow-hidden border border-white/10">
                   {user.avatarUrl ? (
