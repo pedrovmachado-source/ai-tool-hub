@@ -6,6 +6,7 @@ import { Check, X, Loader2, LogIn, UserPlus } from 'lucide-react';
 import { usePlansConfig } from '@/hooks/usePlanConfig';
 import { toast } from 'sonner';
 import type { Period } from '@/lib/plan';
+import PaymentSelectionModal from './PaymentSelectionModal';
 
 type Tier = 'free' | 'elite' | 'elitePlus';
 
