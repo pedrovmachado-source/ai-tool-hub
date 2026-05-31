@@ -8,7 +8,6 @@ import {
   Zap,
   Sparkles,
   Rocket,
-  Github
 } from 'lucide-react';
 import { lovable } from '@/integrations/lovable';
 import { Button } from '@/components/ui/button';
@@ -43,25 +42,6 @@ export default function Auth() {
     }
   };
 
-  const handleGitHubSignIn = async () => {
-    setSubmitting(true);
-    setError('');
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'github',
-        options: {
-          redirectTo: window.location.origin + '/menu'
-        }
-      });
-      if (error) {
-        setError(error.message);
-        setSubmitting(false);
-      }
-    } catch (err) {
-      setError('Erro ao conectar com GitHub. Tente novamente.');
-      setSubmitting(false);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-black flex flex-col lg:flex-row font-sans selection:bg-white/20">
@@ -154,15 +134,6 @@ export default function Auth() {
                 Continuar com Google
               </Button>
 
-              <Button 
-                onClick={handleGitHubSignIn}
-                disabled={submitting}
-                variant="outline"
-                className="w-full h-16 rounded-2xl border-white/10 bg-white/5 hover:bg-white/10 text-white gap-3 transition-all text-base"
-              >
-                <Github className="w-6 h-6" />
-                Continuar com GitHub
-              </Button>
             </div>
 
             {submitting && (
