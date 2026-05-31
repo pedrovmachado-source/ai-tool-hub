@@ -31,7 +31,7 @@ serve(async (req) => {
     const { data: profile } = await supabaseClient
       .from('profiles')
       .select('nome, email, telefone')
-      .eq('id', user.id)
+      .eq('user_id', user.id)
       .single();
 
     // Get admins from user_roles
