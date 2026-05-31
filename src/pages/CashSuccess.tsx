@@ -84,7 +84,7 @@ export default function CashSuccess() {
 
           <Button 
             onClick={() => navigate('/menu')}
-            className="w-full h-14 rounded-full bg-white text-black text-xs font-bold tracking-[0.2em] uppercase hover:bg-white/90 transition-all"
+            className="w-full h-14 rounded-xl bg-white text-black text-xs font-bold tracking-[0.2em] uppercase hover:bg-white/90 transition-all"
           >
             Ir para o Dashboard <ArrowRight size={14} className="ml-2" />
           </Button>
