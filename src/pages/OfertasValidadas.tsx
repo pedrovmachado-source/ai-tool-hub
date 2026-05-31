@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
+import Meta from '@/components/Meta';
 import OfferAnalysisModal from '@/components/OfferAnalysisModal';
 import OffersRanking from '@/components/OffersRanking';
 import { supabase } from '@/integrations/supabase/client';
@@ -39,11 +40,6 @@ export default function OfertasValidadas() {
   const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false);
 
   useEffect(() => {
-    document.title = 'Ofertas Validadas | Convert Club';
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) {
-      metaDesc.setAttribute('content', 'Produtos minerados com alto potencial de escala e conversão imediata para assinantes Elite.');
-    }
     fetchOffers();
   }, []);
 
@@ -70,6 +66,7 @@ export default function OfertasValidadas() {
 
   return (
     <div className="flex flex-col min-h-screen bg-black text-white selection:bg-white/20 font-sans overflow-x-hidden">
+      <Meta title="Ofertas Validadas | Convert Club" description="Produtos minerados com alto potencial de escala e conversão imediata para assinantes Elite." />
       <Navbar 
         onNavigate={(page) => {
           if (page === 'home') navigate('/');
