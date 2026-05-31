@@ -52,7 +52,7 @@ export default function CashBalance() {
         },
         (payload) => {
           const newBalance = Number(payload.new.cash_balance);
-          if (newBalance !== balance) {
+          if (newBalance !== undefined) {
             setBalance(newBalance);
             setIsAnimating(true);
             setTimeout(() => setIsAnimating(false), 2000);
