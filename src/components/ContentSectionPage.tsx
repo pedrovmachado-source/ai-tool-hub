@@ -314,7 +314,7 @@ function ItemCard({ item, isOffers, onVideo, onPdf, onImage, onOffer, onBuy, onB
               className="w-full py-3 px-6 rounded-2xl bg-white text-black font-bold text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] flex items-center justify-center gap-2"
             >
               <Coins size={14} className="text-brand-amber" />
-              Comprar por {item.price_cash} Cash
+              {item.price_cash} Cash
             </button>
           </div>
         )}
@@ -348,7 +348,7 @@ function ItemCard({ item, isOffers, onVideo, onPdf, onImage, onOffer, onBuy, onB
               className="w-full py-3 px-6 rounded-2xl bg-white text-black font-bold text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
             >
               <Coins size={14} className="text-brand-amber" />
-              Comprar por {item.price_cash} Cash
+              {item.price_cash} Cash
             </button>
           </div>
         ) : (
