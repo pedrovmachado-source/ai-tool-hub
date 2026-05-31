@@ -109,18 +109,9 @@ export default function Home() {
       badge: "Best Seller"
     },
     {
-      title: "Recarregar Cash",
-      description: "Recarregue sua carteira para acessar ferramentas e serviços exclusivos.",
-      icon: Zap,
-      color: "text-white",
-      bg: "bg-white/10",
-      target: "comprar-cash",
-      badge: "Carteira"
-    },
-    {
       title: "Criativos",
       description: "Estratégias práticas de quem fatura 7 dígitos no mercado digital.",
-      icon: Globe2,
+      icon: Wand2,
       color: "text-white",
       bg: "bg-white/10",
       target: "creative-edit",
