@@ -7,15 +7,11 @@ import { useNavigate } from 'react-router-dom';
 const CashIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
   <div className={`${className} flex items-center justify-center relative`}>
     <img 
-      src="https://framerusercontent.com/images/3m5C87T8Wwz7N3qE9pIuB9y6yM.png" 
+      src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Coin/3D/coin_3d.png" 
       alt="Cash"
-      className="w-full h-full object-contain relative z-10"
+      className="w-full h-full object-contain relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]"
       loading="eager"
-      crossOrigin="anonymous"
     />
-    <span className="absolute inset-0 flex items-center justify-center text-brand-amber text-[10px] font-bold z-0">
-      $
-    </span>
   </div>
 );
 
