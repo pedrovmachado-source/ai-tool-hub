@@ -44,6 +44,12 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
   const [image, setImage] = useState<Item | null>(null);
   const [offer, setOffer] = useState<Item | null>(null);
   const [showPurchasedModal, setShowPurchasedModal] = useState(false);
+  const [paymentSelection, setPaymentSelection] = useState<{ isOpen: boolean; priceId: string; productId: string; productTitle: string }>({
+    isOpen: false,
+    priceId: '',
+    productId: '',
+    productTitle: ''
+  });
   const isOffers = slug === 'offers';
 
   useEffect(() => {
