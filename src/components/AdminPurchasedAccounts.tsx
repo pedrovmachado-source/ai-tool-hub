@@ -34,9 +34,10 @@ export default function AdminPurchasedAccounts() {
       
       // Fetch user emails for display
       const userIds = [...new Set((accs || []).map(a => a.user_id))];
-      const { data: users } = await supabase.rpc('get_user_emails', { user_ids: userIds });
+      const { data: users } = await supabase.rpc('get_user_emails' as any, { user_ids: userIds });
       
-      const userMap = (users || []).reduce((acc: any, curr: any) => {
+      const userList = (users || []) as any[];
+      const userMap = userList.reduce((acc: any, curr: any) => {
         acc[curr.id] = curr.email;
         return acc;
       }, {});

@@ -13,6 +13,7 @@ import AdminMenu from './AdminMenu';
 import AdminStudentAreas from './AdminStudentAreas';
 import AdminOfferAnalyses from './AdminOfferAnalyses';
 import AdminPurchasedAccounts from './AdminPurchasedAccounts';
+import ActivityLogView from './ActivityLogView';
 import { logActivity } from '@/lib/activity-log';
 
 // ── Plan type ───────────────────────────────────────────────────────
