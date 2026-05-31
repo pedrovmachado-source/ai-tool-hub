@@ -161,7 +161,7 @@ export default function Menu() {
         <div className="relative z-10 max-w-7xl mx-auto">
           <header className="mb-20">
             <Reveal>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-smooth mb-6 border border-white/5">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg glass-smooth mb-6 border border-white/5">
                 <Layout className="w-3 h-3 text-white/50" />
                 <span className="text-[10px] font-bold text-white/50 tracking-[0.2em] uppercase">Dashboard de Acesso</span>
               </div>
@@ -192,7 +192,7 @@ export default function Menu() {
                     <item.icon className="w-7 h-7" />
                   </div>
 
-                  <div className="inline-block px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[9px] font-bold text-white/40 uppercase tracking-[0.2em] mb-4 w-fit">
+                  <div className="inline-block px-3 py-1 rounded-lg bg-white/5 border border-white/5 text-[9px] font-bold text-white/40 uppercase tracking-[0.2em] mb-4 w-fit">
                     {item.badge}
                   </div>
 

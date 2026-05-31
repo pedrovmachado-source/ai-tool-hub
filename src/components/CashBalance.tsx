@@ -90,7 +90,7 @@ export default function CashBalance() {
         </span>
       </div>
       
-      <button className="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center text-white group-hover:bg-brand-amber group-hover:text-black transition-colors">
+      <button className="w-6 h-6 rounded-md bg-white/10 flex items-center justify-center text-white group-hover:bg-brand-amber group-hover:text-black transition-colors">
         <Plus size={14} />
       </button>
     </div>

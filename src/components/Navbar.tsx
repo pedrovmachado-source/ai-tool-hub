@@ -112,7 +112,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
                 <Bookmark size={16} className="sm:hidden" />
                 <Bookmark size={18} className="hidden sm:inline" />
                 {savedEbooks.length > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-brand-amber text-[9px] font-bold text-white flex items-center justify-center">{savedEbooks.length}</span>
+                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-md bg-brand-amber text-[9px] font-bold text-white flex items-center justify-center">{savedEbooks.length}</span>
                 )}
               </button>
             </div>
@@ -142,7 +142,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
                   )}
                 </div>
                 <span className="text-[12px] sm:text-[13px] text-white truncate hidden xs:inline sm:inline">{user.nome} {user.sobrenome}</span>
-                <span className={`text-[9px] sm:text-[10px] font-medium px-1.5 sm:px-2 py-0.5 rounded-full shrink-0 ${planBadgeClass(user.plano)}`}>{planLabel(user.plano)}</span>
+                <span className={`text-[9px] sm:text-[10px] font-medium px-1.5 sm:px-2 py-0.5 rounded-md shrink-0 ${planBadgeClass(user.plano)}`}>{planLabel(user.plano)}</span>
               </button>
             </>
           )}
