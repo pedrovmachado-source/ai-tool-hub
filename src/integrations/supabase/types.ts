@@ -908,6 +908,7 @@ export type Database = {
         }[]
       }
       get_tool_premium: { Args: { _tool_key: string }; Returns: Json }
+      get_user_emails: { Args: { user_ids: string[] }; Returns: Json }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
