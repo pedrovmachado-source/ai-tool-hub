@@ -151,9 +151,6 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
             <button onClick={() => onNavigate('auth')} className="px-2.5 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-black bg-white hover:bg-white/90 transition-colors">Acessar</button>
           ) : !user ? null : (
             <>
-              {!isPaid(user.plano) && (
-                <button onClick={() => onNavigate('pro')} className="px-2.5 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-white bg-gradient-to-r from-brand-amber to-brand-amber/80 hover:opacity-90 transition-opacity whitespace-nowrap">⚡<span className="hidden sm:inline"> Upgrade Elite</span></button>
-              )}
                 <button 
                   onClick={() => onNavigate('comprar-cash')} 
                   className="hidden md:flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-white bg-white/10 border border-white/10 hover:bg-white/20 transition-all hover:scale-105 whitespace-nowrap"
