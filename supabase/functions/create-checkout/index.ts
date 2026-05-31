@@ -28,7 +28,7 @@ serve(async (req) => {
     const { packageId, paymentMethod = "card", priceId, productId, mode = "payment", isPix = false } = body;
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2025-08-27.basil",
+      apiVersion: "2024-06-20",
     });
 
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
@@ -59,7 +59,7 @@ serve(async (req) => {
             name: `Recarga de ${pkg.name} - ${cashToCredit} Cash`,
             description: isPixMethod ? "Inclui bônus de 10% por pagamento via PIX" : "Pagamento via Cartão",
           },
-          unit_amount: pkg.price_brl_cents,
+          unit_amount: Math.round(pkg.price_brl_cents),
         },
         quantity: 1,
       }];
@@ -115,7 +115,9 @@ serve(async (req) => {
     };
 
     if (paymentMethod === 'pix' || isPix) {
-      sessionOptions.payment_method_types = ['pix'];
+      sessionOptions.payment_method_types = ['card', 'pix'];
+    } else {
+      sessionOptions.payment_method_types = ['card'];
     }
 
     const session = await stripe.checkout.sessions.create(sessionOptions);
