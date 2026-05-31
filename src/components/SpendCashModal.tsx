@@ -134,15 +134,23 @@ export default function SpendCashModal({ isOpen, onClose, productId, productName
             
             {errorMessage === 'Insufficient balance' ? (
               <>
-                <p className="text-white/40 text-sm font-light mb-10">
+                <p className="text-white/40 text-sm font-light mb-8">
                   Faltam <span className="text-white font-medium">{missingCash.toLocaleString('pt-BR')} Cash</span> para completar esta compra.
                 </p>
-                <Button
-                  onClick={() => { onClose(); navigate('/comprar-cash'); }}
-                  className="w-full h-14 rounded-xl bg-brand-amber text-black text-xs font-bold tracking-[0.2em] uppercase"
-                >
-                  Recarregar Carteira
-                </Button>
+                <div className="flex flex-col gap-3">
+                  <Button
+                    onClick={() => { onClose(); navigate('/comprar-cash'); }}
+                    className="w-full h-14 rounded-xl bg-brand-amber text-black text-xs font-bold tracking-[0.2em] uppercase hover:bg-brand-amber/90 transition-all flex items-center justify-center gap-2"
+                  >
+                    <Coins size={16} /> Recarregar Agora
+                  </Button>
+                  <button 
+                    onClick={() => setStatus('idle')}
+                    className="text-white/20 hover:text-white transition-colors text-[10px] font-bold uppercase tracking-[0.2em] py-2"
+                  >
+                    Tentar outro valor
+                  </button>
+                </div>
               </>
             ) : (
               <>
