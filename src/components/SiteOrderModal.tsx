@@ -13,6 +13,7 @@ const schema = z.object({
 });
 
 export interface SiteOrderProduct {
+  id: string;
   slug: string;
   name: string;
   price: string;
@@ -47,10 +48,26 @@ export default function SiteOrderModal({ product, onClose }: { product: SiteOrde
       toast({ title: 'Pedido enviado!', description: 'Redirecionando para o pagamento…' });
       
       // If product has a Stripe checkout link, try to use the integrated checkout
-      if (product.buy_url) {
-        // Simple extraction of price ID if it's a buy.stripe.com link (limited support)
-        // or just use the buy_url directly as fallback
-        window.location.href = product.buy_url;
+      const url = product.buy_url || '';
+      if (url.includes('price_')) {
+        try {
+          const parts = url.split('/');
+          const priceId = parts.find(p => p.startsWith('price_')) || url;
+          
+          const { data, error } = await supabase.functions.invoke('create-checkout', {
+            body: { priceId, productId: product.id, mode: 'payment' }
+          });
+          if (error) throw error;
+          if (data?.url) {
+            window.location.href = data.url;
+            return;
+          }
+        } catch (err) {
+          console.error('Checkout error:', err);
+          window.open(url, '_self');
+        }
+      } else if (url) {
+        window.location.href = url;
       }
       onClose();
     } finally {

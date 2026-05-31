@@ -78,8 +78,11 @@ export default function SiteCreationPage({ onBack }: { onBack: () => void }) {
     
     if (p.buy_url?.startsWith('price_')) {
       try {
+        const parts = p.buy_url.split('/');
+        const priceId = parts.find(part => part.startsWith('price_')) || p.buy_url;
+        
         const { data, error } = await supabase.functions.invoke('create-checkout', {
-          body: { priceId: p.buy_url, mode: 'payment' }
+          body: { priceId, productId: p.id, mode: 'payment' }
         });
         if (error) throw error;
         if (data?.url) {
@@ -93,7 +96,7 @@ export default function SiteCreationPage({ onBack }: { onBack: () => void }) {
     }
 
     setOrderingProduct({
-      slug: p.slug, name: p.name, price: p.price, buy_url: p.buy_url, kind: p.kind,
+      id: p.id, slug: p.slug, name: p.name, price: p.price, buy_url: p.buy_url, kind: p.kind,
     });
   };
 
