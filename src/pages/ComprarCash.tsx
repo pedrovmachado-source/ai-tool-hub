@@ -151,10 +151,19 @@ export default function ComprarCash() {
 
         {/* Package Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-16">
-          {packages.map((pkg) => {
+          {packages.map((pkg, index) => {
             const isSelected = selectedPackage === pkg.id;
             const cashAmount = paymentMethod === 'pix' ? Math.floor(pkg.base_cash * 1.1) : pkg.base_cash;
             
+            // Map package to 3D icon variant
+            const getVariant = (idx: number) => {
+              if (idx === 0) return "coin";
+              if (idx === 1) return "bag";
+              if (idx === 2) return "wings";
+              if (idx === 3) return "gem";
+              return "trophy";
+            };
+
             return (
               <div 
                 key={pkg.id}
@@ -165,13 +174,16 @@ export default function ComprarCash() {
                 `}
               >
                 {pkg.is_popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-md bg-brand-purple text-white text-[9px] font-bold tracking-[0.1em] uppercase z-20">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-md bg-brand-purple text-white text-[9px] font-bold tracking-[0.1em] uppercase z-20 shadow-lg">
                     Mais Popular
                   </div>
                 )}
 
-                <div className="mb-8 p-6 bg-white/5 rounded-2xl group-hover:scale-110 transition-transform duration-500">
-                  <CashIconLarge className="text-brand-amber" />
+                <div className="mb-8 relative">
+                  <CashIconLarge 
+                    variant={getVariant(index)} 
+                    className="w-24 h-24 group-hover:scale-110 transition-transform duration-500 ease-out" 
+                  />
                 </div>
 
                 <div className="text-4xl font-serif-display text-white mb-2">
