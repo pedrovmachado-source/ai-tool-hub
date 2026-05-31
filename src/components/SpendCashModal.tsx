@@ -14,11 +14,18 @@ interface SpendCashModalProps {
 }
 
 const CashIcon = ({ className = "w-6 h-6" }: { className?: string }) => (
-  <img 
-    src="https://framerusercontent.com/images/3m5C87T8Wwz7N3qE9pIuB9y6yM.png" 
-    alt="Cash"
-    className={className}
-  />
+  <div className={`${className} flex items-center justify-center relative`}>
+    <img 
+      src="https://framerusercontent.com/images/3m5C87T8Wwz7N3qE9pIuB9y6yM.png" 
+      alt="Cash"
+      className="w-full h-full object-contain relative z-10"
+      loading="eager"
+      crossOrigin="anonymous"
+    />
+    <span className="absolute inset-0 flex items-center justify-center text-brand-amber text-sm font-bold z-0">
+      $
+    </span>
+  </div>
 );
 
 export default function SpendCashModal({ isOpen, onClose, productId, productName, priceCash }: SpendCashModalProps) {
