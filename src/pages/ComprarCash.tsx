@@ -65,7 +65,7 @@ export default function ComprarCash() {
         const { data: profile } = await supabase
           .from('profiles')
           .select('cash_balance')
-          .eq('id', user.id)
+          .eq('user_id', user.id)
           .single();
         if (profile) setCurrentBalance(Number(profile.cash_balance));
       }

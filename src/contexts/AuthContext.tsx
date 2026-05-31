@@ -240,15 +240,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       // Redirect logic after login
       if (event === 'SIGNED_IN' && session?.user) {
-        // We need to wait for profile sync to decide where to go
-        // But for Google users specifically, we check if they have name/surname
-        const isGoogle = session.user.app_metadata.provider === 'google' || 
-                        session.user.identities?.some(id => id.provider === 'google');
-        
-        // If it's a new login or Google login, we might need to redirect
-        // We'll let the Profile/CompleteProfile pages handle the specific checks if possible
-        // but a baseline redirect to /menu or /completar-perfil is good
-        if (window.location.pathname === '/' || window.location.pathname === '') {
+        if (window.location.pathname === '/' || window.location.pathname === '/auth') {
           window.location.href = '/menu';
         }
       }
