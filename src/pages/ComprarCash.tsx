@@ -230,9 +230,66 @@ export default function ComprarCash() {
             {loading ? "Processando..." : "Depositar"}
           </Button>
           <p className="mt-6 text-white/20 text-xs text-center max-w-xs leading-relaxed">
-            Ao clicar em depositar, você será redirecionado para o ambiente seguro do Stripe.
+            Ao clicar em depositar, você será redirecionado para o ambiente seguro do {paymentMethod === 'pix' ? 'Mercado Pago' : 'Stripe'}.
           </p>
         </div>
+
+        <Dialog open={showPixModal} onOpenChange={setShowPixModal}>
+          <DialogContent className="bg-[#121212] border-white/10 text-white max-w-sm rounded-3xl p-8">
+            <DialogHeader className="mb-6">
+              <DialogTitle className="text-2xl font-serif-display text-center">Pagamento via PIX</DialogTitle>
+              <DialogDescription className="text-white/40 text-center text-sm">
+                Escaneie o QR Code abaixo para finalizar sua compra de Cash com bônus.
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="flex flex-col items-center gap-8">
+              <div className="bg-white p-4 rounded-2xl shadow-[0_0_50px_rgba(255,255,255,0.05)]">
+                <div className="w-48 h-48 bg-gray-100 flex items-center justify-center rounded-lg overflow-hidden relative group">
+                  <img 
+                    src="/qrcode-pix.png" 
+                    alt="QR Code PIX" 
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      // Fallback visual if image doesn't exist yet
+                      e.currentTarget.style.display = 'none';
+                      const parent = e.currentTarget.parentElement;
+                      if (parent) {
+                        const icon = document.createElement('div');
+                        icon.className = "flex flex-col items-center justify-center text-black/20 gap-2";
+                        icon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-qr-code"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16h.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/></svg><span class="text-[10px] font-bold uppercase tracking-widest">QR CODE</span>';
+                        parent.appendChild(icon);
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div className="w-full space-y-4">
+                <Button 
+                  onClick={() => {
+                    navigator.clipboard.writeText("SUA_CHAVE_PIX_COPIA_E_COLA_AQUI");
+                    toast.success("Código PIX copiado!");
+                  }}
+                  variant="outline"
+                  className="w-full border-white/10 bg-white/5 hover:bg-white/10 text-white h-12 rounded-xl text-xs font-bold tracking-widest uppercase"
+                >
+                  Copiar Código PIX
+                </Button>
+                <Button 
+                  onClick={() => setShowPixModal(false)}
+                  className="w-full bg-white text-black hover:bg-white/90 h-12 rounded-xl text-xs font-bold tracking-widest uppercase"
+                >
+                  Já realizei o pagamento
+                </Button>
+              </div>
+
+              <p className="text-[10px] text-white/20 text-center leading-relaxed">
+                O seu Cash será creditado automaticamente após a confirmação da rede.
+              </p>
+            </div>
+          </DialogContent>
+        </Dialog>
       </main>
 
       <footer className="py-12 px-6 border-t border-white/5 text-center">
