@@ -675,17 +675,35 @@ function TabPlanos() {
         <p className="text-sm text-muted-foreground mb-6">Conheça os níveis de acesso disponíveis no Convert Club.</p>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {plans.map((p) => (
-            <div key={p.name} className="flex flex-col border border-border rounded-xl p-5 hover:border-brand-blue/30 transition-colors">
-              <div className="flex justify-between items-start mb-4">
+          {plans.map((p: any) => (
+            <div key={p.name} className={`flex flex-col border border-border rounded-xl p-5 transition-all ${p.blocked ? 'opacity-75 grayscale-[0.5]' : 'hover:border-brand-blue/30'}`}>
+              <div className="flex justify-between items-start mb-2">
                 <h3 className="font-bold text-lg">{p.name}</h3>
                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${p.badge}`}>
                   PLANO
                 </span>
               </div>
+              
+              {p.tag && (
+                <div className="mb-4">
+                  <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-brand-blue/10 text-brand-blue border border-brand-blue/20">
+                    {p.tag}
+                  </span>
+                </div>
+              )}
+
               <p className="text-xs text-muted-foreground mb-6 flex-1">{p.description}</p>
               
-              {p.external ? (
+              {p.blocked ? (
+                <Button 
+                  disabled
+                  variant="outline" 
+                  size="sm" 
+                  className="w-full text-xs cursor-not-allowed opacity-50"
+                >
+                  {p.cta}
+                </Button>
+              ) : p.external ? (
                 <a 
                   href={p.link} 
                   target="_blank" 
