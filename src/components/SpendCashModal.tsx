@@ -115,10 +115,10 @@ export default function SpendCashModal({ isOpen, onClose, productId, productName
               O item foi adicionado à sua conta. Você já pode acessá-lo agora.
             </p>
             <Button
-              onClick={() => { onClose(); navigate('/menu'); }}
+              onClick={() => { onClose(); }}
               className="w-full h-14 rounded-xl bg-white text-black text-xs font-bold tracking-[0.2em] uppercase"
             >
-              Acessar Agora <ArrowRight size={14} className="ml-2" />
+              OK <ArrowRight size={14} className="ml-2" />
             </Button>
           </>
         )}
