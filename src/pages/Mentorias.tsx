@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
+import Meta from '@/components/Meta';
 import MentoriaModal from '@/components/MentoriaModal';
 import { isMentorado } from '@/lib/plan';
 import { useEffect, useRef, useState } from 'react';
@@ -48,9 +49,8 @@ export default function Mentorias() {
     }
   }, [user, navigate]);
 
-  useEffect(() => {
-    document.title = 'Convert Club — Mentorias';
-  }, []);
+  // Meta tags handled in return
+
 
   const mentorias: MentorLesson[] = [
     {
@@ -114,6 +114,7 @@ export default function Mentorias() {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#141414] text-white selection:bg-white/20 font-sans overflow-x-hidden">
+      <Meta title="Mentorias | Convert Club" description="Assista às mentorias exclusivas do Convert Club com estratégias de escala e conversão brutal." />
       <Navbar 
         onNavigate={(page) => {
           if (page === 'home') navigate('/');

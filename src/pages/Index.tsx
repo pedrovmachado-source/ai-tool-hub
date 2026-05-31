@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import Meta from '@/components/Meta';
 import { usePlanConfig } from '@/hooks/usePlanConfig';
 import { useNavigate } from 'react-router-dom';
 import { useCategories } from '@/hooks/useCategories';
@@ -196,6 +197,7 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
 
   return (
     <div className="flex flex-col min-h-screen pt-[72px] sm:pt-[88px]">
+      <Meta title="Ferramentas de IA | Convert Club" description="Descubra as melhores IAs para turbinar seu negócio com e-books e prompts exclusivos." />
       <header>
         <Navbar onNavigate={handleNavigate} onOpenSavedEbook={(toolKey, categoryKey) => {
           const cat = categories.find(c => c.key === categoryKey);
