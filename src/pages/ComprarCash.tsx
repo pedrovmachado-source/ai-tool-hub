@@ -245,22 +245,11 @@ export default function ComprarCash() {
             
             <div className="flex flex-col items-center gap-8">
               <div className="bg-white p-4 rounded-2xl shadow-[0_0_50px_rgba(255,255,255,0.05)]">
-                <div className="w-48 h-48 bg-gray-100 flex items-center justify-center rounded-lg overflow-hidden relative group">
+                <div className="w-48 h-48 bg-white flex items-center justify-center rounded-lg overflow-hidden relative group">
                   <img 
-                    src="/qrcode-pix.png" 
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent("00020126580014br.gov.bcb.pix013654c3601f-4872-44bc-81d4-b8f61de5d2cd5204000053039865802BR5909SOLZAKAYO6009Sao Paulo610901227-20062230519daqr2924465906051116304C37F")}`}
                     alt="QR Code PIX" 
                     className="w-full h-full object-contain"
-                    onError={(e) => {
-                      // Fallback visual if image doesn't exist yet
-                      e.currentTarget.style.display = 'none';
-                      const parent = e.currentTarget.parentElement;
-                      if (parent) {
-                        const icon = document.createElement('div');
-                        icon.className = "flex flex-col items-center justify-center text-black/20 gap-2";
-                        icon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-qr-code"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16h.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/></svg><span class="text-[10px] font-bold uppercase tracking-widest">QR CODE</span>';
-                        parent.appendChild(icon);
-                      }
-                    }}
                   />
                 </div>
               </div>
