@@ -161,6 +161,7 @@ export default function ComprarCash() {
           {packages.map((pkg, index) => {
             const isSelected = selectedPackage === pkg.id;
             const cashAmount = paymentMethod === 'pix' ? Math.floor(pkg.base_cash * 1.1) : pkg.base_cash;
+            const isBlocked = pkg.name.toLowerCase().includes('elite');
             
             // Map package to 3D icon variant
             const getVariant = (idx: number) => {
@@ -174,22 +175,29 @@ export default function ComprarCash() {
             return (
               <div 
                 key={pkg.id}
-                onClick={() => setSelectedPackage(pkg.id)}
+                onClick={() => !isBlocked && setSelectedPackage(pkg.id)}
                 className={`
-                  relative cursor-pointer group p-8 rounded-2xl border transition-all duration-500 flex flex-col items-center text-center
-                  ${isSelected ? 'bg-white/10 border-brand-blue shadow-[0_0_30px_rgba(110,143,214,0.15)]' : 'bg-white/5 border-white/5 hover:bg-white/10'}
+                  relative group p-8 rounded-2xl border transition-all duration-500 flex flex-col items-center text-center
+                  ${isBlocked ? 'cursor-not-allowed opacity-60 bg-white/5 border-white/5 grayscale' : 'cursor-pointer'}
+                  ${isSelected ? 'bg-white/10 border-brand-blue shadow-[0_0_30px_rgba(110,143,214,0.15)]' : !isBlocked ? 'bg-white/5 border-white/5 hover:bg-white/10' : ''}
                 `}
               >
-                {pkg.is_popular && (
+                {pkg.is_popular && !isBlocked && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-md bg-brand-purple text-white text-[9px] font-bold tracking-[0.1em] uppercase z-20 shadow-lg">
                     Mais Popular
+                  </div>
+                )}
+
+                {isBlocked && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-md bg-white/10 backdrop-blur-md text-white/60 text-[8px] font-bold tracking-[0.1em] uppercase z-20 border border-white/10 flex items-center gap-1.5 whitespace-nowrap">
+                    <Lock size={10} /> Versão de Testes
                   </div>
                 )}
 
                 <div className="mb-8 relative">
                   <CashIconLarge 
                     variant={getVariant(index)} 
-                    className="w-24 h-24 group-hover:scale-110 transition-transform duration-500 ease-out" 
+                    className={`w-24 h-24 ${!isBlocked && 'group-hover:scale-110'} transition-transform duration-500 ease-out`} 
                   />
                 </div>
 
@@ -205,12 +213,12 @@ export default function ComprarCash() {
                 </div>
 
                 <div className="mt-auto pt-6 border-t border-white/5 w-full">
-                  <span className="text-brand-blue font-semibold text-lg">
+                  <span className={`${isBlocked ? 'text-white/20' : 'text-brand-blue'} font-semibold text-lg`}>
                     R$ {(pkg.price_brl_cents / 100).toLocaleString('pt-BR', { minimumFractionDigits: 0 })}
                   </span>
                 </div>
 
-                {isSelected && (
+                {isSelected && !isBlocked && (
                   <div className="absolute top-4 right-4 text-brand-blue">
                     <Check size={20} />
                   </div>
