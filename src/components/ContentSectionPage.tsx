@@ -243,7 +243,7 @@ function ItemCard({ item, isOffers, onVideo, onPdf, onImage, onOffer }: {
         : 'price_1Tc4wzQP3tL0cIWnFFTaNhgJ';
         
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { priceId, mode: 'payment' }
+        body: { priceId, productId: item.id, mode: 'payment' }
       });
 
       if (error) throw error;
