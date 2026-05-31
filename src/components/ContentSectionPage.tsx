@@ -267,6 +267,10 @@ function ItemCard({ item, isOffers, onVideo, onPdf, onImage, onOffer, onBuy, onB
 }) {
   const handleBuy = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (item.section_slug === 'fb-accounts' && item.price_cash) {
+      onBuyWithCash(item);
+      return;
+    }
     const priceId = (item.body && item.body.startsWith('price_')) 
       ? item.body 
       : 'price_1Tc4wzQP3tL0cIWnFFTaNhgJ';
