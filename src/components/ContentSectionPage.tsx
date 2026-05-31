@@ -294,11 +294,6 @@ function ItemCard({ item, isOffers, onVideo, onPdf, onImage, onOffer }: {
           </button>
         )}
 
-        {item.body && (
-          <div className="mt-auto pt-6 border-t border-white/5">
-             <p className="text-sm text-white/50 whitespace-pre-wrap leading-relaxed italic">"{item.body}"</p>
-          </div>
-        )}
       </div>
     );
   }

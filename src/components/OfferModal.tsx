@@ -12,13 +12,16 @@ export interface OfferData {
 
 export default function OfferModal({ offer, onClose }: { offer: OfferData; onClose: () => void }) {
   const handleBuy = async (e: React.MouseEvent) => {
-    // If buy_url contains a Price ID (price_...)
-    if (offer.buy_url?.includes('price_')) {
+    // For offers, we might also use the integrated checkout
+    const url = offer.buy_url || '';
+    if (url.includes('price_')) {
       e.preventDefault();
       try {
-        const priceId = offer.buy_url.split('/').pop() || ''; // rudimentary extraction
+        const parts = url.split('/');
+        const priceId = parts.find(p => p.startsWith('price_')) || url;
+        
         const { data, error } = await supabase.functions.invoke('create-checkout', {
-          body: { priceId: priceId.startsWith('price_') ? priceId : offer.buy_url, mode: 'payment' }
+          body: { priceId, mode: 'payment' }
         });
         if (error) throw error;
         if (data?.url) {
@@ -26,7 +29,7 @@ export default function OfferModal({ offer, onClose }: { offer: OfferData; onClo
         }
       } catch (err) {
         console.error('Checkout error:', err);
-        window.open(offer.buy_url, '_self');
+        window.open(url, '_self');
       }
     }
   };
