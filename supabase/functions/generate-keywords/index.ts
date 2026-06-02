@@ -28,17 +28,19 @@ Retorne APENAS um JSON no seguinte formato:
   "keywords": ["termo 1", "termo 2", ...]
 }`
 
-    const response = await fetch('https://api.lovable.app/v1/chat/completions', {
+    // Tentando o endpoint mais comum para OpenAI dentro do Lovable AI Gateway
+    const response = await fetch('https://api.lovable.app/v1/openai/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'anthropic/claude-3-5-sonnet',
+        model: 'gpt-4o-mini',
         messages: [
           { role: 'user', content: prompt }
         ],
+        response_format: { type: 'json_object' }
       }),
     })
 
@@ -49,29 +51,7 @@ Retorne APENAS um JSON no seguinte formato:
     try {
       data = JSON.parse(rawResponse)
     } catch (e) {
-      // Se falhar o parse, vamos tentar o endpoint alternativo como fallback
-      console.log('Failed to parse from api.lovable.app, trying alternative...');
-      
-      const responseAlt = await fetch('https://gpt-proxy.lovable.app/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'anthropic/claude-3-5-sonnet',
-          messages: [
-            { role: 'user', content: prompt }
-          ],
-        }),
-      })
-      
-      const rawResponseAlt = await responseAlt.text()
-      try {
-        data = JSON.parse(rawResponseAlt)
-      } catch (e2) {
-        throw new Error(`Falha ao conectar com a API de IA: ${rawResponse.substring(0, 50)}...`)
-      }
+      throw new Error(`Falha ao conectar com o serviço de IA: ${rawResponse.substring(0, 30)}...`)
     }
 
     if (data.error) {
@@ -79,18 +59,10 @@ Retorne APENAS um JSON no seguinte formato:
     }
 
     if (!data.choices?.[0]?.message?.content) {
-      throw new Error('Resposta da IA inválida ou vazia')
+      throw new Error('Resposta da IA inválida')
     }
 
-    const content = data.choices[0].message.content.trim()
-    const jsonString = content.replace(/^```json\n?/, '').replace(/\n?```$/, '')
-    
-    let aiResponse;
-    try {
-      aiResponse = JSON.parse(jsonString)
-    } catch (e) {
-      aiResponse = { keywords: content.split('\n').filter(l => l.trim()).map(l => l.replace(/^[0-9.-]+\s*/, '').trim()).slice(0, 15) };
-    }
+    const aiResponse = JSON.parse(data.choices[0].message.content)
 
     return new Response(JSON.stringify(aiResponse), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
