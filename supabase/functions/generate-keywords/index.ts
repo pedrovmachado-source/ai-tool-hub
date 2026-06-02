@@ -23,12 +23,12 @@ Com base na seguinte descrição de oferta, gere uma lista de 10 a 15 palavras-c
 
 Descrição da Oferta: "${description}"
 
-Retorne apenas um JSON no seguinte formato:
+Retorne APENAS um JSON no seguinte formato:
 {
   "keywords": ["termo 1", "termo 2", ...]
 }`
 
-    const response = await fetch('https://api.lovable.dev/v1/chat/completions', {
+    const response = await fetch('https://api.lovable.ai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${LOVABLE_API_KEY}`,
@@ -39,7 +39,6 @@ Retorne apenas um JSON no seguinte formato:
         messages: [
           { role: 'user', content: prompt }
         ],
-        // Removendo response_format para testar se é o causador do erro 500
       }),
     })
 
@@ -52,14 +51,12 @@ Retorne apenas um JSON no seguinte formato:
     } catch (e) {
       throw new Error(`Falha ao parsear resposta da API Lovable: ${rawResponse.substring(0, 100)}`)
     }
-    console.log('AI Response data:', data)
-    
+
     if (!data.choices?.[0]?.message?.content) {
       throw new Error('Resposta da IA inválida ou vazia')
     }
 
     const content = data.choices[0].message.content.trim()
-    // Remove possíveis blocos de código markdown que a IA possa ter retornado
     const jsonString = content.replace(/^```json\n?/, '').replace(/\n?```$/, '')
     
     let aiResponse;
@@ -67,13 +64,15 @@ Retorne apenas um JSON no seguinte formato:
       aiResponse = JSON.parse(jsonString)
     } catch (e) {
       console.error('Failed to parse AI content as JSON:', content)
-      throw new Error('Erro ao processar resposta da IA')
+      // Se falhar o parse do JSON, tentamos extrair apenas as palavras se for uma lista simples
+      aiResponse = { keywords: content.split('\n').filter(l => l.trim()).map(l => l.replace(/^[0-9.-]+\s*/, '').trim()) };
     }
 
     return new Response(JSON.stringify(aiResponse), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
   } catch (error) {
+    console.error('Function error:', error)
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
