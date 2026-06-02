@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
 import Meta from '@/components/Meta';
 import OfferAnalysisModal from '@/components/OfferAnalysisModal';
+import OfferModelingModal from '@/components/OfferModelingModal';
 import OffersRanking from '@/components/OffersRanking';
 import { supabase } from '@/integrations/supabase/client';
 import InlineOfferEditor from '@/components/InlineOfferEditor';
@@ -18,7 +19,8 @@ import {
   Send,
   Pencil,
   Trophy,
-  Camera
+  Camera,
+  Rocket
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
