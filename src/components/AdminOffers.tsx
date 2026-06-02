@@ -6,11 +6,11 @@ import { toast } from '@/hooks/use-toast';
 interface ValidatedOffer {
   id: string;
   title: string;
-  description: string;
-  price: string;
+  description: string | null;
+  price: string | null;
   link: string;
-  image_url: string;
-  category: string;
+  image_url: string | null;
+  category: string | null;
 }
 
 export default function AdminOffers() {
@@ -83,7 +83,7 @@ export default function AdminOffers() {
     try {
       setIsUploading(true);
       const fileExt = file.name.split('.').pop();
-      const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
       const filePath = `offers/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
@@ -281,7 +281,9 @@ export default function AdminOffers() {
               </div>
               <div className="flex gap-4 pt-6">
                 <button type="button" onClick={() => setEditingOffer(null)} className="flex-1 px-8 py-4 rounded-full text-xs font-bold uppercase tracking-widest text-white/40 hover:text-white transition-colors">Cancelar</button>
-                <button type="submit" className="flex-1 px-8 py-4 bg-white text-black rounded-full text-xs font-bold uppercase tracking-widest hover:bg-white/90 transition-all">Salvar</button>
+                <button type="submit" disabled={isUploading} className={`flex-1 px-8 py-4 bg-white text-black rounded-full text-xs font-bold uppercase tracking-widest hover:bg-white/90 transition-all ${isUploading ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                  {isUploading ? 'Aguardando Upload...' : 'Salvar'}
+                </button>
               </div>
             </form>
           </div>

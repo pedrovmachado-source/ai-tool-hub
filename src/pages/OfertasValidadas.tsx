@@ -24,11 +24,11 @@ import { useToast } from '@/hooks/use-toast';
 interface ValidatedOffer {
   id: string;
   title: string;
-  description: string;
-  price: string;
+  description: string | null;
+  price: string | null;
   link: string;
-  image_url: string;
-  category: string;
+  image_url: string | null;
+  category: string | null;
 }
 
 export default function OfertasValidadas() {
