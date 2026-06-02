@@ -28,7 +28,7 @@ Retorne APENAS um JSON no seguinte formato:
   "keywords": ["termo 1", "termo 2", ...]
 }`
 
-    const response = await fetch('https://gpt-proxy.lovable.app/v1/chat/completions', {
+    const response = await fetch('https://api.lovable.app/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${LOVABLE_API_KEY}`,
@@ -49,11 +49,33 @@ Retorne APENAS um JSON no seguinte formato:
     try {
       data = JSON.parse(rawResponse)
     } catch (e) {
-      throw new Error(`Falha ao parsear resposta da API: ${rawResponse.substring(0, 100)}`)
+      // Se falhar o parse, vamos tentar o endpoint alternativo como fallback
+      console.log('Failed to parse from api.lovable.app, trying alternative...');
+      
+      const responseAlt = await fetch('https://gpt-proxy.lovable.app/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'anthropic/claude-3-5-sonnet',
+          messages: [
+            { role: 'user', content: prompt }
+          ],
+        }),
+      })
+      
+      const rawResponseAlt = await responseAlt.text()
+      try {
+        data = JSON.parse(rawResponseAlt)
+      } catch (e2) {
+        throw new Error(`Falha ao conectar com a API de IA: ${rawResponse.substring(0, 50)}...`)
+      }
     }
 
     if (data.error) {
-      throw new Error(data.error.message || 'Erro desconhecido na API da IA')
+      throw new Error(data.error.message || 'Erro na API da IA')
     }
 
     if (!data.choices?.[0]?.message?.content) {
@@ -67,8 +89,7 @@ Retorne APENAS um JSON no seguinte formato:
     try {
       aiResponse = JSON.parse(jsonString)
     } catch (e) {
-      console.error('Failed to parse AI content as JSON:', content)
-      aiResponse = { keywords: content.split('\n').filter(l => l.trim()).map(l => l.replace(/^[0-9.-]+\s*/, '').trim()) };
+      aiResponse = { keywords: content.split('\n').filter(l => l.trim()).map(l => l.replace(/^[0-9.-]+\s*/, '').trim()).slice(0, 15) };
     }
 
     return new Response(JSON.stringify(aiResponse), {
