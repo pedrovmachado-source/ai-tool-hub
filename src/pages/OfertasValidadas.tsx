@@ -248,6 +248,7 @@ export default function OfertasValidadas() {
             isOpen={!!modelingOffer}
             onClose={() => setModelingOffer(null)}
             offerTitle={modelingOffer?.title || ''}
+            offerId={modelingOffer?.id}
           />
         </div>
       </main>
