@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -15,13 +16,22 @@ import {
   Layout, 
   FileText, 
   CreditCard,
-  Video
+  Video,
+  MessageCircle,
+  AlertCircle,
+  Loader2,
+  ArrowRight,
+  Coins
 } from "lucide-react";
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 interface OfferModelingModalProps {
   isOpen: boolean;
   onClose: () => void;
   offerTitle: string;
+  offerId?: string;
 }
 
 export default function OfferModelingModal({ isOpen, onClose, offerTitle }: OfferModelingModalProps) {
