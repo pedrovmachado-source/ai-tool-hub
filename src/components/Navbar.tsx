@@ -131,9 +131,11 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
         <div className="flex items-center gap-1 sm:gap-2 justify-self-end">
           {user && (
             <div className="flex items-center gap-2">
-              <div className="hidden xs:block">
-                <CashBalance />
-              </div>
+              {location.pathname !== '/' && (
+                <div className="hidden xs:block">
+                  <CashBalance />
+                </div>
+              )}
               <button
                 onClick={() => setShowSaved(true)}
                 className="relative p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg text-white/90 hover:text-white hover:bg-white/15 transition-colors"
