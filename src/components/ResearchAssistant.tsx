@@ -58,8 +58,6 @@ A resposta deve ser uma lista separada por tópicos, com pelo menos 30 sugestõe
 
     setIsGenerating(true);
     try {
-      // We'll use a Supabase Edge Function if available, otherwise mock it for now
-      // This is a placeholder for actual AI integration
       const { data, error } = await supabase.functions.invoke('generate-keywords', {
         body: { description: offerDescription }
       });
@@ -69,29 +67,18 @@ A resposta deve ser uma lista separada por tópicos, com pelo menos 30 sugestõe
       if (data?.keywords) {
         setGeneratedKeywords(data.keywords);
       } else {
-        // Fallback mock if function doesn't exist yet
-        setTimeout(() => {
-          setGeneratedKeywords(['Palavra-chave 1', 'Termo 2', 'Pesquisa 3', 'Escala 4', 'Conversão 5']);
-          setIsGenerating(false);
-        }, 1500);
-        return;
+        throw new Error('Nenhuma palavra-chave gerada');
       }
     } catch (error) {
       console.error('Error generating keywords:', error);
-      // For now, let's just mock it so the user sees something working
-      setTimeout(() => {
-        setGeneratedKeywords([
-          'estratégia de vendas', 
-          'funil de alta conversão', 
-          'copywriter profissional', 
-          'tráfego pago direto', 
-          'escala de anúncios'
-        ]);
-        setIsGenerating(false);
-      }, 1500);
-      return;
+      toast({
+        variant: "destructive",
+        title: "Erro na geração",
+        description: "Não foi possível gerar as palavras-chave agora. Tente novamente."
+      });
+    } finally {
+      setIsGenerating(false);
     }
-    setIsGenerating(false);
   };
 
   return (
