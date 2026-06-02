@@ -6,6 +6,7 @@ import Meta from '@/components/Meta';
 import OfferAnalysisModal from '@/components/OfferAnalysisModal';
 import OffersRanking from '@/components/OffersRanking';
 import { supabase } from '@/integrations/supabase/client';
+import InlineOfferEditor from '@/components/InlineOfferEditor';
 
 import { 
   Sparkles, 
@@ -16,7 +17,8 @@ import {
   Loader2,
   Send,
   Pencil,
-  Trophy
+  Trophy,
+  Camera
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -38,6 +40,7 @@ export default function OfertasValidadas() {
   const [offers, setOffers] = useState<ValidatedOffer[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false);
+  const [editingOffer, setEditingOffer] = useState<ValidatedOffer | null>(null);
 
   useEffect(() => {
     fetchOffers();
@@ -122,7 +125,7 @@ export default function OfertasValidadas() {
                   key={offer.id}
                   className="group relative flex flex-col glass-smooth hover:bg-white/5 transition-all duration-500 rounded-[2.5rem] border border-white/5 overflow-hidden"
                 >
-                  <div className="aspect-[16/10] overflow-hidden relative">
+                  <div className="aspect-[16/10] overflow-hidden relative group/img">
                     {offer.image_url ? (
                       <img 
                         src={offer.image_url} 
@@ -135,6 +138,18 @@ export default function OfertasValidadas() {
                         <Package className="w-12 h-12 text-white/10" />
                       </div>
                     )}
+                    
+                    {isAdmin && (
+                      <button 
+                        onClick={() => setEditingOffer(offer)}
+                        className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center gap-2"
+                      >
+                        <div className="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center shadow-lg">
+                          <Camera className="w-4 h-4" />
+                        </div>
+                      </button>
+                    )}
+
                     <div className="absolute top-6 right-6">
                       <div className="px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[10px] font-bold text-brand-amber uppercase tracking-widest">
                         {offer.category || 'Premium'}
@@ -165,12 +180,9 @@ export default function OfertasValidadas() {
                       </a>
                       {isAdmin && (
                         <button 
-                          onClick={() => {
-                            sessionStorage.setItem('adai:initialAdminSection', 'offers');
-                            navigate('/ferramentas?page=admin');
-                          }}
+                          onClick={() => setEditingOffer(offer)}
                           className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white/40 hover:bg-brand-blue hover:text-white transition-all duration-300 group/edit"
-                          title="Editar no Painel Admin"
+                          title="Editar Oferta"
                         >
                           <Pencil className="w-5 h-5 group-hover/edit:scale-110 transition-transform" />
                         </button>
@@ -206,6 +218,15 @@ export default function OfertasValidadas() {
             isOpen={isAnalysisModalOpen} 
             onClose={() => setIsAnalysisModalOpen(false)} 
           />
+
+          {editingOffer && (
+            <InlineOfferEditor 
+              offer={editingOffer}
+              isOpen={!!editingOffer}
+              onClose={() => setEditingOffer(null)}
+              onSave={fetchOffers}
+            />
+          )}
         </div>
       </main>
 
