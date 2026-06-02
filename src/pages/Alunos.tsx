@@ -18,7 +18,13 @@ import {
   GraduationCap,
   Calendar,
   Lock,
-  Music
+  Music,
+  Search,
+  ExternalLink,
+  Target,
+  Globe,
+  Layout,
+  MessageSquare
 } from 'lucide-react';
 
 import { useEffect, useRef, useState } from 'react';
@@ -338,6 +344,146 @@ export default function Alunos() {
                   </AccordionItem>
 
                 </Accordion>
+              </Reveal>
+
+              <Reveal delay={200}>
+                <div className="glass-smooth rounded-[2rem] border border-white/5 p-8 space-y-8">
+                  {/* 1- Procurar os melhores produtos */}
+                  <section className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center">
+                        <Search className="w-4 h-4 text-white/70" />
+                      </div>
+                      <h3 className="text-xl font-serif-display">1- Procurar os melhores produtos</h3>
+                    </div>
+                    <ul className="space-y-2 text-sm text-white/50 list-disc list-inside ml-2">
+                      <li>Como identificar um bom produto:</li>
+                      <li className="list-none ml-4">• Tempo rodando, Quantidade de anúncios, volume de vendas, volume gasto de anúncio</li>
+                      <li className="list-none ml-4">• Similarweb, Biblioteca de anúncios</li>
+                    </ul>
+                  </section>
+
+                  {/* Tabela de métricas */}
+                  <div className="overflow-hidden rounded-2xl border border-white/5 bg-white/5">
+                    <table className="w-full text-center text-xs">
+                      <thead className="bg-white/5 text-white/40 uppercase tracking-widest font-bold">
+                        <tr>
+                          <th className="py-3 px-2 border-r border-white/5">Demanda</th>
+                          <th className="py-3 px-2 border-r border-white/5">Margem</th>
+                          <th className="py-3 px-2 border-r border-white/5">Concorrência</th>
+                          <th className="py-3 px-2">Recorrência</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="text-white/70">
+                          <td className="py-4 px-2 border-r border-white/5">Alta</td>
+                          <td className="py-4 px-2 border-r border-white/5">Alta</td>
+                          <td className="py-4 px-2 border-r border-white/5">Baixa</td>
+                          <td className="py-4 px-2">-</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Dores e Nicho */}
+                  <div className="space-y-6">
+                    <div className="p-4 rounded-2xl bg-white/5 border border-white/5">
+                      <p className="text-sm text-white/70 leading-relaxed">
+                        <span className="text-white font-medium">Religião, receitas, infantil, mães, educação e treinos</span> - Focam numa dor
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-3 text-sm text-white/50">
+                      <Target className="w-4 h-4 text-white/30" />
+                      <p>Nicho &gt; País &gt; Minerar produtos desse país &gt; modelagem</p>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                      {['Espanha', 'Reino Unido', 'Portugal'].map(pais => (
+                        <span key={pais} className="px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[10px] uppercase tracking-wider text-white/40">
+                          {pais}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Palavras-chave */}
+                  <section className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center">
+                        <Globe className="w-4 h-4 text-white/70" />
+                      </div>
+                      <h3 className="text-lg font-serif-display">Termos de Pesquisa</h3>
+                    </div>
+                    <div className="p-5 rounded-[1.5rem] bg-white/[0.02] border border-white/5">
+                      <p className="text-[11px] leading-relaxed text-white/40 font-mono">
+                        truque, responda, receita, sucesso, ebook, livro digital, diagnóstico, fórmula, método, segredo, análise, desafio, funciona, comprovado, definitivo, natural,<br/>
+                        teste gratuito, guia prático, guia completo, nova forma, nova técnica,<br/>
+                        7 dias, 15 dias, 21 dias, 30 dias, 60 dias,<br/>
+                        ebook, curso online, treinamento, mentor, especialista,<br/>
+                        fórmula milagrosa, passo a passo, passo simples, acesso imediato,<br/>
+                        19,90, 29,90, 9,90, 47,90, 49,90, 59,90, 97,00, 99,90, 4.5/5, 4.9/5<br/>
+                        vercel.app, lovable.app, hotmart.com, inlead.digital
+                      </p>
+                    </div>
+                  </section>
+
+                  {/* Prompt */}
+                  <section className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center">
+                        <MessageSquare className="w-4 h-4 text-white/70" />
+                      </div>
+                      <h3 className="text-lg font-serif-display">Prompt Estratégico</h3>
+                    </div>
+                    <div className="group relative">
+                      <div className="absolute -inset-0.5 bg-gradient-to-r from-white/10 to-transparent rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+                      <div className="relative p-6 rounded-2xl bg-black border border-white/10">
+                        <p className="text-sm text-white/70 italic leading-relaxed">
+                          "Me dê uma lista com termos e palavras-chave que eu posso usar para pesquisar anúncios na Biblioteca de Anúncios do Facebook, com o objetivo de encontrar ofertas validadas no nicho de [INSIRA O NICHO AQUI]. A resposta deve ser uma lista separada por tópicos, com pelo menos 30 sugestões."
+                        </p>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          className="mt-4 h-7 text-[10px] text-white/30 hover:text-white"
+                          onClick={() => {
+                            navigator.clipboard.writeText("Me dê uma lista com termos e palavras-chave que eu posso usar para pesquisar anúncios na Biblioteca de Anúncios do Facebook, com o objetivo de encontrar ofertas validadas no nicho de [INSIRA O NICHO AQUI]. A resposta deve ser uma lista separada por tópicos, com pelo menos 30 sugestões.");
+                            toast({ title: "Prompt copiado!" });
+                          }}
+                        >
+                          Copiar Prompt
+                        </Button>
+                      </div>
+                    </div>
+                  </section>
+
+                  {/* Links Úteis */}
+                  <section className="space-y-4 pt-4 border-t border-white/5">
+                    <div className="flex items-center gap-3">
+                      <Layout className="w-4 h-4 text-white/30" />
+                      <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-white/30">Links de Apoio</h3>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {[
+                        { name: 'Biblioteca de anúncios', url: 'https://www.facebook.com/ads/library/' },
+                        { name: 'AdsParo (Chrome)', url: 'https://chromewebstore.google.com/detail/adsparo-adlibrary-ad-find/jhgpmfdfgihdclapmppfeddggkidnoid?hl=pt-BR' },
+                        { name: 'Claude AI', url: 'https://Claude.ai' },
+                        { name: 'Similarweb', url: 'https://www.similarweb.com/pt/' }
+                      ].map(link => (
+                        <a 
+                          key={link.name}
+                          href={link.url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors group"
+                        >
+                          <span className="text-xs text-white/50 group-hover:text-white/80">{link.name}</span>
+                          <ExternalLink className="w-3 h-3 text-white/20 group-hover:text-white/50" />
+                        </a>
+                      ))}
+                    </div>
+                  </section>
+                </div>
               </Reveal>
             </div>
 
