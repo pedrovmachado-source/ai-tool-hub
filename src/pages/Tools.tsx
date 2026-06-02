@@ -11,13 +11,10 @@ import Index from './Index';
 export default function Tools({ page: propPage }: { page?: string }) {
   const [params] = useSearchParams();
 
-  useEffect(() => {
-    // Meta tags are handled by the component in the return
-  }, []);
-
   const initialPage = propPage || params.get('page');
   const initialCategory = params.get('cat');
 
+  // Pre-warming the Index component by rendering it directly
   return (
     <>
       <Meta title="Ferramentas de IA | Convert Club" description="O maior guia de Inteligência Artificial para empreendedores. Encontre as melhores IAs para seu negócio." />

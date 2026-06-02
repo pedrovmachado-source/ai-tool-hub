@@ -10,10 +10,12 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import BetaBanner from "./components/BetaBanner";
 
-// Lazy loading pages for better performance
-const Home = lazy(() => import("./pages/Home.tsx"));
-const Tools = lazy(() => import("./pages/Tools.tsx"));
-const Menu = lazy(() => import("./pages/Menu.tsx"));
+// Eager loading critical pages, lazy loading others
+import Home from "./pages/Home.tsx";
+import Menu from "./pages/Menu.tsx";
+import Tools from "./pages/Tools.tsx";
+import Auth from "./pages/Auth.tsx";
+
 const Profile = lazy(() => import("./pages/Profile.tsx"));
 const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 const Alunos = lazy(() => import("./pages/Alunos.tsx"));
@@ -23,7 +25,6 @@ const AbuseBlocks = lazy(() => import("./pages/AbuseBlocks.tsx"));
 const Mentorias = lazy(() => import("./pages/Mentorias.tsx"));
 const CompleteProfile = lazy(() => import("./pages/CompleteProfile.tsx"));
 const OfertasValidadas = lazy(() => import("./pages/OfertasValidadas.tsx"));
-const Auth = lazy(() => import("./pages/Auth.tsx"));
 const ComprarCash = lazy(() => import("./pages/ComprarCash.tsx"));
 const CashSuccess = lazy(() => import("./pages/CashSuccess.tsx"));
 const CashCancel = lazy(() => import("./pages/CashCancel.tsx"));
@@ -33,6 +34,8 @@ const queryClient = new QueryClient({
     queries: {
       retry: 1,
       refetchOnWindowFocus: false,
+      staleTime: 5 * 60 * 1000, // 5 minutes cache
+      gcTime: 10 * 60 * 1000,
     },
   },
 });
