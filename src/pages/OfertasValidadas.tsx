@@ -243,6 +243,12 @@ export default function OfertasValidadas() {
               onSave={fetchOffers}
             />
           )}
+
+          <OfferModelingModal 
+            isOpen={!!modelingOffer}
+            onClose={() => setModelingOffer(null)}
+            offerTitle={modelingOffer?.title || ''}
+          />
         </div>
       </main>
 
