@@ -44,7 +44,23 @@ Retorne apenas um JSON no seguinte formato:
     })
 
     const data = await response.json()
-    const aiResponse = JSON.parse(data.choices[0].message.content)
+    console.log('AI Response data:', data)
+    
+    if (!data.choices?.[0]?.message?.content) {
+      throw new Error('Resposta da IA inválida ou vazia')
+    }
+
+    const content = data.choices[0].message.content.trim()
+    // Remove possíveis blocos de código markdown que a IA possa ter retornado
+    const jsonString = content.replace(/^```json\n?/, '').replace(/\n?```$/, '')
+    
+    let aiResponse;
+    try {
+      aiResponse = JSON.parse(jsonString)
+    } catch (e) {
+      console.error('Failed to parse AI content as JSON:', content)
+      throw new Error('Erro ao processar resposta da IA')
+    }
 
     return new Response(JSON.stringify(aiResponse), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
