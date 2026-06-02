@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
 import Meta from '@/components/Meta';
 import OfferAnalysisModal from '@/components/OfferAnalysisModal';
+import OfferModelingModal from '@/components/OfferModelingModal';
 import OffersRanking from '@/components/OffersRanking';
 import { supabase } from '@/integrations/supabase/client';
 import InlineOfferEditor from '@/components/InlineOfferEditor';
@@ -18,7 +19,8 @@ import {
   Send,
   Pencil,
   Trophy,
-  Camera
+  Camera,
+  Rocket
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -41,6 +43,7 @@ export default function OfertasValidadas() {
   const [loading, setLoading] = useState(true);
   const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false);
   const [editingOffer, setEditingOffer] = useState<ValidatedOffer | null>(null);
+  const [modelingOffer, setModelingOffer] = useState<ValidatedOffer | null>(null);
 
   useEffect(() => {
     fetchOffers();
@@ -170,23 +173,36 @@ export default function OfertasValidadas() {
                         <span className="text-[10px] text-white/20 font-bold uppercase tracking-widest mb-1">Investimento</span>
                         <span className="text-xl font-serif-display text-white">{offer.price || 'Consultar'}</span>
                       </div>
-                      <a 
-                        href={offer.link} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white/40 hover:bg-brand-amber hover:text-black transition-all duration-300 group/link"
-                      >
-                        <ExternalLink className="w-5 h-5 group-hover/link:scale-110 transition-transform" />
-                      </a>
-                      {isAdmin && (
+                      
+                      <div className="flex items-center gap-2">
                         <button 
-                          onClick={() => setEditingOffer(offer)}
-                          className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white/40 hover:bg-brand-blue hover:text-white transition-all duration-300 group/edit"
-                          title="Editar Oferta"
+                          onClick={() => setModelingOffer(offer)}
+                          className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white/40 hover:bg-brand-purple hover:text-white transition-all duration-300 group/model"
+                          title="Modelagem Profissional"
                         >
-                          <Pencil className="w-5 h-5 group-hover/edit:scale-110 transition-transform" />
+                          <Rocket className="w-5 h-5 group-hover/model:scale-110 transition-transform text-brand-amber" />
                         </button>
-                      )}
+
+                        <a 
+                          href={offer.link} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white/40 hover:bg-brand-amber hover:text-black transition-all duration-300 group/link"
+                          title="Abrir Link"
+                        >
+                          <ExternalLink className="w-5 h-5 group-hover/link:scale-110 transition-transform" />
+                        </a>
+                        
+                        {isAdmin && (
+                          <button 
+                            onClick={() => setEditingOffer(offer)}
+                            className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white/40 hover:bg-brand-blue hover:text-white transition-all duration-300 group/edit"
+                            title="Editar Oferta"
+                          >
+                            <Pencil className="w-5 h-5 group-hover/edit:scale-110 transition-transform" />
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -227,6 +243,12 @@ export default function OfertasValidadas() {
               onSave={fetchOffers}
             />
           )}
+
+          <OfferModelingModal 
+            isOpen={!!modelingOffer}
+            onClose={() => setModelingOffer(null)}
+            offerTitle={modelingOffer?.title || ''}
+          />
         </div>
       </main>
 
