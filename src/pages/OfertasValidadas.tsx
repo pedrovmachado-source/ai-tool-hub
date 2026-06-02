@@ -173,23 +173,36 @@ export default function OfertasValidadas() {
                         <span className="text-[10px] text-white/20 font-bold uppercase tracking-widest mb-1">Investimento</span>
                         <span className="text-xl font-serif-display text-white">{offer.price || 'Consultar'}</span>
                       </div>
-                      <a 
-                        href={offer.link} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white/40 hover:bg-brand-amber hover:text-black transition-all duration-300 group/link"
-                      >
-                        <ExternalLink className="w-5 h-5 group-hover/link:scale-110 transition-transform" />
-                      </a>
-                      {isAdmin && (
+                      
+                      <div className="flex items-center gap-2">
                         <button 
-                          onClick={() => setEditingOffer(offer)}
-                          className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white/40 hover:bg-brand-blue hover:text-white transition-all duration-300 group/edit"
-                          title="Editar Oferta"
+                          onClick={() => setModelingOffer(offer)}
+                          className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white/40 hover:bg-brand-purple hover:text-white transition-all duration-300 group/model"
+                          title="Modelagem Profissional"
                         >
-                          <Pencil className="w-5 h-5 group-hover/edit:scale-110 transition-transform" />
+                          <Rocket className="w-5 h-5 group-hover/model:scale-110 transition-transform text-brand-amber" />
                         </button>
-                      )}
+
+                        <a 
+                          href={offer.link} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white/40 hover:bg-brand-amber hover:text-black transition-all duration-300 group/link"
+                          title="Abrir Link"
+                        >
+                          <ExternalLink className="w-5 h-5 group-hover/link:scale-110 transition-transform" />
+                        </a>
+                        
+                        {isAdmin && (
+                          <button 
+                            onClick={() => setEditingOffer(offer)}
+                            className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white/40 hover:bg-brand-blue hover:text-white transition-all duration-300 group/edit"
+                            title="Editar Oferta"
+                          >
+                            <Pencil className="w-5 h-5 group-hover/edit:scale-110 transition-transform" />
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
