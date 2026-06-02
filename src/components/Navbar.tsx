@@ -131,7 +131,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
         <div className="flex items-center gap-1 sm:gap-2 justify-self-end">
           {user && (
             <div className="flex items-center gap-2">
-              {location.pathname !== '/' && (
+              {(location.pathname !== '/' && location.pathname !== '/menu') && (
                 <div className="hidden xs:block">
                   <CashBalance />
                 </div>
