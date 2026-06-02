@@ -28,18 +28,17 @@ Retorne APENAS um JSON no seguinte formato:
   "keywords": ["termo 1", "termo 2", ...]
 }`
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://api.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'anthropic/claude-3-5-sonnet',
         messages: [
           { role: 'user', content: prompt }
         ],
-        response_format: { type: 'json_object' }
       }),
     })
 
@@ -53,11 +52,25 @@ Retorne APENAS um JSON no seguinte formato:
       throw new Error(`Falha ao parsear resposta da API: ${rawResponse.substring(0, 100)}`)
     }
 
+    // Se a API retornar um erro, lança ele
+    if (data.error) {
+      throw new Error(data.error.message || 'Erro desconhecido na API da IA')
+    }
+
     if (!data.choices?.[0]?.message?.content) {
       throw new Error('Resposta da IA inválida ou vazia')
     }
 
-    const aiResponse = JSON.parse(data.choices[0].message.content)
+    const content = data.choices[0].message.content.trim()
+    const jsonString = content.replace(/^```json\n?/, '').replace(/\n?```$/, '')
+    
+    let aiResponse;
+    try {
+      aiResponse = JSON.parse(jsonString)
+    } catch (e) {
+      console.error('Failed to parse AI content as JSON:', content)
+      aiResponse = { keywords: content.split('\n').filter(l => l.trim()).map(l => l.replace(/^[0-9.-]+\s*/, '').trim()) };
+    }
 
     return new Response(JSON.stringify(aiResponse), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
