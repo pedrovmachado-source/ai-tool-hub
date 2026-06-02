@@ -49,7 +49,7 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
 
   useEffect(() => {
     if (user?.abuseBlocked) {
-      navigate('/bloqueado');
+      navigate('/bloqueado', { replace: true });
       return;
     }
     if (initialCat) sessionStorage.removeItem('adai:initialCategory');

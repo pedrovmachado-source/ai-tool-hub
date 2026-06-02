@@ -55,9 +55,9 @@ export default function Home() {
   useEffect(() => {
     if (user) {
       if (user.abuseBlocked) {
-        navigate('/bloqueado');
+        navigate('/bloqueado', { replace: true });
       } else {
-        navigate('/menu');
+        navigate('/menu', { replace: true });
       }
     }
   }, [user, navigate]);

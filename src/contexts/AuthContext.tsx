@@ -236,12 +236,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (!active) return;
-      void syncSession(session);
       
-      // Redirect logic after login
+      // Update session if it changed significantly
+      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
+        void syncSession(session);
+      } else if (event === 'SIGNED_OUT') {
+        clearAuthState();
+      }
+      
+      // Redirect logic after login - use window.location.replace to prevent back-looping
       if (event === 'SIGNED_IN' && session?.user) {
         if (window.location.pathname === '/' || window.location.pathname === '/auth') {
-          window.location.href = '/menu';
+          window.location.replace('/menu');
         }
       }
     });
