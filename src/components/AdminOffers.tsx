@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Plus, Pencil, Trash2, X, Search, Package, ExternalLink } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Search, Package, ExternalLink, Upload, Loader2 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 interface ValidatedOffer {
@@ -19,6 +19,7 @@ export default function AdminOffers() {
   const [editingOffer, setEditingOffer] = useState<Partial<ValidatedOffer> | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     fetchOffers();
@@ -72,6 +73,35 @@ export default function AdminOffers() {
       fetchOffers();
     } catch (error: any) {
       toast({ variant: 'destructive', title: 'Erro ao excluir oferta', description: error.message });
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !editingOffer) return;
+
+    try {
+      setIsUploading(true);
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `offers/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('content-images')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('content-images')
+        .getPublicUrl(filePath);
+
+      setEditingOffer({ ...editingOffer, image_url: publicUrl });
+      toast({ title: 'Imagem enviada com sucesso' });
+    } catch (error: any) {
+      toast({ variant: 'destructive', title: 'Erro no upload', description: error.message });
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -201,20 +231,45 @@ export default function AdminOffers() {
                   placeholder="https://..."
                 />
               </div>
-              <div>
-                <label className="text-[10px] font-bold text-white/20 uppercase tracking-widest mb-1.5 block">URL da Imagem</label>
-                <input 
-                  value={editingOffer.image_url || ''} 
-                  onChange={e => setEditingOffer({ ...editingOffer, image_url: e.target.value })} 
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/5 text-white text-sm focus:outline-none focus:border-white/20"
-                  placeholder="https://images.unsplash.com/..."
-                />
-              </div>
-              {editingOffer.image_url && (
-                <div className="mt-2 w-full h-32 rounded-xl overflow-hidden bg-white/5 border border-white/5">
-                  <img src={editingOffer.image_url} alt="Preview" className="w-full h-full object-contain" />
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-white/20 uppercase tracking-widest block">Imagem da Oferta</label>
+                <div className="flex gap-4 items-start">
+                  <div className="flex-1 space-y-2">
+                    <input 
+                      value={editingOffer.image_url || ''} 
+                      onChange={e => setEditingOffer({ ...editingOffer, image_url: e.target.value })} 
+                      className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/5 text-white text-sm focus:outline-none focus:border-white/20"
+                      placeholder="URL da imagem (Unsplash, etc)"
+                    />
+                    <div className="relative">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                        id="offer-image-upload"
+                        disabled={isUploading}
+                      />
+                      <label
+                        htmlFor="offer-image-upload"
+                        className={`flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl border border-dashed border-white/10 text-white/40 text-xs font-bold uppercase tracking-widest cursor-pointer hover:bg-white/5 hover:border-white/20 transition-all ${isUploading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      >
+                        {isUploading ? (
+                          <Loader2 size={14} className="animate-spin" />
+                        ) : (
+                          <Upload size={14} />
+                        )}
+                        {isUploading ? 'Enviando...' : 'Fazer Upload'}
+                      </label>
+                    </div>
+                  </div>
+                  {editingOffer.image_url && (
+                    <div className="w-24 h-24 rounded-xl overflow-hidden bg-white/5 border border-white/5 flex-shrink-0">
+                      <img src={editingOffer.image_url} alt="Preview" className="w-full h-full object-cover" />
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
               <div>
                 <label className="text-[10px] font-bold text-white/20 uppercase tracking-widest mb-1.5 block">Descrição</label>
                 <textarea 
