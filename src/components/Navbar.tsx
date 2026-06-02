@@ -164,7 +164,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
             </div>
           ) : !user ? null : (
             <>
-              {location.pathname !== '/' && (
+              {(location.pathname !== '/' && location.pathname !== '/menu') && (
                 <button 
                   onClick={() => onNavigate('comprar-cash')} 
                   className="flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-white bg-white/10 border border-white/10 hover:bg-white/20 transition-all hover:scale-105 whitespace-nowrap"
