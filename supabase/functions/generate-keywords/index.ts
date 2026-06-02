@@ -28,7 +28,7 @@ Retorne APENAS um JSON no seguinte formato:
   "keywords": ["termo 1", "termo 2", ...]
 }`
 
-    const response = await fetch('https://api.lovable.dev/v1/chat/completions', {
+    const response = await fetch('https://gpt-proxy.lovable.app/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${LOVABLE_API_KEY}`,
@@ -52,7 +52,6 @@ Retorne APENAS um JSON no seguinte formato:
       throw new Error(`Falha ao parsear resposta da API: ${rawResponse.substring(0, 100)}`)
     }
 
-    // Se a API retornar um erro, lança ele
     if (data.error) {
       throw new Error(data.error.message || 'Erro desconhecido na API da IA')
     }
