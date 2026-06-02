@@ -8,6 +8,7 @@ import OfferModelingModal from '@/components/OfferModelingModal';
 import OffersRanking from '@/components/OffersRanking';
 import { supabase } from '@/integrations/supabase/client';
 import InlineOfferEditor from '@/components/InlineOfferEditor';
+import ResearchAssistant from '@/components/ResearchAssistant';
 
 import { 
   Sparkles, 
@@ -254,6 +255,7 @@ export default function OfertasValidadas() {
       </main>
 
       <OffersRanking />
+      <ResearchAssistant />
 
       <footer className="py-12 px-6 border-t border-white/5 text-center">
         <div className="text-[9px] text-white/10 font-bold uppercase tracking-[0.5em]">
