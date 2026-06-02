@@ -1,7 +1,8 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { X, Loader2, Upload, Camera } from 'lucide-react';
+import { X, Loader2, Upload, Camera, Crop, Check } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import Cropper, { Area } from 'react-easy-crop';
 
 interface ValidatedOffer {
   id: string;
@@ -24,23 +25,87 @@ export default function InlineOfferEditor({ offer, isOpen, onClose, onSave }: In
   const [editingOffer, setEditingOffer] = useState<ValidatedOffer>({ ...offer });
   const [isUploading, setIsUploading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
+  const [isCropping, setIsCropping] = useState(false);
+  
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!isOpen) return null;
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onCropComplete = useCallback((_croppedArea: Area, croppedAreaPixels: Area) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+  }, []);
+
+  const createImage = (url: string): Promise<HTMLImageElement> =>
+    new Promise((resolve, reject) => {
+      const image = new Image();
+      image.addEventListener('load', () => resolve(image));
+      image.addEventListener('error', (error) => reject(error));
+      image.setAttribute('crossOrigin', 'anonymous');
+      image.src = url;
+    });
+
+  const getCroppedImg = async (
+    imageSrc: string,
+    pixelCrop: Area,
+  ): Promise<Blob | null> => {
+    const image = await createImage(imageSrc);
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    if (!ctx) return null;
+
+    canvas.width = pixelCrop.width;
+    canvas.height = pixelCrop.height;
+
+    ctx.drawImage(
+      image,
+      pixelCrop.x,
+      pixelCrop.y,
+      pixelCrop.width,
+      pixelCrop.height,
+      0,
+      0,
+      pixelCrop.width,
+      pixelCrop.height
+    );
+
+    return new Promise((resolve) => {
+      canvas.toBlob((blob) => {
+        resolve(blob);
+      }, 'image/jpeg');
+    });
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
+    if (file) {
+      const reader = new FileReader();
+      reader.addEventListener('load', () => {
+        setImageSrc(reader.result as string);
+        setIsCropping(true);
+      });
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleConfirmCrop = async () => {
+    if (!imageSrc || !croppedAreaPixels) return;
 
     try {
       setIsUploading(true);
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const croppedImageBlob = await getCroppedImg(imageSrc, croppedAreaPixels);
+      if (!croppedImageBlob) throw new Error('Falha ao processar imagem');
+
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.jpg`;
       const filePath = `offers/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
         .from('content-images')
-        .upload(filePath, file);
+        .upload(filePath, croppedImageBlob);
 
       if (uploadError) throw uploadError;
 
@@ -50,8 +115,10 @@ export default function InlineOfferEditor({ offer, isOpen, onClose, onSave }: In
 
       setEditingOffer(prev => ({ ...prev, image_url: publicUrl }));
       toast({ title: 'Imagem enviada com sucesso' });
+      setIsCropping(false);
+      setImageSrc(null);
     } catch (error: any) {
-      toast({ variant: 'destructive', title: 'Erro no upload', description: error.message });
+      toast({ variant: 'destructive', title: 'Erro no processamento', description: error.message });
     } finally {
       setIsUploading(false);
     }
@@ -90,99 +157,148 @@ export default function InlineOfferEditor({ offer, isOpen, onClose, onSave }: In
           <button onClick={onClose} className="text-white/20 hover:text-white transition-colors"><X size={20} /></button>
         </div>
 
-        <form onSubmit={handleSave} className="space-y-6">
-          <div className="flex flex-col items-center gap-4 mb-8">
-            <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
-              <div className="w-48 h-32 rounded-2xl overflow-hidden bg-white/5 border border-white/10 relative">
-                {editingOffer.image_url ? (
-                  <img src={editingOffer.image_url} alt="Preview" className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-white/10">
-                    <Camera size={32} />
+        {isCropping && imageSrc ? (
+          <div className="space-y-6 animate-in fade-in duration-300">
+            <div className="relative h-64 md:h-80 w-full rounded-2xl overflow-hidden bg-black border border-white/10">
+              <Cropper
+                image={imageSrc}
+                crop={crop}
+                zoom={zoom}
+                aspect={16 / 10}
+                onCropChange={setCrop}
+                onCropComplete={onCropComplete}
+                onZoomChange={setZoom}
+              />
+            </div>
+            <div className="space-y-4">
+              <div className="flex items-center gap-4">
+                <span className="text-[10px] font-bold text-white/20 uppercase tracking-widest">Zoom</span>
+                <input
+                  type="range"
+                  value={zoom}
+                  min={1}
+                  max={3}
+                  step={0.1}
+                  aria-labelledby="Zoom"
+                  onChange={(e) => setZoom(Number(e.target.value))}
+                  className="flex-1 accent-brand-amber"
+                />
+              </div>
+              <div className="flex gap-4">
+                <button 
+                  type="button" 
+                  onClick={() => { setIsCropping(false); setImageSrc(null); }}
+                  className="flex-1 px-8 py-4 rounded-full text-xs font-bold uppercase tracking-widest text-white/40 hover:text-white"
+                >
+                  Cancelar
+                </button>
+                <button 
+                  type="button" 
+                  onClick={handleConfirmCrop}
+                  disabled={isUploading}
+                  className="flex-1 px-8 py-4 bg-brand-amber text-black rounded-full text-xs font-bold uppercase tracking-widest hover:bg-brand-amber/90 transition-all flex items-center justify-center gap-2"
+                >
+                  {isUploading ? <Loader2 size={16} className="animate-spin" /> : <><Check size={16} /> Confirmar Corte</>}
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <form onSubmit={handleSave} className="space-y-6">
+            <div className="flex flex-col items-center gap-4 mb-8">
+              <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                <div className="w-48 h-32 rounded-2xl overflow-hidden bg-white/5 border border-white/10 relative">
+                  {editingOffer.image_url ? (
+                    <img src={editingOffer.image_url} alt="Preview" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-white/10">
+                      <Camera size={32} />
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                    <Upload size={20} className="text-white" />
+                    <span className="text-[10px] font-bold text-white uppercase tracking-widest">Trocar Imagem</span>
                   </div>
-                )}
-                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                  <Upload size={20} className="text-white" />
-                  <span className="text-[10px] font-bold text-white uppercase tracking-widest">Trocar Imagem</span>
+                  {isUploading && (
+                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                      <Loader2 size={24} className="text-brand-amber animate-spin" />
+                    </div>
+                  )}
                 </div>
-                {isUploading && (
-                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                    <Loader2 size={24} className="text-brand-amber animate-spin" />
-                  </div>
-                )}
-              </div>
-              <input 
-                type="file" 
-                ref={fileInputRef} 
-                onChange={handleImageUpload} 
-                className="hidden" 
-                accept="image/*" 
-              />
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <div>
-              <label className="text-[10px] font-bold text-white/20 uppercase tracking-widest mb-1.5 block">Título</label>
-              <input 
-                required
-                value={editingOffer.title || ''} 
-                onChange={e => setEditingOffer({ ...editingOffer, title: e.target.value })} 
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/5 text-white text-sm focus:outline-none focus:border-white/20"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-[10px] font-bold text-white/20 uppercase tracking-widest mb-1.5 block">Categoria</label>
                 <input 
-                  value={editingOffer.category || ''} 
-                  onChange={e => setEditingOffer({ ...editingOffer, category: e.target.value })} 
+                  type="file" 
+                  ref={fileInputRef} 
+                  onChange={handleFileChange} 
+                  className="hidden" 
+                  accept="image/*" 
+                />
+              </div>
+              <p className="text-[10px] text-white/20 uppercase tracking-widest font-bold">Resolução ideal: 16:10</p>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="text-[10px] font-bold text-white/20 uppercase tracking-widest mb-1.5 block">Título</label>
+                <input 
+                  required
+                  value={editingOffer.title || ''} 
+                  onChange={e => setEditingOffer({ ...editingOffer, title: e.target.value })} 
                   className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/5 text-white text-sm focus:outline-none focus:border-white/20"
                 />
               </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-[10px] font-bold text-white/20 uppercase tracking-widest mb-1.5 block">Categoria</label>
+                  <input 
+                    value={editingOffer.category || ''} 
+                    onChange={e => setEditingOffer({ ...editingOffer, category: e.target.value })} 
+                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/5 text-white text-sm focus:outline-none focus:border-white/20"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-bold text-white/20 uppercase tracking-widest mb-1.5 block">Investimento</label>
+                  <input 
+                    value={editingOffer.price || ''} 
+                    onChange={e => setEditingOffer({ ...editingOffer, price: e.target.value })} 
+                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/5 text-white text-sm focus:outline-none focus:border-white/20"
+                  />
+                </div>
+              </div>
+
               <div>
-                <label className="text-[10px] font-bold text-white/20 uppercase tracking-widest mb-1.5 block">Investimento</label>
+                <label className="text-[10px] font-bold text-white/20 uppercase tracking-widest mb-1.5 block">Descrição</label>
+                <textarea 
+                  rows={3}
+                  value={editingOffer.description || ''} 
+                  onChange={e => setEditingOffer({ ...editingOffer, description: e.target.value })} 
+                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/5 text-white text-sm focus:outline-none focus:border-white/20 resize-none"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] font-bold text-white/20 uppercase tracking-widest mb-1.5 block">Link</label>
                 <input 
-                  value={editingOffer.price || ''} 
-                  onChange={e => setEditingOffer({ ...editingOffer, price: e.target.value })} 
+                  required
+                  value={editingOffer.link || ''} 
+                  onChange={e => setEditingOffer({ ...editingOffer, link: e.target.value })} 
                   className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/5 text-white text-sm focus:outline-none focus:border-white/20"
                 />
               </div>
             </div>
 
-            <div>
-              <label className="text-[10px] font-bold text-white/20 uppercase tracking-widest mb-1.5 block">Descrição</label>
-              <textarea 
-                rows={3}
-                value={editingOffer.description || ''} 
-                onChange={e => setEditingOffer({ ...editingOffer, description: e.target.value })} 
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/5 text-white text-sm focus:outline-none focus:border-white/20 resize-none"
-              />
+            <div className="flex gap-4 pt-6">
+              <button type="button" onClick={onClose} className="flex-1 px-8 py-4 rounded-full text-xs font-bold uppercase tracking-widest text-white/40 hover:text-white">Cancelar</button>
+              <button 
+                type="submit" 
+                disabled={isUploading || isSaving}
+                className="flex-1 px-8 py-4 bg-white text-black rounded-full text-xs font-bold uppercase tracking-widest hover:bg-white/90 transition-all disabled:opacity-50"
+              >
+                {isSaving ? <Loader2 size={16} className="animate-spin mx-auto" /> : 'Salvar Alterações'}
+              </button>
             </div>
-
-            <div>
-              <label className="text-[10px] font-bold text-white/20 uppercase tracking-widest mb-1.5 block">Link</label>
-              <input 
-                required
-                value={editingOffer.link || ''} 
-                onChange={e => setEditingOffer({ ...editingOffer, link: e.target.value })} 
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/5 text-white text-sm focus:outline-none focus:border-white/20"
-              />
-            </div>
-          </div>
-
-          <div className="flex gap-4 pt-6">
-            <button type="button" onClick={onClose} className="flex-1 px-8 py-4 rounded-full text-xs font-bold uppercase tracking-widest text-white/40 hover:text-white">Cancelar</button>
-            <button 
-              type="submit" 
-              disabled={isUploading || isSaving}
-              className="flex-1 px-8 py-4 bg-white text-black rounded-full text-xs font-bold uppercase tracking-widest hover:bg-white/90 transition-all disabled:opacity-50"
-            >
-              {isSaving ? <Loader2 size={16} className="animate-spin mx-auto" /> : 'Salvar Alterações'}
-            </button>
-          </div>
-        </form>
+          </form>
+        )}
       </div>
     </div>
   );
