@@ -1,23 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { 
   Search, 
   Copy, 
   Check, 
-  Sparkles, 
   Terminal, 
-  Lightbulb,
-  Zap,
   MessageSquare
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
 
 export default function ResearchAssistant() {
   const [copied, setCopied] = useState(false);
-  const [offerDescription, setOfferDescription] = useState('');
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [generatedKeywords, setGeneratedKeywords] = useState<string[]>([]);
   const { toast } = useToast();
 
   const genericKeywords = [
@@ -44,64 +36,6 @@ A resposta deve ser uma lista separada por tópicos, com pelo menos 30 sugestõe
       description: "Conteúdo copiado para a área de transferência."
     });
     setTimeout(() => setCopied(false), 2000);
-  };
-
-  const [hasAIKey, setHasAIKey] = useState(false);
-
-  useEffect(() => {
-    // Verificamos se temos acesso ao gateway ou se a função está respondendo
-    // Por enquanto, apenas habilitamos a UI
-    setHasAIKey(true);
-  }, []);
-
-  const generateKeywords = async () => {
-    if (!offerDescription.trim()) {
-      toast({
-        variant: "destructive",
-        title: "Descrição vazia",
-        description: "Por favor, descreva sua oferta para gerar palavras-chave."
-      });
-      return;
-    }
-
-    setIsGenerating(true);
-    try {
-      // Usando o endpoint direto do gateway se possível, ou fallback para a function
-      const { data, error } = await supabase.functions.invoke('generate-keywords', {
-        body: { description: offerDescription }
-      });
-
-      if (error) {
-        // Fallback local caso o servidor falhe, para não deixar o usuário na mão
-        if (offerDescription.length > 10) {
-          setTimeout(() => {
-            const keywords = offerDescription.toLowerCase()
-              .split(' ')
-              .filter(w => w.length > 5)
-              .slice(0, 10);
-            setGeneratedKeywords(keywords.length > 0 ? keywords : ['oferta validada', 'escala imediata', 'conversão alta']);
-            setIsGenerating(false);
-          }, 1000);
-          return;
-        }
-        throw error;
-      }
-      
-      if (data?.keywords) {
-        setGeneratedKeywords(data.keywords);
-      } else {
-        throw new Error('Nenhuma palavra-chave gerada');
-      }
-    } catch (error) {
-      console.error('Error generating keywords:', error);
-      toast({
-        variant: "destructive",
-        title: "Erro na conexão",
-        description: "O serviço de IA está temporariamente instável. Tente novamente em alguns instantes."
-      });
-    } finally {
-      setIsGenerating(false);
-    }
   };
 
   return (
