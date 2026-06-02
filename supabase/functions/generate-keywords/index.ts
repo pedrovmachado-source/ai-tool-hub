@@ -39,11 +39,19 @@ Retorne apenas um JSON no seguinte formato:
         messages: [
           { role: 'user', content: prompt }
         ],
-        response_format: { type: 'json_object' }
+        // Removendo response_format para testar se é o causador do erro 500
       }),
     })
 
-    const data = await response.json()
+    const rawResponse = await response.text()
+    console.log('Raw AI Response:', rawResponse)
+
+    let data;
+    try {
+      data = JSON.parse(rawResponse)
+    } catch (e) {
+      throw new Error(`Falha ao parsear resposta da API Lovable: ${rawResponse.substring(0, 100)}`)
+    }
     console.log('AI Response data:', data)
     
     if (!data.choices?.[0]?.message?.content) {
