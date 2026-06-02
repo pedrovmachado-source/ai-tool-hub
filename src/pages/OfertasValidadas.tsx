@@ -43,6 +43,7 @@ export default function OfertasValidadas() {
   const [loading, setLoading] = useState(true);
   const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false);
   const [editingOffer, setEditingOffer] = useState<ValidatedOffer | null>(null);
+  const [modelingOffer, setModelingOffer] = useState<ValidatedOffer | null>(null);
 
   useEffect(() => {
     fetchOffers();
