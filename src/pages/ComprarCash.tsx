@@ -280,7 +280,13 @@ export default function ComprarCash() {
                             cashAmount: cashAmount
                           }
                         });
-                        toast.success("Admins notificados! Seu cash será creditado em breve.");
+
+                        // Mensagem automática para o WhatsApp do Kayosa
+                        const message = `Fala Kayosa, já realizei o pagamento via PIX para o pacote ${pkg.name} (${cashAmount} Cash). Pode validar para mim?\n\nNome: ${user?.nome}\nE-mail: ${user?.email}`;
+                        const whatsappUrl = `https://wa.me/5521965248844?text=${encodeURIComponent(message)}`;
+                        window.open(whatsappUrl, '_blank');
+
+                        toast.success("Admins notificados via e-mail e WhatsApp!");
                         setShowPixModal(false);
                       } catch (err) {
                         console.error(err);
