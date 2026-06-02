@@ -28,7 +28,7 @@ Retorne APENAS um JSON no seguinte formato:
   "keywords": ["termo 1", "termo 2", ...]
 }`
 
-    const response = await fetch('https://api.lovable.ai/v1/chat/completions', {
+    const response = await fetch('https://api.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${LOVABLE_API_KEY}`,
@@ -64,7 +64,6 @@ Retorne APENAS um JSON no seguinte formato:
       aiResponse = JSON.parse(jsonString)
     } catch (e) {
       console.error('Failed to parse AI content as JSON:', content)
-      // Se falhar o parse do JSON, tentamos extrair apenas as palavras se for uma lista simples
       aiResponse = { keywords: content.split('\n').filter(l => l.trim()).map(l => l.replace(/^[0-9.-]+\s*/, '').trim()) };
     }
 
