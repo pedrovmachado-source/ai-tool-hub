@@ -379,7 +379,7 @@ export default function Alunos() {
                           <td className="py-4 px-2 border-r border-white/5">Alta</td>
                           <td className="py-4 px-2 border-r border-white/5">Alta</td>
                           <td className="py-4 px-2 border-r border-white/5">Baixa</td>
-                          <td className="py-4 px-2">-</td>
+                          <td className="py-4 px-2">Alta</td>
                         </tr>
                       </tbody>
                     </table>
@@ -407,13 +407,13 @@ export default function Alunos() {
                     </div>
                   </div>
 
-                  {/* Palavras-chave */}
+                  {/* Termos de Pesquisa */}
                   <section className="space-y-4">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center">
                         <Globe className="w-4 h-4 text-white/70" />
                       </div>
-                      <h3 className="text-lg font-serif-display">Termos de Pesquisa</h3>
+                      <h3 className="text-lg font-serif-display">Palavras-chave genericas para pesquisa</h3>
                     </div>
                     <div className="p-5 rounded-[1.5rem] bg-white/[0.02] border border-white/5">
                       <p className="text-[11px] leading-relaxed text-white/40 font-mono">
@@ -421,7 +421,7 @@ export default function Alunos() {
                         teste gratuito, guia prático, guia completo, nova forma, nova técnica,<br/>
                         7 dias, 15 dias, 21 dias, 30 dias, 60 dias,<br/>
                         ebook, curso online, treinamento, mentor, especialista,<br/>
-                        fórmula milagrosa, passo a passo, passo simples, acesso imediato,<br/>
+                        fórmula milagrosa, passo a passo, passo simples, acesso<br/>
                         19,90, 29,90, 9,90, 47,90, 49,90, 59,90, 97,00, 99,90, 4.5/5, 4.9/5<br/>
                         vercel.app, lovable.app, hotmart.com, inlead.digital
                       </p>
@@ -434,7 +434,7 @@ export default function Alunos() {
                       <div className="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center">
                         <MessageSquare className="w-4 h-4 text-white/70" />
                       </div>
-                      <h3 className="text-lg font-serif-display">Prompt Estratégico</h3>
+                      <h3 className="text-lg font-serif-display">Prompt de texto</h3>
                     </div>
                     <div className="group relative">
                       <div className="absolute -inset-0.5 bg-gradient-to-r from-white/10 to-transparent rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
@@ -461,13 +461,13 @@ export default function Alunos() {
                   <section className="space-y-4 pt-4 border-t border-white/5">
                     <div className="flex items-center gap-3">
                       <Layout className="w-4 h-4 text-white/30" />
-                      <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-white/30">Links de Apoio</h3>
+                      <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-white/30">Links</h3>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {[
                         { name: 'Biblioteca de anúncios', url: 'https://www.facebook.com/ads/library/' },
-                        { name: 'AdsParo (Chrome)', url: 'https://chromewebstore.google.com/detail/adsparo-adlibrary-ad-find/jhgpmfdfgihdclapmppfeddggkidnoid?hl=pt-BR' },
-                        { name: 'Claude AI', url: 'https://Claude.ai' },
+                        { name: 'AdsParo', url: 'https://chromewebstore.google.com/detail/adsparo-adlibrary-ad-find/jhgpmfdfgihdclapmppfeddggkidnoid?hl=pt-BR' },
+                        { name: 'Claude', url: 'https://Claude.ai' },
                         { name: 'Similarweb', url: 'https://www.similarweb.com/pt/' }
                       ].map(link => (
                         <a 
