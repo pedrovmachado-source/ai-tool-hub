@@ -6,9 +6,11 @@ import Meta from '@/components/Meta';
 import OfferAnalysisModal from '@/components/OfferAnalysisModal';
 import OfferModelingModal from '@/components/OfferModelingModal';
 import OffersRanking from '@/components/OffersRanking';
+import SpendCashModal from '@/components/SpendCashModal';
 import { supabase } from '@/integrations/supabase/client';
 import InlineOfferEditor from '@/components/InlineOfferEditor';
 import ResearchAssistant from '@/components/ResearchAssistant';
+import { toast as sonnerToast } from 'sonner';
 
 import { 
   Sparkles, 
@@ -21,7 +23,8 @@ import {
   Pencil,
   Trophy,
   Camera,
-  Rocket
+  Rocket,
+  Coins
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -45,10 +48,22 @@ export default function OfertasValidadas() {
   const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false);
   const [editingOffer, setEditingOffer] = useState<ValidatedOffer | null>(null);
   const [modelingOffer, setModelingOffer] = useState<ValidatedOffer | null>(null);
+  const [spendingProduct, setSpendingProduct] = useState<any | null>(null);
+  const [cashProducts, setCashProducts] = useState<any[]>([]);
 
   useEffect(() => {
     fetchOffers();
+    fetchCashProducts();
   }, []);
+
+  async function fetchCashProducts() {
+    try {
+      const { data } = await supabase.from('site_products' as any).select('*').eq('active', true);
+      if (data) setCashProducts(data);
+    } catch (err) {
+      console.error('Error fetching cash products:', err);
+    }
+  }
 
   async function fetchOffers() {
     try {
@@ -111,6 +126,47 @@ export default function OfertasValidadas() {
             </p>
             </header>
 
+
+            {/* Video Europeu: Seção específica */}
+            <div className="mb-20">
+              <div className="relative overflow-hidden rounded-[2.5rem] glass-smooth px-8 py-10 border border-white/5 shadow-2xl bg-gradient-to-br from-brand-amber/5 to-transparent">
+                <div className="relative flex flex-col md:flex-row items-center justify-between gap-8 max-w-4xl mx-auto">
+                  <div className="flex-1 text-center md:text-left">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-amber/10 text-brand-amber text-[10px] font-bold uppercase tracking-[0.2em] mb-6">
+                      <Sparkles size={12} />
+                      <span>Conteúdo Exclusivo</span>
+                    </div>
+                    <h2 className="text-3xl md:text-4xl font-serif-display text-white mb-4 italic">Mineração de Infoprodutos na Europa</h2>
+                    <p className="text-white/40 text-base font-light leading-relaxed max-w-xl">
+                      Aprenda como minerar produtos digitais no mercado europeu e saia na frente da concorrência brasileira. Estratégias inéditas reveladas em vídeo.
+                    </p>
+                  </div>
+                  
+                  <div className="flex flex-col items-center gap-4 bg-white/5 p-8 rounded-[2rem] border border-white/5 min-w-[240px]">
+                    <div className="flex flex-col items-center">
+                      <span className="text-[10px] font-bold text-white/20 uppercase tracking-widest mb-1">Acesso Imediato</span>
+                      <div className="flex items-center gap-2 text-brand-amber">
+                        <Coins className="w-6 h-6" />
+                        <span className="text-4xl font-serif-display">10</span>
+                        <span className="text-xs font-bold uppercase tracking-widest mt-2">Cash</span>
+                      </div>
+                    </div>
+                    
+                    <button 
+                      onClick={() => {
+                        const p = cashProducts.find(prod => prod.slug === 'video-mineracao-europa');
+                        if (p) setSpendingProduct(p);
+                        else sonnerToast.error('Produto não encontrado');
+                      }}
+                      className="w-full py-4 px-8 rounded-full bg-brand-amber text-black text-sm font-bold hover:scale-105 transition-transform shadow-[0_10px_20px_rgba(251,191,36,0.2)]"
+                    >
+                      Liberar Vídeo Agora
+                    </button>
+                    <p className="text-[10px] text-white/20 font-medium">Assista onde e quando quiser</p>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             {loading ? (
             <div className="flex flex-col items-center justify-center py-20">
@@ -251,6 +307,15 @@ export default function OfertasValidadas() {
             offerTitle={modelingOffer?.title || ''}
             offerId={modelingOffer?.id}
           />
+          {spendingProduct && (
+            <SpendCashModal 
+              isOpen={!!spendingProduct}
+              onClose={() => setSpendingProduct(null)}
+              productId={spendingProduct.id}
+              productName={spendingProduct.name}
+              priceCash={spendingProduct.price_cash || 0}
+            />
+          )}
         </div>
       </main>
 
