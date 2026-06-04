@@ -24,7 +24,8 @@ import {
   Target,
   Globe,
   Layout,
-  MessageSquare
+  MessageSquare,
+  CreditCard
 } from 'lucide-react';
 
 import { useEffect, useRef, useState } from 'react';
@@ -529,6 +530,18 @@ export default function Alunos() {
                     <h2 className="text-2xl font-serif-display text-white">
                       {selectedVideo?.title || 'Selecione um conteúdo para começar'}
                     </h2>
+
+                    {!selectedVideo && (
+                      <div className="mt-8">
+                        <Button 
+                          onClick={() => window.open('https://loja.lovable.dev/credits', '_blank')}
+                          className="w-full sm:w-auto rounded-full px-8 py-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-xs uppercase tracking-widest hover:from-blue-500 hover:to-indigo-500 transition-all shadow-lg shadow-blue-500/20 group"
+                        >
+                          <CreditCard className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
+                          Comprar extensão lovable de créditos
+                        </Button>
+                      </div>
+                    )}
                     {selectedVideo && (
                       <div className="mt-8 flex flex-wrap gap-4">
                         <Button 
