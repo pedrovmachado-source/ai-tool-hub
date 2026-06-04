@@ -206,7 +206,10 @@ export default function SiteCreationPage({ onBack }: { onBack: () => void }) {
                   const manual = items.find(i => i.col === 'manual');
                   return (
                     <div key={rowKey} className="contents">
-                      <div>{ia ? <Card p={ia} /> : <div className="border border-dashed border-border rounded-xl p-5 text-xs text-muted-foreground/60 flex items-center justify-center min-h-[180px]">Em breve</div>}</div>
+                      <div className="relative">
+                        {ia ? <Card p={ia} /> : <div className="border border-dashed border-border rounded-xl p-5 text-xs text-muted-foreground/60 flex items-center justify-center min-h-[180px]">Em breve</div>}
+                        <div className="hidden md:block absolute -right-3 top-0 bottom-0 w-[1px] bg-gradient-to-b from-transparent via-white/5 to-transparent" />
+                      </div>
                       <div>{manual ? <Card p={manual} /> : <div className="border border-dashed border-border rounded-xl p-5 text-xs text-muted-foreground/60 flex items-center justify-center min-h-[180px]">Em breve</div>}</div>
 
                       {banner.enabled && banner.after_row_key === rowKey && idx < siteRows.length - 1 && (
