@@ -281,7 +281,15 @@ export default function OfertasValidadas() {
       </main>
 
       <OffersRanking />
-      <ResearchAssistant />
+      <ResearchAssistant>
+        <VideoMininingBanner 
+          products={cashProducts} 
+          onSelectProduct={(p) => {
+            if (p) setSpendingProduct(p);
+            else sonnerToast.error('Produto não encontrado');
+          }} 
+        />
+      </ResearchAssistant>
 
       <footer className="py-12 px-6 border-t border-white/5 text-center">
         <div className="text-[9px] text-white/10 font-bold uppercase tracking-[0.5em]">
