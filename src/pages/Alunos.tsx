@@ -3,6 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
 import Meta from '@/components/Meta';
 import MentoriaModal from '@/components/MentoriaModal';
+import ExtensionPurchaseModal from '@/components/ExtensionPurchaseModal';
 import { isMentorado } from '@/lib/plan';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -50,6 +51,7 @@ export default function Alunos() {
   const { user } = useAuth();
   const [selectedVideo, setSelectedVideo] = useState<Lesson | null>(null);
   const [mentoriaModalOpen, setMentoriaModalOpen] = useState(false);
+  const [purchaseModalOpen, setPurchaseModalOpen] = useState(false);
   const [personalizedAulas, setPersonalizedAulas] = useState<Lesson[]>([]);
   const [welcomeMessage, setWelcomeMessage] = useState<string>('');
   const [loading, setLoading] = useState(true);
@@ -534,13 +536,7 @@ export default function Alunos() {
                     {!selectedVideo && (
                       <div className="mt-8">
                         <Button 
-                          onClick={() => {
-                            toast({
-                              title: "Redirecionando...",
-                              description: "Você será levado ao checkout para acesso vitalício por 1400 créditos.",
-                            });
-                            window.open('https://loja.lovable.dev/credits', '_blank');
-                          }}
+                          onClick={() => setPurchaseModalOpen(true)}
                           className="w-full sm:w-auto rounded-full px-8 py-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-xs uppercase tracking-widest hover:from-blue-500 hover:to-indigo-500 transition-all shadow-lg shadow-blue-500/20 group"
                         >
                           <CreditCard className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
