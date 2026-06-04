@@ -65,10 +65,6 @@ export default function Alunos() {
         navigate('/bloqueado');
         return;
       }
-      if (!isMentorado(user.plano)) {
-        setMentoriaModalOpen(true);
-        return;
-      }
       fetchPersonalizedArea();
     }
   }, [user, navigate]);
