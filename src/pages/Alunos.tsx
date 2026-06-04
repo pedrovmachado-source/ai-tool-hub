@@ -590,6 +590,10 @@ export default function Alunos() {
           navigate('/menu');
         }} 
       />
+      <ExtensionPurchaseModal
+        isOpen={purchaseModalOpen}
+        onClose={() => setPurchaseModalOpen(false)}
+      />
     </div>
 
   );
