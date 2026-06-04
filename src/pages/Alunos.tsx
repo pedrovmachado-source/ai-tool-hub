@@ -534,12 +534,21 @@ export default function Alunos() {
                     {!selectedVideo && (
                       <div className="mt-8">
                         <Button 
-                          onClick={() => window.open('https://loja.lovable.dev/credits', '_blank')}
+                          onClick={() => {
+                            toast({
+                              title: "Redirecionando...",
+                              description: "Você será levado ao checkout para acesso vitalício por 1400 créditos.",
+                            });
+                            window.open('https://loja.lovable.dev/credits', '_blank');
+                          }}
                           className="w-full sm:w-auto rounded-full px-8 py-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-xs uppercase tracking-widest hover:from-blue-500 hover:to-indigo-500 transition-all shadow-lg shadow-blue-500/20 group"
                         >
                           <CreditCard className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
-                          Comprar extensão lovable de créditos
+                          Comprar extensão lovable de créditos (1400 créditos)
                         </Button>
+                        <p className="mt-4 text-[10px] text-white/20 uppercase tracking-[0.2em] font-bold">
+                          Acesso Vitalício · Ativação Imediata
+                        </p>
                       </div>
                     )}
                     {selectedVideo && (
