@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-export default function ResearchAssistant() {
+export default function ResearchAssistant({ children }: { children?: React.ReactNode }) {
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
 
