@@ -10,6 +10,7 @@ import SpendCashModal from '@/components/SpendCashModal';
 import { supabase } from '@/integrations/supabase/client';
 import InlineOfferEditor from '@/components/InlineOfferEditor';
 import ResearchAssistant from '@/components/ResearchAssistant';
+import VideoMininingBanner from '@/components/VideoMiningBanner';
 import { toast as sonnerToast } from 'sonner';
 
 import { 
