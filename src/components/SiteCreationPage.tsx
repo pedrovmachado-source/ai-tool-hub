@@ -192,17 +192,24 @@ export default function SiteCreationPage({ onBack }: { onBack: () => void }) {
             {/* Sites: linha-a-linha com banner divisor */}
             {siteRows.length > 0 && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 mb-12">
-                <ColumnHeader title="Copy com IA" subtitle="A solução rápida para quem precisa estar no ar agora com eficiência e baixo custo." icon={Sparkles}
-                  accent="bg-white/5 text-white/50 border border-white/5" />
-                <ColumnHeader title="Copy à Mão" subtitle="Textos psicológicos desenhados palavra por palavra por especialistas em conversão." icon={Pencil}
-                  accent="bg-white/5 text-white/50 border border-white/5" />
+                <div className="md:col-span-1">
+                  <ColumnHeader title="Copy com IA" subtitle="A solução rápida para quem precisa estar no ar agora com eficiência e baixo custo." icon={Sparkles}
+                    accent="bg-brand-blue/10 text-brand-blue border border-brand-blue/20" />
+                </div>
+                <div className="md:col-span-1">
+                  <ColumnHeader title="Copy à Mão" subtitle="Textos psicológicos desenhados palavra por palavra por especialistas em conversão." icon={Pencil}
+                    accent="bg-brand-purple/10 text-brand-purple border border-brand-purple/20" />
+                </div>
 
                 {siteRows.map(([rowKey, items], idx) => {
                   const ia = items.find(i => i.col === 'ia');
                   const manual = items.find(i => i.col === 'manual');
                   return (
                     <div key={rowKey} className="contents">
-                      <div>{ia ? <Card p={ia} /> : <div className="border border-dashed border-border rounded-xl p-5 text-xs text-muted-foreground/60 flex items-center justify-center min-h-[180px]">Em breve</div>}</div>
+                      <div className="relative">
+                        {ia ? <Card p={ia} /> : <div className="border border-dashed border-border rounded-xl p-5 text-xs text-muted-foreground/60 flex items-center justify-center min-h-[180px]">Em breve</div>}
+                        <div className="hidden md:block absolute -right-3 top-0 bottom-0 w-[1px] bg-gradient-to-b from-transparent via-white/5 to-transparent" />
+                      </div>
                       <div>{manual ? <Card p={manual} /> : <div className="border border-dashed border-border rounded-xl p-5 text-xs text-muted-foreground/60 flex items-center justify-center min-h-[180px]">Em breve</div>}</div>
 
                       {banner.enabled && banner.after_row_key === rowKey && idx < siteRows.length - 1 && (
