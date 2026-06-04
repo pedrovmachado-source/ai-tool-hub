@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-export default function ResearchAssistant() {
+export default function ResearchAssistant({ children }: { children?: React.ReactNode }) {
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
 
@@ -41,6 +41,8 @@ A resposta deve ser uma lista separada por tópicos, com pelo menos 30 sugestõe
   return (
     <div className="mt-16 pb-24 max-w-7xl mx-auto px-6">
       <div className="max-w-4xl mx-auto space-y-12">
+        
+        {children}
         
         {/* Keywords Section */}
         <div>
