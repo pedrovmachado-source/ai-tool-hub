@@ -307,6 +307,15 @@ export default function OfertasValidadas() {
             offerTitle={modelingOffer?.title || ''}
             offerId={modelingOffer?.id}
           />
+          {spendingProduct && (
+            <SpendCashModal 
+              isOpen={!!spendingProduct}
+              onClose={() => setSpendingProduct(null)}
+              productId={spendingProduct.id}
+              productName={spendingProduct.name}
+              priceCash={spendingProduct.price_cash || 0}
+            />
+          )}
         </div>
       </main>
 
