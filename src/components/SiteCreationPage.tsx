@@ -192,10 +192,14 @@ export default function SiteCreationPage({ onBack }: { onBack: () => void }) {
             {/* Sites: linha-a-linha com banner divisor */}
             {siteRows.length > 0 && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 mb-12">
-                <ColumnHeader title="Copy com IA" subtitle="A solução rápida para quem precisa estar no ar agora com eficiência e baixo custo." icon={Sparkles}
-                  accent="bg-white/5 text-white/50 border border-white/5" />
-                <ColumnHeader title="Copy à Mão" subtitle="Textos psicológicos desenhados palavra por palavra por especialistas em conversão." icon={Pencil}
-                  accent="bg-white/5 text-white/50 border border-white/5" />
+                <div className="md:col-span-1">
+                  <ColumnHeader title="Copy com IA" subtitle="A solução rápida para quem precisa estar no ar agora com eficiência e baixo custo." icon={Sparkles}
+                    accent="bg-brand-blue/10 text-brand-blue border border-brand-blue/20" />
+                </div>
+                <div className="md:col-span-1">
+                  <ColumnHeader title="Copy à Mão" subtitle="Textos psicológicos desenhados palavra por palavra por especialistas em conversão." icon={Pencil}
+                    accent="bg-brand-purple/10 text-brand-purple border border-brand-purple/20" />
+                </div>
 
                 {siteRows.map(([rowKey, items], idx) => {
                   const ia = items.find(i => i.col === 'ia');
