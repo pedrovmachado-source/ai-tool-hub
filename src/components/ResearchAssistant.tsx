@@ -42,6 +42,8 @@ A resposta deve ser uma lista separada por tópicos, com pelo menos 30 sugestõe
     <div className="mt-16 pb-24 max-w-7xl mx-auto px-6">
       <div className="max-w-4xl mx-auto space-y-12">
         
+        {children}
+        
         {/* Keywords Section */}
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-smooth mb-6 border border-white/5">
