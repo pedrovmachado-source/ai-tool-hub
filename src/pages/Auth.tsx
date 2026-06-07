@@ -11,6 +11,8 @@ import {
 } from 'lucide-react';
 import { lovable } from '@/integrations/lovable';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { TermsModal } from '@/components/TermsModal';
 import logoAdai from '@/assets/logo.png';
 
 export default function Auth() {
@@ -20,6 +22,8 @@ export default function Auth() {
   // UI states
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
 
   useEffect(() => {
     if (user && !authLoading) {
@@ -28,6 +32,10 @@ export default function Auth() {
   }, [user, authLoading, navigate]);
 
   const handleGoogleSignIn = async () => {
+    if (!acceptedTerms) {
+      setError('Você deve aceitar os termos de serviço para continuar.');
+      return;
+    }
     setSubmitting(true);
     setError('');
     try {
@@ -134,7 +142,32 @@ export default function Auth() {
                 Continuar com Google
               </Button>
 
+              <div className="flex items-start gap-3 p-4 rounded-2xl bg-white/5 border border-white/5 mt-6">
+                <Checkbox 
+                  id="terms" 
+                  checked={acceptedTerms}
+                  onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
+                  className="mt-1 border-white/20 data-[state=checked]:bg-white data-[state=checked]:text-black"
+                />
+                <label 
+                  htmlFor="terms" 
+                  className="text-xs text-white/50 leading-relaxed cursor-pointer select-none"
+                >
+                  Autorizo o início imediato dos serviços. Estou ciente de que, ao acessar a primeira Aula, perco o direito de arrependimento previsto no art. 49 do CDC. Declaro ser maior de 18 anos e aceito os{' '}
+                  <button 
+                    onClick={() => setIsTermsModalOpen(true)}
+                    className="text-white hover:underline font-medium"
+                  >
+                    Termos de Serviço
+                  </button>.
+                </label>
+              </div>
             </div>
+
+            <TermsModal 
+              isOpen={isTermsModalOpen} 
+              onClose={() => setIsTermsModalOpen(false)} 
+            />
 
             {submitting && (
               <div className="mt-8 flex justify-center">
