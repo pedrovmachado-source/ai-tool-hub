@@ -27,7 +27,7 @@ export default function Auth() {
 
   useEffect(() => {
     if (user && !authLoading) {
-      navigate('/menu');
+      navigate('/menu', { replace: true });
     }
   }, [user, authLoading, navigate]);
 
