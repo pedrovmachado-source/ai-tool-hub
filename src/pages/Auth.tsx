@@ -153,7 +153,6 @@ export default function Auth() {
                   htmlFor="terms" 
                   className="text-xs text-white/50 leading-relaxed cursor-pointer select-none"
                 >
-                  Autorizo o início imediato dos serviços. Estou ciente de que, ao acessar a primeira Aula, perco o direito de arrependimento previsto no art. 49 do CDC. Declaro ser maior de 18 anos e aceito os{' '}
                   <button 
                     onClick={() => setIsTermsModalOpen(true)}
                     className="text-white hover:underline font-medium"
