@@ -243,13 +243,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } else if (event === 'SIGNED_OUT') {
         clearAuthState();
       }
-      
-      // Redirect logic after login - use window.location.replace to prevent back-looping
-      if (event === 'SIGNED_IN' && session?.user) {
-        if (window.location.pathname === '/' || window.location.pathname === '/auth') {
-          window.location.replace('/menu');
-        }
-      }
     });
 
     supabase.auth.getSession()
