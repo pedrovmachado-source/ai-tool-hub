@@ -153,11 +153,12 @@ export default function Auth() {
                   htmlFor="terms" 
                   className="text-xs text-white/50 leading-relaxed cursor-pointer select-none"
                 >
+                  aceitar os{' '}
                   <button 
                     onClick={() => setIsTermsModalOpen(true)}
                     className="text-white hover:underline font-medium"
                   >
-                    aceitar os Termos de serviço
+                    Termos de serviço
                   </button>.
                 </label>
               </div>
