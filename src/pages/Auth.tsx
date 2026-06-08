@@ -158,7 +158,7 @@ export default function Auth() {
                     onClick={() => setIsTermsModalOpen(true)}
                     className="text-white hover:underline font-medium"
                   >
-                    Termos de Serviço
+                    aceitar os Termos de serviço
                   </button>.
                 </label>
               </div>
