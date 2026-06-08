@@ -22,12 +22,12 @@ export const TermsModal = ({ isOpen, onClose }: TermsModalProps) => {
         
         <ScrollArea className="flex-1 p-8 h-full max-h-[calc(90vh-100px)]">
           <div className="prose prose-invert max-w-none text-white/70 font-light space-y-6">
-            <p className="text-[10px] font-bold text-white/20 uppercase tracking-[0.3em]">Última atualização: 7 de junho de 2026</p>
+            <p className="text-[10px] font-bold text-white/20 uppercase tracking-[0.3em]">Última atualização: 29 de maio de 2026</p>
             
             <section>
               <h2 className="text-xl font-serif-display text-white mb-4">ACEITAÇÃO DESTES TERMOS</h2>
               <p>
-                Estes Termos de Serviço ("Termos") regulam a contratação e o uso dos serviços de mentoria oferecidos por <strong>[RAZÃO SOCIAL COMPLETA]</strong>, inscrita no CNPJ sob o nº <strong>[CNPJ]</strong>, com sede em <strong>[LOGRADOURO, NÚMERO E CEP]</strong>, Rio de Janeiro/RJ, operando sob a marca <strong>KAYOSA</strong>, por meio do site <strong>kayosa.com.br</strong> e demais domínios e plataformas associados (a "Kayosa", "nós").
+                Estes Termos de Serviço ("Termos") regulam a contratação e o uso dos serviços de mentoria oferecidos por por meio do site <strong>kayosa.com.br</strong> e demais domínios e plataformas associados (a "Kayosa", "nós").
               </p>
               <p>
                 <strong>Ao criar uma conta, marcar a caixa de aceite no momento da contratação e/ou efetuar o pagamento, o Aluno declara que: (i) leu integralmente estes Termos, compreendeu-os em todos os seus termos e com eles concorda de forma livre, expressa e informada; e (ii) é maior de 18 (dezoito) anos de idade e plenamente capaz para contratar.</strong> A criação de conta não é permitida sem o aceite prévio destes Termos nem a menores de idade.
