@@ -2,10 +2,12 @@ import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { meetsMinPlan } from '@/lib/plan';
-import { ArrowLeft, Play, FileText, Image as ImageIcon, Lock, FileText as TextIcon, ShoppingCart, ArrowRight, Coins, Wallet } from 'lucide-react';
+import { ArrowLeft, Play, FileText, Image as ImageIcon, Lock, FileText as TextIcon, ShoppingCart, ArrowRight, Coins, Wallet, Sparkles, ExternalLink } from 'lucide-react';
 import CashBalance from './CashBalance';
 import SpendCashModal from './SpendCashModal';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { PdfModal, VideoModal, ImageModal } from '@/lib/lessonViewers';
 import OfferModal from './OfferModal';
 import PurchasedAccountsModal from './PurchasedAccountsModal';
@@ -48,6 +50,7 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
   const [offer, setOffer] = useState<Item | null>(null);
   const [showPurchasedModal, setShowPurchasedModal] = useState(false);
   const [spendingProduct, setSpendingProduct] = useState<Item | null>(null);
+  const [infoItem, setInfoItem] = useState<Item | null>(null);
   const [paymentSelection, setPaymentSelection] = useState<{ isOpen: boolean; priceId: string; productId: string; productTitle: string }>({
     isOpen: false,
     priceId: '',
@@ -125,14 +128,16 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
   const untopiced = topics.length > 0 ? items.filter(i => !i.topic) : items;
 
   const renderItems = (list: Item[]) => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className={`grid grid-cols-1 ${slug === 'creative-edit' ? 'gap-6' : 'md:grid-cols-2 lg:grid-cols-3 gap-4'}`}>
       {list.map(i => (
         <ItemCard key={i.id} item={i}
           isOffers={isOffers}
+          isCreative={slug === 'creative-edit'}
           onVideo={() => setVideo(i)}
           onPdf={() => setPdf(i)}
           onImage={() => setImage(i)}
           onOffer={() => setOffer(i)}
+          onInfo={() => setInfoItem(i)}
           onBuy={(priceId, productId, title) => setPaymentSelection({ isOpen: true, priceId, productId, productTitle: title })}
           onBuyWithCash={(item) => setSpendingProduct(item)}
         />

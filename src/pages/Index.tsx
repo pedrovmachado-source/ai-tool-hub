@@ -154,6 +154,10 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
     return <ContentSectionPage slug={page} onBack={() => navigate('/menu')} onUpgrade={() => setPage('pro')} />;
   }
 
+  if (page === 'creative-edit') {
+    return <ContentSectionPage slug={page} onBack={() => navigate('/menu')} onUpgrade={() => setPage('pro')} />;
+  }
+
   if (constructionPages.includes(page)) {
     return (
       <UnderConstruction>
