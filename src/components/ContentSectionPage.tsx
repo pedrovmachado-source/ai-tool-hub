@@ -421,8 +421,10 @@ function ItemCard({
   if (isCreative) {
     return (
       <button 
-        onClick={handleClick}
-        className="group relative w-full p-6 sm:p-10 glass-smooth hover:bg-white/10 transition-all duration-700 rounded-[2.5rem] border border-white/5 flex flex-col sm:flex-row items-center justify-between text-left gap-6 hover:scale-[1.01] hover:-translate-y-1"
+        onClick={isAdmin ? onSelect : handleClick}
+        className={`group relative w-full p-6 sm:p-10 glass-smooth transition-all duration-700 rounded-[2.5rem] border flex flex-col sm:flex-row items-center justify-between text-left gap-6 hover:scale-[1.01] hover:-translate-y-1 ${
+          isSelected ? 'bg-white/20 border-white/40' : 'hover:bg-white/10 border-white/5'
+        }`}
       >
         <div className="flex items-center gap-6 sm:gap-10 flex-1">
           <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/5 rounded-3xl flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all shrink-0">
