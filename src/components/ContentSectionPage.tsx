@@ -164,6 +164,9 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
         <ItemCard key={i.id} item={i}
           isOffers={isOffers}
           isCreative={slug === 'creative-edit'}
+          isAdmin={isAdmin}
+          isSelected={selectedIds.has(i.id)}
+          onSelect={() => toggleSelection(i.id)}
           onVideo={() => setVideo(i)}
           onPdf={() => setPdf(i)}
           onImage={() => setImage(i)}
