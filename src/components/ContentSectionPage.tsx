@@ -375,10 +375,15 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
   );
 }
 
-function ItemCard({ item, isOffers, isCreative, onVideo, onPdf, onImage, onOffer, onInfo, onBuy, onBuyWithCash }: {
+function ItemCard({ 
+  item, isOffers, isCreative, isAdmin, isSelected, onSelect, onVideo, onPdf, onImage, onOffer, onInfo, onBuy, onBuyWithCash 
+}: {
   item: Item;
   isOffers?: boolean;
   isCreative?: boolean;
+  isAdmin?: boolean;
+  isSelected?: boolean;
+  onSelect?: () => void;
   onVideo: () => void;
   onPdf: () => void;
   onImage: () => void;
