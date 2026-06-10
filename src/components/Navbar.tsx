@@ -18,15 +18,15 @@ const ICON_MAP: Record<string, typeof Sparkles> = {
 interface NavItem { key: string; label: string; icon: string; color: string; target: string; enabled: boolean; sort_order: number; }
 
 const DEFAULT_ITEMS: NavItem[] = [
-  { key: 'menu', label: 'Ais', icon: 'Sparkles', color: 'text-brand-amber', target: 'ferramentas', enabled: true, sort_order: 1 },
-  { key: 'offers', label: 'Ofertas validadas', icon: 'Sparkles', color: 'text-brand-amber', target: 'ofertas', enabled: true, sort_order: 2 },
-  { key: 'alunos', label: 'Área do Mentorado', icon: 'Users', color: 'text-brand-purple', target: 'alunos', enabled: true, sort_order: 3 },
-  { key: 'creative-edit', label: 'Comprar Criativo', icon: 'Wand2', color: 'text-brand-teal', target: 'creative-edit', enabled: true, sort_order: 4 },
-  { key: 'copywrite', label: 'Copywrite', icon: 'PenTool', color: 'text-brand-amber', target: 'copywrite', enabled: true, sort_order: 5 },
-  { key: 'fb-accounts', label: 'Contas de Facebook Ads', icon: 'Facebook', color: 'text-brand-blue', target: 'fb-accounts', enabled: true, sort_order: 6 },
-  { key: 'purchased', label: 'Contas Compradas', icon: 'CreditCard', color: 'text-brand-blue-medium', target: 'https://billing.stripe.com/p/login/test_6oE8xU1v0fXn5EYcMM', enabled: true, sort_order: 7 },
-  { key: 'site-creation', label: 'Comprar Site', icon: 'Globe2', color: 'text-brand-blue-medium', target: 'site-creation', enabled: true, sort_order: 8 },
-  { key: 'lessons', label: 'Aulas gravadas', icon: 'GraduationCap', color: 'text-brand-blue-medium', target: 'mentorias', enabled: true, sort_order: 9 },
+  { key: 'menu', label: 'Ais', icon: 'Sparkles', color: 'text-white', target: 'ferramentas', enabled: true, sort_order: 1 },
+  { key: 'offers', label: 'Ofertas validadas', icon: 'Sparkles', color: 'text-white', target: 'ofertas', enabled: true, sort_order: 2 },
+  { key: 'alunos', label: 'Área do Mentorado', icon: 'Users', color: 'text-white', target: 'alunos', enabled: true, sort_order: 3 },
+  { key: 'creative-edit', label: 'Comprar Criativo', icon: 'Wand2', color: 'text-white', target: 'creative-edit', enabled: true, sort_order: 4 },
+  { key: 'copywrite', label: 'Copywrite', icon: 'PenTool', color: 'text-white', target: 'copywrite', enabled: true, sort_order: 5 },
+  { key: 'fb-accounts', label: 'Contas de Facebook Ads', icon: 'Facebook', color: 'text-white', target: 'fb-accounts', enabled: true, sort_order: 6 },
+  { key: 'purchased', label: 'Contas Compradas', icon: 'CreditCard', color: 'text-white', target: 'https://billing.stripe.com/p/login/test_6oE8xU1v0fXn5EYcMM', enabled: true, sort_order: 7 },
+  { key: 'site-creation', label: 'Comprar Site', icon: 'Globe2', color: 'text-white', target: 'site-creation', enabled: true, sort_order: 8 },
+  { key: 'lessons', label: 'Aulas gravadas', icon: 'GraduationCap', color: 'text-white', target: 'mentorias', enabled: true, sort_order: 9 },
 ];
 
 export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onNavigate: (page: string) => void; onOpenSavedEbook?: (toolKey: string, categoryKey: string) => void; hideAuth?: boolean }) {
@@ -135,7 +135,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
                 onClick={() => onNavigate('comprar-cash')} 
                 className="flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-white bg-white/10 border border-white/10 hover:bg-white/20 transition-all hover:scale-105 whitespace-nowrap"
               >
-                <Coins size={14} className="text-brand-amber" />
+                <Coins size={14} className="text-white" />
                 <span>Cash - {realTimeBalance >= 1000 ? `${(realTimeBalance / 1000).toFixed(realTimeBalance % 1000 >= 100 ? 1 : 0)}k` : realTimeBalance}</span>
               </button>
 
@@ -147,7 +147,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
                 <Bookmark size={16} className="sm:hidden" />
                 <Bookmark size={18} className="hidden sm:inline" />
                 {savedEbooks.length > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-md bg-brand-amber text-[9px] font-bold text-white flex items-center justify-center">{savedEbooks.length}</span>
+                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-md bg-white text-[9px] font-bold text-black flex items-center justify-center">{savedEbooks.length}</span>
                 )}
               </button>
             </div>

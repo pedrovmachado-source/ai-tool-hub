@@ -247,7 +247,7 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
             </div>
             <button
               onClick={() => setPage('pro')}
-              className="inline-flex items-center gap-2 text-xs px-4 py-2 rounded-full bg-brand-amber/10 border border-brand-amber/25 text-brand-amber hover:bg-brand-amber/20 transition-all"
+              className="inline-flex items-center gap-2 text-xs px-4 py-2 rounded-full bg-white/10 border border-white/25 text-white hover:bg-white/20 transition-all"
             >
               ⚡ Seja Elite · R${plan.price} {plan.period === 'vitalicio' ? '(acesso vitalício)' : ''}
             </button>
