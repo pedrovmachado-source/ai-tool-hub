@@ -535,9 +535,6 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'niche-lessons', label: 'Aulas por nicho', icon: Video },
     { key: 'site-creation', label: 'Comprar Site', icon: Folder },
     { key: 'sections', label: 'Conteúdos', icon: Folder },
-    { key: 'creative-edit', label: 'Criativos', icon: Palette },
-    { key: 'offers', label: 'Ofertas Validadas', icon: Tag },
-    { key: 'offer-analyses', label: 'Análises de Ofertas', icon: Search },
     { key: 'menu', label: 'Menu Lateral', icon: Menu },
     { key: 'student-areas', label: 'Área do Mentorado', icon: GraduationCap },
     { key: 'purchased-accounts', label: 'Contas Compradas', icon: Shield },
@@ -807,8 +804,8 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
           </>
         )}
 
-        {section === 'creative-edit' && (
-          <AdminContentSections overrideSlug="creative-edit" />
+        {section === 'sections' && (
+          <AdminContentSections />
         )}
 
         {section === 'payments' && (
