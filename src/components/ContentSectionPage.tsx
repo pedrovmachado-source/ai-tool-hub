@@ -51,6 +51,8 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
   const [showPurchasedModal, setShowPurchasedModal] = useState(false);
   const [spendingProduct, setSpendingProduct] = useState<Item | null>(null);
   const [infoItem, setInfoItem] = useState<Item | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [isDeleting, setIsDeleting] = useState(false);
   const [paymentSelection, setPaymentSelection] = useState<{ isOpen: boolean; priceId: string; productId: string; productTitle: string }>({
     isOpen: false,
     priceId: '',
