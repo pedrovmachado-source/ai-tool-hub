@@ -535,6 +535,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'niche-lessons', label: 'Aulas por nicho', icon: Video },
     { key: 'site-creation', label: 'Comprar Site', icon: Folder },
     { key: 'sections', label: 'Conteúdos', icon: Folder },
+    { key: 'creative-edit', label: 'Criativos', icon: Palette },
     { key: 'offers', label: 'Ofertas Validadas', icon: Tag },
     { key: 'offer-analyses', label: 'Análises de Ofertas', icon: Search },
     { key: 'menu', label: 'Menu Lateral', icon: Menu },
@@ -804,6 +805,10 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
               </div>
             </div>
           </>
+        )}
+
+        {section === 'creative-edit' && (
+          <AdminContentSections overrideSlug="creative-edit" />
         )}
 
         {section === 'payments' && (
