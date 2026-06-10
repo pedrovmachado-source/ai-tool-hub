@@ -86,9 +86,9 @@ export default function CategoryTabs({ activeCategory, onSelect, categories: cat
                   ? 'text-foreground font-medium'
                   : 'text-muted-foreground hover:text-foreground border-transparent'
               }`}
-              style={{ borderBottomColor: activeCategory === cat.key ? cat.accent : 'transparent' }}
+              style={{ borderBottomColor: activeCategory === cat.key ? 'currentColor' : 'transparent' }}
             >
-              <span className="w-[6px] h-[6px] sm:w-[7px] sm:h-[7px] rounded-full" style={{ background: cat.accent }} />
+              <span className="w-[6px] h-[6px] sm:w-[7px] sm:h-[7px] rounded-full" style={{ background: activeCategory === cat.key ? 'currentColor' : 'hsl(var(--muted-foreground))' }} />
               {cat.label}
             </button>
           ))}
