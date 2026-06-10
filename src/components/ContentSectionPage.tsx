@@ -268,17 +268,88 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
           priceCash={spendingProduct.price_cash || 0}
         />
       )}
+
+      {/* Info Modal for Creative Edit */}
+      <Dialog open={!!infoItem} onOpenChange={(open) => !open && setInfoItem(null)}>
+        <DialogContent className="max-w-3xl bg-[#141414] border-white/10 text-white rounded-[2.5rem] overflow-hidden p-0 gap-0 shadow-2xl">
+          <div className="relative aspect-video w-full bg-black/40">
+            {infoItem?.image_url ? (
+              <img src={infoItem.image_url} alt={infoItem.title} className="w-full h-full object-cover opacity-60" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-white/5">
+                <ImageIcon className="w-20 h-20 text-white/10" />
+              </div>
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-transparent to-transparent" />
+            <div className="absolute bottom-8 left-8 right-8">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-smooth mb-4 border border-white/10">
+                <Sparkles size={12} className="text-white/60" />
+                <span className="text-[10px] font-bold text-white/60 tracking-[0.2em] uppercase">{infoItem?.topic || 'Criativo Elite'}</span>
+              </div>
+              <h2 className="text-4xl font-serif-display tracking-tight text-white mb-2">{infoItem?.title}</h2>
+              <p className="text-white/40 text-sm font-light">{infoItem?.description}</p>
+            </div>
+          </div>
+          
+          <ScrollArea className="max-h-[50vh] p-8">
+            <div className="prose prose-invert max-w-none">
+              <div className="text-white/70 font-light leading-relaxed whitespace-pre-wrap">
+                {infoItem?.body || 'Nenhum conteúdo detalhado disponível.'}
+              </div>
+              
+              {(infoItem?.example_url || infoItem?.video_url) && (
+                <div className="mt-12 p-8 rounded-3xl bg-white/5 border border-white/10">
+                  <h4 className="text-white font-bold mb-4 flex items-center gap-2">
+                    <ArrowRight size={16} className="text-white/40" /> Recursos Disponíveis
+                  </h4>
+                  <div className="flex flex-wrap gap-4">
+                    {infoItem?.video_url && (
+                      <button 
+                        onClick={() => { setVideo(infoItem); setInfoItem(null); }}
+                        className="px-6 py-3 rounded-xl bg-white text-black font-bold text-xs uppercase tracking-widest hover:scale-105 transition-all flex items-center gap-2"
+                      >
+                        <Play size={14} /> Assistir Aula
+                      </button>
+                    )}
+                    {infoItem?.example_url && (
+                      <a 
+                        href={infoItem.example_url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="px-6 py-3 rounded-xl border border-white/10 text-white font-bold text-xs uppercase tracking-widest hover:bg-white/5 transition-all flex items-center gap-2"
+                      >
+                        <ExternalLink size={14} className="text-white/40" /> Ver Exemplo Real
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </ScrollArea>
+          
+          <div className="p-8 border-t border-white/5 flex justify-end bg-[#1a1a1a]">
+             <button 
+              onClick={() => setInfoItem(null)}
+              className="px-8 py-3 rounded-full border border-white/5 text-white/40 text-xs font-bold uppercase tracking-widest hover:bg-white/5 transition-all"
+             >
+               Fechar
+             </button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
 
-function ItemCard({ item, isOffers, onVideo, onPdf, onImage, onOffer, onBuy, onBuyWithCash }: {
+function ItemCard({ item, isOffers, isCreative, onVideo, onPdf, onImage, onOffer, onInfo, onBuy, onBuyWithCash }: {
   item: Item;
   isOffers?: boolean;
+  isCreative?: boolean;
   onVideo: () => void;
   onPdf: () => void;
   onImage: () => void;
   onOffer?: () => void;
+  onInfo?: () => void;
   onBuy: (priceId: string, productId: string, title: string) => void;
   onBuyWithCash: (item: Item) => void;
 }) {
@@ -295,6 +366,7 @@ function ItemCard({ item, isOffers, onVideo, onPdf, onImage, onOffer, onBuy, onB
   };
 
   const handleClick = () => {
+    if (isCreative && onInfo) return onInfo();
     if (isOffers && onOffer) return onOffer();
     if (item.kind === 'video') return onVideo();
     if (item.kind === 'pdf') return onPdf();
@@ -306,6 +378,33 @@ function ItemCard({ item, isOffers, onVideo, onPdf, onImage, onOffer, onBuy, onB
     : item.kind === 'image' ? <ImageIcon size={16} className="text-brand-amber" />
     : item.section_slug === 'fb-accounts' ? <ShoppingCart size={16} className="text-brand-blue-medium" />
     : <TextIcon size={16} className="text-muted-foreground" />;
+
+  if (isCreative) {
+    return (
+      <button 
+        onClick={handleClick}
+        className="group relative w-full p-6 sm:p-10 glass-smooth hover:bg-white/10 transition-all duration-700 rounded-[2.5rem] border border-white/5 flex flex-col sm:flex-row items-center justify-between text-left gap-6 hover:scale-[1.01] hover:-translate-y-1"
+      >
+        <div className="flex items-center gap-6 sm:gap-10 flex-1">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/5 rounded-3xl flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all shrink-0">
+            {icon}
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="inline-block px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[9px] font-bold text-white/30 uppercase tracking-[0.2em] mb-3">
+              {item.topic || 'Criativo'}
+            </div>
+            <h4 className="text-2xl sm:text-3xl font-serif-display text-white mb-2 tracking-tight group-hover:tracking-wide transition-all truncate">{item.title}</h4>
+            <p className="text-white/40 text-sm font-light max-w-xl line-clamp-1">{item.description}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-4 shrink-0">
+          <div className="w-12 h-12 rounded-full border border-white/5 flex items-center justify-center text-white/20 group-hover:text-white group-hover:border-white/20 transition-all">
+            <ArrowRight size={20} className="transform group-hover:translate-x-1 transition-transform" />
+          </div>
+        </div>
+      </button>
+    );
+  }
 
   if (item.kind === 'text') {
     return (
