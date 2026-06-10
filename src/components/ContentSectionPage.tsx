@@ -441,7 +441,7 @@ function ItemCard({
         }`}
       >
         <div className="flex items-center gap-6 sm:gap-10 flex-1">
-          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/5 rounded-3xl flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all shrink-0">
+          <div className="w-12 h-12 sm:w-14 sm:h-14 bg-white/5 rounded-2xl flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all shrink-0">
             {icon}
           </div>
           <div className="min-w-0 flex-1">
