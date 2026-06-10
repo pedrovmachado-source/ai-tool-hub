@@ -94,7 +94,6 @@ export default function Mentorias() {
     }
   };
 
-
   return (
     <div className="flex flex-col min-h-screen bg-[#141414] text-white selection:bg-white/20 font-sans overflow-x-hidden">
       <Meta title="Mentorias | Convert Club" description="Assista às mentorias exclusivas do Convert Club com estratégias de escala e conversão brutal." />
@@ -113,7 +112,6 @@ export default function Mentorias() {
           }
         }}
       />
-
 
       <main className="flex-1">
         {/* Hero / Player Section */}
@@ -234,9 +232,6 @@ export default function Mentorias() {
               </div>
             );
           })}
-        </div>
-      </main>
-
 
           {/* Transcription Section if video selected */}
           {selectedVideo && (selectedVideo.description || selectedVideo.pdf_path) && (
@@ -303,5 +298,3 @@ export default function Mentorias() {
     </div>
   );
 }
-
-
