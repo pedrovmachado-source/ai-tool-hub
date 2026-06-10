@@ -203,12 +203,12 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
       </header>
 
       {/* Hero */}
-      <div className="bg-navy py-10 sm:py-14 px-4 sm:px-8 text-center">
-        <div className="inline-flex items-center gap-2 bg-brand-blue/15 border border-brand-blue/30 text-brand-blue-medium text-[10px] sm:text-xs px-3 sm:px-4 py-1 sm:py-1.5 rounded-full mb-4 sm:mb-5">
+      <div className="bg-navy py-10 sm:py-14 px-4 sm:px-8 text-center border-b border-white/5">
+        <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 text-muted-foreground text-[10px] sm:text-xs px-3 sm:px-4 py-1 sm:py-1.5 rounded-full mb-4 sm:mb-5">
           ✨ Curadoria atualizada em 2026
         </div>
         <h2 className="font-serif-display text-2xl sm:text-3xl md:text-4xl leading-tight text-primary-foreground tracking-tight mb-3">
-          Descubra as melhores <em className="text-brand-blue-medium italic">IAs</em> para<br className="hidden sm:inline" /> turbinar seu negócio
+          Descubra as melhores <em className="text-white italic">IAs</em> para<br className="hidden sm:inline" /> turbinar seu negócio
         </h2>
         <p className="text-[13px] sm:text-[15px] text-muted-foreground/60 max-w-[520px] mx-auto leading-relaxed">
           Guia completo com as ferramentas de inteligência artificial mais poderosas para empreendedores. Com e-books, prompts prontos e passo a passo.
@@ -222,7 +222,7 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
             onChange={e => setSearchQuery(e.target.value)}
             aria-label="Buscar ferramentas de IA"
             placeholder="Buscar ferramentas de IA..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-lg text-sm bg-primary-foreground/10 text-primary-foreground placeholder:text-muted-foreground/40 border border-primary-foreground/10 focus:outline-none focus:border-brand-blue"
+            className="w-full pl-10 pr-4 py-2.5 rounded-lg text-sm bg-primary-foreground/10 text-primary-foreground placeholder:text-muted-foreground/40 border border-primary-foreground/10 focus:outline-none focus:border-white/40"
           />
         </div>
 
@@ -232,8 +232,8 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
             onClick={() => setFreeOnly(v => !v)}
             className={`inline-flex items-center gap-1.5 text-[11px] sm:text-xs px-3 sm:px-3.5 py-1.5 rounded-full border transition-all ${
               freeOnly
-                ? 'bg-brand-green text-primary-foreground border-brand-green shadow-brand-sm'
-                : 'bg-primary-foreground/5 text-muted-foreground border-primary-foreground/15 hover:border-brand-green/50 hover:text-brand-green'
+                ? 'bg-white text-navy border-white shadow-brand-sm'
+                : 'bg-primary-foreground/5 text-muted-foreground border-primary-foreground/15 hover:border-white/50 hover:text-white'
             }`}
           >
             🆓 {freeOnly ? 'Mostrando só IAs 100% gratuitas' : 'Filtrar IAs 100% gratuitas'}
