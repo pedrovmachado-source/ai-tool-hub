@@ -496,7 +496,12 @@ function ItemCard({
   }
 
   return (
-    <div className="group relative text-left glass-smooth hover:bg-white/10 transition-all duration-500 rounded-[2.5rem] border border-white/5 flex flex-col h-full overflow-hidden">
+    <div 
+      onClick={isAdmin ? onSelect : handleClick}
+      className={`group relative text-left glass-smooth transition-all duration-500 rounded-[2.5rem] border flex flex-col h-full overflow-hidden ${
+        isSelected ? 'bg-white/20 border-white/40' : 'hover:bg-white/10 border-white/5'
+      } ${isAdmin ? 'cursor-pointer' : ''}`}
+    >
       {item.kind === 'image' && item.image_url && (
         <div className="w-full aspect-video overflow-hidden mb-6">
            <img src={item.image_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
