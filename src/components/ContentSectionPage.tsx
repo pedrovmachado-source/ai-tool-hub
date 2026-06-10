@@ -449,7 +449,12 @@ function ItemCard({
 
   if (item.kind === 'text') {
     return (
-      <div className="group relative p-8 glass-smooth hover:bg-white/10 transition-all duration-500 rounded-[2.5rem] border border-white/5 h-full flex flex-col">
+      <div 
+        onClick={isAdmin ? onSelect : undefined}
+        className={`group relative p-8 glass-smooth transition-all duration-500 rounded-[2.5rem] border h-full flex flex-col ${
+          isSelected ? 'bg-white/20 border-white/40' : 'hover:bg-white/10 border-white/5'
+        } ${isAdmin ? 'cursor-pointer' : ''}`}
+      >
         <div className="w-12 h-12 bg-white/5 rounded-2xl mb-6 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
           {icon}
         </div>
