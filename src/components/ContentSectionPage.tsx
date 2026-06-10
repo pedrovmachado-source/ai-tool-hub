@@ -426,7 +426,7 @@ function ItemCard({ item, isOffers, isCreative, onVideo, onPdf, onImage, onOffer
         )}
 
         {item.section_slug === 'fb-accounts' && (
-          <div className="flex flex-col gap-3 mb-6">
+          <div className="flex flex-col gap-3 mt-auto">
             <button 
               onClick={handleBuy}
               className="w-full py-3 px-6 rounded-2xl bg-white text-black font-bold text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] flex items-center justify-center gap-2"
@@ -437,6 +437,16 @@ function ItemCard({ item, isOffers, isCreative, onVideo, onPdf, onImage, onOffer
           </div>
         )}
 
+        {item.buy_url && item.section_slug !== 'fb-accounts' && (
+          <div className="mt-auto">
+            <button 
+              onClick={handleBuy}
+              className="w-full py-3 px-6 rounded-2xl bg-white text-black font-bold text-xs uppercase tracking-widest hover:scale-[1.02] transition-all flex items-center justify-center gap-2"
+            >
+              Comprar Agora
+            </button>
+          </div>
+        )}
       </div>
     );
   }
