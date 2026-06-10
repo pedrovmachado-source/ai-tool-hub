@@ -12,7 +12,9 @@ import {
   Download, 
   X,
   ChevronRight,
-  Loader2
+  Loader2,
+  ExternalLink,
+  Maximize2
 } from 'lucide-react';
 
 interface Module {
@@ -44,6 +46,8 @@ export default function Mentorias() {
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [loading, setLoading] = useState(true);
   const playerRef = useRef<HTMLDivElement>(null);
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [isPdfLoading, setIsPdfLoading] = useState(false);
 
   useEffect(() => {
     if (user && user.abuseBlocked) {
@@ -193,21 +197,26 @@ export default function Mentorias() {
               </div>
               <Button 
                 className="rounded-xl bg-white text-black hover:bg-white/90 px-6 font-bold text-[11px] uppercase tracking-widest gap-2 h-10 shadow-lg shadow-white/5 transition-all hover:scale-105 active:scale-95"
+                disabled={isPdfLoading}
                 onClick={async () => {
                   if (!selectedVideo.pdf_path) return;
+                  setIsPdfLoading(true);
                   try {
                     const { data, error } = await supabase.storage
                       .from('lesson-pdfs')
                       .createSignedUrl(selectedVideo.pdf_path, 3600);
                     
                     if (error) throw error;
-                    if (data?.signedUrl) window.open(data.signedUrl, '_blank');
+                    if (data?.signedUrl) setPdfUrl(data.signedUrl);
                   } catch (err) {
                     console.error('Erro ao gerar URL do PDF:', err);
+                  } finally {
+                    setIsPdfLoading(false);
                   }
                 }}
               >
-                <FileText size={15} /> Visualizar Material (PDF)
+                {isPdfLoading ? <Loader2 size={15} className="animate-spin" /> : <FileText size={15} />} 
+                Visualizar Material (PDF)
               </Button>
             </div>
           )}
@@ -285,21 +294,26 @@ export default function Mentorias() {
                     <Button 
                       variant="outline" 
                       className="ml-auto rounded-full border-white/10 text-white hover:bg-white/5 px-6 font-bold text-[10px] uppercase tracking-widest gap-2"
+                      disabled={isPdfLoading}
                       onClick={async () => {
                         if (!selectedVideo.pdf_path) return;
+                        setIsPdfLoading(true);
                         try {
                           const { data, error } = await supabase.storage
                             .from('lesson-pdfs')
                             .createSignedUrl(selectedVideo.pdf_path, 3600);
                           
                           if (error) throw error;
-                          if (data?.signedUrl) window.open(data.signedUrl, '_blank');
+                          if (data?.signedUrl) setPdfUrl(data.signedUrl);
                         } catch (err) {
                           console.error('Erro ao baixar PDF:', err);
+                        } finally {
+                          setIsPdfLoading(false);
                         }
                       }}
                     >
-                      <Download size={14} /> Baixar PDF
+                      {isPdfLoading ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
+                      Visualizar PDF
                     </Button>
                   )}
 
@@ -340,6 +354,67 @@ export default function Mentorias() {
           navigate('/menu');
         }} 
       />
+
+      {/* PDF Viewer Popup */}
+      {pdfUrl && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8 animate-in fade-in duration-300">
+          <div className="absolute inset-0 bg-black/90 backdrop-blur-sm" onClick={() => setPdfUrl(null)} />
+          <div className="relative w-full max-w-5xl h-full max-h-[90vh] bg-[#1a1a1a] rounded-2xl border border-white/10 shadow-2xl flex flex-col overflow-hidden">
+            <div className="flex items-center justify-between p-4 border-b border-white/10 bg-[#141414]">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
+                  <FileText className="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-white">Visualizador de Material</h3>
+                  <p className="text-[10px] text-white/40 uppercase font-bold tracking-widest">Convert Club Support</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="w-8 h-8 rounded-full text-white/60 hover:text-white hover:bg-white/5"
+                  onClick={() => window.open(pdfUrl, '_blank')}
+                  title="Abrir em nova aba"
+                >
+                  <ExternalLink size={16} />
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="w-8 h-8 rounded-full text-white/60 hover:text-white hover:bg-white/5"
+                  onClick={() => setPdfUrl(null)}
+                >
+                  <X size={20} />
+                </Button>
+              </div>
+            </div>
+            <div className="flex-1 bg-[#242424] relative">
+              <iframe 
+                src={`${pdfUrl}#toolbar=0`} 
+                className="w-full h-full border-none"
+                title="PDF Viewer"
+              />
+            </div>
+            <div className="p-4 border-t border-white/10 bg-[#141414] flex justify-center">
+              <Button 
+                className="rounded-full bg-white text-black hover:bg-white/90 px-8 font-bold text-xs uppercase tracking-widest gap-2"
+                onClick={() => {
+                  const link = document.createElement('a');
+                  link.href = pdfUrl;
+                  link.download = selectedVideo?.title ? `${selectedVideo.title}.pdf` : 'material.pdf';
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                }}
+              >
+                <Download size={16} /> Baixar PDF Original
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
