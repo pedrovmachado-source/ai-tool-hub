@@ -98,7 +98,7 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
     );
   }
 
-  if (!canAccess) {
+  if (!canAccess && slug !== 'creative-edit') {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center p-6">
         <div className="max-w-md w-full glass-smooth p-12 rounded-[2.5rem] border border-white/5 text-center relative overflow-hidden">
