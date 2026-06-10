@@ -82,6 +82,33 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
 
   const canAccess = isAdmin || (section && meetsMinPlan(user?.plano, section.min_plan));
 
+  const toggleSelection = (id: string) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const deleteSelected = async () => {
+    if (selectedIds.size === 0 || !isAdmin) return;
+    setIsDeleting(true);
+    try {
+      const { error } = await supabase
+        .from('content_items')
+        .delete()
+        .in('id', Array.from(selectedIds));
+      
+      if (!error) {
+        setItems(prev => prev.filter(i => !selectedIds.has(i.id)));
+        setSelectedIds(new Set());
+      }
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const topics = useMemo(() => {
     const set = new Set<string>();
     items.forEach(i => { if (i.topic) set.add(i.topic); });
