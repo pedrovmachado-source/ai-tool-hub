@@ -436,8 +436,8 @@ function ItemCard({
     return (
       <button 
         onClick={isAdmin ? onSelect : handleClick}
-        className={`group relative w-full p-6 sm:p-10 glass-smooth transition-all duration-700 rounded-[2.5rem] border flex flex-col sm:flex-row items-center justify-between text-left gap-6 hover:scale-[1.01] hover:-translate-y-1 ${
-          isSelected ? 'bg-white/20 border-white/40' : 'hover:bg-white/10 border-white/5'
+        className={`group relative w-full p-4 sm:p-6 glass-smooth transition-all duration-700 rounded-[1.5rem] border flex flex-col sm:flex-row items-center justify-between text-left gap-4 hover:scale-[1.01] hover:-translate-y-1 ${
+          isSelected ? 'bg-white/20 border-white/40 shadow-[0_0_30px_rgba(255,255,255,0.1)]' : 'hover:bg-white/10 border-white/5'
         }`}
       >
         <div className="flex items-center gap-6 sm:gap-10 flex-1">
