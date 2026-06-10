@@ -80,7 +80,7 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
     return () => { active = false; };
   }, [slug]);
 
-  const canAccess = isAdmin || (section && meetsMinPlan(user?.plano, section.min_plan));
+  const canAccess = isAdmin || slug === 'creative-edit' || (section && meetsMinPlan(user?.plano, section.min_plan));
 
   const toggleSelection = (id: string) => {
     setSelectedIds(prev => {
@@ -127,7 +127,7 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
     );
   }
 
-  const canAccessFull = isAdmin || (section && meetsMinPlan(user?.plano, section.min_plan));
+  const canAccessFull = isAdmin || slug === 'creative-edit' || (section && meetsMinPlan(user?.plano, section.min_plan));
 
   if (!canAccessFull && slug !== 'creative-edit') {
     return (
@@ -435,20 +435,30 @@ function ItemCard({
   if (isCreative) {
     return (
       <button 
-        onClick={isAdmin ? onSelect : handleClick}
-        className={`group relative w-full p-6 sm:p-10 glass-smooth transition-all duration-700 rounded-[2.5rem] border flex flex-col sm:flex-row items-center justify-between text-left gap-6 hover:scale-[1.01] hover:-translate-y-1 ${
-          isSelected ? 'bg-white/20 border-white/40' : 'hover:bg-white/10 border-white/5'
+        onClick={handleClick}
+        className={`group relative w-full p-4 sm:p-6 glass-smooth transition-all duration-700 rounded-[1.5rem] border flex flex-col sm:flex-row items-center justify-between text-left gap-4 hover:scale-[1.01] hover:-translate-y-1 ${
+          isSelected ? 'bg-white/20 border-white/40 shadow-[0_0_30px_rgba(255,255,255,0.1)]' : 'hover:bg-white/10 border-white/5'
         }`}
       >
         <div className="flex items-center gap-6 sm:gap-10 flex-1">
-          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/5 rounded-3xl flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all shrink-0">
-            {icon}
+          <div 
+            onClick={(e) => {
+              if (isAdmin) {
+                e.stopPropagation();
+                onSelect?.();
+              }
+            }}
+            className={`w-12 h-12 sm:w-14 sm:h-14 bg-white/5 rounded-2xl flex items-center justify-center transition-all shrink-0 ${
+              isAdmin ? 'cursor-pointer hover:bg-white/20' : 'group-hover:bg-white group-hover:text-black'
+            }`}
+          >
+            {isAdmin && isSelected ? <div className="w-3 h-3 rounded-full bg-white shadow-[0_0_10px_white]" /> : icon}
           </div>
           <div className="min-w-0 flex-1">
             <div className="inline-block px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[9px] font-bold text-white/30 uppercase tracking-[0.2em] mb-3">
               {item.topic || 'Criativo'}
             </div>
-            <h4 className="text-2xl sm:text-3xl font-serif-display text-white mb-2 tracking-tight group-hover:tracking-wide transition-all truncate">{item.title}</h4>
+            <h4 className="text-xl sm:text-2xl font-serif-display text-white mb-1 tracking-tight group-hover:tracking-wide transition-all truncate">{item.title}</h4>
             <p className="text-white/40 text-sm font-light max-w-xl line-clamp-1">{item.description}</p>
           </div>
         </div>
