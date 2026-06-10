@@ -42,7 +42,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-export default function AdminContentSections({ overrideSlug }: { overrideSlug?: string }) {
+export default function AdminContentSections() {
   const [sections, setSections] = useState<Section[]>([]);
   const [items, setItems] = useState<Item[]>([]);
   const [openSection, setOpenSection] = useState<Section | null>(null);
@@ -53,21 +53,13 @@ export default function AdminContentSections({ overrideSlug }: { overrideSlug?: 
 
   const reload = async () => {
     setLoading(true);
-    let sQuery = supabase.from('content_sections').select('*').order('sort_order');
-    let iQuery = supabase.from('content_items').select('*').order('sort_order');
-    
-    if (overrideSlug) {
-      sQuery = sQuery.eq('slug', overrideSlug);
-      iQuery = iQuery.eq('section_slug', overrideSlug);
-    }
-
-    const [s, i] = await Promise.all([sQuery, iQuery]);
+    const [s, i] = await Promise.all([
+      supabase.from('content_sections').select('*').order('sort_order'),
+      supabase.from('content_items').select('*').order('sort_order'),
+    ]);
     if (s.data) setSections(s.data as Section[]);
     if (i.data) setItems(i.data as Item[]);
     setLoading(false);
-    if (overrideSlug && s.data?.[0]) {
-      setOpenSection(s.data[0] as Section);
-    }
   };
 
   useEffect(() => { void reload(); }, []);
@@ -184,11 +176,9 @@ export default function AdminContentSections({ overrideSlug }: { overrideSlug?: 
     const sectionItems = items.filter(i => i.section_slug === openSection.slug);
     return (
       <>
-        {!overrideSlug && (
-          <button onClick={() => setOpenSection(null)} className="flex items-center gap-1.5 text-[12px] text-brand-blue-medium mb-4">
-            <ArrowLeft size={14} /> Voltar às seções
-          </button>
-        )}
+        <button onClick={() => setOpenSection(null)} className="flex items-center gap-1.5 text-[12px] text-brand-blue-medium mb-4">
+          <ArrowLeft size={14} /> Voltar às seções
+        </button>
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-xl font-medium text-primary-foreground">{openSection.title}</h1>
