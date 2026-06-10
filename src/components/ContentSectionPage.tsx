@@ -127,31 +127,7 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
     );
   }
 
-  const canAccessFull = isAdmin || slug === 'creative-edit' || (section && meetsMinPlan(user?.plano, section.min_plan));
-
-  if (!canAccessFull && slug !== 'creative-edit') {
-    return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center p-6">
-        <div className="max-w-md w-full glass-smooth p-12 rounded-[2.5rem] border border-white/5 text-center relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-4">
-             <Lock size={24} className="text-white/10" />
-          </div>
-          <h2 className="text-3xl font-serif-display mb-4">{section.title}</h2>
-          <p className="text-white/40 font-light mb-8">
-            Este conteúdo é reservado para membros <strong className="text-white">{section.min_plan}</strong>. Eleve seu nível para acessar.
-          </p>
-          <div className="flex flex-col gap-4">
-            <button onClick={() => onUpgrade()} className="w-full py-4 rounded-full bg-white text-black font-bold hover:scale-[1.02] transition-transform">
-              Fazer Upgrade Agora
-            </button>
-            <button onClick={onBack} className="w-full py-4 rounded-full border border-white/5 text-white/40 text-sm font-bold hover:bg-white/5 transition-colors">
-              Voltar ao Menu
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const canAccessFull = true; // Liberado para todos conforme solicitado
 
   const grouped = topics.length > 0
     ? Object.fromEntries(topics.map(t => [t, items.filter(i => i.topic === t)]))
