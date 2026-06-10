@@ -127,7 +127,7 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
     );
   }
 
-  const canAccessFull = isAdmin || (section && meetsMinPlan(user?.plano, section.min_plan));
+  const canAccessFull = isAdmin || slug === 'creative-edit' || (section && meetsMinPlan(user?.plano, section.min_plan));
 
   if (!canAccessFull && slug !== 'creative-edit') {
     return (
