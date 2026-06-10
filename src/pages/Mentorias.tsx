@@ -195,14 +195,16 @@ export default function Mentorias() {
                 className="rounded-xl bg-white text-black hover:bg-white/90 px-6 font-bold text-[11px] uppercase tracking-widest gap-2 h-10 shadow-lg shadow-white/5 transition-all hover:scale-105 active:scale-95"
                 onClick={async () => {
                   if (!selectedVideo.pdf_path) return;
-                  const { data, error } = await supabase.storage.from('lesson-pdfs').createSignedUrl(selectedVideo.pdf_path, 3600);
-                  if (error) {
-                    console.error('Error generating PDF URL:', error);
-                    const { data: publicData } = await supabase.storage.from('lesson-pdfs').getPublicUrl(selectedVideo.pdf_path);
-                    if (publicData?.publicUrl) window.open(publicData.publicUrl, '_blank');
-                    return;
+                  try {
+                    const { data, error } = await supabase.storage
+                      .from('lesson-pdfs')
+                      .createSignedUrl(selectedVideo.pdf_path, 3600);
+                    
+                    if (error) throw error;
+                    if (data?.signedUrl) window.open(data.signedUrl, '_blank');
+                  } catch (err) {
+                    console.error('Erro ao gerar URL do PDF:', err);
                   }
-                  if (data?.signedUrl) window.open(data.signedUrl, '_blank');
                 }}
               >
                 <FileText size={15} /> Visualizar Material (PDF)
@@ -285,13 +287,16 @@ export default function Mentorias() {
                       className="ml-auto rounded-full border-white/10 text-white hover:bg-white/5 px-6 font-bold text-[10px] uppercase tracking-widest gap-2"
                       onClick={async () => {
                         if (!selectedVideo.pdf_path) return;
-                        const { data, error } = await supabase.storage.from('lesson-pdfs').createSignedUrl(selectedVideo.pdf_path, 3600);
-                        if (error) {
-                          const { data: publicData } = await supabase.storage.from('lesson-pdfs').getPublicUrl(selectedVideo.pdf_path);
-                          if (publicData?.publicUrl) window.open(publicData.publicUrl, '_blank');
-                          return;
+                        try {
+                          const { data, error } = await supabase.storage
+                            .from('lesson-pdfs')
+                            .createSignedUrl(selectedVideo.pdf_path, 3600);
+                          
+                          if (error) throw error;
+                          if (data?.signedUrl) window.open(data.signedUrl, '_blank');
+                        } catch (err) {
+                          console.error('Erro ao baixar PDF:', err);
                         }
-                        if (data?.signedUrl) window.open(data.signedUrl, '_blank');
                       }}
                     >
                       <Download size={14} /> Baixar PDF
