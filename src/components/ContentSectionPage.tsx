@@ -51,6 +51,8 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
   const [showPurchasedModal, setShowPurchasedModal] = useState(false);
   const [spendingProduct, setSpendingProduct] = useState<Item | null>(null);
   const [infoItem, setInfoItem] = useState<Item | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [isDeleting, setIsDeleting] = useState(false);
   const [paymentSelection, setPaymentSelection] = useState<{ isOpen: boolean; priceId: string; productId: string; productTitle: string }>({
     isOpen: false,
     priceId: '',
@@ -79,6 +81,33 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
   }, [slug]);
 
   const canAccess = isAdmin || (section && meetsMinPlan(user?.plano, section.min_plan));
+
+  const toggleSelection = (id: string) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const deleteSelected = async () => {
+    if (selectedIds.size === 0 || !isAdmin) return;
+    setIsDeleting(true);
+    try {
+      const { error } = await supabase
+        .from('content_items')
+        .delete()
+        .in('id', Array.from(selectedIds));
+      
+      if (!error) {
+        setItems(prev => prev.filter(i => !selectedIds.has(i.id)));
+        setSelectedIds(new Set());
+      }
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   const topics = useMemo(() => {
     const set = new Set<string>();
@@ -135,6 +164,9 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
         <ItemCard key={i.id} item={i}
           isOffers={isOffers}
           isCreative={slug === 'creative-edit'}
+          isAdmin={isAdmin}
+          isSelected={selectedIds.has(i.id)}
+          onSelect={() => toggleSelection(i.id)}
           onVideo={() => setVideo(i)}
           onPdf={() => setPdf(i)}
           onImage={() => setImage(i)}
@@ -186,15 +218,29 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
             </div>
           </div>
           
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-smooth mb-6 border border-white/5">
-            {slug === 'copywrite' ? <TextIcon className="w-3 h-3 text-white/50" /> : 
-             slug === 'fb-accounts' ? <ShoppingCart className="w-3 h-3 text-white/50" /> :
-             <ImageIcon className="w-3 h-3 text-white/50" />}
-            <span className="text-[10px] font-bold text-white/50 tracking-[0.2em] uppercase">
-              {slug === 'copywrite' ? 'Copywriting de Elite' : 
-               slug === 'fb-accounts' ? 'Contas & BMs' :
-               'Visual Assets'}
-            </span>
+          <div className="flex items-center justify-between mb-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-smooth border border-white/5">
+              {slug === 'copywrite' ? <TextIcon className="w-3 h-3 text-white/50" /> : 
+               slug === 'fb-accounts' ? <ShoppingCart className="w-3 h-3 text-white/50" /> :
+               <ImageIcon className="w-3 h-3 text-white/50" />}
+              <span className="text-[10px] font-bold text-white/50 tracking-[0.2em] uppercase">
+                {slug === 'copywrite' ? 'Copywriting de Elite' : 
+                 slug === 'fb-accounts' ? 'Contas & BMs' :
+                 'Visual Assets'}
+              </span>
+            </div>
+
+            {isAdmin && selectedIds.size > 0 && (
+              <button 
+                onClick={deleteSelected}
+                disabled={isDeleting}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-500/20 border border-red-500/30 text-red-500 hover:bg-red-500/30 transition-all group disabled:opacity-50"
+              >
+                <span className="text-[10px] font-bold tracking-[0.1em] uppercase">
+                  {isDeleting ? 'Excluindo...' : `Excluir Selecionados (${selectedIds.size})`}
+                </span>
+              </button>
+            )}
           </div>
           
           <h1 className="text-4xl md:text-6xl font-serif-display tracking-tight text-white mb-6 leading-tight">
@@ -343,10 +389,15 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
   );
 }
 
-function ItemCard({ item, isOffers, isCreative, onVideo, onPdf, onImage, onOffer, onInfo, onBuy, onBuyWithCash }: {
+function ItemCard({ 
+  item, isOffers, isCreative, isAdmin, isSelected, onSelect, onVideo, onPdf, onImage, onOffer, onInfo, onBuy, onBuyWithCash 
+}: {
   item: Item;
   isOffers?: boolean;
   isCreative?: boolean;
+  isAdmin?: boolean;
+  isSelected?: boolean;
+  onSelect?: () => void;
   onVideo: () => void;
   onPdf: () => void;
   onImage: () => void;
@@ -384,8 +435,10 @@ function ItemCard({ item, isOffers, isCreative, onVideo, onPdf, onImage, onOffer
   if (isCreative) {
     return (
       <button 
-        onClick={handleClick}
-        className="group relative w-full p-6 sm:p-10 glass-smooth hover:bg-white/10 transition-all duration-700 rounded-[2.5rem] border border-white/5 flex flex-col sm:flex-row items-center justify-between text-left gap-6 hover:scale-[1.01] hover:-translate-y-1"
+        onClick={isAdmin ? onSelect : handleClick}
+        className={`group relative w-full p-6 sm:p-10 glass-smooth transition-all duration-700 rounded-[2.5rem] border flex flex-col sm:flex-row items-center justify-between text-left gap-6 hover:scale-[1.01] hover:-translate-y-1 ${
+          isSelected ? 'bg-white/20 border-white/40' : 'hover:bg-white/10 border-white/5'
+        }`}
       >
         <div className="flex items-center gap-6 sm:gap-10 flex-1">
           <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/5 rounded-3xl flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all shrink-0">
@@ -410,7 +463,12 @@ function ItemCard({ item, isOffers, isCreative, onVideo, onPdf, onImage, onOffer
 
   if (item.kind === 'text') {
     return (
-      <div className="group relative p-8 glass-smooth hover:bg-white/10 transition-all duration-500 rounded-[2.5rem] border border-white/5 h-full flex flex-col">
+      <div 
+        onClick={isAdmin ? onSelect : undefined}
+        className={`group relative p-8 glass-smooth transition-all duration-500 rounded-[2.5rem] border h-full flex flex-col ${
+          isSelected ? 'bg-white/20 border-white/40' : 'hover:bg-white/10 border-white/5'
+        } ${isAdmin ? 'cursor-pointer' : ''}`}
+      >
         <div className="w-12 h-12 bg-white/5 rounded-2xl mb-6 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
           {icon}
         </div>
@@ -452,7 +510,12 @@ function ItemCard({ item, isOffers, isCreative, onVideo, onPdf, onImage, onOffer
   }
 
   return (
-    <div className="group relative text-left glass-smooth hover:bg-white/10 transition-all duration-500 rounded-[2.5rem] border border-white/5 flex flex-col h-full overflow-hidden">
+    <div 
+      onClick={isAdmin ? onSelect : handleClick}
+      className={`group relative text-left glass-smooth transition-all duration-500 rounded-[2.5rem] border flex flex-col h-full overflow-hidden ${
+        isSelected ? 'bg-white/20 border-white/40' : 'hover:bg-white/10 border-white/5'
+      } ${isAdmin ? 'cursor-pointer' : ''}`}
+    >
       {item.kind === 'image' && item.image_url && (
         <div className="w-full aspect-video overflow-hidden mb-6">
            <img src={item.image_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
