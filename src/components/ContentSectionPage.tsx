@@ -441,8 +441,18 @@ function ItemCard({
         }`}
       >
         <div className="flex items-center gap-6 sm:gap-10 flex-1">
-          <div className="w-12 h-12 sm:w-14 sm:h-14 bg-white/5 rounded-2xl flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all shrink-0">
-            {icon}
+          <div 
+            onClick={(e) => {
+              if (isAdmin) {
+                e.stopPropagation();
+                onSelect?.();
+              }
+            }}
+            className={`w-12 h-12 sm:w-14 sm:h-14 bg-white/5 rounded-2xl flex items-center justify-center transition-all shrink-0 ${
+              isAdmin ? 'cursor-pointer hover:bg-white/20' : 'group-hover:bg-white group-hover:text-black'
+            }`}
+          >
+            {isAdmin && isSelected ? <div className="w-3 h-3 rounded-full bg-white shadow-[0_0_10px_white]" /> : icon}
           </div>
           <div className="min-w-0 flex-1">
             <div className="inline-block px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[9px] font-bold text-white/30 uppercase tracking-[0.2em] mb-3">
