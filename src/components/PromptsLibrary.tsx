@@ -66,10 +66,10 @@ export default function PromptsLibrary({ category }: { category?: Category }) {
         <p className="text-[13px] text-muted-foreground mb-5">Copie, adapte e use nos seus projetos</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {allPrompts.map((pr, i) => (
-            <div key={i} className="bg-secondary rounded-lg p-4" style={{ borderLeft: `3px solid ${category.accent}` }}>
-              <div className="text-[10px] font-medium uppercase tracking-wider mb-1.5" style={{ color: category.accent }}>{(pr as any).label || (pr as any).title}</div>
+            <div key={i} className="bg-secondary rounded-lg p-4 border-l-3 border-foreground">
+              <div className="text-[10px] font-medium uppercase tracking-wider mb-1.5 text-foreground">{(pr as any).label || (pr as any).title}</div>
               <p className="text-xs text-muted-foreground leading-relaxed italic">{pr.text}</p>
-              <button onClick={() => copyPrompt(pr.text, i)} className="flex items-center gap-1 mt-2 text-[11.5px] font-medium" style={{ color: category.accent }}>
+              <button onClick={() => copyPrompt(pr.text, i)} className="flex items-center gap-1 mt-2 text-[11.5px] font-medium text-foreground">
                 {copiedIdx === i ? <><Check size={12} /> Copiado!</> : <><Copy size={12} /> Copiar prompt</>}
               </button>
             </div>
@@ -89,7 +89,7 @@ export default function PromptsLibrary({ category }: { category?: Category }) {
         </div>
         <button
           onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
-          className={`px-4 py-1.5 rounded-full text-xs font-medium border transition-colors ${showFavoritesOnly ? 'bg-brand-red text-primary-foreground border-brand-red' : 'border-border text-muted-foreground hover:border-brand-red'}`}
+          className={`px-4 py-1.5 rounded-full text-xs font-medium border transition-colors ${showFavoritesOnly ? 'bg-foreground text-background border-foreground' : 'border-border text-muted-foreground hover:border-foreground'}`}
         >
           <Heart size={12} className="inline mr-1" /> Favoritos ({favorites.length})
         </button>
@@ -98,7 +98,7 @@ export default function PromptsLibrary({ category }: { category?: Category }) {
       {!showFavoritesOnly && (
         <div className="flex gap-2 mb-6 flex-wrap">
           {PROMPT_CATEGORIES.map(c => (
-            <button key={c.key} onClick={() => setActivePromptCat(c.key)} className={`px-4 py-2 rounded-full text-xs font-medium border transition-colors ${activePromptCat === c.key ? 'bg-brand-blue text-primary-foreground border-brand-blue' : 'border-border text-muted-foreground hover:border-brand-blue'}`}>
+            <button key={c.key} onClick={() => setActivePromptCat(c.key)} className={`px-4 py-2 rounded-full text-xs font-medium border transition-colors ${activePromptCat === c.key ? 'bg-foreground text-background border-foreground' : 'border-border text-muted-foreground hover:border-foreground'}`}>
               {c.icon} {c.label}
             </button>
           ))}
@@ -109,13 +109,13 @@ export default function PromptsLibrary({ category }: { category?: Category }) {
         {filtered.map((pr, i) => (
           <div key={i} className="bg-card border border-border rounded-xl p-5">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-medium text-brand-blue uppercase tracking-wider">{pr.label}</span>
+              <span className="text-xs font-medium text-foreground uppercase tracking-wider">{pr.label}</span>
               <button onClick={() => toggleFavorite(pr.label)}>
-                <Heart size={14} className={favorites.includes(pr.label) ? 'fill-brand-red text-brand-red' : 'text-muted-foreground'} />
+                <Heart size={14} className={favorites.includes(pr.label) ? 'fill-foreground text-foreground' : 'text-muted-foreground'} />
               </button>
             </div>
             <p className="text-[13px] text-muted-foreground leading-relaxed italic mb-3">{pr.text}</p>
-            <button onClick={() => copyPrompt(pr.text, i)} className="flex items-center gap-1 text-xs font-medium text-brand-blue hover:underline">
+            <button onClick={() => copyPrompt(pr.text, i)} className="flex items-center gap-1 text-xs font-medium text-foreground hover:underline">
               {copiedIdx === i ? <><Check size={12} /> Copiado!</> : <><Copy size={12} /> Copiar prompt</>}
             </button>
           </div>
