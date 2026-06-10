@@ -16,6 +16,10 @@ import {
   ExternalLink,
   Maximize2
 } from 'lucide-react';
+import { Worker, Viewer } from '@react-pdf-viewer/core';
+import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
+import '@react-pdf-viewer/core/lib/styles/index.css';
+import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 
 interface Module {
   id: string;
@@ -48,6 +52,7 @@ export default function Mentorias() {
   const playerRef = useRef<HTMLDivElement>(null);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [isPdfLoading, setIsPdfLoading] = useState(false);
+  const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
   useEffect(() => {
     if (user && user.abuseBlocked) {
@@ -390,12 +395,14 @@ export default function Mentorias() {
                 </Button>
               </div>
             </div>
-            <div className="flex-1 bg-[#242424] relative">
-              <iframe 
-                src={`${pdfUrl}#toolbar=0`} 
-                className="w-full h-full border-none"
-                title="PDF Viewer"
-              />
+            <div className="flex-1 bg-[#242424] relative overflow-hidden">
+              <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+                <Viewer
+                  fileUrl={pdfUrl}
+                  plugins={[defaultLayoutPluginInstance]}
+                  theme="dark"
+                />
+              </Worker>
             </div>
             <div className="p-4 border-t border-white/10 bg-[#141414] flex justify-center">
               <Button 
