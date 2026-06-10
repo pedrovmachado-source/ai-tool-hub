@@ -89,7 +89,7 @@ export default function PromptsLibrary({ category }: { category?: Category }) {
         </div>
         <button
           onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
-          className={`px-4 py-1.5 rounded-full text-xs font-medium border transition-colors ${showFavoritesOnly ? 'bg-foreground text-background border-foreground' : 'border-border text-muted-foreground hover:border-foreground'}`}
+          className={`px-4 py-1.5 rounded-full text-xs font-medium border transition-colors ${showFavoritesOnly ? 'bg-black text-white border-black' : 'border-border text-muted-foreground hover:border-black'}`}
         >
           <Heart size={12} className="inline mr-1" /> Favoritos ({favorites.length})
         </button>
@@ -98,7 +98,7 @@ export default function PromptsLibrary({ category }: { category?: Category }) {
       {!showFavoritesOnly && (
         <div className="flex gap-2 mb-6 flex-wrap">
           {PROMPT_CATEGORIES.map(c => (
-            <button key={c.key} onClick={() => setActivePromptCat(c.key)} className={`px-4 py-2 rounded-full text-xs font-medium border transition-colors ${activePromptCat === c.key ? 'bg-foreground text-background border-foreground shadow-brand-sm' : 'border-border text-muted-foreground hover:border-foreground'}`}>
+            <button key={c.key} onClick={() => setActivePromptCat(c.key)} className={`px-4 py-2 rounded-full text-xs font-medium border transition-colors ${activePromptCat === c.key ? 'bg-black text-white border-black shadow-brand-sm' : 'border-border text-muted-foreground hover:border-black'}`}>
               {c.icon} {c.label}
             </button>
           ))}

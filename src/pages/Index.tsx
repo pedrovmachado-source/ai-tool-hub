@@ -203,7 +203,7 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
       </header>
 
       {/* Hero */}
-      <div className="bg-navy py-10 sm:py-14 px-4 sm:px-8 text-center border-b border-white/5">
+      <div className="bg-black py-10 sm:py-14 px-4 sm:px-8 text-center border-b border-white/5">
         <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 text-muted-foreground text-[10px] sm:text-xs px-3 sm:px-4 py-1 sm:py-1.5 rounded-full mb-4 sm:mb-5">
           ✨ Curadoria atualizada em 2026
         </div>
@@ -232,7 +232,7 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
             onClick={() => setFreeOnly(v => !v)}
             className={`inline-flex items-center gap-1.5 text-[11px] sm:text-xs px-3 sm:px-3.5 py-1.5 rounded-full border transition-all ${
               freeOnly
-                ? 'bg-white text-navy border-white shadow-brand-sm'
+                ? 'bg-white text-black border-white shadow-brand-sm'
                 : 'bg-primary-foreground/5 text-muted-foreground border-primary-foreground/15 hover:border-white/50 hover:text-white'
             }`}
           >
@@ -301,7 +301,7 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
       </div>
 
       {/* Footer */}
-      <footer className="bg-navy py-10 px-4 mt-12 border-t border-white/5">
+      <footer className="bg-black py-10 px-4 mt-12 border-t border-white/5">
         <div className="max-w-[1100px] mx-auto flex flex-col items-center gap-8">
 
           
