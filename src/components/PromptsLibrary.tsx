@@ -98,7 +98,7 @@ export default function PromptsLibrary({ category }: { category?: Category }) {
       {!showFavoritesOnly && (
         <div className="flex gap-2 mb-6 flex-wrap">
           {PROMPT_CATEGORIES.map(c => (
-            <button key={c.key} onClick={() => setActivePromptCat(c.key)} className={`px-4 py-2 rounded-full text-xs font-medium border transition-colors ${activePromptCat === c.key ? 'bg-foreground text-background border-foreground' : 'border-border text-muted-foreground hover:border-foreground'}`}>
+            <button key={c.key} onClick={() => setActivePromptCat(c.key)} className={`px-4 py-2 rounded-full text-xs font-medium border transition-colors ${activePromptCat === c.key ? 'bg-foreground text-background border-foreground shadow-brand-sm' : 'border-border text-muted-foreground hover:border-foreground'}`}>
               {c.icon} {c.label}
             </button>
           ))}

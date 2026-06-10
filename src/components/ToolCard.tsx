@@ -55,7 +55,7 @@ export default function ToolCard({ tool, category, onOpenEbook }: ToolCardProps)
         <button 
           onClick={onOpenEbook} 
           aria-label={`Abrir e-book de ${tool.name}`}
-          className="flex-1 py-2 rounded-lg text-xs font-medium text-center text-primary-foreground transition-opacity hover:opacity-90 bg-primary" 
+          className="flex-1 py-2 rounded-lg text-xs font-medium text-center text-white transition-opacity hover:opacity-90 bg-black" 
         >
           📘 E-Book
         </button>
