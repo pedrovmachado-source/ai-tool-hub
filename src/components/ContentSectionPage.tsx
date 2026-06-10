@@ -80,7 +80,7 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
     return () => { active = false; };
   }, [slug]);
 
-  const canAccess = isAdmin || (section && meetsMinPlan(user?.plano, section.min_plan));
+  const canAccess = isAdmin || slug === 'creative-edit' || (section && meetsMinPlan(user?.plano, section.min_plan));
 
   const toggleSelection = (id: string) => {
     setSelectedIds(prev => {
