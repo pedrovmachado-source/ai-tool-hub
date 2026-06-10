@@ -255,19 +255,29 @@ export default function AdminContentSections() {
                   {itemForm.pdf_path && <p className="text-[11px] text-muted-foreground/60 mt-1 truncate">{itemForm.pdf_path}</p>}
                 </Field>
               )}
-              {itemForm.kind === 'image' && (
-                <Field label="Imagem">
-                  <label className={`flex items-center justify-center gap-2 py-3 rounded-lg border border-dashed border-primary-foreground/15 cursor-pointer text-[12px] ${uploading ? 'text-muted-foreground/50' : 'text-brand-amber'}`}>
-                    <Upload size={14} /> {itemForm.image_url ? 'Trocar imagem' : 'Subir imagem'}
-                    <input type="file" accept="image/*" className="hidden" disabled={uploading}
-                      onChange={async e => { const f = e.target.files?.[0]; e.target.value = ''; if (!f) return; const url = await uploadImage(f); if (url) setItemForm(prev => ({ ...prev, image_url: url })); }} />
-                  </label>
-                  {itemForm.image_url && <img src={itemForm.image_url} alt="" className="w-full h-32 object-cover rounded-md mt-2" />}
-                </Field>
-              )}
-              {itemForm.kind === 'text' && (
-                <Field label="Conteúdo"><textarea value={itemForm.body || ''} onChange={e => setItemForm({ ...itemForm, body: e.target.value })} rows={6} className={inputCls + ' resize-none'} /></Field>
-              )}
+              <Field label="Imagem de Capa (Opcional)">
+                <label className={`flex items-center justify-center gap-2 py-3 rounded-lg border border-dashed border-primary-foreground/15 cursor-pointer text-[12px] ${uploading ? 'text-muted-foreground/50' : 'text-brand-amber'}`}>
+                  <Upload size={14} /> {itemForm.image_url ? 'Trocar imagem' : 'Subir imagem'}
+                  <input type="file" accept="image/*" className="hidden" disabled={uploading}
+                    onChange={async e => { const f = e.target.files?.[0]; e.target.value = ''; if (!f) return; const url = await uploadImage(f); if (url) setItemForm(prev => ({ ...prev, image_url: url })); }} />
+                </label>
+                {itemForm.image_url && (
+                  <div className="relative mt-2 group">
+                    <img src={itemForm.image_url} alt="" className="w-full h-32 object-cover rounded-md" />
+                    <button 
+                      onClick={() => setItemForm(prev => ({ ...prev, image_url: null }))}
+                      className="absolute top-2 right-2 bg-black/60 p-1.5 rounded-full text-white/60 hover:text-white transition-colors"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                )}
+              </Field>
+
+              <Field label="Conteúdo Detalhado (Texto/HTML - Abre no Modal)">
+                <textarea value={itemForm.body || ''} onChange={e => setItemForm({ ...itemForm, body: e.target.value })} rows={6} className={inputCls + ' resize-none'} placeholder="Este conteúdo aparecerá no modal quando o usuário clicar no item..." />
+              </Field>
+
               <Field label="Link de exemplo (opcional — usado em Ofertas)"><input value={itemForm.example_url || ''} onChange={e => setItemForm({ ...itemForm, example_url: e.target.value })} placeholder="https://..." className={inputCls} /></Field>
               <Field label="Link de compra Stripe (opcional — botão Comprar)"><input value={itemForm.buy_url || ''} onChange={e => setItemForm({ ...itemForm, buy_url: e.target.value })} placeholder="https://buy.stripe.com/..." className={inputCls} /></Field>
               <Field label="Ordem"><input type="number" value={itemForm.sort_order ?? 0} onChange={e => setItemForm({ ...itemForm, sort_order: Number(e.target.value) })} className={inputCls} /></Field>

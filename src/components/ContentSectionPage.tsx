@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { meetsMinPlan } from '@/lib/plan';
-import { ArrowLeft, Play, FileText, Image as ImageIcon, Lock, FileText as TextIcon, ShoppingCart, ArrowRight, Coins, Wallet, Sparkles, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Play, FileText, Image as ImageIcon, Lock, FileText as TextIcon, ShoppingCart, ArrowRight, Coins, Wallet, Sparkles, ExternalLink, Check, Plus } from 'lucide-react';
 import CashBalance from './CashBalance';
 import SpendCashModal from './SpendCashModal';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -135,7 +135,7 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
   const untopiced = topics.length > 0 ? items.filter(i => !i.topic) : items;
 
   const renderItems = (list: Item[]) => (
-    <div className={`grid grid-cols-1 ${slug === 'creative-edit' ? 'gap-6' : 'md:grid-cols-2 lg:grid-cols-3 gap-4'}`}>
+    <div className={`grid grid-cols-1 ${slug === 'creative-edit' ? 'sm:grid-cols-2 lg:grid-cols-3 gap-8' : 'md:grid-cols-2 lg:grid-cols-3 gap-4'}`}>
       {list.map(i => (
         <ItemCard key={i.id} item={i}
           isOffers={isOffers}
@@ -412,35 +412,62 @@ function ItemCard({
     return (
       <button 
         onClick={handleClick}
-        className={`group relative w-full p-4 sm:p-6 glass-smooth transition-all duration-700 rounded-[1.5rem] border flex flex-col sm:flex-row items-center justify-between text-left gap-4 hover:scale-[1.01] hover:-translate-y-1 ${
-          isSelected ? 'bg-white/20 border-white/40 shadow-[0_0_30px_rgba(255,255,255,0.1)]' : 'hover:bg-white/10 border-white/5'
+        className={`group relative w-full glass-smooth transition-all duration-700 rounded-[2rem] border flex flex-col text-left overflow-hidden hover:scale-[1.02] hover:-translate-y-2 ${
+          isSelected ? 'bg-white/20 border-white/40 shadow-[0_0_40px_rgba(255,255,255,0.1)]' : 'hover:bg-white/10 border-white/5 bg-white/[0.02]'
         }`}
       >
-        <div className="flex items-center gap-6 sm:gap-10 flex-1">
-          <div 
-            onClick={(e) => {
-              if (isAdmin) {
-                e.stopPropagation();
-                onSelect?.();
-              }
-            }}
-            className={`w-12 h-12 sm:w-14 sm:h-14 bg-white/5 rounded-2xl flex items-center justify-center transition-all shrink-0 ${
-              isAdmin ? 'cursor-pointer hover:bg-white/20' : 'group-hover:bg-white group-hover:text-black'
-            }`}
-          >
-            {isAdmin && isSelected ? <div className="w-3 h-3 rounded-full bg-white shadow-[0_0_10px_white]" /> : icon}
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className="inline-block px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[9px] font-bold text-white/30 uppercase tracking-[0.2em] mb-3">
+        {/* Image / Icon Container with portrait aspect ratio */}
+        <div className="relative aspect-[3/4] w-full overflow-hidden bg-white/5">
+          {item.image_url ? (
+            <img 
+              src={item.image_url} 
+              alt={item.title} 
+              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-b from-white/[0.05] to-transparent">
+              <div className="w-20 h-20 rounded-3xl bg-white/5 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all duration-500">
+                {icon}
+              </div>
+            </div>
+          )}
+          
+          {/* Overlay gradient */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60" />
+          
+          {/* Tag */}
+          <div className="absolute top-6 left-6">
+            <div className="inline-block px-3 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-[9px] font-bold text-white/60 uppercase tracking-[0.2em]">
               {item.topic || 'Criativo'}
             </div>
-            <h4 className="text-xl sm:text-2xl font-serif-display text-white mb-1 tracking-tight group-hover:tracking-wide transition-all truncate">{item.title}</h4>
-            <p className="text-white/40 text-sm font-light max-w-xl line-clamp-1">{item.description}</p>
           </div>
+
+          {/* Selection indicator for Admin */}
+          {isAdmin && (
+            <div 
+              onClick={(e) => {
+                e.stopPropagation();
+                onSelect?.();
+              }}
+              className={`absolute top-6 right-6 w-8 h-8 rounded-full border border-white/20 flex items-center justify-center transition-all ${
+                isSelected ? 'bg-white text-black border-white' : 'bg-black/40 hover:bg-white hover:text-black'
+              }`}
+            >
+              {isSelected ? <Check size={14} /> : <Plus size={14} />}
+            </div>
+          )}
         </div>
-        <div className="flex items-center gap-4 shrink-0">
-          <div className="w-12 h-12 rounded-full border border-white/5 flex items-center justify-center text-white/20 group-hover:text-white group-hover:border-white/20 transition-all">
-            <ArrowRight size={20} className="transform group-hover:translate-x-1 transition-transform" />
+
+        {/* Content Area */}
+        <div className="p-8 flex flex-col flex-1">
+          <h4 className="text-2xl font-serif-display text-white mb-3 tracking-tight group-hover:tracking-wide transition-all line-clamp-2">{item.title}</h4>
+          <p className="text-white/40 text-sm font-light leading-relaxed mb-8 line-clamp-3">{item.description}</p>
+          
+          <div className="mt-auto flex items-center justify-between pt-6 border-t border-white/5">
+            <span className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em] group-hover:text-white transition-colors">Ver Detalhes</span>
+            <div className="w-10 h-10 rounded-full border border-white/5 flex items-center justify-center text-white/20 group-hover:text-white group-hover:border-white/20 transition-all">
+              <ArrowRight size={16} className="transform group-hover:translate-x-1 transition-transform" />
+            </div>
           </div>
         </div>
       </button>
