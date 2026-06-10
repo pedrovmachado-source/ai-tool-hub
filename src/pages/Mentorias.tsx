@@ -192,8 +192,7 @@ export default function Mentorias() {
                 <span className="text-sm font-medium text-white/80">Material PDF disponível</span>
               </div>
               <Button 
-                variant="outline" 
-                className="rounded-full border-white/10 text-white hover:bg-white/5 px-6 font-bold text-[10px] uppercase tracking-widest gap-2 h-9"
+                className="rounded-xl bg-white text-black hover:bg-white/90 px-6 font-bold text-[11px] uppercase tracking-widest gap-2 h-10 shadow-lg shadow-white/5 transition-all hover:scale-105 active:scale-95"
                 onClick={async () => {
                   if (!selectedVideo.pdf_path) return;
                   const { data, error } = await supabase.storage.from('lesson-pdfs').createSignedUrl(selectedVideo.pdf_path, 3600);
@@ -206,11 +205,12 @@ export default function Mentorias() {
                   if (data?.signedUrl) window.open(data.signedUrl, '_blank');
                 }}
               >
-                <Download size={14} /> Visualizar PDF
+                <FileText size={15} /> Visualizar Material (PDF)
               </Button>
             </div>
           )}
         </div>
+
 
 
 
