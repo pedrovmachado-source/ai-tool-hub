@@ -160,9 +160,7 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
 
   if (constructionPages.includes(page)) {
     return (
-      <UnderConstruction>
-        <ContentSectionPage slug={page} onBack={() => navigate('/menu')} onUpgrade={() => setPage('pro')} />
-      </UnderConstruction>
+      <ContentSectionPage slug={page} onBack={() => navigate('/menu')} onUpgrade={() => setPage('pro')} />
     );
   }
   
