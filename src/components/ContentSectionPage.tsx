@@ -448,7 +448,7 @@ function ItemCard({
             <div className="inline-block px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[9px] font-bold text-white/30 uppercase tracking-[0.2em] mb-3">
               {item.topic || 'Criativo'}
             </div>
-            <h4 className="text-2xl sm:text-3xl font-serif-display text-white mb-2 tracking-tight group-hover:tracking-wide transition-all truncate">{item.title}</h4>
+            <h4 className="text-xl sm:text-2xl font-serif-display text-white mb-1 tracking-tight group-hover:tracking-wide transition-all truncate">{item.title}</h4>
             <p className="text-white/40 text-sm font-light max-w-xl line-clamp-1">{item.description}</p>
           </div>
         </div>
