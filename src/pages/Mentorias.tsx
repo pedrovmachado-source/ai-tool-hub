@@ -115,71 +115,97 @@ export default function Mentorias() {
 
       <main className="flex-1">
         {/* Hero / Player Section */}
-        <section className="relative w-full aspect-video bg-black group overflow-hidden" ref={playerRef}>
-          {loading ? (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <Loader2 className="w-12 h-12 text-white animate-spin opacity-20" />
-            </div>
-          ) : selectedVideo ? (
-            <div className="absolute inset-0 w-full h-full">
-              <iframe
-                src={`${getEmbedUrl(selectedVideo.video_url || '')}?autoplay=1`}
-                className="w-full h-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
-              <button 
-                onClick={() => setSelectedVideo(null)}
-                className="absolute top-24 right-8 z-50 bg-black/50 hover:bg-black/80 p-2 rounded-full border border-white/10 transition-all text-white"
-              >
-                <X size={24} />
-              </button>
-            </div>
-          ) : lessons.length > 0 ? (
-            <>
-              {/* Featured Content (Hero) */}
-              <div className="absolute inset-0">
-                {modules.find(m => m.id === lessons[0].module_id)?.cover_url ? (
-                  <img 
-                    src={modules.find(m => m.id === lessons[0].module_id)?.cover_url || ''} 
-                    alt="Featured" 
-                    className="w-full h-full object-cover opacity-60 grayscale-[0.2]"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-navy opacity-40" />
-                )}
-                <div className="absolute inset-0 bg-gradient-to-r from-[#141414] via-[#141414]/60 to-transparent" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-transparent to-transparent" />
+        <div className="flex flex-col">
+          <section className="relative w-full aspect-video bg-black group overflow-hidden" ref={playerRef}>
+            {loading ? (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Loader2 className="w-12 h-12 text-white animate-spin opacity-20" />
               </div>
+            ) : selectedVideo ? (
+              <div className="absolute inset-0 w-full h-full">
+                <iframe
+                  src={`${getEmbedUrl(selectedVideo.video_url || '')}?autoplay=1`}
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+                <button 
+                  onClick={() => setSelectedVideo(null)}
+                  className="absolute top-24 right-8 z-50 bg-black/50 hover:bg-black/80 p-2 rounded-full border border-white/10 transition-all text-white"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+            ) : lessons.length > 0 ? (
+              <>
+                {/* Featured Content (Hero) */}
+                <div className="absolute inset-0">
+                  {modules.find(m => m.id === lessons[0].module_id)?.cover_url ? (
+                    <img 
+                      src={modules.find(m => m.id === lessons[0].module_id)?.cover_url || ''} 
+                      alt="Featured" 
+                      className="w-full h-full object-cover opacity-60 grayscale-[0.2]"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-navy opacity-40" />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#141414] via-[#141414]/60 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-transparent to-transparent" />
+                </div>
 
-              <div className="relative z-10 h-full flex flex-col justify-center px-8 sm:px-16 max-w-4xl pt-20">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded tracking-tighter uppercase">Original</div>
-                  <span className="text-white/60 text-xs font-bold uppercase tracking-[0.2em]">Convert Club Original</span>
+                <div className="relative z-10 h-full flex flex-col justify-center px-8 sm:px-16 max-w-4xl pt-20">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded tracking-tighter uppercase">Original</div>
+                    <span className="text-white/60 text-xs font-bold uppercase tracking-[0.2em]">Convert Club Original</span>
+                  </div>
+                  <h1 className="text-4xl sm:text-6xl lg:text-7xl font-serif-display leading-none mb-6">
+                    {lessons[0].title}
+                  </h1>
+                  <p className="text-white/70 text-sm sm:text-lg mb-8 max-w-xl font-light leading-relaxed">
+                    {lessons[0].description}
+                  </p>
+                  <div className="flex items-center gap-4">
+                    <Button 
+                      onClick={() => handleVideoSelect(lessons[0])}
+                      className="h-12 sm:h-14 px-8 rounded bg-white text-black hover:bg-white/90 font-bold flex items-center gap-2"
+                    >
+                      <Play size={20} fill="currentColor" />
+                      Assistir Agora
+                    </Button>
+                  </div>
                 </div>
-                <h1 className="text-4xl sm:text-6xl lg:text-7xl font-serif-display leading-none mb-6">
-                  {lessons[0].title}
-                </h1>
-                <p className="text-white/70 text-sm sm:text-lg mb-8 max-w-xl font-light leading-relaxed">
-                  {lessons[0].description}
-                </p>
-                <div className="flex items-center gap-4">
-                  <Button 
-                    onClick={() => handleVideoSelect(lessons[0])}
-                    className="h-12 sm:h-14 px-8 rounded bg-white text-black hover:bg-white/90 font-bold flex items-center gap-2"
-                  >
-                    <Play size={20} fill="currentColor" />
-                    Assistir Agora
-                  </Button>
-                </div>
+              </>
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <p className="text-white/40 font-serif-display text-xl uppercase tracking-widest">Nenhuma aula disponível</p>
               </div>
-            </>
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <p className="text-white/40 font-serif-display text-xl uppercase tracking-widest">Nenhuma aula disponível</p>
+            )}
+          </section>
+
+          {/* Quick PDF Action Bar */}
+          {selectedVideo && selectedVideo.pdf_path && (
+            <div className="bg-white/[0.03] border-b border-white/5 py-4 px-8 sm:px-16 flex items-center justify-between animate-fade-in">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
+                  <FileText className="w-4 h-4 text-white/60" />
+                </div>
+                <span className="text-sm font-medium text-white/80">Material PDF disponível</span>
+              </div>
+              <Button 
+                variant="outline" 
+                className="rounded-full border-white/10 text-white hover:bg-white/5 px-6 font-bold text-[10px] uppercase tracking-widest gap-2 h-9"
+                onClick={async () => {
+                  if (!selectedVideo.pdf_path) return;
+                  const { data } = await supabase.storage.from('lesson-pdfs').getPublicUrl(selectedVideo.pdf_path);
+                  if (data?.publicUrl) window.open(data.publicUrl, '_blank');
+                }}
+              >
+                <Download size={14} /> Visualizar PDF
+              </Button>
             </div>
           )}
-        </section>
+        </div>
+
 
         {/* Rows of content */}
         <div className="relative z-20 px-4 sm:px-16 py-12 space-y-12 bg-[#141414]">
