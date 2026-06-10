@@ -144,7 +144,7 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
   if (page === 'pro') return <ProPage onBack={() => navigate('/menu')} onNavigate={handleNavigate} />;
   if (page === 'lessons') return <LessonsPage onBack={() => navigate('/menu')} />;
   
-  const constructionPages = ['creative-edit', 'copywrite'];
+  const constructionPages = ['copywrite'];
   
   if (page === 'site-creation') {
     return <SiteCreationPage onBack={() => navigate('/menu')} />;
@@ -160,7 +160,9 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
 
   if (constructionPages.includes(page)) {
     return (
-      <ContentSectionPage slug={page} onBack={() => navigate('/menu')} onUpgrade={() => setPage('pro')} />
+      <UnderConstruction onBack={() => navigate('/menu')}>
+        <ContentSectionPage slug={page} onBack={() => navigate('/menu')} onUpgrade={() => setPage('pro')} />
+      </UnderConstruction>
     );
   }
   
