@@ -115,7 +115,7 @@ export default function Mentorias() {
 
       <main className="flex-1">
         {/* Hero / Player Section */}
-        <section className="relative w-full aspect-[21/9] sm:aspect-video lg:aspect-[21/9] bg-black group overflow-hidden" ref={playerRef}>
+        <section className="relative w-full aspect-video bg-black group overflow-hidden" ref={playerRef}>
           {loading ? (
             <div className="absolute inset-0 flex items-center justify-center">
               <Loader2 className="w-12 h-12 text-white animate-spin opacity-20" />
@@ -130,7 +130,7 @@ export default function Mentorias() {
               ></iframe>
               <button 
                 onClick={() => setSelectedVideo(null)}
-                className="absolute top-24 right-8 z-50 bg-black/50 hover:bg-black/80 p-2 rounded-full border border-white/10 transition-all"
+                className="absolute top-24 right-8 z-50 bg-black/50 hover:bg-black/80 p-2 rounded-full border border-white/10 transition-all text-white"
               >
                 <X size={24} />
               </button>
@@ -182,7 +182,8 @@ export default function Mentorias() {
         </section>
 
         {/* Rows of content */}
-        <div className="relative z-20 -mt-24 sm:-mt-32 pb-24 px-4 sm:px-16 space-y-12">
+        <div className="relative z-20 px-4 sm:px-16 py-12 space-y-12 bg-[#141414]">
+
           {loading ? (
             <div className="flex justify-center py-20">
               <Loader2 className="w-8 h-8 text-white animate-spin opacity-20" />
