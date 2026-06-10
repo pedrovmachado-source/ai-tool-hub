@@ -218,15 +218,29 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
             </div>
           </div>
           
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-smooth mb-6 border border-white/5">
-            {slug === 'copywrite' ? <TextIcon className="w-3 h-3 text-white/50" /> : 
-             slug === 'fb-accounts' ? <ShoppingCart className="w-3 h-3 text-white/50" /> :
-             <ImageIcon className="w-3 h-3 text-white/50" />}
-            <span className="text-[10px] font-bold text-white/50 tracking-[0.2em] uppercase">
-              {slug === 'copywrite' ? 'Copywriting de Elite' : 
-               slug === 'fb-accounts' ? 'Contas & BMs' :
-               'Visual Assets'}
-            </span>
+          <div className="flex items-center justify-between mb-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-smooth border border-white/5">
+              {slug === 'copywrite' ? <TextIcon className="w-3 h-3 text-white/50" /> : 
+               slug === 'fb-accounts' ? <ShoppingCart className="w-3 h-3 text-white/50" /> :
+               <ImageIcon className="w-3 h-3 text-white/50" />}
+              <span className="text-[10px] font-bold text-white/50 tracking-[0.2em] uppercase">
+                {slug === 'copywrite' ? 'Copywriting de Elite' : 
+                 slug === 'fb-accounts' ? 'Contas & BMs' :
+                 'Visual Assets'}
+              </span>
+            </div>
+
+            {isAdmin && selectedIds.size > 0 && (
+              <button 
+                onClick={deleteSelected}
+                disabled={isDeleting}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-500/20 border border-red-500/30 text-red-500 hover:bg-red-500/30 transition-all group disabled:opacity-50"
+              >
+                <span className="text-[10px] font-bold tracking-[0.1em] uppercase">
+                  {isDeleting ? 'Excluindo...' : `Excluir Selecionados (${selectedIds.size})`}
+                </span>
+              </button>
+            )}
           </div>
           
           <h1 className="text-4xl md:text-6xl font-serif-display tracking-tight text-white mb-6 leading-tight">
