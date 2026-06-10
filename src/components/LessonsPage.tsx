@@ -5,7 +5,7 @@ import { meetsMinPlan } from '@/lib/plan';
 import { ArrowLeft, Play, FileText, Lock, Folder, X, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Document, Page, pdfjs } from 'react-pdf';
-import pdfWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
+import pdfWorker from 'pdfjs-dist/build/pdf.worker.min.js?url';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
