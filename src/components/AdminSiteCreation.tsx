@@ -135,6 +135,17 @@ export default function AdminSiteCreation({ initialTab = 'products' }: { initial
   const toggleRead = (o: Order) => updateOrder(o.id, { read_at: o.read_at ? null : new Date().toISOString() });
   const setStatus = (o: Order, status: Order['status']) => updateOrder(o.id, { status });
 
+  const deleteOrder = async (id: string) => {
+    if (!confirm('Excluir este pedido permanentemente?')) return;
+    const { error } = await supabase.from('site_orders' as any).delete().eq('id', id);
+    if (error) {
+      toast({ title: 'Erro ao excluir', description: error.message, variant: 'destructive' });
+      return;
+    }
+    toast({ title: 'Pedido excluído' });
+    await reload();
+  };
+
   if (loading) return <p className="text-muted-foreground/60">Carregando…</p>;
 
   return (
@@ -233,9 +244,12 @@ export default function AdminSiteCreation({ initialTab = 'products' }: { initial
                           ))}
                         </select>
                       </td>
-                      <td className="px-3 py-3">
+                      <td className="px-3 py-3 flex items-center gap-2">
                         <button onClick={() => toggleRead(o)} className="text-muted-foreground/60 hover:text-primary-foreground" title={unread ? 'Marcar como lido' : 'Marcar como não lido'}>
                           {unread ? <Eye size={14} /> : <EyeOff size={14} />}
+                        </button>
+                        <button onClick={() => deleteOrder(o.id)} className="text-brand-red/60 hover:text-brand-red" title="Excluir pedido">
+                          <Trash2 size={14} />
                         </button>
                       </td>
                     </tr>
