@@ -146,6 +146,17 @@ export default function AdminSiteCreation({ initialTab = 'products' }: { initial
     await reload();
   };
 
+  const clearAllOrders = async () => {
+    if (!confirm('AVISO: Isso excluirá TODOS os pedidos permanentemente. Tem certeza?')) return;
+    const { error } = await supabase.from('site_orders' as any).delete().neq('id', '00000000-0000-0000-0000-000000000000');
+    if (error) {
+      toast({ title: 'Erro ao limpar pedidos', description: error.message, variant: 'destructive' });
+      return;
+    }
+    toast({ title: 'Todos os pedidos foram excluídos' });
+    await reload();
+  };
+
   if (loading) return <p className="text-muted-foreground/60">Carregando…</p>;
 
   return (
@@ -173,6 +184,14 @@ export default function AdminSiteCreation({ initialTab = 'products' }: { initial
               Atualizar
             </span>
           </button>
+          {tab === 'orders' && orders.length > 0 && (
+            <button onClick={clearAllOrders} className="px-3 py-1.5 rounded-lg text-[12px] bg-brand-red/10 text-brand-red hover:bg-brand-red/20 transition-colors">
+              <span className="flex items-center gap-1.5">
+                <Trash2 size={13} />
+                Limpar Tudo
+              </span>
+            </button>
+          )}
         </div>
       </div>
 
