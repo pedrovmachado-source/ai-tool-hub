@@ -137,7 +137,7 @@ export default function AdminSiteCreation({ initialTab = 'products' }: { initial
 
   const deleteOrder = async (id: string) => {
     if (!confirm('Excluir este pedido permanentemente?')) return;
-    const { error } = await supabase.from('site_orders' as any).delete().eq('id', id);
+    const { error } = await supabase.from('site_orders').delete().eq('id', id);
     if (error) {
       toast({ title: 'Erro ao excluir', description: error.message, variant: 'destructive' });
       return;
@@ -148,7 +148,8 @@ export default function AdminSiteCreation({ initialTab = 'products' }: { initial
 
   const clearAllOrders = async () => {
     if (!confirm('AVISO: Isso excluirá TODOS os pedidos permanentemente. Tem certeza?')) return;
-    const { error } = await supabase.from('site_orders' as any).delete().neq('id', '00000000-0000-0000-0000-000000000000');
+    // We use a dummy condition that is always true for all records to delete all
+    const { error } = await supabase.from('site_orders').delete().neq('id', '00000000-0000-0000-0000-000000000000');
     if (error) {
       toast({ title: 'Erro ao limpar pedidos', description: error.message, variant: 'destructive' });
       return;
