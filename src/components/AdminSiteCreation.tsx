@@ -275,8 +275,8 @@ export default function AdminSiteCreation({ initialTab = 'products' }: { initial
                         <button onClick={() => toggleRead(o)} className="text-muted-foreground/60 hover:text-primary-foreground" title={unread ? 'Marcar como lido' : 'Marcar como não lido'}>
                           {unread ? <Eye size={14} /> : <EyeOff size={14} />}
                         </button>
-                        <button onClick={() => deleteOrder(o.id)} className="text-brand-red/60 hover:text-brand-red" title="Excluir pedido">
-                          <Trash2 size={14} />
+                        <button onClick={() => deleteOrder(o.id)} className="px-2 py-1 rounded bg-brand-red text-white text-[10px] font-bold uppercase hover:bg-brand-red/90 transition-colors" title="Excluir pedido">
+                          Apagar
                         </button>
                       </td>
                     </tr>
