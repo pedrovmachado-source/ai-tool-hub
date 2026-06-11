@@ -185,10 +185,10 @@ export default function AdminSiteCreation({ initialTab = 'products' }: { initial
             </span>
           </button>
           {tab === 'orders' && orders.length > 0 && (
-            <button onClick={clearAllOrders} className="px-3 py-1.5 rounded-lg text-[12px] bg-brand-red/10 text-brand-red hover:bg-brand-red/20 transition-colors">
+            <button onClick={clearAllOrders} className="px-3 py-1.5 rounded-lg text-[12px] bg-brand-red text-white hover:bg-brand-red/90 transition-colors shadow-sm font-medium">
               <span className="flex items-center gap-1.5">
                 <Trash2 size={13} />
-                Limpar Tudo
+                Excluir todos os pedidos
               </span>
             </button>
           )}
@@ -275,8 +275,8 @@ export default function AdminSiteCreation({ initialTab = 'products' }: { initial
                         <button onClick={() => toggleRead(o)} className="text-muted-foreground/60 hover:text-primary-foreground" title={unread ? 'Marcar como lido' : 'Marcar como não lido'}>
                           {unread ? <Eye size={14} /> : <EyeOff size={14} />}
                         </button>
-                        <button onClick={() => deleteOrder(o.id)} className="text-brand-red/60 hover:text-brand-red" title="Excluir pedido">
-                          <Trash2 size={14} />
+                        <button onClick={() => deleteOrder(o.id)} className="px-2 py-1 rounded bg-brand-red text-white text-[10px] font-bold uppercase hover:bg-brand-red/90 transition-colors" title="Excluir pedido">
+                          Apagar
                         </button>
                       </td>
                     </tr>
