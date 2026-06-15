@@ -28,14 +28,23 @@ export default function ResearchAssistant({ children }: { children?: React.React
 
 A resposta deve ser uma lista separada por tópicos, com pelo menos 30 sugestões.`;
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    toast({
-      title: "Copiado!",
-      description: "Conteúdo copiado para a área de transferência."
-    });
-    setTimeout(() => setCopied(false), 2000);
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      toast({
+        title: "Copiado!",
+        description: "Conteúdo copiado para a área de transferência."
+      });
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+      toast({
+        variant: "destructive",
+        title: "Erro ao copiar",
+        description: "Não foi possível copiar o conteúdo."
+      });
+    }
   };
 
   return (
