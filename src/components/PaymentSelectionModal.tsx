@@ -4,12 +4,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
 import { toast } from "sonner";
 
+interface CartItem { price: string; productId: string; quantity: number }
 interface PaymentSelectionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  priceId: string;
-  productId: string;
+  priceId?: string;
+  productId?: string;
   productTitle: string;
+  items?: CartItem[];
 }
 
 export default function PaymentSelectionModal({ 
@@ -17,7 +19,8 @@ export default function PaymentSelectionModal({
   onClose, 
   priceId, 
   productId, 
-  productTitle 
+  productTitle,
+  items,
 }: PaymentSelectionModalProps) {
   const [loading, setLoading] = useState<string | null>(null);
 
@@ -26,13 +29,15 @@ export default function PaymentSelectionModal({
   const handlePayment = async (isPix: boolean) => {
     setLoading(isPix ? 'pix' : 'card');
     try {
+      const payload: Record<string, unknown> = { mode: 'payment', isPix };
+      if (items && items.length > 0) {
+        payload.items = items;
+      } else {
+        payload.priceId = priceId;
+        payload.productId = productId;
+      }
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { 
-          priceId, 
-          productId, 
-          mode: 'payment',
-          isPix 
-        }
+        body: payload,
       });
 
       if (error) throw error;
