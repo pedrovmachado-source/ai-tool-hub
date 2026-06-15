@@ -25,6 +25,7 @@ const AbuseBlocks = lazy(() => import("./pages/AbuseBlocks.tsx"));
 const Mentorias = lazy(() => import("./pages/Mentorias.tsx"));
 const CompleteProfile = lazy(() => import("./pages/CompleteProfile.tsx"));
 const OfertasValidadas = lazy(() => import("./pages/OfertasValidadas.tsx"));
+const MinhasOfertas = lazy(() => import("./pages/MinhasOfertas.tsx"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -66,6 +67,7 @@ const App = () => (
                 <Route path="/admin/bloqueios" element={<ProtectedRoute><AbuseBlocks /></ProtectedRoute>} />
                 <Route path="/mentorias" element={<ProtectedRoute><Mentorias /></ProtectedRoute>} />
                 <Route path="/ofertas" element={<ProtectedRoute><OfertasValidadas /></ProtectedRoute>} />
+                <Route path="/minhas-ofertas" element={<ProtectedRoute><MinhasOfertas /></ProtectedRoute>} />
 
                 <Route path="/copywrite" element={<ProtectedRoute><Tools page="copywrite" /></ProtectedRoute>} />
                 <Route path="/site-creation" element={<ProtectedRoute><Tools page="site-creation" /></ProtectedRoute>} />

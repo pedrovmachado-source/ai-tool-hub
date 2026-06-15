@@ -118,6 +118,13 @@ export default function Menu() {
       icon: Video,
       path: "/mentorias",
       badge: "Membro"
+    },
+    {
+      title: "Minhas Ofertas",
+      description: "Salve suas próprias ofertas, links de biblioteca, criativos e copies em um só lugar.",
+      icon: BookOpen,
+      path: "/minhas-ofertas",
+      badge: "Privado"
     }
   ];
 
