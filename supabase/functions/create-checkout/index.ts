@@ -25,7 +25,8 @@ serve(async (req) => {
     if (!user?.email) throw new Error("User not authenticated");
 
     const body = await req.json();
-    const { packageId, paymentMethod = "card", priceId, productId, mode = "payment", isPix = false } = body;
+    const { paymentMethod = "card", priceId, productId, mode = "payment", isPix = false } = body;
+
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2024-06-20",
