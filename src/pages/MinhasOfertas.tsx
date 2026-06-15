@@ -15,6 +15,8 @@ type Oferta = {
   tags: string[];
   linkBib: string;
   linkDrive: string;
+  linkSite: string;
+  linkCheckout: string;
   copyTexto: string;
 };
 
