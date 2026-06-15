@@ -49,22 +49,12 @@ export default function OfertasValidadas() {
   const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false);
   const [editingOffer, setEditingOffer] = useState<ValidatedOffer | null>(null);
   const [modelingOffer, setModelingOffer] = useState<ValidatedOffer | null>(null);
-  const [spendingProduct, setSpendingProduct] = useState<any | null>(null);
-  const [cashProducts, setCashProducts] = useState<any[]>([]);
 
   useEffect(() => {
     fetchOffers();
-    fetchCashProducts();
   }, []);
 
-  async function fetchCashProducts() {
-    try {
-      const { data } = await supabase.from('site_products' as any).select('*').eq('active', true);
-      if (data) setCashProducts(data);
-    } catch (err) {
-      console.error('Error fetching cash products:', err);
-    }
-  }
+
 
   async function fetchOffers() {
     try {
