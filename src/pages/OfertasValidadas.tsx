@@ -6,7 +6,7 @@ import Meta from '@/components/Meta';
 import OfferAnalysisModal from '@/components/OfferAnalysisModal';
 import OfferModelingModal from '@/components/OfferModelingModal';
 import OffersRanking from '@/components/OffersRanking';
-import SpendCashModal from '@/components/SpendCashModal';
+
 import { supabase } from '@/integrations/supabase/client';
 import InlineOfferEditor from '@/components/InlineOfferEditor';
 import ResearchAssistant from '@/components/ResearchAssistant';
