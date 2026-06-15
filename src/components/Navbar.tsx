@@ -1,8 +1,8 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocation } from 'react-router-dom';
-import { Menu, Bookmark, X, GraduationCap, Sparkles, Globe2, Wand2, BookOpen, Shield, ChevronRight, LogOut, Video, CreditCard, Star, Zap, Rocket, Users, Facebook, PenTool, Layout, Coins } from 'lucide-react';
-import CashBalance from './CashBalance';
+import { Menu, Bookmark, X, GraduationCap, Sparkles, Globe2, Wand2, BookOpen, Shield, ChevronRight, LogOut, Video, CreditCard, Star, Zap, Rocket, Users, Facebook, PenTool, Layout } from 'lucide-react';
+
 
 import QuizModal from './QuizModal';
 import NicheLessonsModal from './NicheLessonsModal';
@@ -42,36 +42,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
   const [menuItems, setMenuItems] = useState<NavItem[]>(DEFAULT_ITEMS);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [showPurchasedModal, setShowPurchasedModal] = useState(false);
-  const [realTimeBalance, setRealTimeBalance] = useState<number>(user?.cashBalance || 0);
 
-  useEffect(() => {
-    if (!user?.id) return;
-
-    const fetchBalance = async () => {
-      const { data } = await supabase
-        .from('profiles')
-        .select('cash_balance')
-        .eq('id', user.id)
-        .single();
-      if (data) setRealTimeBalance(Number(data.cash_balance));
-    };
-
-    fetchBalance();
-
-    const channel = supabase
-      .channel(`navbar-balance-${user.id}`)
-      .on('postgres_changes', {
-        event: 'UPDATE',
-        schema: 'public',
-        table: 'profiles',
-        filter: `id=eq.${user.id}`,
-      }, (payload) => {
-        setRealTimeBalance(Number(payload.new.cash_balance));
-      })
-      .subscribe();
-
-    return () => { supabase.removeChannel(channel); };
-  }, [user?.id]);
 
   useEffect(() => {
     (async () => {
@@ -131,13 +102,6 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
         <div className="flex items-center gap-1 sm:gap-2 justify-self-end">
           {user && (
             <div className="flex items-center gap-2">
-              <button 
-                onClick={() => onNavigate('comprar-cash')} 
-                className="flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-white bg-white/10 border border-white/10 hover:bg-white/20 transition-all hover:scale-105 whitespace-nowrap"
-              >
-                <Coins size={14} className="text-white" />
-                <span>Cash - {realTimeBalance >= 1000 ? `${(realTimeBalance / 1000).toFixed(realTimeBalance % 1000 >= 100 ? 1 : 0)}k` : realTimeBalance}</span>
-              </button>
 
               <button
                 onClick={() => setShowSaved(true)}

@@ -2,9 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { meetsMinPlan } from '@/lib/plan';
-import { ArrowLeft, Play, FileText, Image as ImageIcon, Lock, FileText as TextIcon, ShoppingCart, ArrowRight, Coins, Wallet, Sparkles, ExternalLink, Check, Plus } from 'lucide-react';
-import CashBalance from './CashBalance';
-import SpendCashModal from './SpendCashModal';
+import { ArrowLeft, Play, FileText, Image as ImageIcon, Lock, FileText as TextIcon, ShoppingCart, ArrowRight, Wallet, Sparkles, ExternalLink, Check, Plus } from 'lucide-react';
+
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -36,7 +35,7 @@ interface Item {
   example_url: string | null;
   buy_url: string | null;
   sort_order: number;
-  price_cash?: number | null;
+  
 }
 
 export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: string; onBack: () => void; onUpgrade: () => void }) {
@@ -49,7 +48,7 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
   const [image, setImage] = useState<Item | null>(null);
   const [offer, setOffer] = useState<Item | null>(null);
   const [showPurchasedModal, setShowPurchasedModal] = useState(false);
-  const [spendingProduct, setSpendingProduct] = useState<Item | null>(null);
+  
   const [infoItem, setInfoItem] = useState<Item | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [isDeleting, setIsDeleting] = useState(false);
@@ -149,7 +148,7 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
           onOffer={() => setOffer(i)}
           onInfo={() => setInfoItem(i)}
           onBuy={(priceId, productId, title) => setPaymentSelection({ isOpen: true, priceId, productId, productTitle: title })}
-          onBuyWithCash={(item) => setSpendingProduct(item)}
+
         />
       ))}
     </div>
@@ -173,15 +172,6 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
             </button>
 
             <div className="flex items-center gap-4">
-              {slug === 'fb-accounts' && (
-                <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 border border-white/10 glass-smooth">
-                  <Wallet size={14} className="text-brand-amber" />
-                  <div className="flex flex-col">
-                    <span className="text-[8px] font-bold text-white/30 uppercase tracking-widest leading-none mb-1">Seu Saldo</span>
-                    <CashBalance />
-                  </div>
-                </div>
-              )}
               {slug === 'fb-accounts' && (
                 <button 
                   onClick={() => setShowPurchasedModal(true)}
@@ -283,15 +273,6 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
         productTitle={paymentSelection.productTitle}
       />
       
-      {spendingProduct && (
-        <SpendCashModal 
-          isOpen={!!spendingProduct}
-          onClose={() => setSpendingProduct(null)}
-          productId={spendingProduct.id}
-          productName={spendingProduct.title}
-          priceCash={spendingProduct.price_cash || 0}
-        />
-      )}
 
       {/* Info Modal for Creative Edit */}
       <Dialog open={!!infoItem} onOpenChange={(open) => !open && setInfoItem(null)}>
@@ -366,7 +347,7 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
 }
 
 function ItemCard({ 
-  item, isOffers, isCreative, isAdmin, isSelected, onSelect, onVideo, onPdf, onImage, onOffer, onInfo, onBuy, onBuyWithCash 
+  item, isOffers, isCreative, isAdmin, isSelected, onSelect, onVideo, onPdf, onImage, onOffer, onInfo, onBuy 
 }: {
   item: Item;
   isOffers?: boolean;
@@ -380,19 +361,15 @@ function ItemCard({
   onOffer?: () => void;
   onInfo?: () => void;
   onBuy: (priceId: string, productId: string, title: string) => void;
-  onBuyWithCash: (item: Item) => void;
 }) {
   const handleBuy = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (item.section_slug === 'fb-accounts' && item.price_cash) {
-      onBuyWithCash(item);
-      return;
-    }
     const priceId = (item.body && item.body.startsWith('price_')) 
       ? item.body 
       : 'price_1Tc4wzQP3tL0cIWnFFTaNhgJ';
     onBuy(priceId, item.id, item.title);
   };
+
 
   const handleClick = () => {
     if (isCreative && onInfo) return onInfo();
@@ -502,11 +479,11 @@ function ItemCard({
               onClick={handleBuy}
               className="w-full py-3 px-6 rounded-2xl bg-white text-black font-bold text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] flex items-center justify-center gap-2"
             >
-              <Coins size={14} className="text-brand-amber" />
-              {item.price_cash} Cash
+              Comprar Agora
             </button>
           </div>
         )}
+
 
         {item.buy_url && item.section_slug !== 'fb-accounts' && (
           <div className="mt-auto">
@@ -551,11 +528,11 @@ function ItemCard({
               onClick={handleBuy}
               className="w-full py-3 px-6 rounded-2xl bg-white text-black font-bold text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
             >
-              <Coins size={14} className="text-brand-amber" />
-              {item.price_cash} Cash
+              Comprar Agora
             </button>
           </div>
         ) : (
+
           <button onClick={handleClick} className="mt-auto pt-6 flex items-center text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] group/btn">
              Ver Detalhes <ArrowRight size={12} className="ml-2 group-hover/btn:translate-x-1 transition-transform" />
           </button>

@@ -25,9 +25,6 @@ const AbuseBlocks = lazy(() => import("./pages/AbuseBlocks.tsx"));
 const Mentorias = lazy(() => import("./pages/Mentorias.tsx"));
 const CompleteProfile = lazy(() => import("./pages/CompleteProfile.tsx"));
 const OfertasValidadas = lazy(() => import("./pages/OfertasValidadas.tsx"));
-const ComprarCash = lazy(() => import("./pages/ComprarCash.tsx"));
-const CashSuccess = lazy(() => import("./pages/CashSuccess.tsx"));
-const CashCancel = lazy(() => import("./pages/CashCancel.tsx"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -69,9 +66,6 @@ const App = () => (
                 <Route path="/admin/bloqueios" element={<ProtectedRoute><AbuseBlocks /></ProtectedRoute>} />
                 <Route path="/mentorias" element={<ProtectedRoute><Mentorias /></ProtectedRoute>} />
                 <Route path="/ofertas" element={<ProtectedRoute><OfertasValidadas /></ProtectedRoute>} />
-                <Route path="/comprar-cash" element={<ProtectedRoute><ComprarCash /></ProtectedRoute>} />
-                <Route path="/comprar-cash/sucesso" element={<ProtectedRoute><CashSuccess /></ProtectedRoute>} />
-                <Route path="/comprar-cash/cancelado" element={<ProtectedRoute><CashCancel /></ProtectedRoute>} />
 
                 <Route path="/copywrite" element={<ProtectedRoute><Tools page="copywrite" /></ProtectedRoute>} />
                 <Route path="/site-creation" element={<ProtectedRoute><Tools page="site-creation" /></ProtectedRoute>} />

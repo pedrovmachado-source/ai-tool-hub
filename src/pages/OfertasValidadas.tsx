@@ -6,7 +6,7 @@ import Meta from '@/components/Meta';
 import OfferAnalysisModal from '@/components/OfferAnalysisModal';
 import OfferModelingModal from '@/components/OfferModelingModal';
 import OffersRanking from '@/components/OffersRanking';
-import SpendCashModal from '@/components/SpendCashModal';
+
 import { supabase } from '@/integrations/supabase/client';
 import InlineOfferEditor from '@/components/InlineOfferEditor';
 import ResearchAssistant from '@/components/ResearchAssistant';
@@ -49,22 +49,12 @@ export default function OfertasValidadas() {
   const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false);
   const [editingOffer, setEditingOffer] = useState<ValidatedOffer | null>(null);
   const [modelingOffer, setModelingOffer] = useState<ValidatedOffer | null>(null);
-  const [spendingProduct, setSpendingProduct] = useState<any | null>(null);
-  const [cashProducts, setCashProducts] = useState<any[]>([]);
 
   useEffect(() => {
     fetchOffers();
-    fetchCashProducts();
   }, []);
 
-  async function fetchCashProducts() {
-    try {
-      const { data } = await supabase.from('site_products' as any).select('*').eq('active', true);
-      if (data) setCashProducts(data);
-    } catch (err) {
-      console.error('Error fetching cash products:', err);
-    }
-  }
+
 
   async function fetchOffers() {
     try {
@@ -268,15 +258,6 @@ export default function OfertasValidadas() {
             offerTitle={modelingOffer?.title || ''}
             offerId={modelingOffer?.id}
           />
-          {spendingProduct && (
-            <SpendCashModal 
-              isOpen={!!spendingProduct}
-              onClose={() => setSpendingProduct(null)}
-              productId={spendingProduct.id}
-              productName={spendingProduct.name}
-              priceCash={spendingProduct.price_cash || 0}
-            />
-          )}
         </div>
       </main>
 

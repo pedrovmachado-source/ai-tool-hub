@@ -1,9 +1,8 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { CreditCard, QrCode, Percent, ArrowRight, Coins } from "lucide-react";
+import { CreditCard, QrCode, Percent, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
 
 interface PaymentSelectionModalProps {
   isOpen: boolean;
@@ -20,21 +19,9 @@ export default function PaymentSelectionModal({
   productId, 
   productTitle 
 }: PaymentSelectionModalProps) {
-  const navigate = useNavigate();
   const [loading, setLoading] = useState<string | null>(null);
-  const [userBalance, setUserBalance] = useState<number | null>(null);
 
-  useEffect(() => {
-    if (isOpen) {
-      (async () => {
-        const { data } = await supabase
-          .from('profiles')
-          .select('cash_balance')
-          .single();
-        if (data) setUserBalance(Number(data.cash_balance));
-      })();
-    }
-  }, [isOpen]);
+
 
   const handlePayment = async (isPix: boolean) => {
     setLoading(isPix ? 'pix' : 'card');
@@ -126,41 +113,8 @@ export default function PaymentSelectionModal({
             )}
           </button>
 
-          <div className="relative py-4">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-white/5"></span>
-            </div>
-            <div className="relative flex justify-center text-[10px] uppercase tracking-widest font-bold">
-              <span className="bg-[#0D0D0F] px-4 text-white/20">Ou use seu saldo</span>
-            </div>
-          </div>
-
-          <button
-            onClick={() => { onClose(); navigate('/comprar-cash'); }}
-            className="group relative w-full p-6 glass-smooth rounded-[2rem] border border-brand-amber/10 hover:border-brand-amber/30 hover:bg-brand-amber/5 transition-all text-left overflow-hidden active:scale-[0.98]"
-          >
-            <div className="flex items-center gap-5 relative z-10">
-              <div className="w-14 h-14 bg-brand-amber/10 rounded-2xl flex items-center justify-center text-brand-amber group-hover:bg-brand-amber group-hover:text-black transition-all duration-500">
-                <Coins size={28} />
-              </div>
-              <div className="flex-1">
-                <div className="flex flex-col gap-0.5 mb-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-lg">Recarregar Cash</span>
-                    <span className="bg-brand-amber/20 text-brand-amber text-[9px] font-black px-1.5 py-0.5 rounded-md uppercase tracking-wider border border-brand-amber/10">
-                      CASHBACK DISPONÍVEL
-                    </span>
-                  </div>
-                  {userBalance !== null && (
-                    <span className="text-[11px] text-brand-amber/60 font-medium">Seu Saldo Atual: {userBalance.toLocaleString('pt-BR')} Cash</span>
-                  )}
-                </div>
-                <p className="text-white/40 text-xs font-light">Abata o valor ou facilite compras futuras com Cash</p>
-              </div>
-              <ArrowRight size={20} className="text-white/10 group-hover:text-brand-amber group-hover:translate-x-1 transition-all" />
-            </div>
-          </button>
         </div>
+
 
         <p className="mt-8 text-[10px] text-center text-white/20 uppercase tracking-[0.2em] font-bold">
           Pagamento 100% Seguro via Stripe
