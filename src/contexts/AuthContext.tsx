@@ -261,6 +261,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     supabase.auth.getSession()
       .then(({ data: { session } }) => {
         if (!active) return;
+        lastSyncedUserId = session?.user?.id ?? null;
         void syncSession(session);
       })
       .catch((error) => {
