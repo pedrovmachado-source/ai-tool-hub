@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Copy, Check, Heart } from 'lucide-react';
 import type { Category } from '@/data/tools-data';
+import { toast } from 'sonner';
 
 const PROMPT_CATEGORIES = [
   { key: 'marketing', label: 'Marketing', icon: '📣' },
