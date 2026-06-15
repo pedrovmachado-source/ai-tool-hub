@@ -154,6 +154,19 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
     </div>
   );
 
+  const renderFbTower = (list: Item[]) => (
+    <FbAccountsTower
+      items={list}
+      isAdmin={isAdmin}
+      selectedIds={selectedIds}
+      onSelect={toggleSelection}
+      onBuy={(priceId, productId, title) =>
+        setPaymentSelection({ isOpen: true, priceId, productId, productTitle: title })
+      }
+    />
+  );
+
+
   return (
     <div className="min-h-screen bg-black text-white selection:bg-white/20 font-sans overflow-x-hidden">
       {/* Header Section */}
@@ -223,6 +236,8 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
       <div className="max-w-5xl mx-auto px-6 py-12 relative z-10">
         {items.length === 0 ? (
           <p className="text-center text-muted-foreground py-16">Nenhum conteúdo disponível ainda.</p>
+        ) : slug === 'fb-accounts' ? (
+          renderFbTower(items)
         ) : grouped ? (
           <Tabs defaultValue={topics[0]} className="w-full">
             <TabsList className="inline-flex h-auto p-1 bg-white/5 rounded-full mb-12 border border-white/5">
@@ -254,6 +269,7 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
           renderItems(items)
         )}
       </div>
+
 
       {video && video.video_url && (
         <VideoModal title={video.title} url={video.video_url} onClose={() => setVideo(null)} />
