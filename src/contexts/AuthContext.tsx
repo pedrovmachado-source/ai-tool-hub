@@ -77,7 +77,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     inviteValidated: (profile as ProfileRecord)?.invite_validated ?? (profile as Profile)?.inviteValidated ?? false,
     abuseBlocked: (profile as ProfileRecord)?.abuse_blocked ?? (profile as Profile)?.abuseBlocked ?? false,
     lgpdAccepted: (profile as ProfileRecord)?.lgpd_accepted ?? (profile as Profile)?.lgpdAccepted ?? false,
-    cashBalance: Number((profile as ProfileRecord)?.cash_balance ?? (profile as Profile)?.cashBalance ?? 0),
+
   }), []);
 
   const clearAuthState = useCallback(() => {
