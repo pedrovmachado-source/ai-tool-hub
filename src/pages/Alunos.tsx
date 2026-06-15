@@ -445,9 +445,28 @@ export default function Alunos() {
                           variant="ghost" 
                           size="sm"
                           className="mt-4 h-7 text-[10px] text-white/30 hover:text-white"
-                          onClick={() => {
-                            navigator.clipboard.writeText("Me dê uma lista com termos e palavras-chave que eu posso usar para pesquisar anúncios na Biblioteca de Anúncios do Facebook, com o objetivo de encontrar ofertas validadas no nicho de [INSIRA O NICHO AQUI]. A resposta deve ser uma lista separada por tópicos, com pelo menos 30 sugestões.");
-                            toast({ title: "Prompt copiado!" });
+                          onClick={async () => {
+                            try {
+                              const text = "Me dê uma lista com termos e palavras-chave que eu posso usar para pesquisar anúncios na Biblioteca de Anúncios do Facebook, com o objetivo de encontrar ofertas validadas no nicho de [INSIRA O NICHO AQUI]. A resposta deve ser uma lista separada por tópicos, com pelo menos 30 sugestões.";
+                              if (navigator.clipboard && window.isSecureContext) {
+                                await navigator.clipboard.writeText(text);
+                              } else {
+                                const textArea = document.createElement("textarea");
+                                textArea.value = text;
+                                textArea.style.position = "fixed";
+                                textArea.style.left = "-9999px";
+                                document.body.appendChild(textArea);
+                                textArea.focus();
+                                textArea.select();
+                                const successful = document.execCommand('copy');
+                                document.body.removeChild(textArea);
+                                if (!successful) throw new Error('execCommand failed');
+                              }
+                              toast({ title: "Prompt copiado!" });
+                            } catch (err) {
+                              console.error('Failed to copy:', err);
+                              toast({ title: "Erro ao copiar", variant: "destructive" });
+                            }
                           }}
                         >
                           Copiar Prompt
