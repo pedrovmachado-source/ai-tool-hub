@@ -347,7 +347,7 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
 }
 
 function ItemCard({ 
-  item, isOffers, isCreative, isAdmin, isSelected, onSelect, onVideo, onPdf, onImage, onOffer, onInfo, onBuy, onBuyWithCash 
+  item, isOffers, isCreative, isAdmin, isSelected, onSelect, onVideo, onPdf, onImage, onOffer, onInfo, onBuy 
 }: {
   item: Item;
   isOffers?: boolean;
@@ -361,19 +361,15 @@ function ItemCard({
   onOffer?: () => void;
   onInfo?: () => void;
   onBuy: (priceId: string, productId: string, title: string) => void;
-  onBuyWithCash: (item: Item) => void;
 }) {
   const handleBuy = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (item.section_slug === 'fb-accounts' && item.price_cash) {
-      onBuyWithCash(item);
-      return;
-    }
     const priceId = (item.body && item.body.startsWith('price_')) 
       ? item.body 
       : 'price_1Tc4wzQP3tL0cIWnFFTaNhgJ';
     onBuy(priceId, item.id, item.title);
   };
+
 
   const handleClick = () => {
     if (isCreative && onInfo) return onInfo();
