@@ -21,77 +21,58 @@ serve(async (req) => {
     const authHeader = req.headers.get("Authorization")!;
     const token = authHeader.replace("Bearer ", "");
     const { data: { user } } = await supabaseClient.auth.getUser(token);
-    
     if (!user?.email) throw new Error("User not authenticated");
 
     const body = await req.json();
-    const { paymentMethod = "card", priceId, productId, mode = "payment", isPix = false } = body;
-
+    const { priceId, productId, mode = "payment", type, amountCents } = body;
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2024-06-20",
     });
 
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
-    let customerId = customers.data.length > 0 ? customers.data[0].id : null;
+    const customerId = customers.data.length > 0 ? customers.data[0].id : null;
 
-    let lineItems: any[] = [];
-    let metadata: any = {
-      userId: user.id,
-    };
+    let lineItems: any[];
+    let metadata: Record<string, string> = { userId: user.id };
 
-    if (!priceId) throw new Error("Price ID is required");
-
-    if (isPix) {
-      const price = await stripe.prices.retrieve(priceId);
-      if (!price.unit_amount) throw new Error("Price amount not found");
-      const discountedAmount = Math.round(price.unit_amount * 0.9);
-
+    if (type === "cash_deposit") {
+      const amt = Number(amountCents);
+      if (!Number.isFinite(amt) || amt < 500) throw new Error("Valor mínimo de R$ 5,00");
+      if (amt > 5_000_000) throw new Error("Valor máximo de R$ 50.000,00");
       lineItems = [{
         price_data: {
-          currency: price.currency,
-          product: price.product,
-          unit_amount: discountedAmount,
+          currency: "brl",
+          unit_amount: amt,
+          product_data: { name: "Depósito de saldo - Convert Club" },
         },
         quantity: 1,
       }];
+      metadata = { ...metadata, type: "cash_deposit", amountCents: String(amt) };
     } else {
+      if (!priceId) throw new Error("Price ID is required");
       lineItems = [{ price: priceId, quantity: 1 }];
+      metadata = { ...metadata, productId: productId || "", type: "product_purchase" };
     }
 
-    metadata = {
-      ...metadata,
-      productId: productId || "",
-      paymentType: isPix ? "pix" : "card",
-      type: 'product_purchase'
-    };
-
-    const sessionOptions: any = {
+    const session = await stripe.checkout.sessions.create({
       customer: customerId || undefined,
       customer_email: customerId ? undefined : user.email,
       line_items: lineItems,
       mode: mode as "payment" | "subscription",
-      metadata: metadata,
+      metadata,
+      payment_method_types: ["card"],
       success_url: `${req.headers.get("origin")}/menu?checkout=success`,
       cancel_url: `${req.headers.get("origin")}/menu?checkout=canceled`,
-    };
-
-
-    if (paymentMethod === 'pix' || isPix) {
-      sessionOptions.payment_method_types = ['card', 'pix'];
-    } else {
-      sessionOptions.payment_method_types = ['card'];
-    }
-
-    const session = await stripe.checkout.sessions.create(sessionOptions);
+    });
 
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
   } catch (error) {
-    console.error('[create-checkout] error:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    console.error("[create-checkout] error:", error);
+    return new Response(JSON.stringify({ error: (error as Error).message }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 400,
     });

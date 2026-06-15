@@ -77,7 +77,14 @@ serve(async (req) => {
         
         if (existingTx) return new Response("Already processed", { status: 200 });
 
-        if (type === 'product_purchase' || !type) {
+        if (type === 'cash_deposit') {
+          const amt = Number(metadata?.amountCents || session.amount_total || 0);
+          if (amt > 0) {
+            const { data: prof } = await supabaseClient.from('profiles').select('cash_balance').eq('user_id', userId).maybeSingle();
+            const current = Number(prof?.cash_balance || 0);
+            await supabaseClient.from('profiles').update({ cash_balance: current + amt }).eq('user_id', userId);
+          }
+        } else if (type === 'product_purchase' || !type) {
 
           // Existing product purchase logic
           const productId = metadata?.productId;
