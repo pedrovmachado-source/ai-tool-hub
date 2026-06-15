@@ -14,7 +14,7 @@ interface Profile {
   inviteValidated: boolean;
   abuseBlocked: boolean;
   lgpdAccepted?: boolean;
-  cashBalance: number;
+
 }
 
 interface SavedEbook {
