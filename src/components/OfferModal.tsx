@@ -47,13 +47,6 @@ export default function OfferModal({ offer, onClose }: { offer: OfferData; onClo
                 <ExternalLink size={16} /> Ver exemplo
               </a>
             )}
-            {offer.price_cash && (
-              <button 
-                onClick={() => setShowSpendCash(true)}
-                className="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-brand-amber/10 border border-brand-amber/20 text-brand-amber text-xs font-bold uppercase tracking-widest hover:bg-brand-amber/20 transition-all active:scale-[0.98]">
-                <Coins size={16} /> {offer.price_cash} Cash
-              </button>
-            )}
             {offer.buy_url && (
               <a href={offer.buy_url} onClick={handleBuy}
                 className="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-white text-black text-xs font-bold uppercase tracking-widest hover:bg-white/90 transition-all flex-1 shadow-lg active:scale-[0.98]">
@@ -75,13 +68,6 @@ export default function OfferModal({ offer, onClose }: { offer: OfferData; onClo
         productTitle={offer.title}
       />
 
-      <SpendCashModal 
-        isOpen={showSpendCash}
-        onClose={() => setShowSpendCash(false)}
-        productId={offer.id}
-        productName={offer.title}
-        priceCash={offer.price_cash || 0}
-      />
     </div>
   );
 }
