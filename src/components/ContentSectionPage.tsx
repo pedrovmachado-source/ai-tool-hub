@@ -2,9 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { meetsMinPlan } from '@/lib/plan';
-import { ArrowLeft, Play, FileText, Image as ImageIcon, Lock, FileText as TextIcon, ShoppingCart, ArrowRight, Coins, Wallet, Sparkles, ExternalLink, Check, Plus } from 'lucide-react';
-import CashBalance from './CashBalance';
-import SpendCashModal from './SpendCashModal';
+import { ArrowLeft, Play, FileText, Image as ImageIcon, Lock, FileText as TextIcon, ShoppingCart, ArrowRight, Wallet, Sparkles, ExternalLink, Check, Plus } from 'lucide-react';
+
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
