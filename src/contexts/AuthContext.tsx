@@ -36,7 +36,7 @@ interface ProfileRecord {
   invite_validated: boolean;
   abuse_blocked: boolean;
   lgpd_accepted: boolean | null;
-  cash_balance: number | null;
+
 }
 
 interface AuthContextType {
