@@ -259,16 +259,6 @@ export default function SiteCreationPage({ onBack }: { onBack: () => void }) {
       {orderingProduct && (
         <SiteOrderModal product={orderingProduct} onClose={() => setOrderingProduct(null)} />
       )}
-
-      {spendingProduct && (
-        <SpendCashModal 
-          isOpen={!!spendingProduct}
-          onClose={() => setSpendingProduct(null)}
-          productId={spendingProduct.id}
-          productName={spendingProduct.name}
-          priceCash={spendingProduct.price_cash || 0}
-        />
-      )}
     </div>
   );
 }
