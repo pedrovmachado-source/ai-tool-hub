@@ -5,7 +5,7 @@ import Navbar from '@/components/Navbar';
 import Meta from '@/components/Meta';
 import {
   Plus, Search, Pencil, Trash2, Copy, Check, Download, ExternalLink,
-  Library, FolderOpen, Target, X, ArrowLeft
+  Library, FolderOpen, Target, X, ArrowLeft, Globe, ShoppingCart
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -15,6 +15,8 @@ type Oferta = {
   tags: string[];
   linkBib: string;
   linkDrive: string;
+  linkSite: string;
+  linkCheckout: string;
   copyTexto: string;
 };
 
@@ -47,7 +49,7 @@ export default function MinhasOfertas() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const [form, setForm] = useState<Omit<Oferta, 'id'>>({
-    nome: '', tags: [], linkBib: '', linkDrive: '', copyTexto: ''
+    nome: '', tags: [], linkBib: '', linkDrive: '', linkSite: '', linkCheckout: '', copyTexto: ''
   });
 
   useEffect(() => {
@@ -64,13 +66,13 @@ export default function MinhasOfertas() {
 
   const openNew = () => {
     setEditing(null);
-    setForm({ nome: '', tags: [], linkBib: '', linkDrive: '', copyTexto: '' });
+    setForm({ nome: '', tags: [], linkBib: '', linkDrive: '', linkSite: '', linkCheckout: '', copyTexto: '' });
     setModalOpen(true);
   };
 
   const openEdit = (o: Oferta) => {
     setEditing(o);
-    setForm({ nome: o.nome, tags: o.tags, linkBib: o.linkBib, linkDrive: o.linkDrive, copyTexto: o.copyTexto });
+    setForm({ nome: o.nome, tags: o.tags, linkBib: o.linkBib, linkDrive: o.linkDrive, linkSite: o.linkSite, linkCheckout: o.linkCheckout, copyTexto: o.copyTexto });
     setModalOpen(true);
   };
 
@@ -235,6 +237,16 @@ export default function MinhasOfertas() {
                         <FolderOpen className="w-3.5 h-3.5" /> <span className="flex-1 truncate">Drive de Criativos</span> <ExternalLink className="w-3 h-3 opacity-50" />
                       </a>
                     )}
+                    {o.linkSite && (
+                      <a href={o.linkSite} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/5 text-xs text-white/70 hover:text-white hover:bg-white/10 transition-all">
+                        <Globe className="w-3.5 h-3.5" /> <span className="flex-1 truncate">Site da Oferta</span> <ExternalLink className="w-3 h-3 opacity-50" />
+                      </a>
+                    )}
+                    {o.linkCheckout && (
+                      <a href={o.linkCheckout} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/5 text-xs text-white/70 hover:text-white hover:bg-white/10 transition-all">
+                        <ShoppingCart className="w-3.5 h-3.5" /> <span className="flex-1 truncate">Checkout</span> <ExternalLink className="w-3 h-3 opacity-50" />
+                      </a>
+                    )}
                   </div>
 
                   {o.copyTexto && (
@@ -331,6 +343,26 @@ export default function MinhasOfertas() {
                   value={form.linkDrive}
                   onChange={e => setForm(s => ({ ...s, linkDrive: e.target.value }))}
                   placeholder="https://drive.google.com/..."
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-white/30"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] mb-2 block">Link do Site da Oferta</label>
+                <input
+                  value={form.linkSite}
+                  onChange={e => setForm(s => ({ ...s, linkSite: e.target.value }))}
+                  placeholder="https://seudominio.com/..."
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-white/30"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] mb-2 block">Link do Checkout</label>
+                <input
+                  value={form.linkCheckout}
+                  onChange={e => setForm(s => ({ ...s, linkCheckout: e.target.value }))}
+                  placeholder="https://pay.hotmart.com/..."
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-white/30"
                 />
               </div>
