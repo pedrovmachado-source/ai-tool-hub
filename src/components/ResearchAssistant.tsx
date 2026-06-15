@@ -32,7 +32,6 @@ A resposta deve ser uma lista separada por tópicos, com pelo menos 30 sugestõe
       if (navigator.clipboard && window.isSecureContext) {
         await navigator.clipboard.writeText(text);
       } else {
-        // Fallback for non-secure contexts or older browsers
         const textArea = document.createElement("textarea");
         textArea.value = text;
         textArea.style.position = "fixed";
@@ -97,11 +96,15 @@ A resposta deve ser uma lista separada por tópicos, com pelo menos 30 sugestõe
             </div>
             <button 
               onClick={() => copyToClipboard(promptText)}
-              className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/40 hover:text-white transition-all"
-              title="Copiar prompt"
+              className={`p-2 rounded-lg transition-all duration-300 ${
+                copied 
+                  ? 'bg-green-500/20 text-green-400 scale-110' 
+                  : 'bg-white/5 hover:bg-white/10 text-white/40 hover:text-white'
+              }`}
+              title={copied ? "Copiado!" : "Copiar prompt"}
               type="button"
             >
-              {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
+              {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
             </button>
           </div>
 
