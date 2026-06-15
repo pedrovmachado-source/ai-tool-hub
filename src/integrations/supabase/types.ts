@@ -604,6 +604,42 @@ export type Database = {
           },
         ]
       }
+      pix_deposits: {
+        Row: {
+          admin_note: string | null
+          amount_cents: number
+          created_at: string
+          id: string
+          payer_note: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          admin_note?: string | null
+          amount_cents: number
+          created_at?: string
+          id?: string
+          payer_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          admin_note?: string | null
+          amount_cents?: number
+          created_at?: string
+          id?: string
+          payer_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           abuse_blocked: boolean | null
@@ -1158,6 +1194,21 @@ export type Database = {
           when_tags: Json
         }[]
       }
+      list_pix_deposits_admin: {
+        Args: { p_status?: string }
+        Returns: {
+          admin_note: string
+          amount_cents: number
+          created_at: string
+          id: string
+          payer_note: string
+          reviewed_at: string
+          status: string
+          user_email: string
+          user_id: string
+          user_nome: string
+        }[]
+      }
       list_tools_public: {
         Args: never
         Returns: {
@@ -1198,6 +1249,10 @@ export type Database = {
       }
       remove_abuse_block: {
         Args: { target_fingerprint: string; target_user_id: string }
+        Returns: Json
+      }
+      review_pix_deposit: {
+        Args: { p_approve: boolean; p_deposit_id: string; p_note?: string }
         Returns: Json
       }
       spend_cash: {
