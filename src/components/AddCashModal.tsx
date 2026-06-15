@@ -93,32 +93,33 @@ export default function AddCashModal({ isOpen, onClose, onDeposited }: { isOpen:
   };
 
   return (
-    <div className="fixed inset-0 z-[400] flex items-center justify-center p-4 animate-fade-in" onClick={onClose}>
+    <div className="fixed inset-0 z-[400] flex items-end sm:items-center justify-center sm:p-4 animate-fade-in" onClick={onClose}>
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
       <div
-        className="relative bg-card border border-border rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto animate-slide-up"
+        className="relative bg-card border border-border rounded-t-2xl sm:rounded-2xl shadow-2xl w-full max-w-md max-h-[92vh] overflow-y-auto animate-slide-up"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-border/50 bg-gradient-to-r from-card via-card to-secondary/20">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-brand-teal/15 flex items-center justify-center">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-4 sm:py-5 border-b border-border/50 bg-gradient-to-r from-card via-card to-secondary/20 sticky top-0 z-10">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-9 h-9 rounded-xl bg-brand-teal/15 flex items-center justify-center shrink-0">
               <ArrowDownLeft size={18} className="text-brand-teal" />
             </div>
-            <div>
-              <h3 className="text-base font-semibold">Adicionar saldo</h3>
-              <p className="text-[11px] text-muted-foreground">Escolha como deseja depositar</p>
+            <div className="min-w-0">
+              <h3 className="text-base font-semibold truncate">Adicionar saldo</h3>
+              <p className="text-[11px] text-muted-foreground truncate">Escolha como deseja depositar</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-muted-foreground hover:text-foreground p-2 rounded-lg hover:bg-secondary transition-colors"
+            className="text-muted-foreground hover:text-foreground p-2 rounded-lg hover:bg-secondary transition-colors shrink-0"
+            aria-label="Fechar"
           >
             <X size={18} />
           </button>
         </div>
 
-        <div className="p-6 space-y-6">
+        <div className="p-4 sm:p-6 space-y-5 sm:space-y-6">
           {/* Valor Input */}
           <div>
             <label className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-2 block">
