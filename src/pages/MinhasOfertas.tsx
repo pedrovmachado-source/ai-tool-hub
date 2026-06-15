@@ -20,7 +20,7 @@ type Oferta = {
   copyTexto: string;
 };
 
-const TAGS = ['Emagrecimento','Dieta','Educação','Religião','Infantil','Mães','Pais','Adulto','Outros'];
+const TAGS = ['Emagrecimento','Dieta','Educação','Religião','Infantil','Mães','Pais','Adulto','Saúde & corpo','Relacionamentos','Dinheiro','Mente & espírito','Habilidades & hobbies','Outros'];
 
 const storageKey = (userId?: string) => `club_minhas_ofertas:${userId || 'anon'}`;
 
