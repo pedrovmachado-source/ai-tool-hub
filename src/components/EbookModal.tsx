@@ -4,6 +4,7 @@ import type { Tool, Category } from '@/data/tools-data';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { isPaid } from '@/lib/plan';
+import { toast } from 'sonner';
 
 interface EbookModalProps {
   tool: Tool;
