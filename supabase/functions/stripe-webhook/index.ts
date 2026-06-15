@@ -77,31 +77,8 @@ serve(async (req) => {
         
         if (existingTx) return new Response("Already processed", { status: 200 });
 
-        if (type === 'cash_deposit') {
-          const cashAmount = parseInt(metadata.cashToCredit);
-          
-          // Use RPC for atomic credit
-          const { error: rpcError } = await supabaseClient.rpc('increment_cash_balance', {
-            p_user: userId,
-            p_amount: cashAmount
-          });
+        if (type === 'product_purchase' || !type) {
 
-          if (rpcError) throw rpcError;
-
-          // Log transaction
-          const { error: txError } = await supabaseClient.from('transactions').insert({
-            user_id: userId,
-            type: 'credit',
-            amount: cashAmount,
-            reason: 'deposit',
-            status: 'completed',
-            stripe_session_id: session.id,
-            stripe_event_id: event.id
-          });
-
-          if (txError) console.error("Error logging transaction:", txError);
-
-        } else if (type === 'product_purchase' || !type) {
           // Existing product purchase logic
           const productId = metadata?.productId;
           if (productId) {
