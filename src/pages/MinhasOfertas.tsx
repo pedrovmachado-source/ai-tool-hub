@@ -368,6 +368,8 @@ export default function MinhasOfertas() {
               </div>
 
               <div>
+                <label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] mb-2 block">Copywrite — texto ou link</label>
+                <textarea
                   value={form.copyTexto}
                   onChange={e => setForm(s => ({ ...s, copyTexto: e.target.value }))}
                   placeholder="Cole aqui o texto da copy ou o link do Drive..."
