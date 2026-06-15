@@ -35,7 +35,7 @@ interface Item {
   example_url: string | null;
   buy_url: string | null;
   sort_order: number;
-  price_cash?: number | null;
+  
 }
 
 export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: string; onBack: () => void; onUpgrade: () => void }) {
