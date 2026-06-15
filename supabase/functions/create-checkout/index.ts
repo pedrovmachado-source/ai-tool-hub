@@ -40,66 +40,31 @@ serve(async (req) => {
       userId: user.id,
     };
 
-    // If it's a Cash package
-    if (packageId) {
-      const { data: pkg, error: pkgError } = await supabaseClient
-        .from('cash_packages')
-        .select('*')
-        .eq('id', packageId)
-        .single();
-      
-      if (pkgError || !pkg) throw new Error("Pacote de Cash não encontrado");
+    if (!priceId) throw new Error("Price ID is required");
 
-      const isPixMethod = paymentMethod === 'pix';
-      const cashToCredit = isPixMethod ? Math.floor(pkg.base_cash * 1.1) : pkg.base_cash;
+    if (isPix) {
+      const price = await stripe.prices.retrieve(priceId);
+      if (!price.unit_amount) throw new Error("Price amount not found");
+      const discountedAmount = Math.round(price.unit_amount * 0.9);
 
       lineItems = [{
         price_data: {
-          currency: 'brl',
-          product_data: {
-            name: `Recarga de ${pkg.name} - ${cashToCredit} Cash`,
-            description: isPixMethod ? "Inclui bônus de 10% por pagamento via PIX" : "Pagamento via Cartão",
-          },
-          unit_amount: Math.round(pkg.price_brl_cents),
+          currency: price.currency,
+          product: price.product,
+          unit_amount: discountedAmount,
         },
         quantity: 1,
       }];
-
-      metadata = {
-        ...metadata,
-        packageId: pkg.id,
-        cashToCredit: cashToCredit.toString(),
-        paymentMethod: paymentMethod,
-        type: 'cash_deposit'
-      };
     } else {
-      // Handle regular product purchase
-      if (!priceId) throw new Error("Price ID or Package ID is required");
-      
-      if (isPix) {
-        const price = await stripe.prices.retrieve(priceId);
-        if (!price.unit_amount) throw new Error("Price amount not found");
-        const discountedAmount = Math.round(price.unit_amount * 0.9);
-
-        lineItems = [{
-          price_data: {
-            currency: price.currency,
-            product: price.product,
-            unit_amount: discountedAmount,
-          },
-          quantity: 1,
-        }];
-      } else {
-        lineItems = [{ price: priceId, quantity: 1 }];
-      }
-
-      metadata = {
-        ...metadata,
-        productId: productId || "",
-        paymentType: isPix ? "pix" : "card",
-        type: 'product_purchase'
-      };
+      lineItems = [{ price: priceId, quantity: 1 }];
     }
+
+    metadata = {
+      ...metadata,
+      productId: productId || "",
+      paymentType: isPix ? "pix" : "card",
+      type: 'product_purchase'
+    };
 
     const sessionOptions: any = {
       customer: customerId || undefined,
@@ -107,13 +72,10 @@ serve(async (req) => {
       line_items: lineItems,
       mode: mode as "payment" | "subscription",
       metadata: metadata,
-      success_url: packageId 
-        ? `${req.headers.get("origin")}/comprar-cash/sucesso?session_id={CHECKOUT_SESSION_ID}`
-        : `${req.headers.get("origin")}/menu?checkout=success`,
-      cancel_url: packageId
-        ? `${req.headers.get("origin")}/comprar-cash/cancelado`
-        : `${req.headers.get("origin")}/menu?checkout=canceled`,
+      success_url: `${req.headers.get("origin")}/menu?checkout=success`,
+      cancel_url: `${req.headers.get("origin")}/menu?checkout=canceled`,
     };
+
 
     if (paymentMethod === 'pix' || isPix) {
       sessionOptions.payment_method_types = ['card', 'pix'];
