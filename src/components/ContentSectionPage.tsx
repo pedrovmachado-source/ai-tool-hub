@@ -173,15 +173,6 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
 
             <div className="flex items-center gap-4">
               {slug === 'fb-accounts' && (
-                <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 border border-white/10 glass-smooth">
-                  <Wallet size={14} className="text-brand-amber" />
-                  <div className="flex flex-col">
-                    <span className="text-[8px] font-bold text-white/30 uppercase tracking-widest leading-none mb-1">Seu Saldo</span>
-                    <CashBalance />
-                  </div>
-                </div>
-              )}
-              {slug === 'fb-accounts' && (
                 <button 
                   onClick={() => setShowPurchasedModal(true)}
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-blue/20 border border-brand-blue/30 text-brand-blue-medium hover:bg-brand-blue/30 transition-all group"
