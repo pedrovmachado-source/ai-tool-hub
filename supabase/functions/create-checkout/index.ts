@@ -24,7 +24,7 @@ serve(async (req) => {
     if (!user?.email) throw new Error("User not authenticated");
 
     const body = await req.json();
-    const { priceId, productId, mode = "payment", type, amountCents } = body;
+    const { priceId, productId, mode = "payment", type, amountCents, items } = body;
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2024-06-20",
@@ -49,6 +49,16 @@ serve(async (req) => {
         quantity: 1,
       }];
       metadata = { ...metadata, type: "cash_deposit", amountCents: String(amt) };
+    } else if (Array.isArray(items) && items.length > 0) {
+      lineItems = items
+        .filter((it: any) => it && typeof it.price === "string" && it.price.startsWith("price_"))
+        .map((it: any) => ({ price: it.price, quantity: Math.max(1, Number(it.quantity) || 1) }));
+      if (lineItems.length === 0) throw new Error("No valid items in cart");
+      metadata = {
+        ...metadata,
+        type: "product_purchase_cart",
+        productIds: items.map((it: any) => it.productId || "").filter(Boolean).join(","),
+      };
     } else {
       if (!priceId) throw new Error("Price ID is required");
       lineItems = [{ price: priceId, quantity: 1 }];
