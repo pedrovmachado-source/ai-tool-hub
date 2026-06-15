@@ -64,7 +64,7 @@ export default function LessonsPage({ onBack }: { onBack: () => void }) {
   const [pdfPage, setPdfPage] = useState(1);
   const [pdfLoading, setPdfLoading] = useState(false);
 
-  const canAccess = isAdmin || meetsMinPlan(user?.plano, 'Elite Plus');
+  const canAccess = true; // Aulas gravadas liberadas para todos os planos, inclusive Free
   const pdfCanGoPrev = pdfPage > 1;
   const pdfCanGoNext = pdfPage < pdfPages;
   const pdfScale = useMemo(() => (typeof window !== 'undefined' && window.innerWidth < 768 ? 0.8 : 1.2), []);
