@@ -49,7 +49,7 @@ export default function MinhasOfertas() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const [form, setForm] = useState<Omit<Oferta, 'id'>>({
-    nome: '', tags: [], linkBib: '', linkDrive: '', copyTexto: ''
+    nome: '', tags: [], linkBib: '', linkDrive: '', linkSite: '', linkCheckout: '', copyTexto: ''
   });
 
   useEffect(() => {
@@ -66,13 +66,13 @@ export default function MinhasOfertas() {
 
   const openNew = () => {
     setEditing(null);
-    setForm({ nome: '', tags: [], linkBib: '', linkDrive: '', copyTexto: '' });
+    setForm({ nome: '', tags: [], linkBib: '', linkDrive: '', linkSite: '', linkCheckout: '', copyTexto: '' });
     setModalOpen(true);
   };
 
   const openEdit = (o: Oferta) => {
     setEditing(o);
-    setForm({ nome: o.nome, tags: o.tags, linkBib: o.linkBib, linkDrive: o.linkDrive, copyTexto: o.copyTexto });
+    setForm({ nome: o.nome, tags: o.tags, linkBib: o.linkBib, linkDrive: o.linkDrive, linkSite: o.linkSite, linkCheckout: o.linkCheckout, copyTexto: o.copyTexto });
     setModalOpen(true);
   };
 
