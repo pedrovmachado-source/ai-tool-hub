@@ -148,7 +148,7 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
           onOffer={() => setOffer(i)}
           onInfo={() => setInfoItem(i)}
           onBuy={(priceId, productId, title) => setPaymentSelection({ isOpen: true, priceId, productId, productTitle: title })}
-          onBuyWithCash={(item) => setSpendingProduct(item)}
+
         />
       ))}
     </div>
