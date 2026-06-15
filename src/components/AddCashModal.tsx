@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { X, Wallet, CreditCard, QrCode, Copy, Check, Loader2 } from 'lucide-react';
+import { X, Wallet, CreditCard, QrCode, Copy, Check, Loader2, ArrowDownLeft } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from '@/hooks/use-toast';
@@ -93,35 +93,55 @@ export default function AddCashModal({ isOpen, onClose, onDeposited }: { isOpen:
   };
 
   return (
-    <div className="fixed inset-0 z-[400] flex items-center justify-center p-4" onClick={onClose}>
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-      <div className="relative bg-card border border-border rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-        <div className="flex items-center justify-between p-5 border-b border-border">
-          <h3 className="text-base font-semibold flex items-center gap-2">
-            <Wallet size={18} className="text-brand-green" /> Adicionar saldo
-          </h3>
-          <button onClick={onClose} className="text-muted-foreground hover:text-foreground p-1 rounded-md hover:bg-secondary"><X size={18} /></button>
+    <div className="fixed inset-0 z-[400] flex items-center justify-center p-4 animate-fade-in" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+      <div
+        className="relative bg-card border border-border rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto animate-slide-up"
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-5 border-b border-border/50 bg-gradient-to-r from-card via-card to-secondary/20">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-brand-teal/15 flex items-center justify-center">
+              <ArrowDownLeft size={18} className="text-brand-teal" />
+            </div>
+            <div>
+              <h3 className="text-base font-semibold">Adicionar saldo</h3>
+              <p className="text-[11px] text-muted-foreground">Escolha como deseja depositar</p>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="text-muted-foreground hover:text-foreground p-2 rounded-lg hover:bg-secondary transition-colors"
+          >
+            <X size={18} />
+          </button>
         </div>
 
-        <div className="p-5 space-y-5">
+        <div className="p-6 space-y-6">
+          {/* Valor Input */}
           <div>
-            <label className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Valor</label>
-            <div className="mt-2 flex items-center gap-2 bg-secondary rounded-lg px-3 py-3 border border-border focus-within:border-brand-green">
-              <span className="text-sm text-muted-foreground">R$</span>
-              <input
-                value={amount}
-                onChange={e => setAmount(formatAmountInput(e.target.value))}
-                inputMode="numeric"
-                placeholder="0,00"
-                className="flex-1 bg-transparent outline-none text-lg font-semibold tabular-nums"
-              />
+            <label className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-2 block">
+              Valor do depósito
+            </label>
+            <div className="relative">
+              <div className="flex items-center gap-3 bg-secondary/60 rounded-xl px-4 py-4 border border-border/60 focus-within:border-brand-teal/60 focus-within:ring-1 focus-within:ring-brand-teal/20 transition-all">
+                <span className="text-sm text-muted-foreground font-medium">R$</span>
+                <input
+                  value={amount}
+                  onChange={e => setAmount(formatAmountInput(e.target.value))}
+                  inputMode="numeric"
+                  placeholder="0,00"
+                  className="flex-1 bg-transparent outline-none text-2xl font-bold tabular-nums text-foreground placeholder:text-muted-foreground/40"
+                />
+              </div>
             </div>
-            <div className="flex gap-2 mt-2 flex-wrap">
+            <div className="flex gap-2 mt-3 flex-wrap">
               {PRESETS.map(v => (
                 <button
                   key={v}
                   onClick={() => setPreset(v)}
-                  className="px-3 py-1 rounded-md text-[11px] font-medium bg-secondary hover:bg-secondary/70 border border-border"
+                  className="px-3.5 py-1.5 rounded-lg text-[12px] font-semibold bg-secondary/60 hover:bg-brand-teal/10 border border-border/60 hover:border-brand-teal/30 text-foreground hover:text-brand-teal transition-all"
                 >
                   R$ {v}
                 </button>
@@ -129,68 +149,96 @@ export default function AddCashModal({ isOpen, onClose, onDeposited }: { isOpen:
             </div>
           </div>
 
-          <div className="flex gap-2 bg-secondary p-1 rounded-lg">
+          {/* Tabs */}
+          <div className="flex gap-1 bg-secondary/50 p-1 rounded-xl">
             <button
               onClick={() => setTab('pix')}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-[12px] font-medium transition-colors ${tab === 'pix' ? 'bg-card shadow' : 'text-muted-foreground'}`}
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-[13px] font-semibold transition-all ${
+                tab === 'pix'
+                  ? 'bg-card shadow-sm text-brand-teal ring-1 ring-border/40'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
             >
-              <QrCode size={14} /> PIX
+              <QrCode size={16} /> PIX
             </button>
             <button
               onClick={() => setTab('card')}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-[12px] font-medium transition-colors ${tab === 'card' ? 'bg-card shadow' : 'text-muted-foreground'}`}
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-[13px] font-semibold transition-all ${
+                tab === 'card'
+                  ? 'bg-card shadow-sm text-brand-blue ring-1 ring-border/40'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
             >
-              <CreditCard size={14} /> Cartão
+              <CreditCard size={16} /> Cartão
             </button>
           </div>
 
           {tab === 'pix' ? (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {pixSent ? (
-                <div className="p-4 rounded-lg bg-brand-green/10 border border-brand-green/30 text-center">
-                  <Check className="mx-auto mb-2 text-brand-green" size={28} />
-                  <p className="text-sm font-medium">Depósito registrado!</p>
-                  <p className="text-[12px] text-muted-foreground mt-1">Aguardando confirmação do admin (até 24h).</p>
+                <div className="p-5 rounded-xl bg-brand-teal/8 border border-brand-teal/25 text-center space-y-2">
+                  <div className="w-12 h-12 rounded-full bg-brand-teal/15 flex items-center justify-center mx-auto">
+                    <Check className="text-brand-teal" size={24} />
+                  </div>
+                  <p className="text-sm font-semibold">Depósito registrado!</p>
+                  <p className="text-[12px] text-muted-foreground leading-relaxed">
+                    O saldo será creditado após confirmação do administrador (até 24h).
+                  </p>
                 </div>
               ) : (
                 <>
-                  <div className="bg-secondary rounded-lg p-4 border border-border">
-                    <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">{pix?.key_type || 'Chave PIX'}</div>
-                    <div className="flex items-center justify-between gap-2">
-                      <code className="text-[13px] font-mono break-all">{pix?.key || '—'}</code>
-                      <button onClick={copy} className="shrink-0 px-2.5 py-1.5 rounded-md bg-brand-green/15 text-brand-green hover:bg-brand-green/25 text-[11px] font-medium flex items-center gap-1">
-                        {copied ? <><Check size={12} /> Copiado</> : <><Copy size={12} /> Copiar</>}
+                  <div className="bg-secondary/40 rounded-xl p-5 border border-border/60 space-y-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-lg bg-brand-teal/10 flex items-center justify-center">
+                        <QrCode size={14} className="text-brand-teal" />
+                      </div>
+                      <div>
+                        <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
+                          {pix?.key_type || 'Chave PIX'}
+                        </div>
+                        {pix?.recipient && (
+                          <div className="text-[11px] text-muted-foreground/70">{pix.recipient}</div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between gap-3 bg-card rounded-lg p-3 border border-border/40">
+                      <code className="text-[13px] font-mono break-all text-foreground/90">{pix?.key || '—'}</code>
+                      <button
+                        onClick={copy}
+                        className="shrink-0 px-3 py-2 rounded-lg bg-brand-teal/10 text-brand-teal hover:bg-brand-teal/20 text-[11px] font-semibold flex items-center gap-1.5 transition-colors"
+                      >
+                        {copied ? <><Check size={13} /> Copiado</> : <><Copy size={13} /> Copiar</>}
                       </button>
                     </div>
-                    {pix?.recipient && (
-                      <div className="text-[11px] text-muted-foreground mt-2">Favorecido: {pix.recipient}</div>
-                    )}
                   </div>
                   {pix?.instructions && (
-                    <p className="text-[12px] text-muted-foreground leading-relaxed">{pix.instructions}</p>
+                    <p className="text-[12px] text-muted-foreground leading-relaxed px-1">{pix.instructions}</p>
                   )}
                   <button
                     onClick={registerPix}
                     disabled={loading || amountCents < 500}
-                    className="w-full py-2.5 rounded-lg bg-brand-green text-white text-sm font-semibold hover:bg-brand-green/90 disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="w-full py-3 rounded-xl bg-brand-teal text-white text-sm font-bold hover:brightness-110 disabled:opacity-40 disabled:hover:brightness-100 flex items-center justify-center gap-2 transition-all shadow-lg shadow-brand-teal/20"
                   >
-                    {loading ? <Loader2 size={16} className="animate-spin" /> : <Check size={16} />}
+                    {loading ? <Loader2 size={18} className="animate-spin" /> : <Check size={18} />}
                     Já paguei {formatBRL(amountCents)}
                   </button>
                 </>
               )}
             </div>
           ) : (
-            <div className="space-y-3">
-              <p className="text-[12px] text-muted-foreground">
-                Pagamento processado de forma segura pelo Stripe. Seu saldo é creditado automaticamente após a confirmação.
-              </p>
+            <div className="space-y-4">
+              <div className="p-4 rounded-xl bg-brand-blue/5 border border-brand-blue/15 flex items-start gap-3">
+                <CreditCard size={16} className="text-brand-blue mt-0.5 shrink-0" />
+                <p className="text-[12px] text-muted-foreground leading-relaxed">
+                  Pagamento processado de forma segura pelo Stripe. Seu saldo é creditado automaticamente após a confirmação.
+                </p>
+              </div>
               <button
                 onClick={payWithCard}
                 disabled={loading || amountCents < 500}
-                className="w-full py-2.5 rounded-lg bg-brand-blue text-white text-sm font-semibold hover:bg-brand-blue/90 disabled:opacity-50 flex items-center justify-center gap-2"
+                className="w-full py-3 rounded-xl bg-brand-blue text-white text-sm font-bold hover:brightness-110 disabled:opacity-40 disabled:hover:brightness-100 flex items-center justify-center gap-2 transition-all shadow-lg shadow-brand-blue/20"
               >
-                {loading ? <Loader2 size={16} className="animate-spin" /> : <CreditCard size={16} />}
+                {loading ? <Loader2 size={18} className="animate-spin" /> : <CreditCard size={18} />}
                 Pagar {formatBRL(amountCents)} no cartão
               </button>
             </div>
