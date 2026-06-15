@@ -25,9 +25,6 @@ const AbuseBlocks = lazy(() => import("./pages/AbuseBlocks.tsx"));
 const Mentorias = lazy(() => import("./pages/Mentorias.tsx"));
 const CompleteProfile = lazy(() => import("./pages/CompleteProfile.tsx"));
 const OfertasValidadas = lazy(() => import("./pages/OfertasValidadas.tsx"));
-const ComprarCash = lazy(() => import("./pages/ComprarCash.tsx"));
-const CashSuccess = lazy(() => import("./pages/CashSuccess.tsx"));
-const CashCancel = lazy(() => import("./pages/CashCancel.tsx"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
