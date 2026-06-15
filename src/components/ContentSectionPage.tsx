@@ -483,11 +483,11 @@ function ItemCard({
               onClick={handleBuy}
               className="w-full py-3 px-6 rounded-2xl bg-white text-black font-bold text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] flex items-center justify-center gap-2"
             >
-              <Coins size={14} className="text-brand-amber" />
-              {item.price_cash} Cash
+              Comprar Agora
             </button>
           </div>
         )}
+
 
         {item.buy_url && item.section_slug !== 'fb-accounts' && (
           <div className="mt-auto">
