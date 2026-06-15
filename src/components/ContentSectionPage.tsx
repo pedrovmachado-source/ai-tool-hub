@@ -154,6 +154,19 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
     </div>
   );
 
+  const renderFbTower = (list: Item[]) => (
+    <FbAccountsTower
+      items={list}
+      isAdmin={isAdmin}
+      selectedIds={selectedIds}
+      onSelect={toggleSelection}
+      onBuy={(priceId, productId, title) =>
+        setPaymentSelection({ isOpen: true, priceId, productId, productTitle: title })
+      }
+    />
+  );
+
+
   return (
     <div className="min-h-screen bg-black text-white selection:bg-white/20 font-sans overflow-x-hidden">
       {/* Header Section */}
@@ -223,6 +236,8 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
       <div className="max-w-5xl mx-auto px-6 py-12 relative z-10">
         {items.length === 0 ? (
           <p className="text-center text-muted-foreground py-16">Nenhum conteúdo disponível ainda.</p>
+        ) : slug === 'fb-accounts' ? (
+          renderFbTower(items)
         ) : grouped ? (
           <Tabs defaultValue={topics[0]} className="w-full">
             <TabsList className="inline-flex h-auto p-1 bg-white/5 rounded-full mb-12 border border-white/5">
@@ -254,6 +269,7 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
           renderItems(items)
         )}
       </div>
+
 
       {video && video.video_url && (
         <VideoModal title={video.title} url={video.video_url} onClose={() => setVideo(null)} />
@@ -541,3 +557,167 @@ function ItemCard({
     </div>
   );
 }
+
+function FbAccountsTower({
+  items,
+  isAdmin,
+  selectedIds,
+  onSelect,
+  onBuy,
+}: {
+  items: Item[];
+  isAdmin?: boolean;
+  selectedIds: Set<string>;
+  onSelect: (id: string) => void;
+  onBuy: (priceId: string, productId: string, title: string) => void;
+}) {
+  const [activeId, setActiveId] = useState<string | null>(items[0]?.id ?? null);
+  const active = items.find(i => i.id === activeId) ?? items[0] ?? null;
+
+  const priceFor = (item: Item) => {
+    if (item.body && item.body.startsWith('price_')) return item.body;
+    return 'price_1Tc4wzQP3tL0cIWnFFTaNhgJ';
+  };
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-6">
+      {/* Tower (left) */}
+      <div className="rounded-[2rem] border border-white/5 bg-white/[0.02] backdrop-blur-sm overflow-hidden">
+        <div className="px-5 py-4 border-b border-white/5 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <ShoppingCart size={14} className="text-white/40" />
+            <span className="text-[10px] font-bold text-white/50 tracking-[0.2em] uppercase">
+              Contas & BMs · {items.length}
+            </span>
+          </div>
+          <span className="hidden lg:inline text-[9px] font-bold text-white/30 tracking-[0.2em] uppercase">
+            Passe o mouse →
+          </span>
+        </div>
+
+        <div className="flex flex-col">
+          {items.map((item, idx) => {
+            const isActive = active?.id === item.id;
+            const isSelected = selectedIds.has(item.id);
+            return (
+              <button
+                key={item.id}
+                onMouseEnter={() => setActiveId(item.id)}
+                onFocus={() => setActiveId(item.id)}
+                onClick={() => {
+                  if (isAdmin) onSelect(item.id);
+                  setActiveId(item.id);
+                }}
+                className={`group relative w-full text-left px-5 py-4 flex items-center gap-4 border-b border-white/5 last:border-b-0 transition-all ${
+                  isActive
+                    ? 'bg-gradient-to-r from-brand-blue/15 via-brand-blue/5 to-transparent'
+                    : 'hover:bg-white/[0.04]'
+                }`}
+              >
+                <span
+                  className={`absolute left-0 top-0 bottom-0 w-[3px] transition-all ${
+                    isActive ? 'bg-brand-blue-medium' : 'bg-transparent group-hover:bg-white/20'
+                  }`}
+                />
+                <div
+                  className={`w-9 h-9 rounded-xl flex items-center justify-center text-[11px] font-bold tabular-nums transition-all shrink-0 ${
+                    isActive
+                      ? 'bg-brand-blue/25 text-brand-blue-medium border border-brand-blue/40'
+                      : 'bg-white/5 text-white/40 border border-white/5'
+                  }`}
+                >
+                  {String(idx + 1).padStart(2, '0')}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-semibold text-white truncate">{item.title}</div>
+                  {item.topic && (
+                    <div className="text-[10px] font-bold text-white/40 tracking-[0.15em] uppercase mt-0.5 truncate">
+                      {item.topic}
+                    </div>
+                  )}
+                </div>
+                {isAdmin && (
+                  <div
+                    onClick={e => {
+                      e.stopPropagation();
+                      onSelect(item.id);
+                    }}
+                    className={`w-6 h-6 rounded-md border flex items-center justify-center transition-all ${
+                      isSelected
+                        ? 'bg-white text-black border-white'
+                        : 'border-white/15 text-white/40 hover:border-white/40'
+                    }`}
+                  >
+                    {isSelected ? <Check size={12} /> : <Plus size={12} />}
+                  </div>
+                )}
+                <ArrowRight
+                  size={14}
+                  className={`transition-all shrink-0 ${
+                    isActive
+                      ? 'text-brand-blue-medium translate-x-1'
+                      : 'text-white/20 group-hover:text-white/60'
+                  }`}
+                />
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Sub-menu (right) */}
+      <div className="lg:sticky lg:top-28 h-fit">
+        {active ? (
+          <div
+            key={active.id}
+            className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-white/[0.05] to-white/[0.01] p-8 animate-fade-in shadow-2xl"
+          >
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-blue/15 border border-brand-blue/30 mb-6">
+              <ShoppingCart size={12} className="text-brand-blue-medium" />
+              <span className="text-[10px] font-bold text-brand-blue-medium tracking-[0.2em] uppercase">
+                {active.topic || 'Conta Facebook'}
+              </span>
+            </div>
+
+            <h3 className="text-3xl font-serif-display text-white mb-4 leading-tight">
+              {active.title}
+            </h3>
+
+            {active.description && (
+              <p className="text-2xl font-bold text-brand-blue-medium mb-6 tabular-nums">
+                {active.description}
+              </p>
+            )}
+
+            {active.body && !active.body.startsWith('price_') && (
+              <p className="text-white/50 text-sm font-light leading-relaxed mb-8 whitespace-pre-wrap">
+                {active.body}
+              </p>
+            )}
+
+            <button
+              onClick={() => onBuy(priceFor(active), active.id, active.title)}
+              className="w-full py-4 px-6 rounded-2xl bg-white text-black font-bold text-xs uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_30px_rgba(255,255,255,0.15)] flex items-center justify-center gap-2"
+            >
+              <ShoppingCart size={14} /> Comprar Agora
+            </button>
+
+            <div className="mt-6 pt-6 border-t border-white/5 grid grid-cols-2 gap-4 text-[10px] font-bold text-white/30 tracking-[0.2em] uppercase">
+              <div className="flex items-center gap-2">
+                <Check size={12} className="text-brand-green" /> Entrega rápida
+              </div>
+              <div className="flex items-center gap-2">
+                <Check size={12} className="text-brand-green" /> Suporte incluso
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="rounded-[2rem] border border-white/5 bg-white/[0.02] p-8 text-center text-white/40 text-sm">
+            Selecione uma conta na lista ao lado.
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
