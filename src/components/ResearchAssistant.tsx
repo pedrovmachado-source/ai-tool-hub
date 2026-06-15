@@ -6,11 +6,10 @@ import {
   Terminal, 
   MessageSquare
 } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 
 export default function ResearchAssistant({ children }: { children?: React.ReactNode }) {
   const [copied, setCopied] = useState(false);
-  const { toast } = useToast();
 
   const genericKeywords = [
     'truque', 'responda', 'receita', 'sucesso', 'ebook', 'livro digital', 
@@ -30,19 +29,30 @@ A resposta deve ser uma lista separada por tópicos, com pelo menos 30 sugestõe
 
   const copyToClipboard = async (text: string) => {
     try {
-      await navigator.clipboard.writeText(text);
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        // Fallback for non-secure contexts or older browsers
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-9999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        const successful = document.execCommand('copy');
+        document.body.removeChild(textArea);
+        if (!successful) throw new Error('execCommand failed');
+      }
       setCopied(true);
-      toast({
-        title: "Copiado!",
+      toast.success("Copiado!", {
         description: "Conteúdo copiado para a área de transferência."
       });
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error('Failed to copy:', err);
-      toast({
-        variant: "destructive",
-        title: "Erro ao copiar",
-        description: "Não foi possível copiar o conteúdo."
+      toast.error("Erro ao copiar", {
+        description: "Não foi possível copiar o conteúdo. Tente selecionar e copiar manualmente."
       });
     }
   };
@@ -88,6 +98,8 @@ A resposta deve ser uma lista separada por tópicos, com pelo menos 30 sugestõe
             <button 
               onClick={() => copyToClipboard(promptText)}
               className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/40 hover:text-white transition-all"
+              title="Copiar prompt"
+              type="button"
             >
               {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
             </button>
