@@ -1,5 +1,4 @@
-import { X, ExternalLink, ShoppingCart, Coins } from 'lucide-react';
-import SpendCashModal from './SpendCashModal';
+import { X, ExternalLink, ShoppingCart } from 'lucide-react';
 import { useState } from 'react';
 import PaymentSelectionModal from './PaymentSelectionModal';
 
@@ -10,13 +9,12 @@ export interface OfferData {
   example_url?: string | null;
   buy_url?: string | null;
   image_url?: string | null;
-  price_cash?: number | null;
 }
 
 export default function OfferModal({ offer, onClose }: { offer: OfferData; onClose: () => void }) {
   const [showPaymentSelection, setShowPaymentSelection] = useState(false);
-  const [showSpendCash, setShowSpendCash] = useState(false);
   const [selectedPriceId, setSelectedPriceId] = useState('');
+
 
   const handleBuy = (e: React.MouseEvent) => {
     const url = offer.buy_url || '';
