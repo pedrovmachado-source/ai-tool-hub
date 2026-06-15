@@ -48,7 +48,7 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
   const [image, setImage] = useState<Item | null>(null);
   const [offer, setOffer] = useState<Item | null>(null);
   const [showPurchasedModal, setShowPurchasedModal] = useState(false);
-  const [spendingProduct, setSpendingProduct] = useState<Item | null>(null);
+  
   const [infoItem, setInfoItem] = useState<Item | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [isDeleting, setIsDeleting] = useState(false);
