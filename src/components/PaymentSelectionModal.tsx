@@ -1,9 +1,8 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { CreditCard, QrCode, Percent, ArrowRight, Coins } from "lucide-react";
+import { CreditCard, QrCode, Percent, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
 
 interface PaymentSelectionModalProps {
   isOpen: boolean;
@@ -20,21 +19,9 @@ export default function PaymentSelectionModal({
   productId, 
   productTitle 
 }: PaymentSelectionModalProps) {
-  const navigate = useNavigate();
   const [loading, setLoading] = useState<string | null>(null);
-  const [userBalance, setUserBalance] = useState<number | null>(null);
 
-  useEffect(() => {
-    if (isOpen) {
-      (async () => {
-        const { data } = await supabase
-          .from('profiles')
-          .select('cash_balance')
-          .single();
-        if (data) setUserBalance(Number(data.cash_balance));
-      })();
-    }
-  }, [isOpen]);
+
 
   const handlePayment = async (isPix: boolean) => {
     setLoading(isPix ? 'pix' : 'card');
