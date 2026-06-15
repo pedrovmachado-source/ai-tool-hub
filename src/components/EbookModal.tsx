@@ -15,7 +15,30 @@ interface EbookModalProps {
 
 function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
-  const copy = () => { navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 2000); };
+  const copy = async () => {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-9999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        const successful = document.execCommand('copy');
+        document.body.removeChild(textArea);
+        if (!successful) throw new Error('execCommand failed');
+      }
+      setCopied(true);
+      toast.success("Copiado!", { description: "Prompt copiado para a área de transferência." });
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+      toast.error("Erro ao copiar", { description: "Não foi possível copiar o conteúdo. Tente selecionar e copiar manualmente." });
+    }
+  };
   return (
     <button onClick={copy} className="text-[11px] font-semibold border rounded px-2 py-0.5 flex items-center gap-1 transition-colors hover:bg-secondary" style={{ borderColor: 'currentColor' }}>
       {copied ? <><Check size={11} /> Copiado!</> : <><Copy size={11} /> Copiar</>}
