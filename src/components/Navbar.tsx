@@ -102,13 +102,6 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
         <div className="flex items-center gap-1 sm:gap-2 justify-self-end">
           {user && (
             <div className="flex items-center gap-2">
-              <button 
-                onClick={() => onNavigate('comprar-cash')} 
-                className="flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-medium text-white bg-white/10 border border-white/10 hover:bg-white/20 transition-all hover:scale-105 whitespace-nowrap"
-              >
-                <Coins size={14} className="text-white" />
-                <span>Cash - {realTimeBalance >= 1000 ? `${(realTimeBalance / 1000).toFixed(realTimeBalance % 1000 >= 100 ? 1 : 0)}k` : realTimeBalance}</span>
-              </button>
 
               <button
                 onClick={() => setShowSaved(true)}
