@@ -44,10 +44,29 @@ export default function PromptsLibrary({ category }: { category?: Category }) {
     localStorage.setItem('adai_fav_prompts', JSON.stringify(updated));
   };
 
-  const copyPrompt = (text: string, idx: number) => {
-    navigator.clipboard.writeText(text);
-    setCopiedIdx(idx);
-    setTimeout(() => setCopiedIdx(null), 2000);
+  const copyPrompt = async (text: string, idx: number) => {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-9999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        const successful = document.execCommand('copy');
+        document.body.removeChild(textArea);
+        if (!successful) throw new Error('execCommand failed');
+      }
+      setCopiedIdx(idx);
+      toast.success("Copiado!", { description: "Prompt copiado para a área de transferência." });
+      setTimeout(() => setCopiedIdx(null), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+      toast.error("Erro ao copiar", { description: "Não foi possível copiar o conteúdo. Tente selecionar e copiar manualmente." });
+    }
   };
 
   const filtered = showFavoritesOnly
