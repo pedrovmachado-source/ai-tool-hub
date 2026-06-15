@@ -160,8 +160,8 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
       isAdmin={isAdmin}
       selectedIds={selectedIds}
       onSelect={toggleSelection}
-      onBuy={(priceId, productId, title) =>
-        setPaymentSelection({ isOpen: true, priceId, productId, productTitle: title })
+      onCheckoutCart={(cartItems, title) =>
+        setPaymentSelection({ isOpen: true, priceId: '', productId: '', productTitle: title, items: cartItems })
       }
     />
   );
