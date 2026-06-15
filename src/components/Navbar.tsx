@@ -42,36 +42,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
   const [menuItems, setMenuItems] = useState<NavItem[]>(DEFAULT_ITEMS);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [showPurchasedModal, setShowPurchasedModal] = useState(false);
-  const [realTimeBalance, setRealTimeBalance] = useState<number>(user?.cashBalance || 0);
 
-  useEffect(() => {
-    if (!user?.id) return;
-
-    const fetchBalance = async () => {
-      const { data } = await supabase
-        .from('profiles')
-        .select('cash_balance')
-        .eq('id', user.id)
-        .single();
-      if (data) setRealTimeBalance(Number(data.cash_balance));
-    };
-
-    fetchBalance();
-
-    const channel = supabase
-      .channel(`navbar-balance-${user.id}`)
-      .on('postgres_changes', {
-        event: 'UPDATE',
-        schema: 'public',
-        table: 'profiles',
-        filter: `id=eq.${user.id}`,
-      }, (payload) => {
-        setRealTimeBalance(Number(payload.new.cash_balance));
-      })
-      .subscribe();
-
-    return () => { supabase.removeChannel(channel); };
-  }, [user?.id]);
 
   useEffect(() => {
     (async () => {
