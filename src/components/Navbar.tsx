@@ -78,38 +78,39 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
 
   return (
     <>
-      <nav className={`bg-black/80 backdrop-blur-xl h-[72px] sm:h-[88px] px-6 sm:px-12 grid grid-cols-3 items-center fixed left-0 right-0 z-[200] gap-4 border-b border-white/5 transition-all duration-300 ${location.pathname !== '/' ? 'top-[28px]' : 'top-0'}`}>
-        <div className="flex items-center gap-4 justify-self-start">
+      <nav className={`bg-black/80 backdrop-blur-xl h-[64px] sm:h-[88px] px-3 sm:px-12 grid grid-cols-[auto_1fr_auto] sm:grid-cols-3 items-center fixed left-0 right-0 z-[200] gap-2 sm:gap-4 border-b border-white/5 transition-all duration-300 ${location.pathname !== '/' ? 'top-[28px]' : 'top-0'}`}>
+        <div className="flex items-center gap-2 sm:gap-4 justify-self-start min-w-0">
           {user && (
             <button
               onClick={() => setShowMenu(true)}
-              className="p-2 rounded-lg text-white/90 hover:text-white hover:bg-white/15 transition-colors"
+              className="p-1.5 sm:p-2 rounded-lg text-white/90 hover:text-white hover:bg-white/15 transition-colors shrink-0"
               title="Menu"
             >
-              <Menu size={20} />
+              <Menu size={18} className="sm:hidden" />
+              <Menu size={20} className="hidden sm:block" />
             </button>
           )}
 
-          <button onClick={() => onNavigate('home')} className="flex items-center gap-3 text-white text-xl font-semibold tracking-tight">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl overflow-hidden flex items-center justify-center bg-white/5 border border-white/10 glass-smooth">
+          <button onClick={() => onNavigate('home')} className="flex items-center gap-3 text-white text-xl font-semibold tracking-tight shrink-0">
+            <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl overflow-hidden flex items-center justify-center bg-white/5 border border-white/10 glass-smooth">
               <img src={logoAdai} alt="AdAI" className="w-full h-full object-cover" />
             </div>
           </button>
         </div>
 
-        <button onClick={() => onNavigate('home')} className="flex flex-col text-center justify-self-center text-white min-w-0" aria-label="Convert Club Home">
-          <h1 className="block text-base sm:text-xl font-semibold tracking-tighter leading-none">CONVERT CLUB</h1>
-          <span className="block text-[9px] font-bold text-white/40 tracking-[0.3em] uppercase leading-none mt-2">Elite Community</span>
+        <button onClick={() => onNavigate('home')} className="flex flex-col text-center justify-self-center text-white min-w-0 px-1" aria-label="Convert Club Home">
+          <h1 className="block text-[13px] sm:text-xl font-semibold tracking-tighter leading-none truncate">CONVERT CLUB</h1>
+          <span className="hidden sm:block text-[9px] font-bold text-white/40 tracking-[0.3em] uppercase leading-none mt-2">Elite Community</span>
         </button>
 
-        <div className="flex items-center gap-1 sm:gap-2 justify-self-end">
+        <div className="flex items-center gap-1 sm:gap-2 justify-self-end min-w-0">
           {user && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 sm:gap-2 min-w-0">
               <CashBalance cents={user.cashBalance || 0} onClick={() => setShowAddCash(true)} />
 
               <button
                 onClick={() => setShowSaved(true)}
-                className="relative p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg text-white/90 hover:text-white hover:bg-white/15 transition-colors"
+                className="relative p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg text-white/90 hover:text-white hover:bg-white/15 transition-colors shrink-0"
                 title="E-books salvos"
               >
                 <Bookmark size={16} className="sm:hidden" />
@@ -126,16 +127,16 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
             </div>
           ) : !user ? null : (
             <>
-              <button onClick={() => onNavigate('profile')} className="flex items-center gap-1.5 sm:gap-2 bg-white/15 hover:bg-white/25 pl-1 sm:pl-1.5 pr-2 sm:pr-3 py-1 rounded-full transition-colors max-w-[140px] sm:max-w-none">
-                <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-navy flex items-center justify-center text-[11px] font-medium text-white shrink-0 overflow-hidden border border-white/10">
+              <button onClick={() => onNavigate('profile')} className="flex items-center gap-1.5 sm:gap-2 bg-white/15 hover:bg-white/25 p-0.5 sm:pl-1.5 sm:pr-3 sm:py-1 rounded-full transition-colors shrink-0" title={`${user.nome} ${user.sobrenome || ''}`}>
+                <div className="w-7 h-7 rounded-full bg-navy flex items-center justify-center text-[11px] font-medium text-white shrink-0 overflow-hidden border border-white/10">
                   {user.avatarUrl ? (
                     <img src={user.avatarUrl} alt={`${user.nome} ${user.sobrenome || ''}`} className="w-full h-full object-cover" />
                   ) : (
                     user.nome?.[0] || '?'
                   )}
                 </div>
-                <span className="text-[12px] sm:text-[13px] text-white truncate hidden xs:inline sm:inline">{user.nome} {user.sobrenome}</span>
-                <span className={`text-[9px] sm:text-[10px] font-medium px-1.5 sm:px-2 py-0.5 rounded-md shrink-0 ${planBadgeClass(user.plano)}`}>{planLabel(user.plano)}</span>
+                <span className="text-[13px] text-white truncate hidden md:inline max-w-[120px]">{user.nome} {user.sobrenome}</span>
+                <span className={`hidden sm:inline text-[10px] font-medium px-2 py-0.5 rounded-md shrink-0 ${planBadgeClass(user.plano)}`}>{planLabel(user.plano)}</span>
               </button>
             </>
           )}
@@ -212,6 +213,9 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
               <button onClick={() => { setShowMenu(false); logout(); }} className="w-full flex items-center gap-3 px-5 py-4 hover:bg-white/5 transition-colors text-left text-sm font-light text-white/40 hover:text-white">
                 <LogOut size={18} /> Sair
               </button>
+            </div>
+            <div className="px-5 py-3 border-t border-white/5 text-[10px] text-white/30 tracking-[0.2em] uppercase font-bold">
+              Convert Club · v0.02
             </div>
           </div>
         </div>
