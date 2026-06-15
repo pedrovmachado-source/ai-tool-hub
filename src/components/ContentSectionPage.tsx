@@ -287,6 +287,7 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
         priceId={paymentSelection.priceId}
         productId={paymentSelection.productId}
         productTitle={paymentSelection.productTitle}
+        items={paymentSelection.items}
       />
       
 
