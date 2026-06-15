@@ -273,15 +273,6 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
         productTitle={paymentSelection.productTitle}
       />
       
-      {spendingProduct && (
-        <SpendCashModal 
-          isOpen={!!spendingProduct}
-          onClose={() => setSpendingProduct(null)}
-          productId={spendingProduct.id}
-          productName={spendingProduct.title}
-          priceCash={spendingProduct.price_cash || 0}
-        />
-      )}
 
       {/* Info Modal for Creative Edit */}
       <Dialog open={!!infoItem} onOpenChange={(open) => !open && setInfoItem(null)}>
