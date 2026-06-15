@@ -134,7 +134,7 @@ export default function Home() {
 
 
   return (
-    <div className="flex flex-col min-h-screen bg-black text-white selection:bg-white/20 font-sans overflow-x-hidden pt-[72px] sm:pt-[88px]">
+    <div className="flex flex-col min-h-screen bg-black text-white selection:bg-white/20 font-sans overflow-x-hidden pt-[64px] sm:pt-[88px]">
       <Meta />
       <header>
         <Navbar
@@ -160,7 +160,7 @@ export default function Home() {
           </Reveal>
           
           <Reveal delay={200}>
-            <h1 className="text-5xl sm:text-7xl lg:text-8xl font-serif-display text-white tracking-tighter leading-[0.9] mb-10">
+            <h1 className="text-4xl sm:text-7xl lg:text-8xl font-serif-display text-white tracking-tighter leading-[0.95] sm:leading-[0.9] mb-8 sm:mb-10">
               Transforme Cliques em <em className="italic font-normal">Escala Brutal</em>.
             </h1>
           </Reveal>

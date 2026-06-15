@@ -196,7 +196,7 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
   }
 
   return (
-    <div className="flex flex-col min-h-screen pt-[100px] sm:pt-[116px]">
+    <div className="flex flex-col min-h-screen pt-[92px] sm:pt-[116px]">
       <Meta title="Ferramentas de IA | Convert Club" description="Descubra as melhores IAs para turbinar seu negócio com e-books e prompts exclusivos." />
       <header>
         <Navbar onNavigate={handleNavigate} onOpenSavedEbook={(toolKey, categoryKey) => {

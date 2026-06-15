@@ -64,7 +64,7 @@ export default function Profile() {
         onOpenSavedEbook={(toolKey, categoryKey) => navigate(`/ferramentas?tool=${toolKey}&cat=${categoryKey}`)}
       />
 
-      <div className="max-w-[1100px] w-full mx-auto px-6 pt-[100px] sm:pt-[116px] pb-10 flex-1">
+      <div className="max-w-[1100px] w-full mx-auto px-4 sm:px-6 pt-[92px] sm:pt-[116px] pb-10 flex-1">
         <header className="mb-8">
           <h1 className="font-serif-display text-3xl tracking-tight">Minha conta</h1>
           <p className="text-sm text-muted-foreground mt-1">Gerencie seus dados, preferências e segurança.</p>
