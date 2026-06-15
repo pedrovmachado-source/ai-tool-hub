@@ -52,7 +52,7 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
   const [infoItem, setInfoItem] = useState<Item | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [isDeleting, setIsDeleting] = useState(false);
-  const [paymentSelection, setPaymentSelection] = useState<{ isOpen: boolean; priceId: string; productId: string; productTitle: string }>({
+  const [paymentSelection, setPaymentSelection] = useState<{ isOpen: boolean; priceId: string; productId: string; productTitle: string; items?: { price: string; productId: string; quantity: number }[] }>({
     isOpen: false,
     priceId: '',
     productId: '',
