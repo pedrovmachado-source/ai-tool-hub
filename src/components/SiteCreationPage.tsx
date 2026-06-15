@@ -42,7 +42,7 @@ export default function SiteCreationPage({ onBack }: { onBack: () => void }) {
   const [banner, setBanner] = useState<BannerCfg>(DEFAULT_BANNER);
   const [loading, setLoading] = useState(true);
   const [orderingProduct, setOrderingProduct] = useState<SiteOrderProduct | null>(null);
-  const [spendingProduct, setSpendingProduct] = useState<Product | null>(null);
+  
 
   useEffect(() => {
     (async () => {
