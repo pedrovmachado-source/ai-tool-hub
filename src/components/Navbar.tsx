@@ -7,6 +7,8 @@ import { Menu, Bookmark, X, GraduationCap, Sparkles, Globe2, Wand2, BookOpen, Sh
 import QuizModal from './QuizModal';
 import NicheLessonsModal from './NicheLessonsModal';
 import PurchasedAccountsModal from './PurchasedAccountsModal';
+import CashBalance from './CashBalance';
+import AddCashModal from './AddCashModal';
 import { supabase } from '@/integrations/supabase/client';
 import logoAdai from '@/assets/logo.png';
 import { planLabel, planBadgeClass, isPaid } from '@/lib/plan';
@@ -30,7 +32,7 @@ const DEFAULT_ITEMS: NavItem[] = [
 ];
 
 export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onNavigate: (page: string) => void; onOpenSavedEbook?: (toolKey: string, categoryKey: string) => void; hideAuth?: boolean }) {
-  const { user, isAdmin, logout, savedEbooks, unsaveEbook } = useAuth();
+  const { user, isAdmin, logout, savedEbooks, unsaveEbook, refreshCashBalance } = useAuth();
   const location = useLocation();
   const isMenuPage = location.pathname === '/menu';
   const navigate = (path: string) => onNavigate(path.replace('/', '')); // Helper to use internal navigation
@@ -42,6 +44,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
   const [menuItems, setMenuItems] = useState<NavItem[]>(DEFAULT_ITEMS);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [showPurchasedModal, setShowPurchasedModal] = useState(false);
+  const [showAddCash, setShowAddCash] = useState(false);
 
 
   useEffect(() => {
@@ -102,6 +105,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
         <div className="flex items-center gap-1 sm:gap-2 justify-self-end">
           {user && (
             <div className="flex items-center gap-2">
+              <CashBalance cents={user.cashBalance || 0} onClick={() => setShowAddCash(true)} />
 
               <button
                 onClick={() => setShowSaved(true)}
@@ -262,6 +266,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
         }}
       />
       <PurchasedAccountsModal isOpen={showPurchasedModal} onClose={() => setShowPurchasedModal(false)} />
+      <AddCashModal isOpen={showAddCash} onClose={() => setShowAddCash(false)} onDeposited={() => void refreshCashBalance()} />
 
       {showNiche && (
         <NicheLessonsModal onClose={() => setShowNiche(false)} onUpgrade={() => { setShowNiche(false); onNavigate('pro'); }} />
