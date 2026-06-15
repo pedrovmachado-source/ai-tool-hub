@@ -559,30 +559,92 @@ function ItemCard({
   );
 }
 
+function parsePriceToCents(input: string | null | undefined): number {
+  if (!input) return 0;
+  // Accept formats like "R$ 100,00", "100.50", "1.299,90", "1299"
+  const cleaned = String(input)
+    .replace(/[^\d,.\-]/g, '')
+    .replace(/\.(?=\d{3}(\D|$))/g, '') // remove thousand dots
+    .replace(',', '.');
+  const n = parseFloat(cleaned);
+  if (!Number.isFinite(n)) return 0;
+  return Math.round(n * 100);
+}
+
+function formatBRL(cents: number): string {
+  return (cents / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
 function FbAccountsTower({
   items,
   isAdmin,
   selectedIds,
   onSelect,
-  onBuy,
+  onCheckoutCart,
 }: {
   items: Item[];
   isAdmin?: boolean;
   selectedIds: Set<string>;
   onSelect: (id: string) => void;
-  onBuy: (priceId: string, productId: string, title: string) => void;
+  onCheckoutCart: (cartItems: { price: string; productId: string; quantity: number }[], title: string) => void;
 }) {
-  const [activeId, setActiveId] = useState<string | null>(items[0]?.id ?? null);
-  const active = items.find(i => i.id === activeId) ?? items[0] ?? null;
+  const [cart, setCart] = useState<Record<string, number>>({});
 
   const priceFor = (item: Item) => {
     if (item.body && item.body.startsWith('price_')) return item.body;
     return 'price_1Tc4wzQP3tL0cIWnFFTaNhgJ';
   };
 
+  const addToCart = (id: string) => {
+    setCart(prev => ({ ...prev, [id]: (prev[id] || 0) + 1 }));
+  };
+  const removeOne = (id: string) => {
+    setCart(prev => {
+      const next = { ...prev };
+      if ((next[id] || 0) <= 1) delete next[id];
+      else next[id] = next[id] - 1;
+      return next;
+    });
+  };
+  const removeAll = (id: string) => {
+    setCart(prev => {
+      const next = { ...prev };
+      delete next[id];
+      return next;
+    });
+  };
+  const clearCart = () => setCart({});
+
+  const cartEntries = Object.entries(cart)
+    .map(([id, qty]) => {
+      const item = items.find(i => i.id === id);
+      return item ? { item, qty } : null;
+    })
+    .filter(Boolean) as { item: Item; qty: number }[];
+
+  const totalCents = cartEntries.reduce(
+    (sum, { item, qty }) => sum + parsePriceToCents(item.description) * qty,
+    0,
+  );
+  const totalItems = cartEntries.reduce((sum, { qty }) => sum + qty, 0);
+
+  const handleCheckout = () => {
+    if (cartEntries.length === 0) return;
+    const cartItems = cartEntries.map(({ item, qty }) => ({
+      price: priceFor(item),
+      productId: item.id,
+      quantity: qty,
+    }));
+    const title =
+      cartEntries.length === 1
+        ? cartEntries[0].item.title
+        : `${totalItems} item(ns) — Contas & BMs`;
+    onCheckoutCart(cartItems, title);
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-6">
-      {/* Tower (left) */}
+      {/* List (left) */}
       <div className="rounded-[2rem] border border-white/5 bg-white/[0.02] backdrop-blur-sm overflow-hidden">
         <div className="px-5 py-4 border-b border-white/5 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -592,37 +654,32 @@ function FbAccountsTower({
             </span>
           </div>
           <span className="hidden lg:inline text-[9px] font-bold text-white/30 tracking-[0.2em] uppercase">
-            Passe o mouse →
+            Adicione ao carrinho →
           </span>
         </div>
 
         <div className="flex flex-col">
           {items.map((item, idx) => {
-            const isActive = active?.id === item.id;
             const isSelected = selectedIds.has(item.id);
+            const qty = cart[item.id] || 0;
+            const priceCents = parsePriceToCents(item.description);
             return (
-              <button
+              <div
                 key={item.id}
-                onMouseEnter={() => setActiveId(item.id)}
-                onFocus={() => setActiveId(item.id)}
-                onClick={() => {
-                  if (isAdmin) onSelect(item.id);
-                  setActiveId(item.id);
-                }}
                 className={`group relative w-full text-left px-5 py-4 flex items-center gap-4 border-b border-white/5 last:border-b-0 transition-all ${
-                  isActive
+                  qty > 0
                     ? 'bg-gradient-to-r from-brand-blue/15 via-brand-blue/5 to-transparent'
                     : 'hover:bg-white/[0.04]'
                 }`}
               >
                 <span
                   className={`absolute left-0 top-0 bottom-0 w-[3px] transition-all ${
-                    isActive ? 'bg-brand-blue-medium' : 'bg-transparent group-hover:bg-white/20'
+                    qty > 0 ? 'bg-brand-blue-medium' : 'bg-transparent group-hover:bg-white/20'
                   }`}
                 />
                 <div
                   className={`w-9 h-9 rounded-xl flex items-center justify-center text-[11px] font-bold tabular-nums transition-all shrink-0 ${
-                    isActive
+                    qty > 0
                       ? 'bg-brand-blue/25 text-brand-blue-medium border border-brand-blue/40'
                       : 'bg-white/5 text-white/40 border border-white/5'
                   }`}
@@ -636,87 +693,153 @@ function FbAccountsTower({
                       {item.topic}
                     </div>
                   )}
+                  <div className="text-sm font-bold text-brand-blue-medium tabular-nums mt-1">
+                    {priceCents > 0 ? formatBRL(priceCents) : item.description || 'Sob consulta'}
+                  </div>
                 </div>
+
                 {isAdmin && (
-                  <div
-                    onClick={e => {
-                      e.stopPropagation();
-                      onSelect(item.id);
-                    }}
-                    className={`w-6 h-6 rounded-md border flex items-center justify-center transition-all ${
+                  <button
+                    onClick={(e) => { e.stopPropagation(); onSelect(item.id); }}
+                    className={`w-6 h-6 rounded-md border flex items-center justify-center transition-all shrink-0 ${
                       isSelected
                         ? 'bg-white text-black border-white'
                         : 'border-white/15 text-white/40 hover:border-white/40'
                     }`}
+                    title="Selecionar para exclusão"
                   >
                     {isSelected ? <Check size={12} /> : <Plus size={12} />}
-                  </div>
+                  </button>
                 )}
-                <ArrowRight
-                  size={14}
-                  className={`transition-all shrink-0 ${
-                    isActive
-                      ? 'text-brand-blue-medium translate-x-1'
-                      : 'text-white/20 group-hover:text-white/60'
-                  }`}
-                />
-              </button>
+
+                {qty > 0 ? (
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      onClick={() => removeOne(item.id)}
+                      className="w-8 h-8 rounded-lg border border-white/10 text-white/60 hover:bg-white/5 hover:text-white transition-all flex items-center justify-center"
+                      aria-label="Remover um"
+                    >
+                      −
+                    </button>
+                    <span className="text-sm font-bold text-white w-5 text-center tabular-nums">{qty}</span>
+                    <button
+                      onClick={() => addToCart(item.id)}
+                      className="w-8 h-8 rounded-lg bg-white text-black hover:scale-105 transition-all flex items-center justify-center"
+                      aria-label="Adicionar mais um"
+                    >
+                      <Plus size={14} />
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => addToCart(item.id)}
+                    className="shrink-0 inline-flex items-center gap-1.5 px-3 h-9 rounded-lg bg-white text-black text-[11px] font-bold uppercase tracking-[0.15em] hover:scale-[1.03] active:scale-[0.97] transition-all"
+                  >
+                    <Plus size={14} /> Add
+                  </button>
+                )}
+              </div>
             );
           })}
         </div>
       </div>
 
-      {/* Sub-menu (right) */}
+      {/* Cart (right) */}
       <div className="lg:sticky lg:top-28 h-fit">
-        {active ? (
-          <div
-            key={active.id}
-            className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-white/[0.05] to-white/[0.01] p-8 animate-fade-in shadow-2xl"
-          >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-blue/15 border border-brand-blue/30 mb-6">
+        <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-white/[0.05] to-white/[0.01] p-6 sm:p-8 shadow-2xl">
+          <div className="flex items-center justify-between mb-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-blue/15 border border-brand-blue/30">
               <ShoppingCart size={12} className="text-brand-blue-medium" />
               <span className="text-[10px] font-bold text-brand-blue-medium tracking-[0.2em] uppercase">
-                {active.topic || 'Conta Facebook'}
+                Carrinho · {totalItems}
               </span>
             </div>
-
-            <h3 className="text-3xl font-serif-display text-white mb-4 leading-tight">
-              {active.title}
-            </h3>
-
-            {active.description && (
-              <p className="text-2xl font-bold text-brand-blue-medium mb-6 tabular-nums">
-                {active.description}
-              </p>
+            {totalItems > 0 && (
+              <button
+                onClick={clearCart}
+                className="text-[10px] font-bold text-white/40 hover:text-white tracking-[0.15em] uppercase transition-colors"
+              >
+                Limpar
+              </button>
             )}
+          </div>
 
-            {active.body && !active.body.startsWith('price_') && (
-              <p className="text-white/50 text-sm font-light leading-relaxed mb-8 whitespace-pre-wrap">
-                {active.body}
+          {cartEntries.length === 0 ? (
+            <div className="py-12 text-center">
+              <ShoppingCart size={32} className="mx-auto mb-4 text-white/10" />
+              <p className="text-white/40 text-sm">Seu carrinho está vazio</p>
+              <p className="text-white/20 text-xs mt-2">
+                Clique em <span className="text-white/40 font-bold">+ Add</span> ao lado de uma conta para adicioná-la.
               </p>
-            )}
-
-            <button
-              onClick={() => onBuy(priceFor(active), active.id, active.title)}
-              className="w-full py-4 px-6 rounded-2xl bg-white text-black font-bold text-xs uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_30px_rgba(255,255,255,0.15)] flex items-center justify-center gap-2"
-            >
-              <ShoppingCart size={14} /> Comprar Agora
-            </button>
-
-            <div className="mt-6 pt-6 border-t border-white/5 grid grid-cols-2 gap-4 text-[10px] font-bold text-white/30 tracking-[0.2em] uppercase">
-              <div className="flex items-center gap-2">
-                <Check size={12} className="text-brand-green" /> Entrega rápida
-              </div>
-              <div className="flex items-center gap-2">
-                <Check size={12} className="text-brand-green" /> Suporte incluso
-              </div>
             </div>
-          </div>
-        ) : (
-          <div className="rounded-[2rem] border border-white/5 bg-white/[0.02] p-8 text-center text-white/40 text-sm">
-            Selecione uma conta na lista ao lado.
-          </div>
-        )}
+          ) : (
+            <>
+              <div className="flex flex-col divide-y divide-white/5 mb-6 max-h-[360px] overflow-y-auto pr-1">
+                {cartEntries.map(({ item, qty }) => {
+                  const unit = parsePriceToCents(item.description);
+                  return (
+                    <div key={item.id} className="py-3 flex items-start gap-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-semibold text-white truncate">{item.title}</div>
+                        <div className="text-[10px] font-bold text-white/40 tracking-[0.15em] uppercase mt-0.5">
+                          {formatBRL(unit)} · un
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <button
+                          onClick={() => removeOne(item.id)}
+                          className="w-7 h-7 rounded-md border border-white/10 text-white/60 hover:bg-white/5 hover:text-white transition-all flex items-center justify-center"
+                        >
+                          −
+                        </button>
+                        <span className="text-xs font-bold text-white w-5 text-center tabular-nums">{qty}</span>
+                        <button
+                          onClick={() => addToCart(item.id)}
+                          className="w-7 h-7 rounded-md bg-white/10 text-white hover:bg-white/20 transition-all flex items-center justify-center"
+                        >
+                          <Plus size={12} />
+                        </button>
+                        <button
+                          onClick={() => removeAll(item.id)}
+                          className="ml-1 w-7 h-7 rounded-md text-white/30 hover:text-red-400 transition-all flex items-center justify-center"
+                          title="Remover do carrinho"
+                        >
+                          ×
+                        </button>
+                      </div>
+                      <div className="text-sm font-bold text-white tabular-nums w-20 text-right shrink-0">
+                        {formatBRL(unit * qty)}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="border-t border-white/10 pt-4 mb-6 flex items-baseline justify-between">
+                <span className="text-[10px] font-bold text-white/40 tracking-[0.2em] uppercase">Total</span>
+                <span className="text-2xl font-serif-display text-white tabular-nums">
+                  {formatBRL(totalCents)}
+                </span>
+              </div>
+
+              <button
+                onClick={handleCheckout}
+                className="w-full py-4 px-6 rounded-2xl bg-white text-black font-bold text-xs uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_30px_rgba(255,255,255,0.15)] flex items-center justify-center gap-2"
+              >
+                <ShoppingCart size={14} /> Finalizar Compra
+              </button>
+
+              <div className="mt-6 pt-6 border-t border-white/5 grid grid-cols-2 gap-4 text-[10px] font-bold text-white/30 tracking-[0.2em] uppercase">
+                <div className="flex items-center gap-2">
+                  <Check size={12} className="text-brand-green" /> Entrega rápida
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check size={12} className="text-brand-green" /> Suporte incluso
+                </div>
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
