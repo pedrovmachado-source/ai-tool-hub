@@ -238,20 +238,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let active = true;
 
+    let lastSyncedUserId: string | null = null;
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (!active) return;
-      
-      // Update session if it changed significantly
-      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
-        void syncSession(session);
-      } else if (event === 'SIGNED_OUT') {
+
+      if (event === 'SIGNED_OUT') {
+        lastSyncedUserId = null;
         clearAuthState();
+        return;
+      }
+
+      // Only do a full re-sync when the user actually changes (login / account switch).
+      // TOKEN_REFRESHED and USER_UPDATED fire on tab refocus and would otherwise
+      // toggle the global loading state, making the app look like it's reloading.
+      const nextUserId = session?.user?.id ?? null;
+      if (event === 'SIGNED_IN' && nextUserId && nextUserId !== lastSyncedUserId) {
+        lastSyncedUserId = nextUserId;
+        void syncSession(session);
       }
     });
 
     supabase.auth.getSession()
       .then(({ data: { session } }) => {
         if (!active) return;
+        lastSyncedUserId = session?.user?.id ?? null;
         void syncSession(session);
       })
       .catch((error) => {
