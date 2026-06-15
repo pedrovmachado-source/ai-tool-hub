@@ -532,11 +532,11 @@ function ItemCard({
               onClick={handleBuy}
               className="w-full py-3 px-6 rounded-2xl bg-white text-black font-bold text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
             >
-              <Coins size={14} className="text-brand-amber" />
-              {item.price_cash} Cash
+              Comprar Agora
             </button>
           </div>
         ) : (
+
           <button onClick={handleClick} className="mt-auto pt-6 flex items-center text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] group/btn">
              Ver Detalhes <ArrowRight size={12} className="ml-2 group-hover/btn:translate-x-1 transition-transform" />
           </button>
