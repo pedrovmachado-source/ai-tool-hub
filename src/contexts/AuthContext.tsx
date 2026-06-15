@@ -14,6 +14,7 @@ interface Profile {
   inviteValidated: boolean;
   abuseBlocked: boolean;
   lgpdAccepted?: boolean;
+  cashBalance: number;
 
 }
 
@@ -36,6 +37,7 @@ interface ProfileRecord {
   invite_validated: boolean;
   abuse_blocked: boolean;
   lgpd_accepted: boolean | null;
+  cash_balance: number | null;
 
 }
 
@@ -53,6 +55,7 @@ interface AuthContextType {
   saveEbook: (toolKey: string, toolName: string, categoryKey: string) => Promise<void>;
   unsaveEbook: (toolKey: string) => Promise<void>;
   isEbookSaved: (toolKey: string) => boolean;
+  refreshCashBalance: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -77,6 +80,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     inviteValidated: (profile as ProfileRecord)?.invite_validated ?? (profile as Profile)?.inviteValidated ?? false,
     abuseBlocked: (profile as ProfileRecord)?.abuse_blocked ?? (profile as Profile)?.abuseBlocked ?? false,
     lgpdAccepted: (profile as ProfileRecord)?.lgpd_accepted ?? (profile as Profile)?.lgpdAccepted ?? false,
+    cashBalance: Number((profile as ProfileRecord)?.cash_balance ?? (profile as Profile)?.cashBalance ?? 0),
 
   }), []);
 
@@ -409,8 +413,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return savedEbooks.some(e => e.toolKey === toolKey);
   }, [savedEbooks]);
 
+  const refreshCashBalance = useCallback(async () => {
+    if (!user) return;
+    const { data } = await supabase.from('profiles').select('cash_balance').eq('user_id', user.id).maybeSingle();
+    if (data) {
+      setUser(prev => prev ? { ...prev, cashBalance: Number(data.cash_balance ?? 0) } : null);
+    }
+  }, [user]);
+
   return (
-    <AuthContext.Provider value={{ user, isAdmin, savedEbooks, loading, login, register, logout, resetPassword, upgradeToPro, updateUser, saveEbook, unsaveEbook, isEbookSaved }}>
+    <AuthContext.Provider value={{ user, isAdmin, savedEbooks, loading, login, register, logout, resetPassword, upgradeToPro, updateUser, saveEbook, unsaveEbook, isEbookSaved, refreshCashBalance }}>
       {children}
     </AuthContext.Provider>
   );
