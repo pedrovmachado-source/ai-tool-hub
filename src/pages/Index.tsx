@@ -26,10 +26,10 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
   const navigate = useNavigate();
   const { plan } = usePlanConfig();
   const { user, isAdmin } = useAuth();
-  const { categories, loading, error, fetchCategories } = useCategories();
-  
   const initialPage = propPage || (typeof window !== 'undefined' ? sessionStorage.getItem('adai:initialPage') : null);
   const [page, setPage] = useState(initialPage || 'home');
+  const needsCategories = !['site-creation', 'fb-accounts', 'creative-edit', 'copywrite', 'offers', 'pro', 'lessons'].includes(page);
+  const { categories, loading, error, fetchCategories } = useCategories({ enabled: needsCategories });
   
   const initialCat = propCat || (typeof window !== 'undefined' ? sessionStorage.getItem('adai:initialCategory') : null);
   const [activeCategory, setActiveCategory] = useState(initialCat || 'texto');
