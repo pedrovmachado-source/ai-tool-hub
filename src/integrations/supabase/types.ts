@@ -1074,6 +1074,48 @@ export type Database = {
           },
         ]
       }
+      user_offers: {
+        Row: {
+          copy_texto: string
+          created_at: string
+          id: string
+          link_bib: string
+          link_checkout: string
+          link_drive: string
+          link_site: string
+          nome: string
+          tags: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          copy_texto?: string
+          created_at?: string
+          id?: string
+          link_bib?: string
+          link_checkout?: string
+          link_drive?: string
+          link_site?: string
+          nome: string
+          tags?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          copy_texto?: string
+          created_at?: string
+          id?: string
+          link_bib?: string
+          link_checkout?: string
+          link_drive?: string
+          link_site?: string
+          nome?: string
+          tags?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
