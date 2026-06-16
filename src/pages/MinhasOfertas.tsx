@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import Navbar from '@/components/Navbar';
 import Meta from '@/components/Meta';
 import {
@@ -22,8 +23,6 @@ type Oferta = {
 
 const TAGS = ['Emagrecimento','Dieta','Educação','Religião','Infantil','Mães','Pais','Adulto','Saúde & corpo','Relacionamentos','Dinheiro','Mente & espírito','Habilidades & hobbies','Outros'];
 
-const storageKey = (userId?: string) => `club_minhas_ofertas:${userId || 'anon'}`;
-
 async function copyToClipboard(text: string) {
   try {
     if (navigator.clipboard && window.isSecureContext) {
@@ -38,6 +37,28 @@ async function copyToClipboard(text: string) {
   } catch { return false; }
 }
 
+type Row = {
+  id: string;
+  nome: string;
+  tags: any;
+  link_bib: string;
+  link_drive: string;
+  link_site: string;
+  link_checkout: string;
+  copy_texto: string;
+};
+
+const rowToOferta = (r: Row): Oferta => ({
+  id: r.id,
+  nome: r.nome,
+  tags: Array.isArray(r.tags) ? r.tags : [],
+  linkBib: r.link_bib || '',
+  linkDrive: r.link_drive || '',
+  linkSite: r.link_site || '',
+  linkCheckout: r.link_checkout || '',
+  copyTexto: r.copy_texto || '',
+});
+
 export default function MinhasOfertas() {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -47,22 +68,24 @@ export default function MinhasOfertas() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Oferta | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
   const [form, setForm] = useState<Omit<Oferta, 'id'>>({
     nome: '', tags: [], linkBib: '', linkDrive: '', linkSite: '', linkCheckout: '', copyTexto: ''
   });
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(storageKey(user?.id));
-      if (raw) setOfertas(JSON.parse(raw));
-    } catch {}
+    if (!user?.id) { setOfertas([]); return; }
+    (async () => {
+      const { data, error } = await (supabase as any)
+        .from('user_offers')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+      if (error) { toast.error('Erro ao carregar ofertas'); return; }
+      setOfertas((data as Row[] || []).map(rowToOferta));
+    })();
   }, [user?.id]);
-
-  const persist = (list: Oferta[]) => {
-    setOfertas(list);
-    try { localStorage.setItem(storageKey(user?.id), JSON.stringify(list)); } catch {}
-  };
 
   const openNew = () => {
     setEditing(null);
@@ -76,21 +99,54 @@ export default function MinhasOfertas() {
     setModalOpen(true);
   };
 
-  const save = () => {
+  const save = async () => {
+    if (!user?.id) { toast.error('Faça login para salvar.'); return; }
     if (!form.nome.trim()) { toast.error('Informe o nome da oferta.'); return; }
-    if (editing) {
-      persist(ofertas.map(o => o.id === editing.id ? { ...editing, ...form } : o));
-      toast.success('Oferta atualizada');
-    } else {
-      persist([{ id: crypto.randomUUID(), ...form }, ...ofertas]);
-      toast.success('Oferta salva');
+    setSaving(true);
+    try {
+      const payload = {
+        user_id: user.id,
+        nome: form.nome.trim(),
+        tags: form.tags,
+        link_bib: form.linkBib,
+        link_drive: form.linkDrive,
+        link_site: form.linkSite,
+        link_checkout: form.linkCheckout,
+        copy_texto: form.copyTexto,
+      };
+      if (editing) {
+        const { data, error } = await (supabase as any)
+          .from('user_offers')
+          .update(payload)
+          .eq('id', editing.id)
+          .select()
+          .single();
+        if (error) throw error;
+        setOfertas(prev => prev.map(o => o.id === editing.id ? rowToOferta(data as Row) : o));
+        toast.success('Oferta atualizada');
+      } else {
+        const { data, error } = await (supabase as any)
+          .from('user_offers')
+          .insert(payload)
+          .select()
+          .single();
+        if (error) throw error;
+        setOfertas(prev => [rowToOferta(data as Row), ...prev]);
+        toast.success('Oferta salva');
+      }
+      setModalOpen(false);
+    } catch (e: any) {
+      toast.error(e?.message || 'Erro ao salvar');
+    } finally {
+      setSaving(false);
     }
-    setModalOpen(false);
   };
 
-  const remove = (id: string) => {
+  const remove = async (id: string) => {
     if (!confirm('Remover esta oferta?')) return;
-    persist(ofertas.filter(o => o.id !== id));
+    const { error } = await (supabase as any).from('user_offers').delete().eq('id', id);
+    if (error) { toast.error('Erro ao remover'); return; }
+    setOfertas(prev => prev.filter(o => o.id !== id));
   };
 
   const onFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -268,13 +324,13 @@ export default function MinhasOfertas() {
             </div>
           )}
 
-          {/* Privacy note */}
+          {/* Storage note */}
           <div className="mt-16 flex items-start gap-3 px-5 py-4 rounded-2xl glass-smooth border border-white/5">
             <svg className="w-4 h-4 text-white/30 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 7h16M4 12h16M4 17h10" />
             </svg>
             <p className="text-[11px] text-white/30 leading-relaxed">
-              Os administradores do site não têm acesso a nenhuma informação sobre as ofertas salvas nesta área. Seus dados permanecem exclusivamente no seu dispositivo.
+              Suas ofertas ficam salvas com segurança na sua conta e sincronizam em qualquer dispositivo. Apenas você e a administração da Convert Club têm acesso a esses dados.
             </p>
           </div>
         </div>
@@ -393,8 +449,8 @@ export default function MinhasOfertas() {
               <button onClick={() => setModalOpen(false)} className="px-5 py-3 rounded-xl bg-white/5 border border-white/10 text-sm text-white/70 hover:text-white hover:bg-white/10 transition-all">
                 Cancelar
               </button>
-              <button onClick={save} className="px-5 py-3 rounded-xl bg-white text-black text-sm font-bold hover:bg-white/90 transition-all">
-                {editing ? 'Salvar alterações' : 'Salvar oferta'}
+              <button onClick={save} disabled={saving} className="px-5 py-3 rounded-xl bg-white text-black text-sm font-bold hover:bg-white/90 transition-all disabled:opacity-60">
+                {saving ? 'Salvando…' : editing ? 'Salvar alterações' : 'Salvar oferta'}
               </button>
             </div>
           </div>

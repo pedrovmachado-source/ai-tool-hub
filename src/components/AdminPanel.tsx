@@ -14,6 +14,7 @@ import AdminStudentAreas from './AdminStudentAreas';
 import AdminOfferAnalyses from './AdminOfferAnalyses';
 import AdminPurchasedAccounts from './AdminPurchasedAccounts';
 import AdminCashDeposits from './AdminCashDeposits';
+import AdminUserOffers from './AdminUserOffers';
 import ActivityLogView from './ActivityLogView';
 import { logActivity } from '@/lib/activity-log';
 
@@ -540,6 +541,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'student-areas', label: 'Área do Mentorado', icon: GraduationCap },
     { key: 'purchased-accounts', label: 'Contas Compradas', icon: Shield },
     { key: 'cash-deposits', label: 'Depósitos de Saldo', icon: Wallet },
+    { key: 'user-offers', label: 'Ofertas dos Usuários', icon: Tag },
     { key: 'activity', label: 'Atividade', icon: Activity },
     { key: 'settings', label: 'Configurações', icon: Settings },
   ];
@@ -912,6 +914,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
         {section === 'student-areas' && <AdminStudentAreas />}
         {section === 'purchased-accounts' && <AdminPurchasedAccounts />}
         {section === 'cash-deposits' && <AdminCashDeposits />}
+        {section === 'user-offers' && <AdminUserOffers />}
         {section === 'offers' && <AdminOffers />}
         {section === 'offer-analyses' && <AdminOfferAnalyses />}
         {section === 'activity' && <ActivityLogView />}
