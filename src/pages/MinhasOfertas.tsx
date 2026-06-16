@@ -6,8 +6,9 @@ import Navbar from '@/components/Navbar';
 import Meta from '@/components/Meta';
 import {
   Plus, Search, Pencil, Trash2, Copy, Check, Download, ExternalLink,
-  Library, FolderOpen, Target, X, ArrowLeft, Globe, ShoppingCart
+  Library, FolderOpen, Target, X, ArrowLeft, Globe, ShoppingCart, Tag as TagIcon
 } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 
 type Oferta = {
@@ -233,14 +234,30 @@ export default function MinhasOfertas() {
                 className="w-full bg-white/5 border border-white/10 rounded-2xl pl-11 pr-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-white/30 transition-colors"
               />
             </div>
-            <select
-              value={filterTag}
-              onChange={e => setFilterTag(e.target.value)}
-              className="bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/30 transition-colors"
-            >
-              <option value="" className="bg-black">Todas as tags</option>
-              {TAGS.map(t => <option key={t} value={t} className="bg-black">{t}</option>)}
-            </select>
+            <Select value={filterTag || 'all'} onValueChange={v => setFilterTag(v === 'all' ? '' : v)}>
+              <SelectTrigger
+                className="w-auto min-w-[180px] gap-2 bg-white/5 border border-white/10 hover:bg-white/10 rounded-2xl px-4 py-3 h-auto text-sm text-white focus:outline-none focus:ring-0 focus:border-white/30 transition-colors [&>svg]:opacity-60"
+              >
+                <TagIcon className="w-3.5 h-3.5 text-white/50 shrink-0" />
+                <SelectValue placeholder="Todas as tags" />
+              </SelectTrigger>
+              <SelectContent
+                className="bg-[#0a0a0a]/95 backdrop-blur-xl border border-white/10 text-white rounded-2xl shadow-2xl max-h-72"
+              >
+                <SelectItem value="all" className="text-white/80 focus:bg-white/10 focus:text-white rounded-lg my-0.5">
+                  Todas as tags
+                </SelectItem>
+                {TAGS.map(t => (
+                  <SelectItem
+                    key={t}
+                    value={t}
+                    className="text-white/80 focus:bg-white/10 focus:text-white rounded-lg my-0.5"
+                  >
+                    {t}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <button
               onClick={openNew}
               className="ml-auto inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-white text-black text-sm font-bold hover:bg-white/90 transition-all"
