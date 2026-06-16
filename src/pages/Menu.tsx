@@ -216,6 +216,27 @@ export default function Menu() {
             ))}
           </div>
 
+          <Reveal delay={200} className="mt-24">
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg glass-smooth mb-4 border border-white/5">
+                <PlayCircle className="w-3 h-3 text-white/50" />
+                <span className="text-[10px] font-bold text-white/50 tracking-[0.2em] uppercase">Apresentação</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-serif-display text-white">
+                Conheça o <em className="italic font-normal">ecossistema</em>
+              </h2>
+            </div>
+            <div className="rounded-[2.5rem] overflow-hidden border border-white/5 glass-smooth aspect-video max-w-5xl mx-auto">
+              <video
+                src="/convert-club-intro.mp4"
+                className="w-full h-full object-cover"
+                controls
+                playsInline
+                preload="metadata"
+              />
+            </div>
+          </Reveal>
+
         </div>
       </main>
 
