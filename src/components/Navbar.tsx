@@ -46,7 +46,7 @@ function isNavItem(value: unknown): value is NavItem {
 
 async function fetchNavMenuItems(): Promise<NavItem[]> {
   const { data } = await supabase.from('site_settings').select('value').eq('key', 'nav_menu_items').maybeSingle();
-  const value = data?.value;
+  const value: unknown = data?.value;
   if (!Array.isArray(value)) return DEFAULT_ITEMS;
   const items = value.filter(isNavItem).filter(i => i.enabled).sort((a, b) => a.sort_order - b.sort_order);
   return items.length ? items : DEFAULT_ITEMS;
