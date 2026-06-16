@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { meetsMinPlan } from '@/lib/plan';
@@ -38,11 +39,35 @@ interface Item {
   
 }
 
+interface ContentSectionData {
+  section: Section | null;
+  items: Item[];
+}
+
+async function fetchContentSection(slug: string): Promise<ContentSectionData> {
+  const [sRes, iRes] = await Promise.all([
+    supabase.from('content_sections').select('*').eq('slug', slug).maybeSingle(),
+    supabase.from('content_items').select('*').eq('section_slug', slug).order('sort_order'),
+  ]);
+
+  return {
+    section: (sRes.data as Section | null) || null,
+    items: (iRes.data as Item[] | null) || [],
+  };
+}
+
 export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: string; onBack: () => void; onUpgrade: () => void }) {
   const { user, isAdmin } = useAuth();
-  const [section, setSection] = useState<Section | null>(null);
-  const [items, setItems] = useState<Item[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
+  const { data = { section: null, items: [] }, isLoading: loading } = useQuery({
+    queryKey: ['content-section', slug],
+    queryFn: () => fetchContentSection(slug),
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  });
+  const { section, items } = data;
   const [video, setVideo] = useState<Item | null>(null);
   const [pdf, setPdf] = useState<Item | null>(null);
   const [image, setImage] = useState<Item | null>(null);
@@ -59,25 +84,6 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
     productTitle: ''
   });
   const isOffers = slug === 'offers';
-
-  useEffect(() => {
-    let active = true;
-    (async () => {
-      setLoading(true);
-      try {
-        const [sRes, iRes] = await Promise.all([
-          supabase.from('content_sections').select('*').eq('slug', slug).maybeSingle(),
-          supabase.from('content_items').select('*').eq('section_slug', slug).order('sort_order'),
-        ]);
-        if (!active) return;
-        if (sRes.data) setSection(sRes.data as Section);
-        if (iRes.data) setItems(iRes.data as Item[]);
-      } finally {
-        if (active) setLoading(false);
-      }
-    })();
-    return () => { active = false; };
-  }, [slug]);
 
   const canAccess = true; // Liberado para todos conforme solicitado
 
@@ -100,7 +106,10 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
         .in('id', Array.from(selectedIds));
       
       if (!error) {
-        setItems(prev => prev.filter(i => !selectedIds.has(i.id)));
+        queryClient.setQueryData<ContentSectionData>(['content-section', slug], prev => prev ? {
+          ...prev,
+          items: prev.items.filter(i => !selectedIds.has(i.id)),
+        } : prev);
         setSelectedIds(new Set());
       }
     } finally {
@@ -555,7 +564,7 @@ function parsePriceToCents(input: string | null | undefined): number {
   if (!input) return 0;
   // Accept formats like "R$ 100,00", "100.50", "1.299,90", "1299"
   const cleaned = String(input)
-    .replace(/[^\d,.\-]/g, '')
+    .replace(/[^\d,.-]/g, '')
     .replace(/\.(?=\d{3}(\D|$))/g, '') // remove thousand dots
     .replace(',', '.');
   const n = parseFloat(cleaned);

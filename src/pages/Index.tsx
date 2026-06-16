@@ -22,14 +22,16 @@ import { Search, Lock } from 'lucide-react';
 import type { Tool, Category } from '@/data/tools-data';
 import { isPaid } from '@/lib/plan';
 
+type VerifyAdminResponse = { isAdmin?: boolean };
+
 export default function Index({ initialPage: propPage, initialCategory: propCat }: { initialPage?: string | null; initialCategory?: string | null }) {
   const navigate = useNavigate();
   const { plan } = usePlanConfig();
   const { user, isAdmin } = useAuth();
-  const { categories, loading, error, fetchCategories } = useCategories();
-  
   const initialPage = propPage || (typeof window !== 'undefined' ? sessionStorage.getItem('adai:initialPage') : null);
   const [page, setPage] = useState(initialPage || 'home');
+  const needsCategories = !['site-creation', 'fb-accounts', 'creative-edit', 'copywrite', 'offers', 'pro', 'lessons'].includes(page);
+  const { categories, loading, error, fetchCategories } = useCategories({ enabled: needsCategories });
   
   const initialCat = propCat || (typeof window !== 'undefined' ? sessionStorage.getItem('adai:initialCategory') : null);
   const [activeCategory, setActiveCategory] = useState(initialCat || 'texto');
@@ -90,7 +92,7 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
       try {
         const { data, error } = await supabase.functions.invoke('verify-admin');
         if (error) throw error;
-        setServerAdminVerified(!!(data as any)?.isAdmin);
+        setServerAdminVerified(!!(data as VerifyAdminResponse | null)?.isAdmin);
       } catch (e) {
         console.error('Admin verification failed', e);
         setServerAdminVerified(false);
