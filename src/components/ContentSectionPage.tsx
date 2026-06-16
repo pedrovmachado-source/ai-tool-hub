@@ -12,6 +12,7 @@ import { PdfModal, VideoModal, ImageModal, getEmbedUrl } from '@/lib/lessonViewe
 import OfferModal from './OfferModal';
 import PurchasedAccountsModal from './PurchasedAccountsModal';
 import PaymentSelectionModal from './PaymentSelectionModal';
+import { toast } from 'sonner';
 
 interface Section {
   slug: string;
