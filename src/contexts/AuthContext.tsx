@@ -198,7 +198,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     const currentUser = session.user;
-    if (syncingUserIdRef.current === currentUser.id || (syncedUserIdRef.current === currentUser.id && user?.id === currentUser.id)) {
+    if (syncingUserIdRef.current === currentUser.id || syncedUserIdRef.current === currentUser.id) {
       setLoading(false);
       return;
     }
@@ -248,7 +248,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setLoading(false);
       }
     }
-  }, [buildUserFromProfile, checkAdminRole, clearAuthState, fetchProfile, fetchSavedEbooks, user?.id]);
+  }, [buildUserFromProfile, checkAdminRole, clearAuthState, fetchProfile, fetchSavedEbooks]);
 
   useEffect(() => {
     let active = true;
