@@ -30,7 +30,9 @@ import {
   PenTool,
   Facebook,
   Video,
-  BookOpen
+  BookOpen,
+  Lock,
+  X
 } from 'lucide-react';
 
 export default function Home() {
