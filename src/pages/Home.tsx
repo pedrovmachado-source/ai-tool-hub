@@ -9,22 +9,28 @@ import { isMentorado } from '@/lib/plan';
 import hoteducaRef from '@/assets/hoteduca-ref.png';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { 
-  Sparkles, 
-  Rocket, 
-  ArrowRight, 
-  Zap, 
-  Star, 
-  TrendingUp, 
-  CheckCircle2, 
-  Globe2, 
-  Wand2, 
-  GraduationCap, 
-  Layout, 
+import {
+  Sparkles,
+  Rocket,
+  ArrowRight,
+  Zap,
+  Star,
+  TrendingUp,
+  CheckCircle2,
+  Globe2,
+  Wand2,
+  GraduationCap,
+  Layout,
   MousePointer2,
   Clock,
   Award,
-  Users
+  Users,
+  Wrench,
+  Tag,
+  PenTool,
+  Facebook,
+  Video,
+  BookOpen
 } from 'lucide-react';
 
 export default function Home() {
