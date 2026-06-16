@@ -12,6 +12,7 @@ import { PdfModal, VideoModal, ImageModal, getEmbedUrl } from '@/lib/lessonViewe
 import OfferModal from './OfferModal';
 import PurchasedAccountsModal from './PurchasedAccountsModal';
 import PaymentSelectionModal from './PaymentSelectionModal';
+import { toast } from 'sonner';
 
 interface Section {
   slug: string;
@@ -629,19 +630,47 @@ function FbAccountsTower({
   );
   const totalItems = cartEntries.reduce((sum, { qty }) => sum + qty, 0);
 
-  const handleCheckout = () => {
-    if (cartEntries.length === 0) return;
-    const cartItems = cartEntries.map(({ item, qty }) => ({
-      price: priceFor(item),
-      productId: item.id,
-      quantity: qty,
-    }));
-    const title =
-      cartEntries.length === 1
-        ? cartEntries[0].item.title
-        : `${totalItems} item(ns) — Contas & BMs`;
-    onCheckoutCart(cartItems, title);
+  const { user, refreshCashBalance } = useAuth();
+  const [paying, setPaying] = useState(false);
+  const balanceCents = Math.round((user?.cashBalance || 0));
+  const insufficient = totalCents > balanceCents;
+
+  const handleCheckout = async () => {
+    if (cartEntries.length === 0 || paying) return;
+    if (!user) {
+      toast.error('Faça login para concluir a compra.');
+      return;
+    }
+    if (insufficient) {
+      toast.error(`Saldo insuficiente. Faltam ${formatBRL(totalCents - balanceCents)}. Adicione saldo para continuar.`);
+      return;
+    }
+    setPaying(true);
+    try {
+      for (const { item, qty } of cartEntries) {
+        const unit = parsePriceToCents(item.description);
+        for (let i = 0; i < qty; i++) {
+          const { data, error } = await supabase.rpc('spend_cash', {
+            p_user: user.id,
+            p_amount: unit,
+            p_product: item.id,
+          });
+          if (error) throw error;
+          const res = data as { success: boolean; error?: string } | null;
+          if (!res?.success) throw new Error(res?.error || 'Falha ao processar pagamento');
+        }
+      }
+      await refreshCashBalance();
+      toast.success('Compra realizada com sucesso! Veja em "Minhas Contas".');
+      clearCart();
+    } catch (err) {
+      console.error('Cash checkout error:', err);
+      toast.error(err instanceof Error ? err.message : 'Erro ao processar pagamento.');
+    } finally {
+      setPaying(false);
+    }
   };
+
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-6">
@@ -810,19 +839,35 @@ function FbAccountsTower({
                 })}
               </div>
 
-              <div className="border-t border-white/10 pt-4 mb-6 flex items-baseline justify-between">
+              <div className="border-t border-white/10 pt-4 mb-3 flex items-baseline justify-between">
                 <span className="text-[10px] font-bold text-white/40 tracking-[0.2em] uppercase">Total</span>
                 <span className="text-2xl font-serif-display text-white tabular-nums">
                   {formatBRL(totalCents)}
                 </span>
               </div>
 
+              <div className="mb-6 flex items-center justify-between rounded-xl bg-white/[0.03] border border-white/5 px-3 py-2">
+                <span className="text-[10px] font-bold text-white/40 tracking-[0.2em] uppercase flex items-center gap-1.5">
+                  <Wallet size={12} /> Saldo
+                </span>
+                <span className={`text-sm font-bold tabular-nums ${insufficient ? 'text-red-400' : 'text-brand-green'}`}>
+                  {formatBRL(balanceCents)}
+                </span>
+              </div>
+
               <button
                 onClick={handleCheckout}
-                className="w-full py-4 px-6 rounded-2xl bg-white text-black font-bold text-xs uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_30px_rgba(255,255,255,0.15)] flex items-center justify-center gap-2"
+                disabled={paying || insufficient}
+                className={`w-full py-4 px-6 rounded-2xl font-bold text-xs uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 ${
+                  insufficient
+                    ? 'bg-white/10 text-white/40 cursor-not-allowed'
+                    : 'bg-white text-black hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_30px_rgba(255,255,255,0.15)]'
+                } ${paying ? 'opacity-60 cursor-wait' : ''}`}
               >
-                <ShoppingCart size={14} /> Finalizar Compra
+                <Wallet size={14} />
+                {paying ? 'Processando…' : insufficient ? `Adicione ${formatBRL(totalCents - balanceCents)} de saldo` : 'Pagar com Saldo'}
               </button>
+
 
               <div className="mt-6 pt-6 border-t border-white/5 grid grid-cols-2 gap-4 text-[10px] font-bold text-white/30 tracking-[0.2em] uppercase">
                 <div className="flex items-center gap-2">
