@@ -87,6 +87,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }), []);
 
   const clearAuthState = useCallback(() => {
+    syncedUserIdRef.current = null;
+    syncingUserIdRef.current = null;
     setUser(null);
     setIsAdmin(false);
     setSavedEbooks([]);
