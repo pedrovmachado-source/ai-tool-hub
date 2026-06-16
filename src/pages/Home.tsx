@@ -107,7 +107,8 @@ export default function Home() {
       color: "text-white",
       bg: "bg-white/10",
       target: "ferramentas",
-      badge: "Full Access"
+      badge: "Full Access",
+      preview: "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1600&auto=format&fit=crop"
     },
     {
       title: "Ofertas Validadas",
@@ -116,7 +117,8 @@ export default function Home() {
       color: "text-white",
       bg: "bg-white/10",
       target: "ofertas",
-      badge: "Curadoria"
+      badge: "Curadoria",
+      preview: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?q=80&w=1600&auto=format&fit=crop"
     },
     {
       title: "Área do Mentorado",
@@ -125,7 +127,8 @@ export default function Home() {
       color: "text-white",
       bg: "bg-white/10",
       target: "alunos",
-      badge: "Comunidade"
+      badge: "Comunidade",
+      preview: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1600&auto=format&fit=crop"
     },
     {
       title: "Criativos",
@@ -134,7 +137,8 @@ export default function Home() {
       color: "text-white",
       bg: "bg-white/10",
       target: "creative-edit",
-      badge: "Design"
+      badge: "Design",
+      preview: "https://images.unsplash.com/photo-1626785774573-4b799315345d?q=80&w=1600&auto=format&fit=crop"
     },
     {
       title: "Copywrite",
@@ -143,7 +147,8 @@ export default function Home() {
       color: "text-white",
       bg: "bg-white/10",
       target: "copywrite",
-      badge: "Copy"
+      badge: "Copy",
+      preview: "https://images.unsplash.com/photo-1455390582262-044cdead277a?q=80&w=1600&auto=format&fit=crop"
     },
     {
       title: "Contas de Facebook Ads",
@@ -152,7 +157,8 @@ export default function Home() {
       color: "text-white",
       bg: "bg-white/10",
       target: "fb-accounts",
-      badge: "Ads"
+      badge: "Ads",
+      preview: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=1600&auto=format&fit=crop"
     },
     {
       title: "Comprar Site",
@@ -161,7 +167,8 @@ export default function Home() {
       color: "text-white",
       bg: "bg-white/10",
       target: "site-creation",
-      badge: "Escala"
+      badge: "Escala",
+      preview: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?q=80&w=1600&auto=format&fit=crop"
     },
     {
       title: "Aulas Gravadas",
@@ -170,7 +177,8 @@ export default function Home() {
       color: "text-white",
       bg: "bg-white/10",
       target: "mentorias",
-      badge: "Membro"
+      badge: "Membro",
+      preview: "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?q=80&w=1600&auto=format&fit=crop"
     },
     {
       title: "Minhas Ofertas",
@@ -179,9 +187,12 @@ export default function Home() {
       color: "text-white",
       bg: "bg-white/10",
       target: "minhas-ofertas",
-      badge: "Privado"
+      badge: "Privado",
+      preview: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=1600&auto=format&fit=crop"
     }
   ];
+
+  const [previewItem, setPreviewItem] = useState<typeof services[number] | null>(null);
 
 
   return (
