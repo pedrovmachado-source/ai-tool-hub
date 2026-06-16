@@ -449,8 +449,8 @@ export default function MinhasOfertas() {
               <button onClick={() => setModalOpen(false)} className="px-5 py-3 rounded-xl bg-white/5 border border-white/10 text-sm text-white/70 hover:text-white hover:bg-white/10 transition-all">
                 Cancelar
               </button>
-              <button onClick={save} className="px-5 py-3 rounded-xl bg-white text-black text-sm font-bold hover:bg-white/90 transition-all">
-                {editing ? 'Salvar alterações' : 'Salvar oferta'}
+              <button onClick={save} disabled={saving} className="px-5 py-3 rounded-xl bg-white text-black text-sm font-bold hover:bg-white/90 transition-all disabled:opacity-60">
+                {saving ? 'Salvando…' : editing ? 'Salvar alterações' : 'Salvar oferta'}
               </button>
             </div>
           </div>
