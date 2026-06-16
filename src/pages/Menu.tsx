@@ -85,7 +85,7 @@ export default function Menu() {
       badge: "Comunidade"
     },
     {
-      title: "Comprar Criativo",
+      title: "Criativos",
       description: "Criativos validados para parar o scroll e converter seu público.",
       icon: Wand2,
       path: "/creative-edit",
