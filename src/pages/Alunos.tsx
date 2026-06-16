@@ -445,9 +445,9 @@ export default function Alunos() {
                           "Me dê uma lista com termos e palavras-chave que eu posso usar para pesquisar anúncios na Biblioteca de Anúncios do Facebook, com o objetivo de encontrar ofertas validadas no nicho de [INSIRA O NICHO AQUI]. A resposta deve ser uma lista separada por tópicos, com pelo menos 30 sugestões."
                         </p>
                         <Button 
-                          variant="ghost" 
+                          variant="outline"
                           size="sm"
-                          className="mt-4 h-7 text-[10px] text-white/30 hover:text-white"
+                          className="mt-4 h-8 px-4 rounded-full border-white/10 bg-white/5 text-[10px] font-bold uppercase tracking-widest text-white/70 hover:bg-white hover:text-black transition-colors"
                           onClick={async () => {
                             try {
                               const text = "Me dê uma lista com termos e palavras-chave que eu posso usar para pesquisar anúncios na Biblioteca de Anúncios do Facebook, com o objetivo de encontrar ofertas validadas no nicho de [INSIRA O NICHO AQUI]. A resposta deve ser uma lista separada por tópicos, com pelo menos 30 sugestões.";
