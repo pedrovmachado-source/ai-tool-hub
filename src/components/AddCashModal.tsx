@@ -12,12 +12,20 @@ interface PixConfig {
   instructions: string;
 }
 
-const PRESETS = [50, 100, 200, 500];
+const PRESETS = [20, 50, 100, 200];
+const MIN_CENTS = 2000;
+const DEFAULT_PIX: PixConfig = {
+  key: '91d8b71f-e84b-4693-a78e-f20f75460ba3',
+  key_type: 'Chave aleatória',
+  recipient: '',
+  instructions: 'Após o pagamento, clique em "Já paguei" para registrar seu depósito. O saldo será creditado em até 24h.',
+};
 
 export default function AddCashModal({ isOpen, onClose, onDeposited }: { isOpen: boolean; onClose: () => void; onDeposited?: () => void }) {
   const { user } = useAuth();
   const [tab, setTab] = useState<'pix' | 'card'>('pix');
-  const [amount, setAmount] = useState<string>('100,00');
+  const [amount, setAmount] = useState<string>('20,00');
+
   const [pix, setPix] = useState<PixConfig | null>(null);
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
