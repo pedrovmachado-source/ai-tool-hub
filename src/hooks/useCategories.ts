@@ -64,12 +64,14 @@ async function fetchCategoriesData(): Promise<Category[]> {
 
 const CATEGORIES_KEY = ['categories'] as const;
 
-export function useCategories() {
+export function useCategories(options: { enabled?: boolean } = {}) {
   const queryClient = useQueryClient();
+  const enabled = options.enabled ?? true;
 
   const { data: categories = [], isLoading, error, refetch } = useQuery({
     queryKey: CATEGORIES_KEY,
     queryFn: fetchCategoriesData,
+    enabled,
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
     refetchOnMount: false,
@@ -142,7 +144,7 @@ export function useCategories() {
 
   return {
     categories,
-    loading: isLoading,
+    loading: enabled && isLoading,
     error: error instanceof Error ? error.message : (error ? 'Não foi possível carregar o conteúdo.' : null),
     fetchCategories,
     updateCategory,
