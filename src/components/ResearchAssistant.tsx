@@ -83,9 +83,10 @@ A resposta deve ser uma lista separada por tópicos, com pelo menos 30 sugestõe
 
         {/* Prompt Section */}
         <div className="p-8 rounded-[2.5rem] glass-smooth border border-white/5 relative overflow-hidden group">
-          <div className="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             <Terminal className="w-12 h-12 text-white/5" />
           </div>
+
           
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
