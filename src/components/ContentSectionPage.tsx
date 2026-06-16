@@ -690,19 +690,6 @@ function FbAccountsTower({
                   </div>
                 </div>
 
-                {isAdmin && (
-                  <button
-                    onClick={(e) => { e.stopPropagation(); onSelect(item.id); }}
-                    className={`w-6 h-6 rounded-md border flex items-center justify-center transition-all shrink-0 ${
-                      isSelected
-                        ? 'bg-white text-black border-white'
-                        : 'border-white/15 text-white/40 hover:border-white/40'
-                    }`}
-                    title="Selecionar para exclusão"
-                  >
-                    {isSelected ? <Check size={12} /> : <Plus size={12} />}
-                  </button>
-                )}
 
                 {qty > 0 ? (
                   <div className="flex items-center gap-2 shrink-0">
