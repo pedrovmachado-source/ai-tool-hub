@@ -192,6 +192,20 @@ export default function Home() {
               Explorar Ecossistema
             </Button>
           </Reveal>
+
+          <Reveal delay={400} className="mt-20 max-w-5xl mx-auto w-full">
+            <div className="rounded-[2.5rem] overflow-hidden border border-white/5 glass-smooth aspect-video">
+              <video
+                src="/convert-club-intro.mp4"
+                className="w-full h-full object-cover"
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="metadata"
+              />
+            </div>
+          </Reveal>
         </div>
       </section>
 
