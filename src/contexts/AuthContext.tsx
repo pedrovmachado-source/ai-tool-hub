@@ -66,6 +66,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [savedEbooks, setSavedEbooks] = useState<SavedEbook[]>([]);
   const [loading, setLoading] = useState(true);
   const authSyncRef = useRef(0);
+  const syncedUserIdRef = useRef<string | null>(null);
+  const syncingUserIdRef = useRef<string | null>(null);
 
   const buildUserFromProfile = useCallback((supaUser: SupaUser, profile?: ProfileRecord | Partial<Profile> | null): Profile & { id: string } => ({
     id: supaUser.id,
@@ -187,14 +189,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const syncId = ++authSyncRef.current;
 
     if (!session?.user) {
+      syncedUserIdRef.current = null;
+      syncingUserIdRef.current = null;
       clearAuthState();
       return;
     }
 
+    const currentUser = session.user;
+    if (syncingUserIdRef.current === currentUser.id || (syncedUserIdRef.current === currentUser.id && user?.id === currentUser.id)) {
+      setLoading(false);
+      return;
+    }
+
+    syncingUserIdRef.current = currentUser.id;
+
     setLoading(true);
 
     try {
-      const currentUser = session.user;
       const [profileResult, adminResult, savedResult] = await Promise.allSettled([
         fetchProfile(currentUser),
         checkAdminRole(currentUser.id),
@@ -207,6 +218,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       const profile = profileResult.status === 'fulfilled' ? profileResult.value : null;
       setUser(buildUserFromProfile(currentUser, profile));
+      syncedUserIdRef.current = currentUser.id;
       setIsAdmin(adminResult.status === 'fulfilled' ? adminResult.value : false);
       setSavedEbooks(savedResult.status === 'fulfilled' ? savedResult.value : []);
 
@@ -230,20 +242,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setSavedEbooks([]);
     } finally {
       if (authSyncRef.current === syncId) {
+        syncingUserIdRef.current = null;
         setLoading(false);
       }
     }
-  }, [buildUserFromProfile, checkAdminRole, clearAuthState, fetchProfile, fetchSavedEbooks]);
+  }, [buildUserFromProfile, checkAdminRole, clearAuthState, fetchProfile, fetchSavedEbooks, user?.id]);
 
   useEffect(() => {
     let active = true;
 
-    let lastSyncedUserId: string | null = null;
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (!active) return;
 
       if (event === 'SIGNED_OUT') {
-        lastSyncedUserId = null;
         clearAuthState();
         return;
       }
@@ -252,8 +263,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // TOKEN_REFRESHED and USER_UPDATED fire on tab refocus and would otherwise
       // toggle the global loading state, making the app look like it's reloading.
       const nextUserId = session?.user?.id ?? null;
-      if (event === 'SIGNED_IN' && nextUserId && nextUserId !== lastSyncedUserId) {
-        lastSyncedUserId = nextUserId;
+      if (event === 'SIGNED_IN' && nextUserId && nextUserId !== syncedUserIdRef.current && nextUserId !== syncingUserIdRef.current) {
         void syncSession(session);
       }
     });
@@ -261,8 +271,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     supabase.auth.getSession()
       .then(({ data: { session } }) => {
         if (!active) return;
-        lastSyncedUserId = session?.user?.id ?? null;
-        void syncSession(session);
+        const nextUserId = session?.user?.id ?? null;
+        if (!nextUserId || (nextUserId !== syncedUserIdRef.current && nextUserId !== syncingUserIdRef.current)) {
+          void syncSession(session);
+        }
       })
       .catch((error) => {
         console.error('Falha ao recuperar sessão inicial', error);
