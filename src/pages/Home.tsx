@@ -101,40 +101,85 @@ export default function Home() {
 
   const services = [
     {
-      title: "Ofertas Validadas",
-      description: "Copias e funis que já faturaram alto, prontos para você modelar e aplicar.",
-      icon: Sparkles,
+      title: "Ferramentas",
+      description: "Acesse nosso ecossistema de IAs, prompts e utilitários de alta performance.",
+      icon: Wrench,
       color: "text-white",
       bg: "bg-white/10",
-      target: "offers",
-      badge: "Best Seller"
+      target: "ferramentas",
+      badge: "Full Access"
+    },
+    {
+      title: "Ofertas Validadas",
+      description: "Produtos e infoprodutos minerados com alto potencial de escala.",
+      icon: Tag,
+      color: "text-white",
+      bg: "bg-white/10",
+      target: "ofertas",
+      badge: "Curadoria"
+    },
+    {
+      title: "Área do Mentorado",
+      description: "Gravação de aulas, transcrição de reuniões e materiais de apoio.",
+      icon: Users,
+      color: "text-white",
+      bg: "bg-white/10",
+      target: "alunos",
+      badge: "Comunidade"
     },
     {
       title: "Criativos",
-      description: "Estratégias práticas de quem fatura 7 dígitos no mercado digital.",
+      description: "Criativos validados para parar o scroll e converter seu público.",
       icon: Wand2,
       color: "text-white",
       bg: "bg-white/10",
       target: "creative-edit",
-      badge: "Alta Conversão"
+      badge: "Design"
+    },
+    {
+      title: "Copywrite",
+      description: "Textos de alta conversão para seus anúncios e páginas de vendas.",
+      icon: PenTool,
+      color: "text-white",
+      bg: "bg-white/10",
+      target: "copywrite",
+      badge: "Copy"
+    },
+    {
+      title: "Contas de Facebook Ads",
+      description: "Contas e BM's prontas para rodar suas campanhas com segurança.",
+      icon: Facebook,
+      color: "text-white",
+      bg: "bg-white/10",
+      target: "fb-accounts",
+      badge: "Ads"
+    },
+    {
+      title: "Comprar Site",
+      description: "Landing pages, quizzes e funis de alta conversão para o seu negócio.",
+      icon: Globe2,
+      color: "text-white",
+      bg: "bg-white/10",
+      target: "site-creation",
+      badge: "Escala"
     },
     {
       title: "Aulas Gravadas",
-      description: "Estratégias práticas de quem fatura 6 dígitos no mercado digital.",
-      icon: GraduationCap,
+      description: "Gravações das mentorias exclusivas com estratégias de escala e conversão.",
+      icon: Video,
       color: "text-white",
       bg: "bg-white/10",
       target: "mentorias",
-      badge: "Conteúdo VIP"
+      badge: "Membro"
     },
     {
-      title: "Ferramentas de IA",
-      description: "O maior guia de IAs com e-books e prompts para turbinar seu fluxo.",
-      icon: Layout,
+      title: "Minhas Ofertas",
+      description: "Salve suas próprias ofertas, links de biblioteca, criativos e copies em um só lugar.",
+      icon: BookOpen,
       color: "text-white",
       bg: "bg-white/10",
-      target: "/menu",
-      badge: "Curadoria 2026"
+      target: "minhas-ofertas",
+      badge: "Privado"
     }
   ];
 
