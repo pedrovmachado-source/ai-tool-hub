@@ -12,12 +12,20 @@ interface PixConfig {
   instructions: string;
 }
 
-const PRESETS = [50, 100, 200, 500];
+const PRESETS = [20, 50, 100, 200];
+const MIN_CENTS = 2000;
+const DEFAULT_PIX: PixConfig = {
+  key: '91d8b71f-e84b-4693-a78e-f20f75460ba3',
+  key_type: 'Chave aleatória',
+  recipient: '',
+  instructions: 'Após o pagamento, clique em "Já paguei" para registrar seu depósito. O saldo será creditado em até 24h.',
+};
 
 export default function AddCashModal({ isOpen, onClose, onDeposited }: { isOpen: boolean; onClose: () => void; onDeposited?: () => void }) {
   const { user } = useAuth();
   const [tab, setTab] = useState<'pix' | 'card'>('pix');
-  const [amount, setAmount] = useState<string>('100,00');
+  const [amount, setAmount] = useState<string>('20,00');
+
   const [pix, setPix] = useState<PixConfig | null>(null);
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -26,8 +34,10 @@ export default function AddCashModal({ isOpen, onClose, onDeposited }: { isOpen:
   useEffect(() => {
     if (!isOpen) return;
     setPixSent(false);
+    setPix(DEFAULT_PIX);
     supabase.from('site_settings').select('value').eq('key', 'pix_deposit').maybeSingle().then(({ data }) => {
-      if (data?.value) setPix(data.value as any);
+      const v = data?.value as any;
+      if (v && typeof v === 'object' && v.key) setPix({ ...DEFAULT_PIX, ...v });
     });
   }, [isOpen]);
 
@@ -37,6 +47,7 @@ export default function AddCashModal({ isOpen, onClose, onDeposited }: { isOpen:
     const n = parseFloat(amount.replace(/\./g, '').replace(',', '.'));
     return Number.isFinite(n) ? Math.round(n * 100) : 0;
   })();
+
 
   const setPreset = (v: number) => setAmount(v.toFixed(2).replace('.', ','));
 
@@ -56,7 +67,7 @@ export default function AddCashModal({ isOpen, onClose, onDeposited }: { isOpen:
 
   const registerPix = async () => {
     if (!user) return;
-    if (amountCents < 500) { toast({ title: 'Valor mínimo R$ 5,00', variant: 'destructive' }); return; }
+    if (amountCents < MIN_CENTS) { toast({ title: 'Valor mínimo R$ 20,00', variant: 'destructive' }); return; }
     setLoading(true);
     try {
       const { error } = await supabase.from('pix_deposits').insert({
@@ -77,7 +88,7 @@ export default function AddCashModal({ isOpen, onClose, onDeposited }: { isOpen:
   };
 
   const payWithCard = async () => {
-    if (amountCents < 500) { toast({ title: 'Valor mínimo R$ 5,00', variant: 'destructive' }); return; }
+    if (amountCents < MIN_CENTS) { toast({ title: 'Valor mínimo R$ 20,00', variant: 'destructive' }); return; }
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke('create-checkout', {
@@ -217,7 +228,7 @@ export default function AddCashModal({ isOpen, onClose, onDeposited }: { isOpen:
                   )}
                   <button
                     onClick={registerPix}
-                    disabled={loading || amountCents < 500}
+                    disabled={loading || amountCents < MIN_CENTS}
                     className="w-full py-3 rounded-xl bg-brand-teal text-white text-sm font-bold hover:brightness-110 disabled:opacity-40 disabled:hover:brightness-100 flex items-center justify-center gap-2 transition-all shadow-lg shadow-brand-teal/20"
                   >
                     {loading ? <Loader2 size={18} className="animate-spin" /> : <Check size={18} />}
@@ -236,7 +247,7 @@ export default function AddCashModal({ isOpen, onClose, onDeposited }: { isOpen:
               </div>
               <button
                 onClick={payWithCard}
-                disabled={loading || amountCents < 500}
+                disabled={loading || amountCents < MIN_CENTS}
                 className="w-full py-3 rounded-xl bg-brand-blue text-white text-sm font-bold hover:brightness-110 disabled:opacity-40 disabled:hover:brightness-100 flex items-center justify-center gap-2 transition-all shadow-lg shadow-brand-blue/20"
               >
                 {loading ? <Loader2 size={18} className="animate-spin" /> : <CreditCard size={18} />}
