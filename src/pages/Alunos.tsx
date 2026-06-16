@@ -488,7 +488,9 @@ export default function Alunos() {
                       {[
                         { name: 'Biblioteca de anúncios', url: 'https://www.facebook.com/ads/library/' },
                         { name: 'AdsParo', url: 'https://chromewebstore.google.com/detail/adsparo-adlibrary-ad-find/jhgpmfdfgihdclapmppfeddggkidnoid?hl=pt-BR' },
+                        { name: 'Ad Lib Note', url: 'https://chromewebstore.google.com/detail/adlibnote-ad-library-down/niepmhdjjdggogblnljbdflekfohknmc?hl=pt-BR' },
                         { name: 'Claude', url: 'https://Claude.ai' },
+                        { name: 'DeepSeek', url: 'https://chat.deepseek.com/' },
                         { name: 'Similarweb', url: 'https://www.similarweb.com/pt/' }
                       ].map(link => (
                         <a 
