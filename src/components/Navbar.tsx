@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocation } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { Menu, Bookmark, X, GraduationCap, Sparkles, Globe2, Wand2, BookOpen, Shield, ChevronRight, LogOut, Video, CreditCard, Star, Zap, Rocket, Users, Facebook, PenTool, Layout } from 'lucide-react';
 
 
@@ -31,6 +32,26 @@ const DEFAULT_ITEMS: NavItem[] = [
   { key: 'lessons', label: 'Aulas gravadas', icon: 'GraduationCap', color: 'text-white', target: 'mentorias', enabled: true, sort_order: 9 },
 ];
 
+function isNavItem(value: unknown): value is NavItem {
+  if (!value || typeof value !== 'object') return false;
+  const item = value as Partial<NavItem>;
+  return typeof item.key === 'string'
+    && typeof item.label === 'string'
+    && typeof item.icon === 'string'
+    && typeof item.color === 'string'
+    && typeof item.target === 'string'
+    && typeof item.enabled === 'boolean'
+    && typeof item.sort_order === 'number';
+}
+
+async function fetchNavMenuItems(): Promise<NavItem[]> {
+  const { data } = await supabase.from('site_settings').select('value').eq('key', 'nav_menu_items').maybeSingle();
+  const value = data?.value;
+  if (!Array.isArray(value)) return DEFAULT_ITEMS;
+  const items = value.filter(isNavItem).filter(i => i.enabled).sort((a, b) => a.sort_order - b.sort_order);
+  return items.length ? items : DEFAULT_ITEMS;
+}
+
 export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onNavigate: (page: string) => void; onOpenSavedEbook?: (toolKey: string, categoryKey: string) => void; hideAuth?: boolean }) {
   const { user, isAdmin, logout, savedEbooks, unsaveEbook, refreshCashBalance } = useAuth();
   const location = useLocation();
@@ -41,21 +62,17 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
   const [showMenu, setShowMenu] = useState(false);
   const [isMenuExiting, setIsMenuExiting] = useState(false);
   const [showNiche, setShowNiche] = useState(false);
-  const [menuItems, setMenuItems] = useState<NavItem[]>(DEFAULT_ITEMS);
+  const { data: menuItems = DEFAULT_ITEMS } = useQuery({
+    queryKey: ['nav-menu-items'],
+    queryFn: fetchNavMenuItems,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  });
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [showPurchasedModal, setShowPurchasedModal] = useState(false);
   const [showAddCash, setShowAddCash] = useState(false);
-
-
-  useEffect(() => {
-    (async () => {
-      const { data } = await supabase.from('site_settings').select('value').eq('key', 'nav_menu_items').maybeSingle();
-      const arr = (data?.value as any);
-      if (Array.isArray(arr) && arr.length) {
-        setMenuItems(arr.filter((i: NavItem) => i.enabled).sort((a: NavItem, b: NavItem) => a.sort_order - b.sort_order));
-      }
-    })();
-  }, []);
 
   const closeMenu = () => {
     setIsMenuExiting(true);
