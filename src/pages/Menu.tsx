@@ -230,7 +230,9 @@ export default function Menu() {
               <video
                 src="/convert-club-intro.mp4"
                 className="w-full h-full object-cover"
-                controls
+                autoPlay
+                loop
+                muted
                 playsInline
                 preload="metadata"
               />
