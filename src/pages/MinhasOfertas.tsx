@@ -23,8 +23,6 @@ type Oferta = {
 
 const TAGS = ['Emagrecimento','Dieta','Educação','Religião','Infantil','Mães','Pais','Adulto','Saúde & corpo','Relacionamentos','Dinheiro','Mente & espírito','Habilidades & hobbies','Outros'];
 
-const storageKey = (userId?: string) => `club_minhas_ofertas:${userId || 'anon'}`;
-
 async function copyToClipboard(text: string) {
   try {
     if (navigator.clipboard && window.isSecureContext) {
@@ -39,6 +37,28 @@ async function copyToClipboard(text: string) {
   } catch { return false; }
 }
 
+type Row = {
+  id: string;
+  nome: string;
+  tags: any;
+  link_bib: string;
+  link_drive: string;
+  link_site: string;
+  link_checkout: string;
+  copy_texto: string;
+};
+
+const rowToOferta = (r: Row): Oferta => ({
+  id: r.id,
+  nome: r.nome,
+  tags: Array.isArray(r.tags) ? r.tags : [],
+  linkBib: r.link_bib || '',
+  linkDrive: r.link_drive || '',
+  linkSite: r.link_site || '',
+  linkCheckout: r.link_checkout || '',
+  copyTexto: r.copy_texto || '',
+});
+
 export default function MinhasOfertas() {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -48,22 +68,24 @@ export default function MinhasOfertas() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Oferta | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
   const [form, setForm] = useState<Omit<Oferta, 'id'>>({
     nome: '', tags: [], linkBib: '', linkDrive: '', linkSite: '', linkCheckout: '', copyTexto: ''
   });
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(storageKey(user?.id));
-      if (raw) setOfertas(JSON.parse(raw));
-    } catch {}
+    if (!user?.id) { setOfertas([]); return; }
+    (async () => {
+      const { data, error } = await (supabase as any)
+        .from('user_offers')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+      if (error) { toast.error('Erro ao carregar ofertas'); return; }
+      setOfertas((data as Row[] || []).map(rowToOferta));
+    })();
   }, [user?.id]);
-
-  const persist = (list: Oferta[]) => {
-    setOfertas(list);
-    try { localStorage.setItem(storageKey(user?.id), JSON.stringify(list)); } catch {}
-  };
 
   const openNew = () => {
     setEditing(null);
@@ -77,21 +99,54 @@ export default function MinhasOfertas() {
     setModalOpen(true);
   };
 
-  const save = () => {
+  const save = async () => {
+    if (!user?.id) { toast.error('Faça login para salvar.'); return; }
     if (!form.nome.trim()) { toast.error('Informe o nome da oferta.'); return; }
-    if (editing) {
-      persist(ofertas.map(o => o.id === editing.id ? { ...editing, ...form } : o));
-      toast.success('Oferta atualizada');
-    } else {
-      persist([{ id: crypto.randomUUID(), ...form }, ...ofertas]);
-      toast.success('Oferta salva');
+    setSaving(true);
+    try {
+      const payload = {
+        user_id: user.id,
+        nome: form.nome.trim(),
+        tags: form.tags,
+        link_bib: form.linkBib,
+        link_drive: form.linkDrive,
+        link_site: form.linkSite,
+        link_checkout: form.linkCheckout,
+        copy_texto: form.copyTexto,
+      };
+      if (editing) {
+        const { data, error } = await (supabase as any)
+          .from('user_offers')
+          .update(payload)
+          .eq('id', editing.id)
+          .select()
+          .single();
+        if (error) throw error;
+        setOfertas(prev => prev.map(o => o.id === editing.id ? rowToOferta(data as Row) : o));
+        toast.success('Oferta atualizada');
+      } else {
+        const { data, error } = await (supabase as any)
+          .from('user_offers')
+          .insert(payload)
+          .select()
+          .single();
+        if (error) throw error;
+        setOfertas(prev => [rowToOferta(data as Row), ...prev]);
+        toast.success('Oferta salva');
+      }
+      setModalOpen(false);
+    } catch (e: any) {
+      toast.error(e?.message || 'Erro ao salvar');
+    } finally {
+      setSaving(false);
     }
-    setModalOpen(false);
   };
 
-  const remove = (id: string) => {
+  const remove = async (id: string) => {
     if (!confirm('Remover esta oferta?')) return;
-    persist(ofertas.filter(o => o.id !== id));
+    const { error } = await (supabase as any).from('user_offers').delete().eq('id', id);
+    if (error) { toast.error('Erro ao remover'); return; }
+    setOfertas(prev => prev.filter(o => o.id !== id));
   };
 
   const onFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
