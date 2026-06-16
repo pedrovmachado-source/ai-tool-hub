@@ -397,12 +397,15 @@ export default function Alunos() {
                       <p>Nicho &gt; País &gt; Minerar produtos desse país &gt; modelagem</p>
                     </div>
 
-                    <div className="flex flex-wrap gap-2">
-                      {['Espanha', 'Reino Unido', 'Portugal'].map(pais => (
-                        <span key={pais} className="px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[10px] uppercase tracking-wider text-white/40">
-                          {pais}
-                        </span>
-                      ))}
+                    <div className="space-y-3">
+                      <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/50">Melhores países para minerar ofertas</p>
+                      <div className="flex flex-wrap gap-2">
+                        {['Espanha', 'Reino Unido', 'Portugal'].map(pais => (
+                          <span key={pais} className="px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[10px] uppercase tracking-wider text-white/40">
+                            {pais}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </div>
 
@@ -442,9 +445,9 @@ export default function Alunos() {
                           "Me dê uma lista com termos e palavras-chave que eu posso usar para pesquisar anúncios na Biblioteca de Anúncios do Facebook, com o objetivo de encontrar ofertas validadas no nicho de [INSIRA O NICHO AQUI]. A resposta deve ser uma lista separada por tópicos, com pelo menos 30 sugestões."
                         </p>
                         <Button 
-                          variant="ghost" 
+                          variant="outline"
                           size="sm"
-                          className="mt-4 h-7 text-[10px] text-white/30 hover:text-white"
+                          className="mt-4 h-8 px-4 rounded-full border-white/10 bg-white/5 text-[10px] font-bold uppercase tracking-widest text-white/70 hover:bg-white hover:text-black transition-colors"
                           onClick={async () => {
                             try {
                               const text = "Me dê uma lista com termos e palavras-chave que eu posso usar para pesquisar anúncios na Biblioteca de Anúncios do Facebook, com o objetivo de encontrar ofertas validadas no nicho de [INSIRA O NICHO AQUI]. A resposta deve ser uma lista separada por tópicos, com pelo menos 30 sugestões.";
@@ -485,7 +488,9 @@ export default function Alunos() {
                       {[
                         { name: 'Biblioteca de anúncios', url: 'https://www.facebook.com/ads/library/' },
                         { name: 'AdsParo', url: 'https://chromewebstore.google.com/detail/adsparo-adlibrary-ad-find/jhgpmfdfgihdclapmppfeddggkidnoid?hl=pt-BR' },
+                        { name: 'Ad Lib Note', url: 'https://chromewebstore.google.com/detail/adlibnote-ad-library-down/niepmhdjjdggogblnljbdflekfohknmc?hl=pt-BR' },
                         { name: 'Claude', url: 'https://Claude.ai' },
+                        { name: 'DeepSeek', url: 'https://chat.deepseek.com/' },
                         { name: 'Similarweb', url: 'https://www.similarweb.com/pt/' }
                       ].map(link => (
                         <a 
