@@ -397,12 +397,15 @@ export default function Alunos() {
                       <p>Nicho &gt; País &gt; Minerar produtos desse país &gt; modelagem</p>
                     </div>
 
-                    <div className="flex flex-wrap gap-2">
-                      {['Espanha', 'Reino Unido', 'Portugal'].map(pais => (
-                        <span key={pais} className="px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[10px] uppercase tracking-wider text-white/40">
-                          {pais}
-                        </span>
-                      ))}
+                    <div className="space-y-3">
+                      <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/50">Melhores países para minerar ofertas</p>
+                      <div className="flex flex-wrap gap-2">
+                        {['Espanha', 'Reino Unido', 'Portugal'].map(pais => (
+                          <span key={pais} className="px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[10px] uppercase tracking-wider text-white/40">
+                            {pais}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </div>
 
