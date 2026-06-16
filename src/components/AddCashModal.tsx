@@ -34,8 +34,10 @@ export default function AddCashModal({ isOpen, onClose, onDeposited }: { isOpen:
   useEffect(() => {
     if (!isOpen) return;
     setPixSent(false);
+    setPix(DEFAULT_PIX);
     supabase.from('site_settings').select('value').eq('key', 'pix_deposit').maybeSingle().then(({ data }) => {
-      if (data?.value) setPix(data.value as any);
+      const v = data?.value as any;
+      if (v && typeof v === 'object' && v.key) setPix({ ...DEFAULT_PIX, ...v });
     });
   }, [isOpen]);
 
@@ -45,6 +47,7 @@ export default function AddCashModal({ isOpen, onClose, onDeposited }: { isOpen:
     const n = parseFloat(amount.replace(/\./g, '').replace(',', '.'));
     return Number.isFinite(n) ? Math.round(n * 100) : 0;
   })();
+
 
   const setPreset = (v: number) => setAmount(v.toFixed(2).replace('.', ','));
 
