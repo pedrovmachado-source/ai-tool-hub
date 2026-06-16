@@ -7,7 +7,7 @@ import { ArrowLeft, Play, FileText, Image as ImageIcon, Lock, FileText as TextIc
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { PdfModal, VideoModal, ImageModal } from '@/lib/lessonViewers';
+import { PdfModal, VideoModal, ImageModal, getEmbedUrl } from '@/lib/lessonViewers';
 import OfferModal from './OfferModal';
 import PurchasedAccountsModal from './PurchasedAccountsModal';
 import PaymentSelectionModal from './PaymentSelectionModal';
