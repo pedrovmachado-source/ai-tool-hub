@@ -22,6 +22,8 @@ import { Search, Lock } from 'lucide-react';
 import type { Tool, Category } from '@/data/tools-data';
 import { isPaid } from '@/lib/plan';
 
+type VerifyAdminResponse = { isAdmin?: boolean };
+
 export default function Index({ initialPage: propPage, initialCategory: propCat }: { initialPage?: string | null; initialCategory?: string | null }) {
   const navigate = useNavigate();
   const { plan } = usePlanConfig();
@@ -90,7 +92,7 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
       try {
         const { data, error } = await supabase.functions.invoke('verify-admin');
         if (error) throw error;
-        setServerAdminVerified(!!(data as any)?.isAdmin);
+        setServerAdminVerified(!!(data as VerifyAdminResponse | null)?.isAdmin);
       } catch (e) {
         console.error('Admin verification failed', e);
         setServerAdminVerified(false);
