@@ -914,6 +914,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
         {section === 'student-areas' && <AdminStudentAreas />}
         {section === 'purchased-accounts' && <AdminPurchasedAccounts />}
         {section === 'cash-deposits' && <AdminCashDeposits />}
+        {section === 'user-offers' && <AdminUserOffers />}
         {section === 'offers' && <AdminOffers />}
         {section === 'offer-analyses' && <AdminOfferAnalyses />}
         {section === 'activity' && <ActivityLogView />}
