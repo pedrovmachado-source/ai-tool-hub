@@ -67,7 +67,7 @@ export default function AddCashModal({ isOpen, onClose, onDeposited }: { isOpen:
 
   const registerPix = async () => {
     if (!user) return;
-    if (amountCents < 500) { toast({ title: 'Valor mínimo R$ 5,00', variant: 'destructive' }); return; }
+    if (amountCents < MIN_CENTS) { toast({ title: 'Valor mínimo R$ 20,00', variant: 'destructive' }); return; }
     setLoading(true);
     try {
       const { error } = await supabase.from('pix_deposits').insert({
@@ -88,7 +88,7 @@ export default function AddCashModal({ isOpen, onClose, onDeposited }: { isOpen:
   };
 
   const payWithCard = async () => {
-    if (amountCents < 500) { toast({ title: 'Valor mínimo R$ 5,00', variant: 'destructive' }); return; }
+    if (amountCents < MIN_CENTS) { toast({ title: 'Valor mínimo R$ 20,00', variant: 'destructive' }); return; }
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke('create-checkout', {
@@ -228,7 +228,7 @@ export default function AddCashModal({ isOpen, onClose, onDeposited }: { isOpen:
                   )}
                   <button
                     onClick={registerPix}
-                    disabled={loading || amountCents < 500}
+                    disabled={loading || amountCents < MIN_CENTS}
                     className="w-full py-3 rounded-xl bg-brand-teal text-white text-sm font-bold hover:brightness-110 disabled:opacity-40 disabled:hover:brightness-100 flex items-center justify-center gap-2 transition-all shadow-lg shadow-brand-teal/20"
                   >
                     {loading ? <Loader2 size={18} className="animate-spin" /> : <Check size={18} />}
@@ -247,7 +247,7 @@ export default function AddCashModal({ isOpen, onClose, onDeposited }: { isOpen:
               </div>
               <button
                 onClick={payWithCard}
-                disabled={loading || amountCents < 500}
+                disabled={loading || amountCents < MIN_CENTS}
                 className="w-full py-3 rounded-xl bg-brand-blue text-white text-sm font-bold hover:brightness-110 disabled:opacity-40 disabled:hover:brightness-100 flex items-center justify-center gap-2 transition-all shadow-lg shadow-brand-blue/20"
               >
                 {loading ? <Loader2 size={18} className="animate-spin" /> : <CreditCard size={18} />}
