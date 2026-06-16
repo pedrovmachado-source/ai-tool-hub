@@ -690,8 +690,15 @@ function FbAccountsTower({
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-semibold text-white truncate">{item.title}</div>
                   {item.topic && (
-                    <div className="text-[10px] font-bold text-white/40 tracking-[0.15em] uppercase mt-0.5 truncate">
-                      {item.topic}
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="text-[10px] font-bold text-white/40 tracking-[0.15em] uppercase truncate">
+                        {item.topic}
+                      </span>
+                      {item.title === 'Facebook com BM - Estrangeiro' && (
+                        <span className="text-[9px] font-extrabold tracking-[0.18em] uppercase px-2 py-0.5 rounded-full bg-gradient-to-r from-emerald-400 to-teal-500 text-black shadow-[0_0_12px_rgba(16,185,129,0.55)] ring-1 ring-emerald-300/60 animate-pulse">
+                          Recomendado
+                        </span>
+                      )}
                     </div>
                   )}
                   <div className="text-sm font-bold text-brand-blue-medium tabular-nums mt-1">
