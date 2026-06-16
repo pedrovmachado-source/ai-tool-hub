@@ -324,13 +324,13 @@ export default function MinhasOfertas() {
             </div>
           )}
 
-          {/* Privacy note */}
+          {/* Storage note */}
           <div className="mt-16 flex items-start gap-3 px-5 py-4 rounded-2xl glass-smooth border border-white/5">
             <svg className="w-4 h-4 text-white/30 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 7h16M4 12h16M4 17h10" />
             </svg>
             <p className="text-[11px] text-white/30 leading-relaxed">
-              Os administradores do site não têm acesso a nenhuma informação sobre as ofertas salvas nesta área. Seus dados permanecem exclusivamente no seu dispositivo.
+              Suas ofertas ficam salvas com segurança na sua conta e sincronizam em qualquer dispositivo. Apenas você e a administração da Convert Club têm acesso a esses dados.
             </p>
           </div>
         </div>
