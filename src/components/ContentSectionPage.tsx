@@ -629,19 +629,47 @@ function FbAccountsTower({
   );
   const totalItems = cartEntries.reduce((sum, { qty }) => sum + qty, 0);
 
-  const handleCheckout = () => {
-    if (cartEntries.length === 0) return;
-    const cartItems = cartEntries.map(({ item, qty }) => ({
-      price: priceFor(item),
-      productId: item.id,
-      quantity: qty,
-    }));
-    const title =
-      cartEntries.length === 1
-        ? cartEntries[0].item.title
-        : `${totalItems} item(ns) — Contas & BMs`;
-    onCheckoutCart(cartItems, title);
+  const { user, refreshCashBalance } = useAuth();
+  const [paying, setPaying] = useState(false);
+  const balanceCents = Math.round((user?.cashBalance || 0));
+  const insufficient = totalCents > balanceCents;
+
+  const handleCheckout = async () => {
+    if (cartEntries.length === 0 || paying) return;
+    if (!user) {
+      toast.error('Faça login para concluir a compra.');
+      return;
+    }
+    if (insufficient) {
+      toast.error(`Saldo insuficiente. Faltam ${formatBRL(totalCents - balanceCents)}. Adicione saldo para continuar.`);
+      return;
+    }
+    setPaying(true);
+    try {
+      for (const { item, qty } of cartEntries) {
+        const unit = parsePriceToCents(item.description);
+        for (let i = 0; i < qty; i++) {
+          const { data, error } = await supabase.rpc('spend_cash', {
+            p_user: user.id,
+            p_amount: unit,
+            p_product: item.id,
+          });
+          if (error) throw error;
+          const res = data as { success: boolean; error?: string } | null;
+          if (!res?.success) throw new Error(res?.error || 'Falha ao processar pagamento');
+        }
+      }
+      await refreshCashBalance();
+      toast.success('Compra realizada com sucesso! Veja em "Minhas Contas".');
+      clearCart();
+    } catch (err) {
+      console.error('Cash checkout error:', err);
+      toast.error(err instanceof Error ? err.message : 'Erro ao processar pagamento.');
+    } finally {
+      setPaying(false);
+    }
   };
+
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-6">
