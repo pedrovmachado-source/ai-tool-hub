@@ -564,7 +564,7 @@ function parsePriceToCents(input: string | null | undefined): number {
   if (!input) return 0;
   // Accept formats like "R$ 100,00", "100.50", "1.299,90", "1299"
   const cleaned = String(input)
-    .replace(/[^\d,.\-]/g, '')
+    .replace(/[^\d,.-]/g, '')
     .replace(/\.(?=\d{3}(\D|$))/g, '') // remove thousand dots
     .replace(',', '.');
   const n = parseFloat(cleaned);
