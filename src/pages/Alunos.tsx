@@ -579,41 +579,6 @@ export default function Alunos() {
               </Reveal>
             </div>
           </div>
-          <Reveal delay={400} className="mt-16">
-            <div className="glass-smooth rounded-[2.5rem] border border-white/5 p-12 flex flex-col items-center text-center relative overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-b from-blue-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-              
-              <div className="relative z-10">
-                <div className="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-blue-500/20 group-hover:scale-110 transition-transform duration-500">
-                  <CreditCard className="w-8 h-8 text-blue-400" />
-                </div>
-                
-                <h3 className="text-2xl md:text-3xl font-serif-display text-white mb-4">
-                  Potencialize seu workflow com a <em className="italic font-normal">Extensão</em>
-                </h3>
-                
-                <p className="text-white/40 text-sm max-w-lg mx-auto mb-8 font-light leading-relaxed">
-                  Adquira o acesso vitalício à nossa extensão exclusiva e automatize processos críticos. 
-                  Ativação imediata em sua conta por apenas 1400 créditos.
-                </p>
-
-                <Button 
-                  onClick={() => setPurchaseModalOpen(true)}
-                  className="rounded-full px-12 py-7 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-xs uppercase tracking-[0.2em] hover:from-blue-500 hover:to-indigo-500 transition-all shadow-xl shadow-blue-500/20 active:scale-95"
-                >
-                  Garantir Acesso Vitalício
-                </Button>
-                
-                <div className="mt-6 flex items-center justify-center gap-6 opacity-30">
-                  <span className="text-[10px] font-bold uppercase tracking-widest">Ativação Instantânea</span>
-                  <div className="w-1 h-1 bg-white/20 rounded-full" />
-                  <span className="text-[10px] font-bold uppercase tracking-widest">1400 Créditos</span>
-                  <div className="w-1 h-1 bg-white/20 rounded-full" />
-                  <span className="text-[10px] font-bold uppercase tracking-widest">Suporte Premium</span>
-                </div>
-              </div>
-            </div>
-          </Reveal>
         </div>
       </main>
 
