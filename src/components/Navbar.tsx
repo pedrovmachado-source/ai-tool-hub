@@ -78,7 +78,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
 
   return (
     <>
-      <nav className={`bg-black/80 backdrop-blur-xl h-[64px] sm:h-[88px] px-3 sm:px-12 grid grid-cols-[auto_1fr_auto] sm:grid-cols-3 items-center fixed left-0 right-0 z-[200] gap-2 sm:gap-4 border-b border-white/5 transition-all duration-300 ${location.pathname !== '/' ? 'top-[28px]' : 'top-0'}`}>
+      <nav className="bg-black/80 backdrop-blur-xl h-[64px] sm:h-[88px] px-3 sm:px-12 grid grid-cols-[auto_1fr_auto] sm:grid-cols-3 items-center fixed top-0 left-0 right-0 z-[200] gap-2 sm:gap-4 border-b border-white/5 transition-all duration-300">
         <div className="flex items-center gap-2 sm:gap-4 justify-self-start min-w-0">
           {user && (
             <button
