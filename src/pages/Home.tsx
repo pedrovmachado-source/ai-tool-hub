@@ -30,7 +30,9 @@ import {
   PenTool,
   Facebook,
   Video,
-  BookOpen
+  BookOpen,
+  Lock,
+  X
 } from 'lucide-react';
 
 export default function Home() {
@@ -107,7 +109,8 @@ export default function Home() {
       color: "text-white",
       bg: "bg-white/10",
       target: "ferramentas",
-      badge: "Full Access"
+      badge: "Full Access",
+      preview: "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1600&auto=format&fit=crop"
     },
     {
       title: "Ofertas Validadas",
@@ -116,7 +119,8 @@ export default function Home() {
       color: "text-white",
       bg: "bg-white/10",
       target: "ofertas",
-      badge: "Curadoria"
+      badge: "Curadoria",
+      preview: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?q=80&w=1600&auto=format&fit=crop"
     },
     {
       title: "Área do Mentorado",
@@ -125,7 +129,8 @@ export default function Home() {
       color: "text-white",
       bg: "bg-white/10",
       target: "alunos",
-      badge: "Comunidade"
+      badge: "Comunidade",
+      preview: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1600&auto=format&fit=crop"
     },
     {
       title: "Criativos",
@@ -134,7 +139,8 @@ export default function Home() {
       color: "text-white",
       bg: "bg-white/10",
       target: "creative-edit",
-      badge: "Design"
+      badge: "Design",
+      preview: "https://images.unsplash.com/photo-1626785774573-4b799315345d?q=80&w=1600&auto=format&fit=crop"
     },
     {
       title: "Copywrite",
@@ -143,7 +149,8 @@ export default function Home() {
       color: "text-white",
       bg: "bg-white/10",
       target: "copywrite",
-      badge: "Copy"
+      badge: "Copy",
+      preview: "https://images.unsplash.com/photo-1455390582262-044cdead277a?q=80&w=1600&auto=format&fit=crop"
     },
     {
       title: "Contas de Facebook Ads",
@@ -152,7 +159,8 @@ export default function Home() {
       color: "text-white",
       bg: "bg-white/10",
       target: "fb-accounts",
-      badge: "Ads"
+      badge: "Ads",
+      preview: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=1600&auto=format&fit=crop"
     },
     {
       title: "Comprar Site",
@@ -161,7 +169,8 @@ export default function Home() {
       color: "text-white",
       bg: "bg-white/10",
       target: "site-creation",
-      badge: "Escala"
+      badge: "Escala",
+      preview: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?q=80&w=1600&auto=format&fit=crop"
     },
     {
       title: "Aulas Gravadas",
@@ -170,7 +179,8 @@ export default function Home() {
       color: "text-white",
       bg: "bg-white/10",
       target: "mentorias",
-      badge: "Membro"
+      badge: "Membro",
+      preview: "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?q=80&w=1600&auto=format&fit=crop"
     },
     {
       title: "Minhas Ofertas",
@@ -179,9 +189,12 @@ export default function Home() {
       color: "text-white",
       bg: "bg-white/10",
       target: "minhas-ofertas",
-      badge: "Privado"
+      badge: "Privado",
+      preview: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=1600&auto=format&fit=crop"
     }
   ];
+
+  const [previewItem, setPreviewItem] = useState<typeof services[number] | null>(null);
 
 
   return (
@@ -276,8 +289,10 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service, idx) => (
               <Reveal key={service.title} delay={idx * 150}>
-                <div 
-                  className="group relative h-full p-10 glass-smooth hover:bg-white/10 transition-all duration-700 rounded-[2.5rem]"
+                <button
+                  type="button"
+                  onClick={() => setPreviewItem(service)}
+                  className="group relative h-full w-full text-left p-10 glass-smooth hover:bg-white/10 transition-all duration-700 rounded-[2.5rem] cursor-pointer"
                 >
                   <div className={`w-16 h-16 ${service.bg} rounded-2xl mb-10 group-hover:rotate-[10deg] transition-transform duration-500 flex items-center justify-center`}>
                     <service.icon className={`w-8 h-8 ${service.color}`} />
@@ -290,16 +305,77 @@ export default function Home() {
                   <h3 className="text-3xl font-serif-display text-white mb-6 group-hover:tracking-wide transition-all">
                     {service.title}
                   </h3>
-                  
+
                   <p className="text-white/40 leading-relaxed font-light text-sm">
                     {service.description}
                   </p>
-                </div>
+                </button>
               </Reveal>
             ))}
           </div>
         </div>
       </section>
+
+      {/* Locked Preview Modal */}
+      {previewItem && (
+        <div
+          className="fixed inset-0 z-[400] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200"
+          onClick={() => setPreviewItem(null)}
+        >
+          <div
+            className="relative w-full max-w-3xl bg-neutral-950 border border-white/10 rounded-[2rem] overflow-hidden shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setPreviewItem(null)}
+              className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-black/60 hover:bg-black/80 flex items-center justify-center text-white/80 hover:text-white transition"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="relative aspect-video w-full overflow-hidden">
+              <img
+                src={previewItem.preview}
+                alt={previewItem.title}
+                className="absolute inset-0 w-full h-full object-cover blur-md scale-110 opacity-60"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/60 to-transparent" />
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+                <div className="w-20 h-20 rounded-full bg-white/10 border border-white/20 flex items-center justify-center mb-5 backdrop-blur-sm">
+                  <Lock className="w-9 h-9 text-white" />
+                </div>
+                <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-white/60 mb-2">
+                  Conteúdo bloqueado
+                </span>
+                <h4 className="text-2xl sm:text-3xl font-serif-display text-white">
+                  {previewItem.title}
+                </h4>
+              </div>
+            </div>
+
+            <div className="p-8 sm:p-10 text-center">
+              <p className="text-white/60 font-light leading-relaxed mb-8 max-w-xl mx-auto">
+                {previewItem.description} <br />
+                <span className="text-white/40 text-sm">
+                  Entre na Convert Club para liberar o acesso completo.
+                </span>
+              </p>
+              <Button
+                size="lg"
+                onClick={() => {
+                  setPreviewItem(null);
+                  if (user) navigate('/menu');
+                  else navigate('/auth');
+                }}
+                className="bg-white hover:bg-white/90 text-black h-14 px-10 rounded-full text-base font-bold shadow-[0_0_40px_rgba(255,255,255,0.2)]"
+              >
+                Entrar na Comunidade
+                <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Experience Section */}
       <section id="how-it-works" className="py-32 px-6 relative overflow-hidden">
