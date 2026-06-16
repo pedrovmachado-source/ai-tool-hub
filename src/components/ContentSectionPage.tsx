@@ -839,19 +839,35 @@ function FbAccountsTower({
                 })}
               </div>
 
-              <div className="border-t border-white/10 pt-4 mb-6 flex items-baseline justify-between">
+              <div className="border-t border-white/10 pt-4 mb-3 flex items-baseline justify-between">
                 <span className="text-[10px] font-bold text-white/40 tracking-[0.2em] uppercase">Total</span>
                 <span className="text-2xl font-serif-display text-white tabular-nums">
                   {formatBRL(totalCents)}
                 </span>
               </div>
 
+              <div className="mb-6 flex items-center justify-between rounded-xl bg-white/[0.03] border border-white/5 px-3 py-2">
+                <span className="text-[10px] font-bold text-white/40 tracking-[0.2em] uppercase flex items-center gap-1.5">
+                  <Wallet size={12} /> Saldo
+                </span>
+                <span className={`text-sm font-bold tabular-nums ${insufficient ? 'text-red-400' : 'text-brand-green'}`}>
+                  {formatBRL(balanceCents)}
+                </span>
+              </div>
+
               <button
                 onClick={handleCheckout}
-                className="w-full py-4 px-6 rounded-2xl bg-white text-black font-bold text-xs uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_30px_rgba(255,255,255,0.15)] flex items-center justify-center gap-2"
+                disabled={paying || insufficient}
+                className={`w-full py-4 px-6 rounded-2xl font-bold text-xs uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 ${
+                  insufficient
+                    ? 'bg-white/10 text-white/40 cursor-not-allowed'
+                    : 'bg-white text-black hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_30px_rgba(255,255,255,0.15)]'
+                } ${paying ? 'opacity-60 cursor-wait' : ''}`}
               >
-                <ShoppingCart size={14} /> Finalizar Compra
+                <Wallet size={14} />
+                {paying ? 'Processando…' : insufficient ? `Adicione ${formatBRL(totalCents - balanceCents)} de saldo` : 'Pagar com Saldo'}
               </button>
+
 
               <div className="mt-6 pt-6 border-t border-white/5 grid grid-cols-2 gap-4 text-[10px] font-bold text-white/30 tracking-[0.2em] uppercase">
                 <div className="flex items-center gap-2">
