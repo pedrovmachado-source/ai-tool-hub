@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import type { Category, Tool } from '@/data/tools-data';
 import { toast } from '@/hooks/use-toast';
@@ -35,59 +36,55 @@ function mapDbCategoryToCategory(dbCat: any, tools: any[]): Category {
   };
 }
 
+async function fetchCategoriesData(): Promise<Category[]> {
+  const [catFull, toolFull] = await Promise.all([
+    supabase.from('categories').select('*').order('sort_order'),
+    supabase.from('tools').select('*').order('sort_order'),
+  ]);
+
+  let catData: any[] | null = null;
+  let toolData: any[] | null = null;
+
+  if (!catFull.error && catFull.data && catFull.data.length > 0) catData = catFull.data;
+  if (!toolFull.error && toolFull.data && toolFull.data.length > 0) toolData = toolFull.data;
+
+  if (!catData) {
+    const { data, error } = await (supabase as any).rpc('list_categories_public');
+    if (error) throw error;
+    catData = data || [];
+  }
+  if (!toolData) {
+    const { data, error } = await (supabase as any).rpc('list_tools_public');
+    if (error) throw error;
+    toolData = data || [];
+  }
+
+  return (catData || []).map((c: any) => mapDbCategoryToCategory(c, toolData || []));
+}
+
+const CATEGORIES_KEY = ['categories'] as const;
+
 export function useCategories() {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+
+  const { data: categories = [], isLoading, error, refetch } = useQuery({
+    queryKey: CATEGORIES_KEY,
+    queryFn: fetchCategoriesData,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  });
 
   const fetchCategories = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+    await refetch();
+  }, [refetch]);
 
-    try {
-      // Try to fetch full data first (Pro/admin will succeed)
-      const [catFull, toolFull] = await Promise.all([
-        supabase.from('categories').select('*').order('sort_order'),
-        supabase.from('tools').select('*').order('sort_order'),
-      ]);
-
-      let catData: any[] | null = null;
-      let toolData: any[] | null = null;
-
-      if (!catFull.error && catFull.data && catFull.data.length > 0) {
-        catData = catFull.data;
-      }
-      if (!toolFull.error && toolFull.data && toolFull.data.length > 0) {
-        toolData = toolFull.data;
-      }
-
-      // Fall back to public (safe-fields only) RPCs for Free / unauthenticated visitors
-      if (!catData) {
-        const { data, error } = await (supabase as any).rpc('list_categories_public');
-        if (error) throw error;
-        catData = data || [];
-      }
-      if (!toolData) {
-        const { data, error } = await (supabase as any).rpc('list_tools_public');
-        if (error) throw error;
-        toolData = data || [];
-      }
-
-      setCategories(
-        (catData || []).map((c: any) => mapDbCategoryToCategory(c, toolData || []))
-      );
-    } catch (err) {
-      console.error('Falha ao carregar categorias e ferramentas', err);
-      setCategories([]);
-      setError(err instanceof Error ? err.message : 'Não foi possível carregar o conteúdo.');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchCategories();
-  }, [fetchCategories]);
+  const setCategories = useCallback((updater: Category[] | ((prev: Category[]) => Category[])) => {
+    queryClient.setQueryData<Category[]>(CATEGORIES_KEY, (prev = []) =>
+      typeof updater === 'function' ? (updater as any)(prev) : updater
+    );
+  }, [queryClient]);
 
   const updateCategory = useCallback(async (cat: Category) => {
     try {
@@ -113,7 +110,7 @@ export function useCategories() {
         description: err.message
       });
     }
-  }, []);
+  }, [setCategories]);
 
   const saveTool = useCallback(async (tool: Tool, categoryKey: string, isNew: boolean) => {
     const { key, name, url, urlLabel, badge, desc, ...rest } = tool;
@@ -133,15 +130,24 @@ export function useCategories() {
     } else {
       await supabase.from('tools').update(row).eq('key', key);
     }
-    await fetchCategories();
-  }, [fetchCategories]);
+    await refetch();
+  }, [refetch]);
 
   const deleteTool = useCallback(async (toolKey: string) => {
     await supabase.from('tools').delete().eq('key', toolKey);
     setCategories(prev =>
       prev.map(c => ({ ...c, tools: c.tools.filter(t => t.key !== toolKey) }))
     );
-  }, []);
+  }, [setCategories]);
 
-  return { categories, loading, error, fetchCategories, updateCategory, saveTool, deleteTool, setCategories };
+  return {
+    categories,
+    loading: isLoading,
+    error: error instanceof Error ? error.message : (error ? 'Não foi possível carregar o conteúdo.' : null),
+    fetchCategories,
+    updateCategory,
+    saveTool,
+    deleteTool,
+    setCategories,
+  };
 }
