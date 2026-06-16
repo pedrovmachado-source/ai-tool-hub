@@ -23,7 +23,7 @@ const DEFAULT_ITEMS: NavItem[] = [
   { key: 'menu', label: 'Ais', icon: 'Sparkles', color: 'text-white', target: 'ferramentas', enabled: true, sort_order: 1 },
   { key: 'offers', label: 'Ofertas validadas', icon: 'Sparkles', color: 'text-white', target: 'ofertas', enabled: true, sort_order: 2 },
   { key: 'alunos', label: 'Área do Mentorado', icon: 'Users', color: 'text-white', target: 'alunos', enabled: true, sort_order: 3 },
-  { key: 'creative-edit', label: 'Comprar Criativo', icon: 'Wand2', color: 'text-white', target: 'creative-edit', enabled: true, sort_order: 4 },
+  { key: 'creative-edit', label: 'Criativos', icon: 'Wand2', color: 'text-white', target: 'creative-edit', enabled: true, sort_order: 4 },
   { key: 'copywrite', label: 'Copywrite', icon: 'PenTool', color: 'text-white', target: 'copywrite', enabled: true, sort_order: 5 },
   { key: 'fb-accounts', label: 'Contas de Facebook Ads', icon: 'Facebook', color: 'text-white', target: 'fb-accounts', enabled: true, sort_order: 6 },
   { key: 'purchased', label: 'Contas Compradas', icon: 'CreditCard', color: 'text-white', target: 'https://billing.stripe.com/p/login/test_6oE8xU1v0fXn5EYcMM', enabled: true, sort_order: 7 },

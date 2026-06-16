@@ -28,7 +28,7 @@ const TARGET_OPTIONS = [
   { value: 'ferramentas', label: 'Ais' },
   { value: 'ofertas', label: 'Ofertas validadas' },
   { value: 'site-creation', label: 'Comprar Site' },
-  { value: 'creative-edit', label: 'Comprar Criativo' },
+  { value: 'creative-edit', label: 'Criativos' },
   { value: 'fb-accounts', label: 'Contas de Facebook Ads' },
   { value: 'niche-lessons', label: 'Aulas por nicho' },
   { value: 'lessons', label: 'Aulas gravadas' },
