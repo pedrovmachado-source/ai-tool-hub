@@ -289,11 +289,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service, idx) => (
               <Reveal key={service.title} delay={idx * 150}>
-                <button
-                  type="button"
-                  onClick={() => setPreviewItem(service)}
-                  className="group relative h-full w-full text-left p-10 glass-smooth hover:bg-white/10 transition-all duration-700 rounded-[2.5rem] cursor-pointer"
-                >
+                <div className="group relative h-full w-full text-left p-10 glass-smooth hover:bg-white/10 transition-all duration-700 rounded-[2.5rem]">
                   <div className={`w-16 h-16 ${service.bg} rounded-2xl mb-10 group-hover:rotate-[10deg] transition-transform duration-500 flex items-center justify-center`}>
                     <service.icon className={`w-8 h-8 ${service.color}`} />
                   </div>
@@ -309,73 +305,13 @@ export default function Home() {
                   <p className="text-white/40 leading-relaxed font-light text-sm">
                     {service.description}
                   </p>
-                </button>
+                </div>
               </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Locked Preview Modal */}
-      {previewItem && (
-        <div
-          className="fixed inset-0 z-[400] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200"
-          onClick={() => setPreviewItem(null)}
-        >
-          <div
-            className="relative w-full max-w-3xl bg-neutral-950 border border-white/10 rounded-[2rem] overflow-hidden shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setPreviewItem(null)}
-              className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-black/60 hover:bg-black/80 flex items-center justify-center text-white/80 hover:text-white transition"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="relative aspect-video w-full overflow-hidden">
-              <img
-                src={previewItem.preview}
-                alt={previewItem.title}
-                className="absolute inset-0 w-full h-full object-cover blur-md scale-110 opacity-60"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/60 to-transparent" />
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-                <div className="w-20 h-20 rounded-full bg-white/10 border border-white/20 flex items-center justify-center mb-5 backdrop-blur-sm">
-                  <Lock className="w-9 h-9 text-white" />
-                </div>
-                <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-white/60 mb-2">
-                  Conteúdo bloqueado
-                </span>
-                <h4 className="text-2xl sm:text-3xl font-serif-display text-white">
-                  {previewItem.title}
-                </h4>
-              </div>
-            </div>
-
-            <div className="p-8 sm:p-10 text-center">
-              <p className="text-white/60 font-light leading-relaxed mb-8 max-w-xl mx-auto">
-                {previewItem.description} <br />
-                <span className="text-white/40 text-sm">
-                  Entre na Convert Club para liberar o acesso completo.
-                </span>
-              </p>
-              <Button
-                size="lg"
-                onClick={() => {
-                  setPreviewItem(null);
-                  if (user) navigate('/menu');
-                  else navigate('/auth');
-                }}
-                className="bg-white hover:bg-white/90 text-black h-14 px-10 rounded-full text-base font-bold shadow-[0_0_40px_rgba(255,255,255,0.2)]"
-              >
-                Entrar na Comunidade
-                <ArrowRight className="ml-2 w-4 h-4" />
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Experience Section */}
       <section id="how-it-works" className="py-32 px-6 relative overflow-hidden">
