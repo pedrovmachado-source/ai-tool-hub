@@ -7,7 +7,7 @@ import { ArrowLeft, Play, FileText, Image as ImageIcon, Lock, FileText as TextIc
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { PdfModal, VideoModal, ImageModal } from '@/lib/lessonViewers';
+import { PdfModal, VideoModal, ImageModal, getEmbedUrl } from '@/lib/lessonViewers';
 import OfferModal from './OfferModal';
 import PurchasedAccountsModal from './PurchasedAccountsModal';
 import PaymentSelectionModal from './PaymentSelectionModal';
@@ -294,62 +294,54 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
       {/* Info Modal for Creative Edit */}
       <Dialog open={!!infoItem} onOpenChange={(open) => !open && setInfoItem(null)}>
         <DialogContent className="max-w-3xl bg-[#141414] border-white/10 text-white rounded-[2.5rem] overflow-hidden p-0 gap-0 shadow-2xl">
-          <div className="relative aspect-video w-full bg-black/40">
-            {infoItem?.image_url ? (
-              <img src={infoItem.image_url} alt={infoItem.title} className="w-full h-full object-cover opacity-60" />
+          <div className="relative aspect-video w-full bg-black">
+            {infoItem?.video_url ? (
+              <iframe
+                key={infoItem.id}
+                src={getEmbedUrl(infoItem.video_url) || infoItem.video_url}
+                className="w-full h-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            ) : infoItem?.image_url ? (
+              <img src={infoItem.image_url} alt={infoItem.title} className="w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-white/5">
                 <ImageIcon className="w-20 h-20 text-white/10" />
               </div>
             )}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-transparent to-transparent" />
-            <div className="absolute bottom-8 left-8 right-8">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-smooth mb-4 border border-white/10">
-                <Sparkles size={12} className="text-white/60" />
-                <span className="text-[10px] font-bold text-white/60 tracking-[0.2em] uppercase">{infoItem?.topic || 'Criativo Elite'}</span>
-              </div>
-              <h2 className="text-4xl font-serif-display tracking-tight text-white mb-2">{infoItem?.title}</h2>
-              <p className="text-white/40 text-sm font-light">{infoItem?.description}</p>
-            </div>
           </div>
-          
-          <ScrollArea className="max-h-[50vh] p-8">
+
+          <div className="px-8 pt-6 pb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-smooth mb-4 border border-white/10">
+              <Sparkles size={12} className="text-white/60" />
+              <span className="text-[10px] font-bold text-white/60 tracking-[0.2em] uppercase">{infoItem?.topic || 'Criativo Elite'}</span>
+            </div>
+            <h2 className="text-3xl font-serif-display tracking-tight text-white mb-2">{infoItem?.title}</h2>
+            <p className="text-white/40 text-sm font-light">{infoItem?.description}</p>
+          </div>
+
+          <ScrollArea className="max-h-[30vh] px-8 pb-4">
             <div className="prose prose-invert max-w-none">
-              <div className="text-white/70 font-light leading-relaxed whitespace-pre-wrap">
-                {infoItem?.body || 'Nenhum conteúdo detalhado disponível.'}
-              </div>
-              
-              {(infoItem?.example_url || infoItem?.video_url) && (
-                <div className="mt-12 p-8 rounded-3xl bg-white/5 border border-white/10">
-                  <h4 className="text-white font-bold mb-4 flex items-center gap-2">
-                    <ArrowRight size={16} className="text-white/40" /> Recursos Disponíveis
-                  </h4>
-                  <div className="flex flex-wrap gap-4">
-                    {infoItem?.video_url && (
-                      <button 
-                        onClick={() => { setVideo(infoItem); setInfoItem(null); }}
-                        className="px-6 py-3 rounded-xl bg-white text-black font-bold text-xs uppercase tracking-widest hover:scale-105 transition-all flex items-center gap-2"
-                      >
-                        <Play size={14} /> Assistir Aula
-                      </button>
-                    )}
-                    {infoItem?.example_url && (
-                      <a 
-                        href={infoItem.example_url} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="px-6 py-3 rounded-xl border border-white/10 text-white font-bold text-xs uppercase tracking-widest hover:bg-white/5 transition-all flex items-center gap-2"
-                      >
-                        <ExternalLink size={14} className="text-white/40" /> Ver Exemplo Real
-                      </a>
-                    )}
-                  </div>
+              {infoItem?.body && (
+                <div className="text-white/70 font-light leading-relaxed whitespace-pre-wrap mt-4">
+                  {infoItem.body}
                 </div>
+              )}
+              {infoItem?.example_url && (
+                <a
+                  href={infoItem.example_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-6 inline-flex px-6 py-3 rounded-xl border border-white/10 text-white font-bold text-xs uppercase tracking-widest hover:bg-white/5 transition-all items-center gap-2"
+                >
+                  <ExternalLink size={14} className="text-white/40" /> Ver Exemplo Real
+                </a>
               )}
             </div>
           </ScrollArea>
-          
-          <div className="p-8 border-t border-white/5 flex justify-end bg-[#1a1a1a]">
+
+          <div className="p-6 border-t border-white/5 flex justify-end bg-[#1a1a1a]">
              <button 
               onClick={() => setInfoItem(null)}
               className="px-8 py-3 rounded-full border border-white/5 text-white/40 text-xs font-bold uppercase tracking-widest hover:bg-white/5 transition-all"
