@@ -30,6 +30,7 @@ interface Item {
   example_url: string | null;
   buy_url: string | null;
   sort_order: number;
+  examples?: { label: string; url: string }[] | null;
 }
 
 const inputCls = 'w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue';
