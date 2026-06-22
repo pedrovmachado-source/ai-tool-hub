@@ -37,7 +37,16 @@ interface Item {
   example_url: string | null;
   buy_url: string | null;
   sort_order: number;
-  
+  examples?: { label: string; url: string }[] | null;
+}
+
+function toEmbedUrl(url: string): string {
+  // Google Drive: /file/d/{id}/view -> /file/d/{id}/preview
+  const gdrive = url.match(/drive\.google\.com\/file\/d\/([^/]+)/);
+  if (gdrive) return `https://drive.google.com/file/d/${gdrive[1]}/preview`;
+  const gdriveOpen = url.match(/drive\.google\.com\/open\?id=([^&]+)/);
+  if (gdriveOpen) return `https://drive.google.com/file/d/${gdriveOpen[1]}/preview`;
+  return getEmbedUrl(url) || url;
 }
 
 interface ContentSectionData {
