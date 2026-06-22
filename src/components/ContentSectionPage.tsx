@@ -63,10 +63,10 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
   const { data = { section: null, items: [] }, isLoading: loading } = useQuery({
     queryKey: ['content-section', slug],
     queryFn: () => fetchContentSection(slug),
-    staleTime: 5 * 60 * 1000,
+    staleTime: 0,
     gcTime: 10 * 60 * 1000,
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: true,
   });
   const { section, items } = data;
   const [video, setVideo] = useState<Item | null>(null);
