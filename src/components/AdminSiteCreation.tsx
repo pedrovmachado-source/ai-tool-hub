@@ -53,10 +53,10 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-export default function AdminSiteCreation({ initialTab = 'products' }: { initialTab?: 'products' | 'orders' } = {}) {
+export default function AdminSiteCreation({ initialTab = 'products', kindFilter }: { initialTab?: 'products' | 'orders'; kindFilter?: 'site' | 'criativo' } = {}) {
   const [tab, setTab] = useState<'products' | 'orders'>(initialTab);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [allOrders, setAllOrders] = useState<Order[]>([]);
   const [form, setForm] = useState<Partial<Product> | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -67,12 +67,24 @@ export default function AdminSiteCreation({ initialTab = 'products' }: { initial
         supabase.from('site_products' as any).select('*').order('kind').order('sort_order'),
         supabase.from('site_orders' as any).select('*').order('created_at', { ascending: false }).limit(300),
       ]);
-      if (p.data) setProducts(p.data as unknown as Product[]);
-      if (o.data) setOrders(o.data as unknown as Order[]);
+      if (p.data) setAllProducts(p.data as unknown as Product[]);
+      if (o.data) setAllOrders(o.data as unknown as Order[]);
     } finally { setLoading(false); }
   };
 
   useEffect(() => { void reload(); }, []);
+
+  const products = useMemo(
+    () => kindFilter ? allProducts.filter(p => p.kind === kindFilter) : allProducts,
+    [allProducts, kindFilter]
+  );
+  const orders = useMemo(() => {
+    if (!kindFilter) return allOrders;
+    const slugs = new Set(allProducts.filter(p => p.kind === kindFilter).map(p => p.slug));
+    return allOrders.filter(o => slugs.has(o.product_slug));
+  }, [allOrders, allProducts, kindFilter]);
+
+  const isCriativos = kindFilter === 'criativo';
 
   // Auto-mark unread orders as read when opening the orders tab
   useEffect(() => {
