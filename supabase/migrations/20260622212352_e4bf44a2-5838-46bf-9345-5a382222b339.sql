@@ -1,0 +1,1 @@
+UPDATE public.content_items SET examples='[{"label":"Exemplo 1","url":"https://drive.google.com/file/d/1a6mxXfXrGC1nUc7my8tTYZBgDSpr05JZ/view?usp=drive_link"},{"label":"Exemplo 2","url":"https://drive.google.com/file/d/1R3pDJe_cDm56VGTXmVvRQxAiFDHjM1j_/view?usp=drive_link"}]'::jsonb WHERE id='3ff93db5-dccc-41c4-badf-1fc5dbbb8a09';
