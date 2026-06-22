@@ -312,25 +312,32 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
       
 
       {/* Info Modal for Creative Edit */}
-      <Dialog open={!!infoItem} onOpenChange={(open) => !open && setInfoItem(null)}>
+      <Dialog open={!!infoItem} onOpenChange={(open) => { if (!open) { setInfoItem(null); setExampleIdx(0); } }}>
         <DialogContent className="max-w-3xl bg-[#141414] border-white/10 text-white rounded-[2.5rem] overflow-hidden p-0 gap-0 shadow-2xl">
-          <div className="relative aspect-video w-full bg-black">
-            {infoItem?.video_url ? (
-              <iframe
-                key={infoItem.id}
-                src={getEmbedUrl(infoItem.video_url) || infoItem.video_url}
-                className="w-full h-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            ) : infoItem?.image_url ? (
-              <img src={infoItem.image_url} alt={infoItem.title} className="w-full h-full object-cover" />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center bg-white/5">
-                <ImageIcon className="w-20 h-20 text-white/10" />
+          {(() => {
+            const examples = Array.isArray(infoItem?.examples) ? infoItem!.examples! : [];
+            const activeExample = examples[exampleIdx];
+            const mediaUrl = activeExample?.url || infoItem?.video_url || null;
+            return (
+              <div className="relative aspect-video w-full bg-black">
+                {mediaUrl ? (
+                  <iframe
+                    key={`${infoItem?.id}-${exampleIdx}`}
+                    src={toEmbedUrl(mediaUrl)}
+                    className="w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                ) : infoItem?.image_url ? (
+                  <img src={infoItem.image_url} alt={infoItem.title} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-white/5">
+                    <ImageIcon className="w-20 h-20 text-white/10" />
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            );
+          })()}
 
           <div className="px-8 pt-6 pb-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-smooth mb-4 border border-white/10">
@@ -348,6 +355,26 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
                   {infoItem.body}
                 </div>
               )}
+              {Array.isArray(infoItem?.examples) && infoItem!.examples!.length > 0 && (
+                <div className="mt-6">
+                  <p className="text-[10px] font-bold text-brand-amber tracking-[0.2em] uppercase mb-3">Exemplos:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {infoItem!.examples!.map((ex, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setExampleIdx(idx)}
+                        className={`px-5 py-2 rounded-full text-[11px] font-bold uppercase tracking-widest transition-all ${
+                          exampleIdx === idx
+                            ? 'bg-brand-amber text-black'
+                            : 'border border-white/10 text-white/60 hover:bg-white/5'
+                        }`}
+                      >
+                        {ex.label || `Exemplo ${idx + 1}`}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
               {infoItem?.example_url && (
                 <a
                   href={infoItem.example_url}
@@ -360,6 +387,7 @@ export default function ContentSectionPage({ slug, onBack, onUpgrade }: { slug: 
               )}
             </div>
           </ScrollArea>
+
 
           <div className="p-6 border-t border-white/5 flex justify-end bg-[#1a1a1a]">
              <button 
