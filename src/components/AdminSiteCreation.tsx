@@ -211,7 +211,7 @@ export default function AdminSiteCreation({ initialTab = 'products', kindFilter 
       {tab === 'products' && (
         <>
           <div className="mb-4 flex justify-end">
-            <button onClick={() => setForm({ kind: 'site', col: 'ia', active: true, sort_order: products.length })} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-[12px] bg-brand-blue text-primary-foreground">
+            <button onClick={() => setForm({ kind: kindFilter || 'site', col: 'ia', active: true, sort_order: products.length })} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-[12px] bg-brand-blue text-primary-foreground">
               <Plus size={14} /> Novo produto
             </button>
           </div>
