@@ -536,6 +536,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'lessons', label: 'Aulas gravadas', icon: GraduationCap },
     { key: 'niche-lessons', label: 'Aulas por nicho', icon: Video },
     { key: 'site-creation', label: 'Comprar Site', icon: Folder },
+    { key: 'creatives', label: 'Criativos', icon: ImageIcon },
     { key: 'sections', label: 'Conteúdos', icon: Folder },
     { key: 'menu', label: 'Menu Lateral', icon: Menu },
     { key: 'student-areas', label: 'Área do Mentorado', icon: GraduationCap },
