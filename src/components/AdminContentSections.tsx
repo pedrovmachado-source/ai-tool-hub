@@ -170,6 +170,7 @@ export default function AdminContentSections({ autoOpenSlug }: { autoOpenSlug?: 
     }
     toast({ title: 'Item salvo' });
     setItemForm(null);
+    invalidatePublic(openSection.slug);
     await reload();
   };
 
@@ -180,6 +181,7 @@ export default function AdminContentSections({ autoOpenSlug }: { autoOpenSlug?: 
     if (error) { toast({ title: 'Erro', description: error.message, variant: 'destructive' }); return; }
     void logActivity({ action: 'delete', entity_type: 'content_item', entity_id: item.id, entity_label: item.title });
     toast({ title: 'Item excluído' });
+    invalidatePublic(item.section_slug);
     await reload();
   };
 
