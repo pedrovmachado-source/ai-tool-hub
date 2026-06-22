@@ -298,6 +298,56 @@ export default function AdminContentSections({ autoOpenSlug }: { autoOpenSlug?: 
 
               <Field label="Link de exemplo (opcional — usado em Ofertas)"><input value={itemForm.example_url || ''} onChange={e => setItemForm({ ...itemForm, example_url: e.target.value })} placeholder="https://..." className={inputCls} /></Field>
               <Field label="Link de compra Stripe (opcional — botão Comprar)"><input value={itemForm.buy_url || ''} onChange={e => setItemForm({ ...itemForm, buy_url: e.target.value })} placeholder="https://buy.stripe.com/..." className={inputCls} /></Field>
+
+              <Field label="Exemplos (vídeos — Google Drive, YouTube, etc — viram botões EXEMPLO 1, 2, 3...)">
+                <div className="space-y-2">
+                  {(itemForm.examples || []).map((ex, idx) => (
+                    <div key={idx} className="flex gap-2">
+                      <input
+                        value={ex.label}
+                        onChange={e => {
+                          const next = [...(itemForm.examples || [])];
+                          next[idx] = { ...next[idx], label: e.target.value };
+                          setItemForm({ ...itemForm, examples: next });
+                        }}
+                        placeholder={`Exemplo ${idx + 1}`}
+                        className={inputCls + ' w-32 flex-shrink-0'}
+                      />
+                      <input
+                        value={ex.url}
+                        onChange={e => {
+                          const next = [...(itemForm.examples || [])];
+                          next[idx] = { ...next[idx], url: e.target.value };
+                          setItemForm({ ...itemForm, examples: next });
+                        }}
+                        placeholder="https://drive.google.com/file/d/..."
+                        className={inputCls + ' flex-1'}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const next = (itemForm.examples || []).filter((_, i) => i !== idx);
+                          setItemForm({ ...itemForm, examples: next });
+                        }}
+                        className="text-brand-red/70 hover:text-brand-red px-2"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const next = [...(itemForm.examples || []), { label: `EXEMPLO ${(itemForm.examples?.length || 0) + 1}`, url: '' }];
+                      setItemForm({ ...itemForm, examples: next });
+                    }}
+                    className="flex items-center gap-1.5 text-[11px] text-brand-blue-medium hover:opacity-80"
+                  >
+                    <Plus size={12} /> Adicionar exemplo
+                  </button>
+                </div>
+              </Field>
+
               <Field label="Ordem"><input type="number" value={itemForm.sort_order ?? 0} onChange={e => setItemForm({ ...itemForm, sort_order: Number(e.target.value) })} className={inputCls} /></Field>
               <div className="flex justify-end gap-2 mt-4">
                 <button onClick={() => setItemForm(null)} className="px-4 py-2 text-sm text-muted-foreground/60">Cancelar</button>
