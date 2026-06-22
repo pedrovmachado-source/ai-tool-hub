@@ -73,7 +73,7 @@ export default function AdminContentSections({ autoOpenSlug }: { autoOpenSlug?: 
         if (target) setOpenSection(prev => prev ?? target);
       }
     }
-    if (i.data) setItems(i.data as Item[]);
+    if (i.data) setItems((i.data as unknown) as Item[]);
     setLoading(false);
   };
 
