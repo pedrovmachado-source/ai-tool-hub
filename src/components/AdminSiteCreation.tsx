@@ -176,8 +176,8 @@ export default function AdminSiteCreation({ initialTab = 'products', kindFilter 
     <>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-xl font-medium text-primary-foreground">Criação de Site</h1>
-          <p className="text-[12px] text-muted-foreground/50">Gerencie produtos e pedidos recebidos.</p>
+          <h1 className="text-xl font-medium text-primary-foreground">{isCriativos ? 'Criativos' : 'Criação de Site'}</h1>
+          <p className="text-[12px] text-muted-foreground/50">{isCriativos ? 'Gerencie os criativos disponíveis para venda e os pedidos recebidos.' : 'Gerencie produtos e pedidos recebidos.'}</p>
         </div>
         <div className="flex gap-2">
           <button onClick={() => setTab('products')} className={`px-3 py-1.5 rounded-lg text-[12px] ${tab === 'products' ? 'bg-brand-blue text-primary-foreground' : 'bg-primary-foreground/5 text-muted-foreground/60'}`}>
