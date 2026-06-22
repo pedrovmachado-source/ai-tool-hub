@@ -309,19 +309,25 @@ export default function AdminSiteCreation({ initialTab = 'products', kindFilter 
               <button onClick={() => setForm(null)} className="text-muted-foreground/40"><X size={16} /></button>
             </div>
             <Field label="Slug (único)"><input value={form.slug || ''} onChange={e => setForm({ ...form, slug: e.target.value })} placeholder="ex: ia-landing" className={inputCls} /></Field>
-            <Field label="Tipo">
-              <select value={form.kind || 'site'} onChange={e => setForm({ ...form, kind: e.target.value as 'site' | 'criativo' })} className={inputCls}>
-                <option value="site">Site (Comprar Site Pronto)</option>
-                <option value="criativo">Criativo (Comprar Criativo)</option>
-              </select>
-            </Field>
-            <Field label="Coluna (só para sites)">
-              <select value={form.col || 'ia'} onChange={e => setForm({ ...form, col: e.target.value as 'ia' | 'manual' })} className={inputCls}>
-                <option value="ia">Copy com IA</option>
-                <option value="manual">Copy à Mão</option>
-              </select>
-            </Field>
-            <Field label="Linha (row_key — agrupa IA + Manual)"><input value={form.row_key || ''} onChange={e => setForm({ ...form, row_key: e.target.value })} placeholder="ex: landing, quiz, advertorial" className={inputCls} /></Field>
+            {!kindFilter && (
+              <Field label="Tipo">
+                <select value={form.kind || 'site'} onChange={e => setForm({ ...form, kind: e.target.value as 'site' | 'criativo' })} className={inputCls}>
+                  <option value="site">Site (Comprar Site Pronto)</option>
+                  <option value="criativo">Criativo (Comprar Criativo)</option>
+                </select>
+              </Field>
+            )}
+            {(form.kind || kindFilter) !== 'criativo' && (
+              <>
+                <Field label="Coluna (só para sites)">
+                  <select value={form.col || 'ia'} onChange={e => setForm({ ...form, col: e.target.value as 'ia' | 'manual' })} className={inputCls}>
+                    <option value="ia">Copy com IA</option>
+                    <option value="manual">Copy à Mão</option>
+                  </select>
+                </Field>
+                <Field label="Linha (row_key — agrupa IA + Manual)"><input value={form.row_key || ''} onChange={e => setForm({ ...form, row_key: e.target.value })} placeholder="ex: landing, quiz, advertorial" className={inputCls} /></Field>
+              </>
+            )}
             <Field label="Nome"><input value={form.name || ''} onChange={e => setForm({ ...form, name: e.target.value })} className={inputCls} /></Field>
             <Field label="Preço (R$)"><input value={form.price || ''} onChange={e => setForm({ ...form, price: e.target.value })} placeholder="200" className={inputCls} /></Field>
             <Field label="Descrição curta"><textarea value={form.short_desc || ''} onChange={e => setForm({ ...form, short_desc: e.target.value })} rows={3} className={inputCls + ' resize-none'} /></Field>
