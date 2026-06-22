@@ -42,7 +42,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-export default function AdminContentSections() {
+export default function AdminContentSections({ autoOpenSlug }: { autoOpenSlug?: string } = {}) {
   const [sections, setSections] = useState<Section[]>([]);
   const [items, setItems] = useState<Item[]>([]);
   const [openSection, setOpenSection] = useState<Section | null>(null);
@@ -57,7 +57,14 @@ export default function AdminContentSections() {
       supabase.from('content_sections').select('*').order('sort_order'),
       supabase.from('content_items').select('*').order('sort_order'),
     ]);
-    if (s.data) setSections(s.data as Section[]);
+    if (s.data) {
+      const list = s.data as Section[];
+      setSections(list);
+      if (autoOpenSlug) {
+        const target = list.find(x => x.slug === autoOpenSlug);
+        if (target) setOpenSection(prev => prev ?? target);
+      }
+    }
     if (i.data) setItems(i.data as Item[]);
     setLoading(false);
   };
