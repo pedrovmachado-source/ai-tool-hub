@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Plus, Pencil, Trash2, X, ArrowLeft, Upload, Folder, Play, FileText, Image as ImageIcon, FileText as TextIcon } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
