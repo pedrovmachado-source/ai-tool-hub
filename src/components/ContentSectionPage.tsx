@@ -62,7 +62,7 @@ async function fetchContentSection(slug: string): Promise<ContentSectionData> {
 
   return {
     section: (sRes.data as Section | null) || null,
-    items: (iRes.data as Item[] | null) || [],
+    items: ((iRes.data as unknown) as Item[] | null) || [],
   };
 }
 
