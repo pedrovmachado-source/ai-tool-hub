@@ -165,6 +165,7 @@ export type Database = {
           created_at: string
           description: string
           example_url: string | null
+          examples: Json
           id: string
           image_url: string | null
           kind: string
@@ -183,6 +184,7 @@ export type Database = {
           created_at?: string
           description?: string
           example_url?: string | null
+          examples?: Json
           id?: string
           image_url?: string | null
           kind: string
@@ -201,6 +203,7 @@ export type Database = {
           created_at?: string
           description?: string
           example_url?: string | null
+          examples?: Json
           id?: string
           image_url?: string | null
           kind?: string
