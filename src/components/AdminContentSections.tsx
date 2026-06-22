@@ -44,6 +44,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 }
 
 export default function AdminContentSections({ autoOpenSlug }: { autoOpenSlug?: string } = {}) {
+  const queryClient = useQueryClient();
   const [sections, setSections] = useState<Section[]>([]);
   const [items, setItems] = useState<Item[]>([]);
   const [openSection, setOpenSection] = useState<Section | null>(null);
@@ -51,6 +52,11 @@ export default function AdminContentSections({ autoOpenSlug }: { autoOpenSlug?: 
   const [sectionForm, setSectionForm] = useState<Partial<Section> | null>(null);
   const [itemForm, setItemForm] = useState<Partial<Item> | null>(null);
   const [uploading, setUploading] = useState(false);
+
+  const invalidatePublic = (slug?: string) => {
+    if (slug) queryClient.invalidateQueries({ queryKey: ['content-section', slug] });
+    else queryClient.invalidateQueries({ queryKey: ['content-section'] });
+  };
 
   const reload = async () => {
     setLoading(true);
