@@ -158,6 +158,7 @@ export default function AdminContentSections({ autoOpenSlug }: { autoOpenSlug?: 
       body: itemForm.body || null,
       example_url: itemForm.example_url || null,
       buy_url: itemForm.buy_url || null,
+      examples: (itemForm.examples || []).filter(e => e.url?.trim()),
       sort_order: itemForm.sort_order ?? items.filter(i => i.section_slug === openSection.slug).length,
     };
     if (itemForm.id) {
