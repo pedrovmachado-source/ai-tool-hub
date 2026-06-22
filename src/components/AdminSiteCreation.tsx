@@ -92,7 +92,7 @@ export default function AdminSiteCreation({ initialTab = 'products', kindFilter 
     const unreadIds = orders.filter(o => !o.read_at).map(o => o.id);
     if (unreadIds.length === 0) return;
     const now = new Date().toISOString();
-    setOrders(prev => prev.map(o => unreadIds.includes(o.id) ? { ...o, read_at: now } : o));
+    setAllOrders(prev => prev.map(o => unreadIds.includes(o.id) ? { ...o, read_at: now } : o));
     void (supabase as any).from('site_orders').update({ read_at: now }).in('id', unreadIds);
   }, [tab, orders.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -139,7 +139,7 @@ export default function AdminSiteCreation({ initialTab = 'products', kindFilter 
   };
 
   const updateOrder = async (id: string, patch: Partial<Order>) => {
-    setOrders(prev => prev.map(o => o.id === id ? { ...o, ...patch } : o));
+    setAllOrders(prev => prev.map(o => o.id === id ? { ...o, ...patch } : o));
     const { error } = await supabase.from('site_orders' as any).update(patch).eq('id', id);
     if (error) { toast({ title: 'Erro', description: error.message, variant: 'destructive' }); await reload(); }
   };
