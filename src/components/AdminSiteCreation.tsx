@@ -53,10 +53,10 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-export default function AdminSiteCreation({ initialTab = 'products' }: { initialTab?: 'products' | 'orders' } = {}) {
+export default function AdminSiteCreation({ initialTab = 'products', kindFilter }: { initialTab?: 'products' | 'orders'; kindFilter?: 'site' | 'criativo' } = {}) {
   const [tab, setTab] = useState<'products' | 'orders'>(initialTab);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [allOrders, setAllOrders] = useState<Order[]>([]);
   const [form, setForm] = useState<Partial<Product> | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -67,12 +67,24 @@ export default function AdminSiteCreation({ initialTab = 'products' }: { initial
         supabase.from('site_products' as any).select('*').order('kind').order('sort_order'),
         supabase.from('site_orders' as any).select('*').order('created_at', { ascending: false }).limit(300),
       ]);
-      if (p.data) setProducts(p.data as unknown as Product[]);
-      if (o.data) setOrders(o.data as unknown as Order[]);
+      if (p.data) setAllProducts(p.data as unknown as Product[]);
+      if (o.data) setAllOrders(o.data as unknown as Order[]);
     } finally { setLoading(false); }
   };
 
   useEffect(() => { void reload(); }, []);
+
+  const products = useMemo(
+    () => kindFilter ? allProducts.filter(p => p.kind === kindFilter) : allProducts,
+    [allProducts, kindFilter]
+  );
+  const orders = useMemo(() => {
+    if (!kindFilter) return allOrders;
+    const slugs = new Set(allProducts.filter(p => p.kind === kindFilter).map(p => p.slug));
+    return allOrders.filter(o => slugs.has(o.product_slug));
+  }, [allOrders, allProducts, kindFilter]);
+
+  const isCriativos = kindFilter === 'criativo';
 
   // Auto-mark unread orders as read when opening the orders tab
   useEffect(() => {
@@ -80,7 +92,7 @@ export default function AdminSiteCreation({ initialTab = 'products' }: { initial
     const unreadIds = orders.filter(o => !o.read_at).map(o => o.id);
     if (unreadIds.length === 0) return;
     const now = new Date().toISOString();
-    setOrders(prev => prev.map(o => unreadIds.includes(o.id) ? { ...o, read_at: now } : o));
+    setAllOrders(prev => prev.map(o => unreadIds.includes(o.id) ? { ...o, read_at: now } : o));
     void (supabase as any).from('site_orders').update({ read_at: now }).in('id', unreadIds);
   }, [tab, orders.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -127,7 +139,7 @@ export default function AdminSiteCreation({ initialTab = 'products' }: { initial
   };
 
   const updateOrder = async (id: string, patch: Partial<Order>) => {
-    setOrders(prev => prev.map(o => o.id === id ? { ...o, ...patch } : o));
+    setAllOrders(prev => prev.map(o => o.id === id ? { ...o, ...patch } : o));
     const { error } = await supabase.from('site_orders' as any).update(patch).eq('id', id);
     if (error) { toast({ title: 'Erro', description: error.message, variant: 'destructive' }); await reload(); }
   };
@@ -164,8 +176,8 @@ export default function AdminSiteCreation({ initialTab = 'products' }: { initial
     <>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-xl font-medium text-primary-foreground">Criação de Site</h1>
-          <p className="text-[12px] text-muted-foreground/50">Gerencie produtos e pedidos recebidos.</p>
+          <h1 className="text-xl font-medium text-primary-foreground">{isCriativos ? 'Criativos' : 'Criação de Site'}</h1>
+          <p className="text-[12px] text-muted-foreground/50">{isCriativos ? 'Gerencie os criativos disponíveis para venda e os pedidos recebidos.' : 'Gerencie produtos e pedidos recebidos.'}</p>
         </div>
         <div className="flex gap-2">
           <button onClick={() => setTab('products')} className={`px-3 py-1.5 rounded-lg text-[12px] ${tab === 'products' ? 'bg-brand-blue text-primary-foreground' : 'bg-primary-foreground/5 text-muted-foreground/60'}`}>
@@ -199,7 +211,7 @@ export default function AdminSiteCreation({ initialTab = 'products' }: { initial
       {tab === 'products' && (
         <>
           <div className="mb-4 flex justify-end">
-            <button onClick={() => setForm({ kind: 'site', col: 'ia', active: true, sort_order: products.length })} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-[12px] bg-brand-blue text-primary-foreground">
+            <button onClick={() => setForm({ kind: kindFilter || 'site', col: 'ia', active: true, sort_order: products.length })} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-[12px] bg-brand-blue text-primary-foreground">
               <Plus size={14} /> Novo produto
             </button>
           </div>
@@ -297,19 +309,25 @@ export default function AdminSiteCreation({ initialTab = 'products' }: { initial
               <button onClick={() => setForm(null)} className="text-muted-foreground/40"><X size={16} /></button>
             </div>
             <Field label="Slug (único)"><input value={form.slug || ''} onChange={e => setForm({ ...form, slug: e.target.value })} placeholder="ex: ia-landing" className={inputCls} /></Field>
-            <Field label="Tipo">
-              <select value={form.kind || 'site'} onChange={e => setForm({ ...form, kind: e.target.value as 'site' | 'criativo' })} className={inputCls}>
-                <option value="site">Site (Comprar Site Pronto)</option>
-                <option value="criativo">Criativo (Comprar Criativo)</option>
-              </select>
-            </Field>
-            <Field label="Coluna (só para sites)">
-              <select value={form.col || 'ia'} onChange={e => setForm({ ...form, col: e.target.value as 'ia' | 'manual' })} className={inputCls}>
-                <option value="ia">Copy com IA</option>
-                <option value="manual">Copy à Mão</option>
-              </select>
-            </Field>
-            <Field label="Linha (row_key — agrupa IA + Manual)"><input value={form.row_key || ''} onChange={e => setForm({ ...form, row_key: e.target.value })} placeholder="ex: landing, quiz, advertorial" className={inputCls} /></Field>
+            {!kindFilter && (
+              <Field label="Tipo">
+                <select value={form.kind || 'site'} onChange={e => setForm({ ...form, kind: e.target.value as 'site' | 'criativo' })} className={inputCls}>
+                  <option value="site">Site (Comprar Site Pronto)</option>
+                  <option value="criativo">Criativo (Comprar Criativo)</option>
+                </select>
+              </Field>
+            )}
+            {(form.kind || kindFilter) !== 'criativo' && (
+              <>
+                <Field label="Coluna (só para sites)">
+                  <select value={form.col || 'ia'} onChange={e => setForm({ ...form, col: e.target.value as 'ia' | 'manual' })} className={inputCls}>
+                    <option value="ia">Copy com IA</option>
+                    <option value="manual">Copy à Mão</option>
+                  </select>
+                </Field>
+                <Field label="Linha (row_key — agrupa IA + Manual)"><input value={form.row_key || ''} onChange={e => setForm({ ...form, row_key: e.target.value })} placeholder="ex: landing, quiz, advertorial" className={inputCls} /></Field>
+              </>
+            )}
             <Field label="Nome"><input value={form.name || ''} onChange={e => setForm({ ...form, name: e.target.value })} className={inputCls} /></Field>
             <Field label="Preço (R$)"><input value={form.price || ''} onChange={e => setForm({ ...form, price: e.target.value })} placeholder="200" className={inputCls} /></Field>
             <Field label="Descrição curta"><textarea value={form.short_desc || ''} onChange={e => setForm({ ...form, short_desc: e.target.value })} rows={3} className={inputCls + ' resize-none'} /></Field>

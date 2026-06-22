@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { type Tool, type Category } from '@/data/tools-data';
 import { useCategories } from '@/hooks/useCategories';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, LayoutDashboard, Users, CreditCard, FileText, Settings, LogOut, Search, Download, Plus, Pencil, Trash2, X, Check, Palette, Eye, EyeOff, Globe, Bell, Shield, Database, Mail, Play, Video, GraduationCap, Activity, Menu, Folder, Tag, Wallet } from 'lucide-react';
+import { ArrowLeft, LayoutDashboard, Users, CreditCard, FileText, Settings, LogOut, Search, Download, Plus, Pencil, Trash2, X, Check, Palette, Eye, EyeOff, Globe, Bell, Shield, Database, Mail, Play, Video, GraduationCap, Activity, Menu, Folder, Tag, Wallet, Image as ImageIcon } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import AdminOffers from './AdminOffers';
 import AdminLessons from './AdminLessons';
@@ -536,6 +536,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'lessons', label: 'Aulas gravadas', icon: GraduationCap },
     { key: 'niche-lessons', label: 'Aulas por nicho', icon: Video },
     { key: 'site-creation', label: 'Comprar Site', icon: Folder },
+    { key: 'creatives', label: 'Criativos', icon: ImageIcon },
     { key: 'sections', label: 'Conteúdos', icon: Folder },
     { key: 'menu', label: 'Menu Lateral', icon: Menu },
     { key: 'student-areas', label: 'Área do Mentorado', icon: GraduationCap },
@@ -909,7 +910,8 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
         {section === 'lessons' && <AdminLessons />}
         {section === 'sections' && <AdminContentSections />}
         {section === 'niche-lessons' && <AdminNicheLessons />}
-        {section === 'site-creation' && <AdminSiteCreation initialTab={siteCreationInitialTab} />}
+        {section === 'site-creation' && <AdminSiteCreation initialTab={siteCreationInitialTab} kindFilter="site" />}
+        {section === 'creatives' && <AdminSiteCreation kindFilter="criativo" />}
         {section === 'menu' && <AdminMenu />}
         {section === 'student-areas' && <AdminStudentAreas />}
         {section === 'purchased-accounts' && <AdminPurchasedAccounts />}
