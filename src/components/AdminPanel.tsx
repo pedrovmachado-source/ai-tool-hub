@@ -910,7 +910,8 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
         {section === 'lessons' && <AdminLessons />}
         {section === 'sections' && <AdminContentSections />}
         {section === 'niche-lessons' && <AdminNicheLessons />}
-        {section === 'site-creation' && <AdminSiteCreation initialTab={siteCreationInitialTab} />}
+        {section === 'site-creation' && <AdminSiteCreation initialTab={siteCreationInitialTab} kindFilter="site" />}
+        {section === 'creatives' && <AdminSiteCreation kindFilter="criativo" />}
         {section === 'menu' && <AdminMenu />}
         {section === 'student-areas' && <AdminStudentAreas />}
         {section === 'purchased-accounts' && <AdminPurchasedAccounts />}
