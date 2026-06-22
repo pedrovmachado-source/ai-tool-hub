@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Plus, Pencil, Trash2, X, ArrowLeft, Upload, Folder, Play, FileText, Image as ImageIcon, FileText as TextIcon } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
@@ -43,6 +44,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 }
 
 export default function AdminContentSections({ autoOpenSlug }: { autoOpenSlug?: string } = {}) {
+  const queryClient = useQueryClient();
   const [sections, setSections] = useState<Section[]>([]);
   const [items, setItems] = useState<Item[]>([]);
   const [openSection, setOpenSection] = useState<Section | null>(null);
@@ -50,6 +52,11 @@ export default function AdminContentSections({ autoOpenSlug }: { autoOpenSlug?: 
   const [sectionForm, setSectionForm] = useState<Partial<Section> | null>(null);
   const [itemForm, setItemForm] = useState<Partial<Item> | null>(null);
   const [uploading, setUploading] = useState(false);
+
+  const invalidatePublic = (slug?: string) => {
+    if (slug) queryClient.invalidateQueries({ queryKey: ['content-section', slug] });
+    else queryClient.invalidateQueries({ queryKey: ['content-section'] });
+  };
 
   const reload = async () => {
     setLoading(true);
@@ -163,6 +170,7 @@ export default function AdminContentSections({ autoOpenSlug }: { autoOpenSlug?: 
     }
     toast({ title: 'Item salvo' });
     setItemForm(null);
+    invalidatePublic(openSection.slug);
     await reload();
   };
 
@@ -173,6 +181,7 @@ export default function AdminContentSections({ autoOpenSlug }: { autoOpenSlug?: 
     if (error) { toast({ title: 'Erro', description: error.message, variant: 'destructive' }); return; }
     void logActivity({ action: 'delete', entity_type: 'content_item', entity_id: item.id, entity_label: item.title });
     toast({ title: 'Item excluído' });
+    invalidatePublic(item.section_slug);
     await reload();
   };
 
