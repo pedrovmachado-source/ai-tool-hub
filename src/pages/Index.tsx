@@ -11,6 +11,7 @@ import ProPage from '@/components/ProPage';
 import AdminPanel from '@/components/AdminPanel';
 import LessonsPage from '@/components/LessonsPage';
 import ContentSectionPage from '@/components/ContentSectionPage';
+import FbAccountsPage from '@/components/FbAccountsPage';
 import SiteCreationPage from '@/components/SiteCreationPage';
 import PromptsLibrary from '@/components/PromptsLibrary';
 import UserProfile from '@/components/UserProfile';
@@ -153,7 +154,7 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
   }
   
   if (page === 'fb-accounts') {
-    return <ContentSectionPage slug={page} onBack={() => navigate('/menu')} onUpgrade={() => setPage('pro')} />;
+    return <FbAccountsPage onBack={() => navigate('/menu')} />;
   }
 
   if (page === 'creative-edit') {
