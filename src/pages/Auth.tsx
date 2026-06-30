@@ -139,26 +139,18 @@ export default function Auth() {
                 Continuar com Google
               </Button>
 
-              <div className="flex items-start gap-3 p-4 rounded-2xl bg-white/5 border border-white/5 mt-6">
-                <Checkbox 
-                  id="terms" 
-                  checked={acceptedTerms}
-                  onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
-                  className="mt-1 border-white/20 data-[state=checked]:bg-white data-[state=checked]:text-black"
-                />
-                <label 
-                  htmlFor="terms" 
-                  className="text-xs text-white/50 leading-relaxed cursor-pointer select-none"
-                >
-                  aceitar os{' '}
-                  <button 
+              <div className="p-4 rounded-2xl bg-white/5 border border-white/5 mt-6">
+                <p className="text-xs text-white/50 leading-relaxed text-center">
+                  Ao logar você aceitar os{' '}
+                  <button
                     onClick={() => setIsTermsModalOpen(true)}
                     className="text-white hover:underline font-medium"
                   >
                     Termos de serviço
                   </button>.
-                </label>
+                </p>
               </div>
+
             </div>
 
             <TermsModal 
