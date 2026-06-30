@@ -32,10 +32,6 @@ export default function Auth() {
   }, [user, authLoading, navigate]);
 
   const handleGoogleSignIn = async () => {
-    if (!acceptedTerms) {
-      setError('Você deve aceitar os termos de serviço para continuar.');
-      return;
-    }
     setSubmitting(true);
     setError('');
     try {
@@ -49,6 +45,7 @@ export default function Auth() {
       setSubmitting(false);
     }
   };
+
 
 
   return (
