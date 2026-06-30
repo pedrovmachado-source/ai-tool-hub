@@ -153,7 +153,7 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
   }
   
   if (page === 'fb-accounts') {
-    return <ContentSectionPage slug={page} onBack={() => navigate('/menu')} onUpgrade={() => setPage('pro')} />;
+    return <FbAccountsPage onBack={() => navigate('/menu')} />;
   }
 
   if (page === 'creative-edit') {
