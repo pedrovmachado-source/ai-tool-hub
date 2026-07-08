@@ -506,6 +506,8 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
   const [bannerMobileUrl, setBannerMobileUrl] = useState('');
   const [bannerLink, setBannerLink] = useState('');
   const [bannerAlt, setBannerAlt] = useState('');
+  const [bannerUploadingDesktop, setBannerUploadingDesktop] = useState(false);
+  const [bannerUploadingMobile, setBannerUploadingMobile] = useState(false);
 
   useEffect(() => {
     supabase.from('site_settings').select('value').eq('key', 'dashboard_banner').maybeSingle().then(({ data }) => {
