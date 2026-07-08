@@ -3,6 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
 import Meta from '@/components/Meta';
 import MentoriaModal from '@/components/MentoriaModal';
+import DashboardBanner from '@/components/DashboardBanner';
 
 import { isMentorado } from '@/lib/plan';
 
