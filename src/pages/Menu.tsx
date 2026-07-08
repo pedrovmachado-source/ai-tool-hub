@@ -163,6 +163,8 @@ export default function Menu() {
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto">
+          <DashboardBanner />
+
           <header className="mb-20">
             <Reveal>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg glass-smooth mb-6 border border-white/5">
