@@ -3,6 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
 import Meta from '@/components/Meta';
 import MentoriaModal from '@/components/MentoriaModal';
+import DashboardBanner from '@/components/DashboardBanner';
 
 import { isMentorado } from '@/lib/plan';
 
@@ -162,6 +163,8 @@ export default function Menu() {
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto">
+          <DashboardBanner />
+
           <header className="mb-20">
             <Reveal>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg glass-smooth mb-6 border border-white/5">

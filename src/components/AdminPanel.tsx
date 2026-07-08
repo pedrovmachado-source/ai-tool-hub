@@ -500,6 +500,25 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
   const [isAddingPlan, setIsAddingPlan] = useState(false);
   const [confirmDeletePlan, setConfirmDeletePlan] = useState<string | null>(null);
 
+  // Dashboard banner settings
+  const [bannerEnabled, setBannerEnabled] = useState(false);
+  const [bannerDesktopUrl, setBannerDesktopUrl] = useState('');
+  const [bannerMobileUrl, setBannerMobileUrl] = useState('');
+  const [bannerLink, setBannerLink] = useState('');
+  const [bannerAlt, setBannerAlt] = useState('');
+
+  useEffect(() => {
+    supabase.from('site_settings').select('value').eq('key', 'dashboard_banner').maybeSingle().then(({ data }) => {
+      const v = (data?.value || {}) as any;
+      setBannerEnabled(!!v.enabled);
+      setBannerDesktopUrl(v.desktop_url || '');
+      setBannerMobileUrl(v.mobile_url || '');
+      setBannerLink(v.link || '');
+      setBannerAlt(v.alt || '');
+    });
+  }, []);
+
+
   // Load plans from DB
   useEffect(() => {
     supabase.from('site_settings').select('value').eq('key', 'pro_plan').maybeSingle().then(({ data }) => {
@@ -629,6 +648,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'general', label: 'Geral', icon: Globe },
     { key: 'notifications', label: 'Notificações', icon: Bell },
     { key: 'plans', label: 'Planos & Preços', icon: CreditCard },
+    { key: 'banner', label: 'Banner Dashboard', icon: ImageIcon },
     { key: 'seo', label: 'SEO & Meta', icon: Search },
     { key: 'data', label: 'Dados & Backup', icon: Database },
   ];
@@ -1082,6 +1102,65 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
                         onCancel={() => setConfirmDeletePlan(null)}
                       />
                     )}
+                  </div>
+                )}
+
+                {settingsSection === 'banner' && (
+                  <div className="bg-navy border border-primary-foreground/[0.07] rounded-xl p-6 space-y-4">
+                    <div>
+                      <h3 className="text-sm font-medium text-primary-foreground mb-1">Banner do Dashboard</h3>
+                      <p className="text-[11px] text-muted-foreground/50">Aparece acima do painel de acesso. Use para atualizações do site, novidades de marketing digital, promoções, etc.</p>
+                    </div>
+
+                    <div className="rounded-lg bg-brand-blue/10 border border-brand-blue/30 p-3 text-[11px] text-primary-foreground/70 leading-relaxed">
+                      <strong className="text-brand-blue-medium">Formatos recomendados:</strong>
+                      <ul className="list-disc pl-4 mt-1 space-y-0.5">
+                        <li><strong>Desktop:</strong> 1920 × 480 px (proporção 4:1) — PNG ou JPG, até 500 KB.</li>
+                        <li><strong>Mobile:</strong> 1080 × 720 px (proporção 3:2) — PNG ou JPG, até 300 KB.</li>
+                        <li>Hospede as imagens em qualquer CDN (Imgur, Cloudinary, Supabase Storage) e cole a URL abaixo.</li>
+                      </ul>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <input id="banner-enabled" type="checkbox" checked={bannerEnabled} onChange={e => setBannerEnabled(e.target.checked)} className="w-4 h-4" />
+                      <label htmlFor="banner-enabled" className="text-[12px] text-primary-foreground">Exibir banner</label>
+                    </div>
+
+                    <div>
+                      <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">URL da imagem (Desktop — 1920×480)</label>
+                      <input value={bannerDesktopUrl} onChange={e => setBannerDesktopUrl(e.target.value)} placeholder="https://..." className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" />
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">URL da imagem (Mobile — 1080×720)</label>
+                      <input value={bannerMobileUrl} onChange={e => setBannerMobileUrl(e.target.value)} placeholder="https://..." className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" />
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Link ao clicar (opcional)</label>
+                      <input value={bannerLink} onChange={e => setBannerLink(e.target.value)} placeholder="https://..." className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" />
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Texto alternativo (acessibilidade)</label>
+                      <input value={bannerAlt} onChange={e => setBannerAlt(e.target.value)} placeholder="Ex: Nova atualização Convert Club" className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" />
+                    </div>
+
+                    {(bannerDesktopUrl || bannerMobileUrl) && (
+                      <div>
+                        <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Pré-visualização</label>
+                        <div className="rounded-lg overflow-hidden border border-primary-foreground/10">
+                          <img src={bannerDesktopUrl || bannerMobileUrl} alt="preview" className="w-full h-auto" />
+                        </div>
+                      </div>
+                    )}
+
+                    <button onClick={async () => {
+                      const { error } = await supabase.from('site_settings').upsert({
+                        key: 'dashboard_banner',
+                        value: { enabled: bannerEnabled, desktop_url: bannerDesktopUrl, mobile_url: bannerMobileUrl, link: bannerLink, alt: bannerAlt },
+                        updated_at: new Date().toISOString(),
+                      }, { onConflict: 'key' });
+                      if (error) { toast({ title: 'Erro', description: error.message, variant: 'destructive' }); return; }
+                      saveSettings('banner');
+                    }} className="px-4 py-2 bg-brand-blue text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 flex items-center gap-2">{showSaved === 'banner' ? <><Check size={14} /> Salvo!</> : 'Salvar'}</button>
                   </div>
                 )}
 
