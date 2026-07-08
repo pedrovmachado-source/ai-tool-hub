@@ -711,7 +711,13 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
           {navItems.map(item => (
             <button 
               key={item.key} 
-              onClick={() => { setSection(item.key); setViewingCategory(null); setSidebarOpen(false); if (item.key === 'site-creation') setSiteCreationInitialTab('products'); }} 
+              onClick={() => { 
+                setViewingCategory(null); 
+                setSidebarOpen(false); 
+                if (item.key === 'site-creation') setSiteCreationInitialTab('products');
+                if (item.key === 'banner') { setSection('settings'); setSettingsSection('banner'); }
+                else setSection(item.key);
+              }} 
               className={`w-full flex items-center gap-3 px-6 py-3 text-[11px] font-bold uppercase tracking-widest transition-all ${section === item.key ? 'text-white bg-white/5 border-r-2 border-white' : 'text-white/30 hover:text-white hover:bg-white/[0.02]'}`}
             >
               <item.icon size={14} /> <span className="flex-1 text-left">{item.label}</span>
