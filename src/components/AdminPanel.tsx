@@ -629,6 +629,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'general', label: 'Geral', icon: Globe },
     { key: 'notifications', label: 'Notificações', icon: Bell },
     { key: 'plans', label: 'Planos & Preços', icon: CreditCard },
+    { key: 'banner', label: 'Banner Dashboard', icon: ImageIcon },
     { key: 'seo', label: 'SEO & Meta', icon: Search },
     { key: 'data', label: 'Dados & Backup', icon: Database },
   ];
