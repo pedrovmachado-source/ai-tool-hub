@@ -506,6 +506,8 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
   const [bannerMobileUrl, setBannerMobileUrl] = useState('');
   const [bannerLink, setBannerLink] = useState('');
   const [bannerAlt, setBannerAlt] = useState('');
+  const [bannerUploadingDesktop, setBannerUploadingDesktop] = useState(false);
+  const [bannerUploadingMobile, setBannerUploadingMobile] = useState(false);
 
   useEffect(() => {
     supabase.from('site_settings').select('value').eq('key', 'dashboard_banner').maybeSingle().then(({ data }) => {
@@ -1135,12 +1137,50 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
                     </div>
 
                     <div>
-                      <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">URL da imagem (Desktop — 1920×480)</label>
-                      <input value={bannerDesktopUrl} onChange={e => setBannerDesktopUrl(e.target.value)} placeholder="https://..." className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" />
+                      <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Imagem Desktop (1920×480)</label>
+                      <div className="flex gap-2">
+                        <input value={bannerDesktopUrl} onChange={e => setBannerDesktopUrl(e.target.value)} placeholder="https://... ou faça upload" className="flex-1 px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" />
+                        <label className="px-3 py-2 rounded-lg text-xs font-medium bg-brand-blue/20 text-brand-blue-medium border border-brand-blue/30 cursor-pointer hover:bg-brand-blue/30 whitespace-nowrap flex items-center gap-1">
+                          {bannerUploadingDesktop ? 'Enviando...' : 'Upload'}
+                          <input type="file" accept="image/*" className="hidden" disabled={bannerUploadingDesktop} onChange={async (e) => {
+                            const file = e.target.files?.[0]; if (!file) return;
+                            setBannerUploadingDesktop(true);
+                            try {
+                              const path = `banners/desktop-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g,'_')}`;
+                              const { error } = await supabase.storage.from('content-images').upload(path, file, { upsert: false });
+                              if (error) throw error;
+                              const { data } = supabase.storage.from('content-images').getPublicUrl(path);
+                              setBannerDesktopUrl(data.publicUrl);
+                              toast({ title: 'Imagem enviada' });
+                            } catch (err: any) {
+                              toast({ title: 'Erro no upload', description: err.message, variant: 'destructive' });
+                            } finally { setBannerUploadingDesktop(false); e.target.value = ''; }
+                          }} />
+                        </label>
+                      </div>
                     </div>
                     <div>
-                      <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">URL da imagem (Mobile — 1080×720)</label>
-                      <input value={bannerMobileUrl} onChange={e => setBannerMobileUrl(e.target.value)} placeholder="https://..." className="w-full px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" />
+                      <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Imagem Mobile (1080×720)</label>
+                      <div className="flex gap-2">
+                        <input value={bannerMobileUrl} onChange={e => setBannerMobileUrl(e.target.value)} placeholder="https://... ou faça upload" className="flex-1 px-3 py-2 rounded-lg text-sm bg-primary-foreground/5 border border-primary-foreground/10 text-primary-foreground focus:outline-none focus:border-brand-blue" />
+                        <label className="px-3 py-2 rounded-lg text-xs font-medium bg-brand-blue/20 text-brand-blue-medium border border-brand-blue/30 cursor-pointer hover:bg-brand-blue/30 whitespace-nowrap flex items-center gap-1">
+                          {bannerUploadingMobile ? 'Enviando...' : 'Upload'}
+                          <input type="file" accept="image/*" className="hidden" disabled={bannerUploadingMobile} onChange={async (e) => {
+                            const file = e.target.files?.[0]; if (!file) return;
+                            setBannerUploadingMobile(true);
+                            try {
+                              const path = `banners/mobile-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g,'_')}`;
+                              const { error } = await supabase.storage.from('content-images').upload(path, file, { upsert: false });
+                              if (error) throw error;
+                              const { data } = supabase.storage.from('content-images').getPublicUrl(path);
+                              setBannerMobileUrl(data.publicUrl);
+                              toast({ title: 'Imagem enviada' });
+                            } catch (err: any) {
+                              toast({ title: 'Erro no upload', description: err.message, variant: 'destructive' });
+                            } finally { setBannerUploadingMobile(false); e.target.value = ''; }
+                          }} />
+                        </label>
+                      </div>
                     </div>
                     <div>
                       <label className="text-[11px] font-medium text-muted-foreground/40 mb-1 block">Link ao clicar (opcional)</label>
