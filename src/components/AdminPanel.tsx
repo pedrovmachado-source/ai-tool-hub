@@ -562,6 +562,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'purchased-accounts', label: 'Contas Compradas', icon: Shield },
     { key: 'cash-deposits', label: 'Depósitos de Saldo', icon: Wallet },
     { key: 'user-offers', label: 'Ofertas dos Usuários', icon: Tag },
+    { key: 'offer-analyses', label: 'Validar Ofertas', icon: Shield },
     { key: 'activity', label: 'Atividade', icon: Activity },
     { key: 'settings', label: 'Configurações', icon: Settings },
   ];
