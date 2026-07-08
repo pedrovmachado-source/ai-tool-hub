@@ -500,6 +500,25 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
   const [isAddingPlan, setIsAddingPlan] = useState(false);
   const [confirmDeletePlan, setConfirmDeletePlan] = useState<string | null>(null);
 
+  // Dashboard banner settings
+  const [bannerEnabled, setBannerEnabled] = useState(false);
+  const [bannerDesktopUrl, setBannerDesktopUrl] = useState('');
+  const [bannerMobileUrl, setBannerMobileUrl] = useState('');
+  const [bannerLink, setBannerLink] = useState('');
+  const [bannerAlt, setBannerAlt] = useState('');
+
+  useEffect(() => {
+    supabase.from('site_settings').select('value').eq('key', 'dashboard_banner').maybeSingle().then(({ data }) => {
+      const v = (data?.value || {}) as any;
+      setBannerEnabled(!!v.enabled);
+      setBannerDesktopUrl(v.desktop_url || '');
+      setBannerMobileUrl(v.mobile_url || '');
+      setBannerLink(v.link || '');
+      setBannerAlt(v.alt || '');
+    });
+  }, []);
+
+
   // Load plans from DB
   useEffect(() => {
     supabase.from('site_settings').select('value').eq('key', 'pro_plan').maybeSingle().then(({ data }) => {
