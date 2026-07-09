@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { Loader2, Ticket, Users } from 'lucide-react';
+import { Loader2, Ticket, Users, PlayCircle } from 'lucide-react';
 import { getFingerprint, getIpAddress } from '@/utils/security';
 
 export default function Invite() {
