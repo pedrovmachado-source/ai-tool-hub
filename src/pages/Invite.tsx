@@ -111,7 +111,7 @@ export default function Invite() {
                 <Button 
                   asChild
                   variant="outline"
-                  className="w-full border-white/20 text-white hover:bg-white/10 hover:text-white h-12 mb-3 transition-all duration-300"
+                  className="w-full bg-transparent border-white/20 text-white hover:bg-white/10 hover:text-white h-12 mb-3 transition-all duration-300"
                 >
                   <a 
                     href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" 
@@ -119,7 +119,7 @@ export default function Invite() {
                     rel="noopener noreferrer"
                     className="flex items-center justify-center gap-2 font-bold"
                   >
-                    <PlayCircle size={20} className="text-white" />
+                    <PlayCircle size={20} />
                     Ver vídeo para receber código
                   </a>
                 </Button>
