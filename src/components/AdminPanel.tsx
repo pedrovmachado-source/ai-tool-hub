@@ -15,6 +15,7 @@ import AdminOfferAnalyses from './AdminOfferAnalyses';
 import AdminPurchasedAccounts from './AdminPurchasedAccounts';
 import AdminCashDeposits from './AdminCashDeposits';
 import AdminUserOffers from './AdminUserOffers';
+import AdminMFA from './AdminMFA';
 import ActivityLogView from './ActivityLogView';
 import { logActivity } from '@/lib/activity-log';
 
