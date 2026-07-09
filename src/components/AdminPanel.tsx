@@ -568,6 +568,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'offer-analyses', label: 'Validar Ofertas', icon: Shield },
     { key: 'banner', label: 'Banner Dashboard', icon: ImageIcon },
     { key: 'activity', label: 'Atividade', icon: Activity },
+    { key: 'mfa', label: 'Segurança (2FA)', icon: Shield },
     { key: 'settings', label: 'Configurações', icon: Settings },
   ];
 
