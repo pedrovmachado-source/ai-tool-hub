@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { Loader2, Ticket, Users } from 'lucide-react';
+import { Loader2, Ticket, Users, PlayCircle } from 'lucide-react';
 import { getFingerprint, getIpAddress } from '@/utils/security';
 
 export default function Invite() {
@@ -108,6 +108,22 @@ export default function Invite() {
                 <p className="text-sm text-gray-400 mb-4 leading-relaxed">
                   Não se preocupe. Você pode garantir seu código de acesso participando agora do nosso grupo aberto de networking.
                 </p>
+                <Button 
+                  asChild
+                  variant="outline"
+                  className="w-full border-white/20 text-white hover:bg-white/10 hover:text-white h-12 mb-3 transition-all duration-300"
+                >
+                  <a 
+                    href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 font-bold"
+                  >
+                    <PlayCircle size={20} className="text-white" />
+                    Ver vídeo para receber código
+                  </a>
+                </Button>
+
                 <Button 
                   asChild
                   variant="outline"
