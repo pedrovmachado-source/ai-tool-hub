@@ -31,6 +31,19 @@ serve(async (req) => {
     const user = userData.user;
     if (!user?.email) throw new Error("User not authenticated or email not available");
 
+    // Rate limit: 20 checks/min per user
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+    const rlKey = user.id || `ip:${ip}`;
+    const { data: rl } = await supabaseClient.rpc("check_rate_limit", {
+      p_key: rlKey, p_endpoint: "check-subscription", p_max: 20,
+    });
+    if (rl && rl.allowed === false) {
+      return new Response(JSON.stringify({ error: "Too many requests" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 429,
+      });
+    }
+
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
 

@@ -15,6 +15,7 @@ import AdminOfferAnalyses from './AdminOfferAnalyses';
 import AdminPurchasedAccounts from './AdminPurchasedAccounts';
 import AdminCashDeposits from './AdminCashDeposits';
 import AdminUserOffers from './AdminUserOffers';
+import AdminMFA from './AdminMFA';
 import ActivityLogView from './ActivityLogView';
 import { logActivity } from '@/lib/activity-log';
 
@@ -567,6 +568,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'offer-analyses', label: 'Validar Ofertas', icon: Shield },
     { key: 'banner', label: 'Banner Dashboard', icon: ImageIcon },
     { key: 'activity', label: 'Atividade', icon: Activity },
+    { key: 'mfa', label: 'Segurança (2FA)', icon: Shield },
     { key: 'settings', label: 'Configurações', icon: Settings },
   ];
 
@@ -950,6 +952,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
         {section === 'offers' && <AdminOffers />}
         {section === 'offer-analyses' && <AdminOfferAnalyses />}
         {section === 'activity' && <ActivityLogView />}
+        {section === 'mfa' && <AdminMFA />}
 
         {section === 'settings' && (
           <>

@@ -16,12 +16,30 @@ serve(async (req) => {
     Deno.env.get("SUPABASE_URL") ?? "",
     Deno.env.get("SUPABASE_ANON_KEY") ?? ""
   );
+  const supabaseAdmin = createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+    { auth: { persistSession: false } }
+  );
 
   try {
     const authHeader = req.headers.get("Authorization")!;
     const token = authHeader.replace("Bearer ", "");
     const { data: { user } } = await supabaseClient.auth.getUser(token);
     if (!user?.email) throw new Error("User not authenticated");
+
+    // Rate limit: 10 checkouts/min per user
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+    const rlKey = user.id || `ip:${ip}`;
+    const { data: rl } = await supabaseAdmin.rpc("check_rate_limit", {
+      p_key: rlKey, p_endpoint: "create-checkout", p_max: 10,
+    });
+    if (rl && rl.allowed === false) {
+      return new Response(JSON.stringify({ error: "Too many requests. Try again in a minute." }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 429,
+      });
+    }
 
     const body = await req.json();
     const { priceId, productId, mode = "payment", type, amountCents, items } = body;
