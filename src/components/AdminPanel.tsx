@@ -952,6 +952,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
         {section === 'offers' && <AdminOffers />}
         {section === 'offer-analyses' && <AdminOfferAnalyses />}
         {section === 'activity' && <ActivityLogView />}
+        {section === 'mfa' && <AdminMFA />}
 
         {section === 'settings' && (
           <>
