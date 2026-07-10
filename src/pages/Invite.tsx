@@ -111,7 +111,7 @@ export default function Invite() {
                 <Button 
                   asChild
                   variant="outline"
-                  className="w-full bg-transparent border-white/20 text-white hover:bg-white/10 hover:text-white h-12 mb-3 transition-all duration-300"
+                  className="w-full bg-red-600 border-red-600 text-white hover:bg-red-700 hover:text-white hover:border-red-700 h-12 mb-3 transition-all duration-300"
                 >
                   <a 
                     href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" 
