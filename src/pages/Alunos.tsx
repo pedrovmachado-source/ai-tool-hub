@@ -421,11 +421,11 @@ export default function Alunos() {
                       <p className="text-[11px] leading-relaxed text-white/40 font-mono">
                         truque, responda, receita, sucesso, ebook, livro digital, diagnóstico, fórmula, método, segredo, análise, desafio, funciona, comprovado, definitivo, natural,<br/>
                         teste gratuito, guia prático, guia completo, nova forma, nova técnica,<br/>
-                        7 dias, 15 dias, 21 dias, 30 dias, 60 dias,<br/>
+                        7 dias, 15 dias, 21 dias, 28 dias, 30 dias, 60 dias,<br/>
                         ebook, curso online, treinamento, mentor, especialista,<br/>
-                        fórmula milagrosa, passo a passo, passo simples, acesso<br/>
+                        fórmula milagrosa, passo a passo, passo simples, acesso imediato,<br/>
                         19,90, 29,90, 9,90, 47,90, 49,90, 59,90, 97,00, 99,90, 4.5/5, 4.9/5<br/>
-                        vercel.app, lovable.app, hotmart.com, inlead.digital
+                        vercel.app, lovable.app, hotmart.com, inlead.digital, twr.
                       </p>
                     </div>
                   </section>
