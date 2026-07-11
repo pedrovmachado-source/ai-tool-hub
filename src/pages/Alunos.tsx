@@ -388,7 +388,7 @@ export default function Alunos() {
                   <div className="space-y-6">
                     <div className="p-4 rounded-2xl bg-white/5 border border-white/5">
                       <p className="text-sm text-white/70 leading-relaxed">
-                        <span className="text-white font-medium">Religião, receitas, infantil, mães, educação e treinos</span> - Focam numa dor
+                        <span className="text-white font-medium">Religião, receitas, infantil, mães, dores no corpo, vícios, fanatismo, educação, renda extra e treinos</span> - Focam numa dor
                       </p>
                     </div>
 
