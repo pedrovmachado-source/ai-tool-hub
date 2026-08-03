@@ -79,7 +79,7 @@ export default function MinhasOfertas() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
-  const [form, setForm] = useState<Omit<Oferta, 'id'>>({
+  const [form, setForm] = useState<OfertaForm>({
     nome: '', tags: [], linkBib: '', linkDrive: '', linkSite: '', linkCheckout: '', copyTexto: ''
   });
 
