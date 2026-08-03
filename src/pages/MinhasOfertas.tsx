@@ -6,7 +6,7 @@ import Navbar from '@/components/Navbar';
 import Meta from '@/components/Meta';
 import {
   Plus, Search, Pencil, Trash2, Copy, Check, Download, ExternalLink,
-  Library, FolderOpen, Target, X, ArrowLeft, Globe, ShoppingCart, Tag as TagIcon
+  Library, FolderOpen, Target, X, ArrowLeft, Globe, ShoppingCart, Tag as TagIcon, Star, Crown
 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
