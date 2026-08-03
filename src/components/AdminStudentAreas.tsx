@@ -386,7 +386,64 @@ export default function AdminStudentAreas() {
                   />
                 </div>
               </div>
+
+              <div className="pt-2 space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em]">Tasks desta aula</label>
+                  <button
+                    onClick={() => {
+                      if (!studentArea) return;
+                      const lid = editingLesson.lesson.id;
+                      const tasks = { ...(studentArea.content.tasks || {}) };
+                      tasks[lid] = [...(tasks[lid] || []), { id: crypto.randomUUID(), text: '' }];
+                      setStudentArea({ ...studentArea, content: { ...studentArea.content, tasks } });
+                    }}
+                    className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 text-white/70 text-[10px] font-bold uppercase tracking-widest hover:bg-white/10 transition-colors"
+                  >
+                    <Plus size={12} /> Task
+                  </button>
+                </div>
+
+                <div className="space-y-2 max-h-48 overflow-y-auto">
+                  {((studentArea?.content.tasks || {})[editingLesson.lesson.id] || []).length === 0 ? (
+                    <p className="text-[10px] text-white/20">Nenhuma task adicionada.</p>
+                  ) : (
+                    ((studentArea?.content.tasks || {})[editingLesson.lesson.id] || []).map((task, tIdx) => (
+                      <div key={task.id} className="flex items-center gap-2">
+                        <input
+                          value={task.text}
+                          onChange={e => {
+                            if (!studentArea) return;
+                            const lid = editingLesson.lesson.id;
+                            const tasks = { ...(studentArea.content.tasks || {}) };
+                            const list = [...(tasks[lid] || [])];
+                            list[tIdx] = { ...list[tIdx], text: e.target.value };
+                            tasks[lid] = list;
+                            setStudentArea({ ...studentArea, content: { ...studentArea.content, tasks } });
+                          }}
+                          className="flex-1 px-4 py-2 rounded-xl text-xs bg-white/5 border border-white/5 text-white focus:outline-none focus:border-white/20"
+                          placeholder="Ex: Minerar 10 ofertas"
+                        />
+                        <button
+                          onClick={() => {
+                            if (!studentArea) return;
+                            const lid = editingLesson.lesson.id;
+                            const tasks = { ...(studentArea.content.tasks || {}) };
+                            tasks[lid] = (tasks[lid] || []).filter((_, i) => i !== tIdx);
+                            setStudentArea({ ...studentArea, content: { ...studentArea.content, tasks } });
+                          }}
+                          className="p-2 text-white/20 hover:text-red-500 transition-colors"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </div>
+                <p className="text-[9px] text-white/20">Lembre de clicar em "Salvar Alterações" após confirmar.</p>
+              </div>
             </div>
+
 
             <div className="flex gap-4 justify-end mt-12">
               <button 
