@@ -366,6 +366,7 @@ export default function MinhasOfertas() {
                     </div>
                   )}
                 </div>
+                </div>
               ))}
             </div>
           )}
