@@ -99,15 +99,52 @@ export default function Alunos() {
         setPersonalizedAulas(content.lessons || []);
         setWelcomeMessage(content.welcomeMessage || '');
         setCompletedLessons(new Set(content.completed_ids || []));
+        setLessonsDone(Number(content.lessonsDone) || 0);
+        setLessonsLimit(Number(content.lessonsLimit) || 0);
+        setTasksByLesson((content.tasks || {}) as Record<string, { id: string; text: string }[]>);
+        setTasksDone(new Set(content.tasks_done || []));
       } else {
         // Fallback to defaults if no personalized area found
         setPersonalizedAulas(defaultAulas);
         setWelcomeMessage('');
         setCompletedLessons(new Set());
+        setLessonsDone(0);
+        setLessonsLimit(0);
+        setTasksByLesson({});
+        setTasksDone(new Set());
       }
     }
     setLoading(false);
   };
+
+  const persistProgress = async (patch: Record<string, any>) => {
+    if (!user || !areaId) return;
+    try {
+      const { data: currentArea } = await supabase
+        .from('student_areas')
+        .select('content')
+        .eq('id', areaId)
+        .single();
+      if (currentArea) {
+        const content = (currentArea.content as any) || {};
+        await supabase
+          .from('student_areas')
+          .update({ content: { ...content, ...patch } })
+          .eq('id', areaId);
+      }
+    } catch (err) {
+      console.error('Error saving progress:', err);
+    }
+  };
+
+  const toggleTask = async (taskId: string) => {
+    const next = new Set(tasksDone);
+    if (next.has(taskId)) next.delete(taskId);
+    else next.add(taskId);
+    setTasksDone(next);
+    await persistProgress({ tasks_done: Array.from(next) });
+  };
+
 
   const getEmbedUrl = (url: string) => {
     if (!url) return '';
