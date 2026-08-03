@@ -4,6 +4,8 @@ import Navbar from '@/components/Navbar';
 import Meta from '@/components/Meta';
 import MentoriaModal from '@/components/MentoriaModal';
 import ExtensionPurchaseModal from '@/components/ExtensionPurchaseModal';
+import ModuloCriativos from '@/components/ModuloCriativos';
+
 import { isMentorado } from '@/lib/plan';
 import { supabase } from '@/integrations/supabase/client';
 
