@@ -622,6 +622,79 @@ export default function Alunos() {
                         </Button>
                       </div>
                     )}
+
+                    {/* Progresso de aulas */}
+                    {lessonsLimit > 0 && (
+                      <div className="mt-8 pt-8 border-t border-white/5 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">Aulas realizadas</p>
+                          <p className="text-[11px] text-white/50 font-medium">{lessonsDone} / {lessonsLimit}</p>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {Array.from({ length: lessonsLimit }).map((_, i) => (
+                            <div
+                              key={i}
+                              className={`w-8 h-8 rounded-lg flex items-center justify-center text-[10px] font-bold transition-colors ${
+                                i < lessonsDone
+                                  ? 'bg-brand-blue text-white'
+                                  : 'bg-white text-black/30'
+                              }`}
+                            >
+                              {i + 1}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Tasks da aula */}
+                    {selectedVideo && (
+                      <div className="mt-8 pt-8 border-t border-white/5 space-y-4">
+                        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">Tasks desta aula</p>
+                        {(tasksByLesson[selectedVideo.id] || []).length === 0 ? (
+                          <p className="text-xs text-white/20">Nenhuma task definida para esta aula.</p>
+                        ) : (
+                          <>
+                            <div className="space-y-2">
+                              {(tasksByLesson[selectedVideo.id] || []).map(task => {
+                                const done = tasksDone.has(task.id);
+                                return (
+                                  <button
+                                    key={task.id}
+                                    onClick={() => toggleTask(task.id)}
+                                    className={`w-full flex items-center gap-3 text-left p-3 rounded-2xl border transition-colors ${
+                                      done ? 'bg-brand-blue/10 border-brand-blue/40' : 'bg-white/5 border-white/5 hover:bg-white/10'
+                                    }`}
+                                  >
+                                    <span className={`w-5 h-5 rounded-md flex items-center justify-center shrink-0 ${done ? 'bg-brand-blue' : 'bg-white'}`}>
+                                      {done && <Check className="w-3 h-3 text-white" />}
+                                    </span>
+                                    <span className={`text-xs ${done ? 'text-white' : 'text-white/60'}`}>{task.text}</span>
+                                  </button>
+                                );
+                              })}
+                            </div>
+
+                            {(tasksByLesson[selectedVideo.id] || []).every(t => tasksDone.has(t.id)) ? (
+                              <a
+                                href="https://wa.me/5521965248844?text=Fiz%20todas%20as%20tasks%2C%20j%C3%A1%20podemos%20marcar%20a%20aula!"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-green-500 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-green-600 transition-colors"
+                              >
+                                <MessageSquare className="w-3.5 h-3.5" />
+                                Marcar aula no WhatsApp
+                              </a>
+                            ) : (
+                              <p className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-white/20">
+                                <Lock className="w-3 h-3" />
+                                Conclua todas as tasks para liberar o agendamento
+                              </p>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </Reveal>
