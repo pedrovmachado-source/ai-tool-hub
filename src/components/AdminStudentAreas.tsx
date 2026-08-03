@@ -18,6 +18,9 @@ interface StudentArea {
     lessons: Lesson[];
     welcomeMessage?: string;
     completed_ids?: string[];
+    lessonsDone?: number;
+    lessonsLimit?: number;
+    tasks?: Record<string, { id: string; text: string }[]>;
   };
 }
 
