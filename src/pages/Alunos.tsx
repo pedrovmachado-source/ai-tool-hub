@@ -508,7 +508,12 @@ export default function Alunos() {
                   </section>
                 </div>
               </Reveal>
+
+              <Reveal delay={250}>
+                <ModuloCriativos />
+              </Reveal>
             </div>
+
 
             {/* Right Column: Video Player */}
             <div className="lg:col-span-7" ref={videoRef}>
