@@ -28,7 +28,8 @@ import {
   Globe,
   Layout,
   MessageSquare,
-  CreditCard
+  CreditCard,
+  Check
 } from 'lucide-react';
 
 import { useEffect, useRef, useState } from 'react';
