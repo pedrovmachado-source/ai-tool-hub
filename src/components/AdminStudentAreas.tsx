@@ -338,7 +338,7 @@ export default function AdminStudentAreas() {
 
       {editingLesson && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-          <div className="bg-navy border border-white/10 rounded-[2rem] p-8 w-full max-w-md shadow-2xl" onClick={e => e.stopPropagation()}>
+          <div className="bg-navy border border-white/10 rounded-[2rem] p-8 w-full max-w-md shadow-2xl max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-8">
               <h3 className="text-xl font-serif-display text-white">Editar Aula</h3>
               <button onClick={() => setEditingLesson(null)} className="text-white/20 hover:text-white transition-colors"><X size={20} /></button>
