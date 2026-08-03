@@ -1,31 +1,29 @@
-Implement a robust abuse detection and blocking system for the invitation system, focusing on preventing self-invitation via device/IP fingerprinting.
+# Aprovação de ofertas pelo admin (estrela + oferta definitiva)
 
-### Database Changes (Migration)
-- **Profiles Table**: Add `abuse_blocked` (boolean, default false) and ensure `role` column exists (or use existing `user_roles` system).
-- **New Table `device_logs`**: Track `user_id`, `fingerprint`, and `ip_address` for every access.
-- **New Table `blocked_devices`**: Store fingerprints and IPs that have been flagged for abuse.
-- **Update `validate_invite_code` RPC**: 
-    - Accept `fingerprint` and `ip_address` as parameters.
-    - Before validating, check if the code owner has ever used the same fingerprint or IP as the current user.
-    - If a match is found, mark both accounts (owner and current user) as `abuse_blocked` and log the device in `blocked_devices`.
-- **Admin RPCs**: Add functions for admins to view and lift blocks.
+## Objetivo
+No painel admin, poder marcar as ofertas enviadas pelos alunos como **aprovada** (estrela) e como **oferta definitiva** (a oferta principal escolhida). O aluno vê essas marcações na página "Minhas Ofertas".
 
-### Frontend Implementation
-- **Fingerprint Capture**: Integrate `@fingerprintjs/fingerprintjs` to generate a unique device ID.
-- **Blocking Guard**:
-    - Update `AuthProvider` to fetch `abuse_blocked` status.
-    - Update `ProtectedRoute` to redirect blocked users (or those on blocked devices) to a new `/bloqueado` page.
-- **Block Screen (`/bloqueado`)**:
-    - Full-screen "Error 2 - Abuso de convites".
-    - WhatsApp support link.
-    - Bypass all other routes.
-- **Admin Dashboard (`/admin/bloqueios`)**:
-    - List blocked users and devices.
-    - Provide an "Unlock" button that clears the flags and logs.
+## Como vai funcionar
 
-### Technical Steps
-1. **Migration**: Create tables and update `validate_invite_code`.
-2. **Library**: Add `@fingerprintjs/fingerprintjs`.
-3. **API Utility**: Create a helper to get client IP and fingerprint.
-4. **Auth Context**: Sync the new `abuse_blocked` state.
-5. **UI**: Create the Blocked page and Admin Management page.
+### No painel admin (Ofertas dos Usuários)
+- Cada card de oferta ganha dois controles:
+  - Botão de **estrela**: alterna aprovada / não aprovada.
+  - Botão **"Oferta definitiva"**: marca aquela oferta como a definitiva daquele aluno. Ao marcar, qualquer outra oferta definitiva do mesmo aluno é desmarcada automaticamente (apenas uma por aluno).
+- Feedback visual imediato: estrela preenchida em dourado quando aprovada; card com borda/gradiente azul quando definitiva.
+- Filtro rápido opcional: todas / aprovadas / definitivas.
+
+### Na página do aluno (/minhas-ofertas)
+- Oferta aprovada: selo com estrela dourada e texto "Aprovada" no topo do card.
+- Oferta definitiva: o box da oferta fica envolvido por um gradiente azul (borda em degradê + brilho suave) com selo "Oferta principal", destacando-a das demais.
+- O aluno apenas visualiza — não consegue marcar nem desmarcar.
+
+## Detalhes técnicos
+1. **Banco**: migração adicionando em `public.user_offers`:
+   - `approved boolean not null default false`
+   - `approved_at timestamptz`, `approved_by uuid`
+   - `is_definitive boolean not null default false`
+   - Índice único parcial em `(user_id)` onde `is_definitive = true` para garantir uma definitiva por aluno.
+   - Política de UPDATE existente mantida para o dono, e política de UPDATE para admin via `has_role(auth.uid(), 'admin')`. Para impedir que o aluno altere as flags, um trigger `BEFORE UPDATE` restaura `approved`/`is_definitive` aos valores antigos quando o autor não é admin.
+2. **AdminUserOffers.tsx**: estado local dos toggles, `update` no Supabase (ao definir definitiva: limpar as outras do mesmo `user_id` e depois marcar esta), estilos de card conforme o status, `logActivity` opcional para auditoria.
+3. **MinhasOfertas.tsx**: incluir `approved` e `is_definitive` no tipo `Row`/`Oferta` e no mapeamento; renderizar selos e o wrapper com gradiente azul usando tokens do design system (sem cores hardcoded).
+4. Tipos do Supabase são regenerados após a migração, então o código entra depois dela.
