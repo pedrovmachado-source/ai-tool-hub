@@ -49,7 +49,11 @@ type Row = {
   link_site: string;
   link_checkout: string;
   copy_texto: string;
+  approved?: boolean;
+  is_definitive?: boolean;
 };
+
+type OfertaForm = Omit<Oferta, 'id' | 'approved' | 'isDefinitive'>;
 
 const rowToOferta = (r: Row): Oferta => ({
   id: r.id,
@@ -60,6 +64,8 @@ const rowToOferta = (r: Row): Oferta => ({
   linkSite: r.link_site || '',
   linkCheckout: r.link_checkout || '',
   copyTexto: r.copy_texto || '',
+  approved: !!r.approved,
+  isDefinitive: !!r.is_definitive,
 });
 
 export default function MinhasOfertas() {
