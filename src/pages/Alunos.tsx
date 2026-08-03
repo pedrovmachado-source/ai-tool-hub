@@ -59,6 +59,10 @@ export default function Alunos() {
   const [loading, setLoading] = useState(true);
   const [completedLessons, setCompletedLessons] = useState<Set<string>>(new Set());
   const [areaId, setAreaId] = useState<string | null>(null);
+  const [lessonsDone, setLessonsDone] = useState(0);
+  const [lessonsLimit, setLessonsLimit] = useState(0);
+  const [tasksByLesson, setTasksByLesson] = useState<Record<string, { id: string; text: string }[]>>({});
+  const [tasksDone, setTasksDone] = useState<Set<string>>(new Set());
   const videoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
