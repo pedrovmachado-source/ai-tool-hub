@@ -6,7 +6,7 @@ import Navbar from '@/components/Navbar';
 import Meta from '@/components/Meta';
 import {
   Plus, Search, Pencil, Trash2, Copy, Check, Download, ExternalLink,
-  Library, FolderOpen, Target, X, ArrowLeft, Globe, ShoppingCart, Tag as TagIcon
+  Library, FolderOpen, Target, X, ArrowLeft, Globe, ShoppingCart, Tag as TagIcon, Star, Crown
 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
@@ -20,6 +20,8 @@ type Oferta = {
   linkSite: string;
   linkCheckout: string;
   copyTexto: string;
+  approved: boolean;
+  isDefinitive: boolean;
 };
 
 const TAGS = ['Emagrecimento','Dieta','Educação','Religião','Infantil','Mães','Pais','Adulto','Saúde & corpo','Relacionamentos','Dinheiro','Mente & espírito','Habilidades & hobbies','Outros'];
@@ -47,7 +49,11 @@ type Row = {
   link_site: string;
   link_checkout: string;
   copy_texto: string;
+  approved?: boolean;
+  is_definitive?: boolean;
 };
+
+type OfertaForm = Omit<Oferta, 'id' | 'approved' | 'isDefinitive'>;
 
 const rowToOferta = (r: Row): Oferta => ({
   id: r.id,
@@ -58,6 +64,8 @@ const rowToOferta = (r: Row): Oferta => ({
   linkSite: r.link_site || '',
   linkCheckout: r.link_checkout || '',
   copyTexto: r.copy_texto || '',
+  approved: !!r.approved,
+  isDefinitive: !!r.is_definitive,
 });
 
 export default function MinhasOfertas() {
@@ -71,7 +79,7 @@ export default function MinhasOfertas() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
-  const [form, setForm] = useState<Omit<Oferta, 'id'>>({
+  const [form, setForm] = useState<OfertaForm>({
     nome: '', tags: [], linkBib: '', linkDrive: '', linkSite: '', linkCheckout: '', copyTexto: ''
   });
 
@@ -278,7 +286,27 @@ export default function MinhasOfertas() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filtered.map(o => (
-                <div key={o.id} className="group glass-smooth border border-white/5 rounded-[2rem] p-6 hover:bg-white/10 transition-all flex flex-col">
+                <div
+                  key={o.id}
+                  className={o.isDefinitive
+                    ? 'rounded-[2.15rem] p-[2px] bg-gradient-to-br from-sky-400 via-blue-500 to-indigo-600 shadow-[0_0_45px_-10px_rgba(59,130,246,0.65)]'
+                    : ''}
+                >
+                <div className={`group glass-smooth border rounded-[2rem] p-6 hover:bg-white/10 transition-all flex flex-col h-full ${o.isDefinitive ? 'border-transparent bg-[#05070f]/90' : 'border-white/5'}`}>
+                  {(o.approved || o.isDefinitive) && (
+                    <div className="flex flex-wrap items-center gap-2 mb-3">
+                      {o.isDefinitive && (
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gradient-to-r from-sky-500/25 to-indigo-500/25 border border-sky-400/40 text-[9px] font-bold uppercase tracking-[0.15em] text-sky-200">
+                          <Crown className="w-3 h-3" /> Oferta principal
+                        </span>
+                      )}
+                      {o.approved && (
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-400/10 border border-amber-400/30 text-[9px] font-bold uppercase tracking-[0.15em] text-amber-300">
+                          <Star className="w-3 h-3 fill-amber-300 text-amber-300" /> Aprovada
+                        </span>
+                      )}
+                    </div>
+                  )}
                   <div className="flex items-start justify-between gap-3 mb-4">
                     <h3 className="text-lg font-serif-display text-white leading-tight">{o.nome}</h3>
                     <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -290,6 +318,7 @@ export default function MinhasOfertas() {
                       </button>
                     </div>
                   </div>
+
 
                   {o.tags.length > 0 && (
                     <div className="flex flex-wrap gap-1.5 mb-4">
@@ -336,6 +365,7 @@ export default function MinhasOfertas() {
                       </div>
                     </div>
                   )}
+                </div>
                 </div>
               ))}
             </div>

@@ -1106,9 +1106,13 @@ export type Database = {
       }
       user_offers: {
         Row: {
+          approved: boolean
+          approved_at: string | null
+          approved_by: string | null
           copy_texto: string
           created_at: string
           id: string
+          is_definitive: boolean
           link_bib: string
           link_checkout: string
           link_drive: string
@@ -1119,9 +1123,13 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          approved?: boolean
+          approved_at?: string | null
+          approved_by?: string | null
           copy_texto?: string
           created_at?: string
           id?: string
+          is_definitive?: boolean
           link_bib?: string
           link_checkout?: string
           link_drive?: string
@@ -1132,9 +1140,13 @@ export type Database = {
           user_id: string
         }
         Update: {
+          approved?: boolean
+          approved_at?: string | null
+          approved_by?: string | null
           copy_texto?: string
           created_at?: string
           id?: string
+          is_definitive?: boolean
           link_bib?: string
           link_checkout?: string
           link_drive?: string
