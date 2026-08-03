@@ -20,6 +20,8 @@ type Oferta = {
   linkSite: string;
   linkCheckout: string;
   copyTexto: string;
+  approved: boolean;
+  isDefinitive: boolean;
 };
 
 const TAGS = ['Emagrecimento','Dieta','Educação','Religião','Infantil','Mães','Pais','Adulto','Saúde & corpo','Relacionamentos','Dinheiro','Mente & espírito','Habilidades & hobbies','Outros'];
