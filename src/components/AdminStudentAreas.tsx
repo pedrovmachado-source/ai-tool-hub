@@ -248,6 +248,31 @@ export default function AdminStudentAreas() {
                   />
                 </div>
 
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em] mb-2 block">Aulas Realizadas</label>
+                    <input
+                      type="number"
+                      min={0}
+                      value={studentArea?.content.lessonsDone ?? 0}
+                      onChange={e => setStudentArea(prev => prev ? { ...prev, content: { ...prev.content, lessonsDone: Math.max(0, Number(e.target.value) || 0) } } : null)}
+                      className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/5 text-white focus:outline-none focus:border-white/20"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em] mb-2 block">Limite de Aulas</label>
+                    <input
+                      type="number"
+                      min={0}
+                      value={studentArea?.content.lessonsLimit ?? 0}
+                      onChange={e => setStudentArea(prev => prev ? { ...prev, content: { ...prev.content, lessonsLimit: Math.max(0, Number(e.target.value) || 0) } } : null)}
+                      className="w-full px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/5 text-white focus:outline-none focus:border-white/20"
+                    />
+                  </div>
+                </div>
+
+
+
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <label className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em]">Aulas Disponíveis</label>
