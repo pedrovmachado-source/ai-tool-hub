@@ -4,6 +4,8 @@ import Navbar from '@/components/Navbar';
 import Meta from '@/components/Meta';
 import MentoriaModal from '@/components/MentoriaModal';
 import ExtensionPurchaseModal from '@/components/ExtensionPurchaseModal';
+import ModuloCriativos from '@/components/ModuloCriativos';
+
 import { isMentorado } from '@/lib/plan';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -508,7 +510,12 @@ export default function Alunos() {
                   </section>
                 </div>
               </Reveal>
+
+              <Reveal delay={250}>
+                <ModuloCriativos />
+              </Reveal>
             </div>
+
 
             {/* Right Column: Video Player */}
             <div className="lg:col-span-7" ref={videoRef}>
