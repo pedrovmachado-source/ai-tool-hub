@@ -671,6 +671,10 @@ export default function Alunos() {
                 </div>
               </Reveal>
 
+              <Reveal delay={225}>
+                <ModuloCriacaoSite />
+              </Reveal>
+
               <Reveal delay={250}>
                 <ModuloCriativos />
               </Reveal>
