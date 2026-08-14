@@ -133,7 +133,7 @@ export default function ModuloCriativos() {
           <Clapperboard className="w-4 h-4 text-white/70" />
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="text-xl font-serif-display text-white">2 - Criativos que vendem</h3>
+          <h3 className="text-xl font-serif-display text-white">3 - Criativos que vendem</h3>
           <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.2em] text-white/40">
             Estrutura, produção e escala
           </p>

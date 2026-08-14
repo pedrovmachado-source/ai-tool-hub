@@ -5,6 +5,7 @@ import Meta from '@/components/Meta';
 import MentoriaModal from '@/components/MentoriaModal';
 import ExtensionPurchaseModal from '@/components/ExtensionPurchaseModal';
 import ModuloCriativos from '@/components/ModuloCriativos';
+import ModuloCriacaoSite from '@/components/ModuloCriacaoSite';
 
 import { isMentorado } from '@/lib/plan';
 import { supabase } from '@/integrations/supabase/client';
@@ -668,6 +669,10 @@ export default function Alunos() {
                     </div>
                   </section>
                 </div>
+              </Reveal>
+
+              <Reveal delay={225}>
+                <ModuloCriacaoSite />
               </Reveal>
 
               <Reveal delay={250}>
