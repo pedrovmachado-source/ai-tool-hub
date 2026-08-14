@@ -46,6 +46,7 @@ export default function ModuloCriacaoSite() {
   const [open, setOpen] = useState(true);
   const [copiedIcp, setCopiedIcp] = useState(false);
   const [copiedLovable, setCopiedLovable] = useState(false);
+  const [selectedMode, setSelectedMode] = useState<'icp' | 'site_exemplo'>('icp');
 
   const copy = async (text: string, setCopied: (v: boolean) => void) => {
     try {
