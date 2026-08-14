@@ -631,7 +631,7 @@ export default function Alunos() {
                           <p className="text-[10px] uppercase tracking-wider text-white/40 mb-1">Resultado</p>
                           <p className="text-lg font-mono text-white/90">
                             {sales !== null
-                              ? `${sales.toLocaleString('pt-BR', { maximumFractionDigits: 0 })} vendas = R$ ${revenue !== null ? revenue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '—'}`
+                              ? `${sales.toLocaleString('pt-BR', { maximumFractionDigits: 0 })} vendas = US$ ${revenue !== null ? revenue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '—'}`
                               : '—'}
                           </p>
                         </div>
