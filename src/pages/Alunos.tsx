@@ -475,7 +475,8 @@ export default function Alunos() {
                         ebook, curso online, treinamento, mentor, especialista,<br/>
                         fórmula milagrosa, passo a passo, passo simples, acesso imediato,<br/>
                         19,90, 29,90, 9,90, 47,90, 49,90, 59,90, 97,00, 99,90, 4.5/5, 4.9/5<br/>
-                        vercel.app, lovable.app, hotmart.com, inlead.digital, twr.
+                        vercel.app, lovable.app, hotmart.com, inlead.digital, twr.<br/>
+                        .com/vsl, .com/quiz, .com/lp
                       </p>
                     </div>
                   </section>
