@@ -444,13 +444,19 @@ export default function Alunos() {
                     <div className="space-y-3">
                       <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/50">Melhores países para minerar ofertas</p>
                       <div className="flex flex-wrap gap-2">
-                        {['Espanha', 'Reino Unido', 'Portugal'].map(pais => (
+                        {['Reino Unido', 'Holanda', 'Bélgica', 'Alemanha', 'Irlanda', 'França', 'Itália'].map(pais => (
                           <span key={pais} className="px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[10px] uppercase tracking-wider text-white/40">
                             {pais}
                           </span>
                         ))}
                       </div>
                     </div>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-white/5 border border-white/5">
+                    <p className="text-sm text-white/70 leading-relaxed">
+                      <span className="text-white font-medium">Dica:</span> Descobrir páginas em site WordPress — adicione <span className="font-mono text-white/90 bg-white/10 px-1.5 py-0.5 rounded">wp-sitemap.xml</span> no fim do domínio do site.
+                    </p>
                   </div>
 
                   {/* Termos de Pesquisa */}
@@ -469,7 +475,8 @@ export default function Alunos() {
                         ebook, curso online, treinamento, mentor, especialista,<br/>
                         fórmula milagrosa, passo a passo, passo simples, acesso imediato,<br/>
                         19,90, 29,90, 9,90, 47,90, 49,90, 59,90, 97,00, 99,90, 4.5/5, 4.9/5<br/>
-                        vercel.app, lovable.app, hotmart.com, inlead.digital, twr.
+                        vercel.app, lovable.app, hotmart.com, inlead.digital, twr.<br/>
+                        .com/vsl, .com/quiz, .com/lp
                       </p>
                     </div>
                   </section>
