@@ -39,12 +39,19 @@ export default function DashboardBanner() {
   );
 
   return (
-    <div className="mb-12 rounded-[2rem] overflow-hidden border border-white/5 glass-smooth">
-      {banner.link ? (
-        <a href={banner.link} target="_blank" rel="noopener noreferrer" className="block">
-          {img}
-        </a>
-      ) : img}
+    <div className="mb-12">
+      <div className="rounded-[2rem] overflow-hidden border border-white/5 glass-smooth">
+        {banner.link ? (
+          <a href={banner.link} target="_blank" rel="noopener noreferrer" className="block">
+            {img}
+          </a>
+        ) : img}
+      </div>
+      {banner.alt && (
+        <p className="mt-4 text-center text-sm font-light text-white/40 leading-relaxed max-w-3xl mx-auto">
+          {banner.alt}
+        </p>
+      )}
     </div>
   );
 }
