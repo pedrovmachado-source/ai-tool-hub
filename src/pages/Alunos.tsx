@@ -10,6 +10,7 @@ import { isMentorado } from '@/lib/plan';
 import { supabase } from '@/integrations/supabase/client';
 
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { useToast } from "@/hooks/use-toast";
 import { 
   PlayCircle, 
@@ -29,7 +30,9 @@ import {
   Layout,
   MessageSquare,
   CreditCard,
-  Check
+  Check,
+  Calculator,
+  DollarSign
 } from 'lucide-react';
 
 import { useEffect, useRef, useState } from 'react';
@@ -65,6 +68,12 @@ export default function Alunos() {
   const [tasksByLesson, setTasksByLesson] = useState<Record<string, { id: string; text: string }[]>>({});
   const [tasksDone, setTasksDone] = useState<Set<string>>(new Set());
   const videoRef = useRef<HTMLDivElement>(null);
+
+  // Calculadoras de investimento e receita
+  const [reach, setReach] = useState('');
+  const [cpm, setCpm] = useState('');
+  const [visits, setVisits] = useState('');
+  const [ticket, setTicket] = useState('');
 
   useEffect(() => {
     if (user) {
@@ -258,6 +267,17 @@ export default function Alunos() {
     { id: '6', title: 'Aula 6: Gestão de Comunidade e LTV', videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ', duration: '30:00', transcriptionUrl: '#' },
   ];
 
+  // Cálculos das calculadoras
+  const reachNum = parseFloat(reach.replace(/\./g, '').replace(',', '.'));
+  const cpmNum = parseFloat(cpm.replace(',', '.'));
+  const creativeInvest = !isNaN(reachNum) && !isNaN(cpmNum) && reachNum > 0 && cpmNum > 0
+    ? (reachNum * 1.5 / 1000) * cpmNum
+    : null;
+
+  const visitsNum = parseInt(visits.replace(/\./g, '').replace(',', ''), 10);
+  const ticketNum = parseFloat(ticket.replace(',', '.'));
+  const sales = !isNaN(visitsNum) && visitsNum > 0 ? visitsNum * 0.05 : null;
+  const revenue = sales !== null && !isNaN(ticketNum) && ticketNum > 0 ? sales * ticketNum : null;
 
   return (
     <div className="flex flex-col min-h-screen bg-black text-white selection:bg-white/20 font-sans overflow-x-hidden">
@@ -525,6 +545,91 @@ export default function Alunos() {
                         >
                           Copiar Prompt
                         </Button>
+                      </div>
+                    </div>
+                  </section>
+
+                  {/* Calculadoras */}
+                  <section className="space-y-8">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center">
+                        <Calculator className="w-4 h-4 text-white/70" />
+                      </div>
+                      <h3 className="text-lg font-serif-display">Calculadoras</h3>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {/* Investimento no criativo */}
+                      <div className="p-6 rounded-2xl bg-black border border-white/10 space-y-4">
+                        <h4 className="text-sm font-medium text-white/80">Cálculo de quanto investir no criativo</h4>
+                        <div className="space-y-3">
+                          <div>
+                            <label className="text-[10px] uppercase tracking-wider text-white/40 mb-1.5 block">Número de alcance (0.000.000)</label>
+                            <Input
+                              type="text"
+                              inputMode="decimal"
+                              placeholder="Ex: 1.500.000"
+                              value={reach}
+                              onChange={(e) => setReach(e.target.value)}
+                              className="bg-white/5 border-white/10 text-white placeholder:text-white/20 text-sm rounded-xl focus-visible:ring-white/20"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-[10px] uppercase tracking-wider text-white/40 mb-1.5 block">CPM do país (US$)</label>
+                            <Input
+                              type="text"
+                              inputMode="decimal"
+                              placeholder="Ex: 12,50"
+                              value={cpm}
+                              onChange={(e) => setCpm(e.target.value)}
+                              className="bg-white/5 border-white/10 text-white placeholder:text-white/20 text-sm rounded-xl focus-visible:ring-white/20"
+                            />
+                          </div>
+                        </div>
+                        <div className="p-4 rounded-xl bg-white/5 border border-white/5">
+                          <p className="text-[10px] uppercase tracking-wider text-white/40 mb-1">Resultado</p>
+                          <p className="text-lg font-mono text-white/90">
+                            {creativeInvest !== null
+                              ? `US$ ${creativeInvest.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                              : '—'}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Receita da oferta */}
+                      <div className="p-6 rounded-2xl bg-black border border-white/10 space-y-4">
+                        <h4 className="text-sm font-medium text-white/80">Cálculo do quanto provavelmente a oferta vende</h4>
+                        <div className="space-y-3">
+                          <div>
+                            <label className="text-[10px] uppercase tracking-wider text-white/40 mb-1.5 block">Número de visitas à página</label>
+                            <Input
+                              type="text"
+                              inputMode="numeric"
+                              placeholder="Ex: 10.000"
+                              value={visits}
+                              onChange={(e) => setVisits(e.target.value)}
+                              className="bg-white/5 border-white/10 text-white placeholder:text-white/20 text-sm rounded-xl focus-visible:ring-white/20"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-[10px] uppercase tracking-wider text-white/40 mb-1.5 block">Ticket do produto (R$)</label>
+                            <Input
+                              type="text"
+                              inputMode="decimal"
+                              placeholder="Ex: 197,00"
+                              value={ticket}
+                              onChange={(e) => setTicket(e.target.value)}
+                              className="bg-white/5 border-white/10 text-white placeholder:text-white/20 text-sm rounded-xl focus-visible:ring-white/20"
+                            />
+                          </div>
+                        </div>
+                        <div className="p-4 rounded-xl bg-white/5 border border-white/5">
+                          <p className="text-[10px] uppercase tracking-wider text-white/40 mb-1">Resultado</p>
+                          <p className="text-lg font-mono text-white/90">
+                            {sales !== null
+                              ? `${sales.toLocaleString('pt-BR', { maximumFractionDigits: 0 })} vendas = R$ ${revenue !== null ? revenue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '—'}`
+                              : '—'}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </section>
