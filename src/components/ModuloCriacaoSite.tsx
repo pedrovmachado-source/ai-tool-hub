@@ -18,7 +18,17 @@ import {
 
 const PROMPT_ICP = `(link do site) Crie meu ICP`;
 
-const PROMPT_LOVABLE = `gere um prompt completo para eu colar no lovable com base nessa oferta (link da oferta base) utilizando a estrutura como base e alterando a copy para a {[dê 2 opções aqui] (do meu ICP) (Site exemplo)}.`;
+const promptLovable = (modo: 'icp' | 'site_exemplo') => {
+  const base = modo === 'icp'
+    ? 'do meu ICP'
+    : 'Site exemplo';
+  return `gere um prompt completo para eu colar no lovable com base nessa oferta (link da oferta base) utilizando a estrutura como base e alterando a copy para a ${base}.`;
+};
+
+const options = [
+  { value: 'icp' as const, label: 'Do meu ICP' },
+  { value: 'site_exemplo' as const, label: 'Site exemplo' },
+];
 
 const links = [
   { name: 'Microsoft Clarity', url: 'https://clarity.microsoft.com/' },
