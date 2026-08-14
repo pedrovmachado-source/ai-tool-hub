@@ -69,6 +69,12 @@ export default function Alunos() {
   const [tasksDone, setTasksDone] = useState<Set<string>>(new Set());
   const videoRef = useRef<HTMLDivElement>(null);
 
+  // Calculadoras de investimento e receita
+  const [reach, setReach] = useState('');
+  const [cpm, setCpm] = useState('');
+  const [visits, setVisits] = useState('');
+  const [ticket, setTicket] = useState('');
+
   useEffect(() => {
     if (user) {
       if (user.abuseBlocked) {
