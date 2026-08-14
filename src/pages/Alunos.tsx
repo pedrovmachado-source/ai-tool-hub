@@ -616,11 +616,11 @@ export default function Alunos() {
                             />
                           </div>
                           <div>
-                            <label className="text-[10px] uppercase tracking-wider text-white/40 mb-1.5 block">Ticket do produto (R$)</label>
+                            <label className="text-[10px] uppercase tracking-wider text-white/40 mb-1.5 block">Ticket do produto (US$)</label>
                             <Input
                               type="text"
                               inputMode="decimal"
-                              placeholder="Ex: 197,00"
+                              placeholder="Ex: 97,00"
                               value={ticket}
                               onChange={(e) => setTicket(e.target.value)}
                               className="bg-white/5 border-white/10 text-white placeholder:text-white/20 text-sm rounded-xl focus-visible:ring-white/20"
