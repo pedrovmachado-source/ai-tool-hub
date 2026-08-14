@@ -51,6 +51,32 @@ interface Lesson {
   transcriptionUrl?: string;
 }
 
+const Reveal = ({ children, className = '', as: As = 'div' as any, delay = 0 }: any) => {
+  const ref = useRef<HTMLElement | null>(null);
+  const [shown, setShown] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setShown(true); io.disconnect(); } },
+      { threshold: 0.1 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  return (
+    <As
+      ref={ref as any}
+      className={`${className} transition-all duration-1000 ease-out ${shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+      style={{ transitionDelay: `${delay}ms` }}
+    >
+      {children}
+    </As>
+  );
+};
+
+
+
 export default function Alunos() {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -234,29 +260,8 @@ export default function Alunos() {
     window.open(url, '_blank');
   };
 
-  const Reveal = ({ children, className = '', as: As = 'div' as any, delay = 0 }: any) => {
-    const ref = useRef<HTMLElement | null>(null);
-    const [shown, setShown] = useState(false);
-    useEffect(() => {
-      const el = ref.current;
-      if (!el) return;
-      const io = new IntersectionObserver(
-        ([e]) => { if (e.isIntersecting) { setShown(true); io.disconnect(); } },
-        { threshold: 0.1 }
-      );
-      io.observe(el);
-      return () => io.disconnect();
-    }, []);
-    return (
-      <As
-        ref={ref as any}
-        className={`${className} transition-all duration-1000 ease-out ${shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-        style={{ transitionDelay: `${delay}ms` }}
-      >
-        {children}
-      </As>
-    );
-  };
+
+
 
   const defaultAulas: Lesson[] = [
     { id: '1', title: 'Aula 1: O Mindset dos 1%', videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ', duration: '15:20', transcriptionUrl: '#' },
