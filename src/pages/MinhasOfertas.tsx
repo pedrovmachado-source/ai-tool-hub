@@ -386,10 +386,10 @@ export default function MinhasOfertas() {
       {/* Modal */}
       {modalOpen && (
         <div
-          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4"
+          className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md overflow-y-auto overscroll-contain flex items-start sm:items-center justify-center px-4 pt-24 pb-10 sm:py-24"
           onClick={(e) => { if (e.target === e.currentTarget) setModalOpen(false); }}
         >
-          <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-[#0a0a0a] border border-white/10 rounded-[2rem] p-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
+          <div className="w-full max-w-2xl my-auto bg-[#0a0a0a] border border-white/10 rounded-[2rem] p-6 sm:p-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-2xl font-serif-display text-white">
                 {editing ? 'Editar' : 'Nova'} <em className="italic font-normal">Oferta</em>
