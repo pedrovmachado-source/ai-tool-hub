@@ -10,6 +10,7 @@ import { isMentorado } from '@/lib/plan';
 import { supabase } from '@/integrations/supabase/client';
 
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { useToast } from "@/hooks/use-toast";
 import { 
   PlayCircle, 
@@ -29,7 +30,9 @@ import {
   Layout,
   MessageSquare,
   CreditCard,
-  Check
+  Check,
+  Calculator,
+  DollarSign
 } from 'lucide-react';
 
 import { useEffect, useRef, useState } from 'react';
