@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { type Tool, type Category } from '@/data/tools-data';
 import { useCategories } from '@/hooks/useCategories';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, LayoutDashboard, Users, CreditCard, FileText, Settings, LogOut, Search, Download, Plus, Pencil, Trash2, X, Check, Palette, Eye, EyeOff, Globe, Bell, Shield, Database, Mail, Play, Video, GraduationCap, Activity, Menu, Folder, Tag, Wallet, Image as ImageIcon } from 'lucide-react';
+import { ArrowLeft, LayoutDashboard, Users, CreditCard, FileText, Settings, LogOut, Search, Download, Plus, Pencil, Trash2, X, Check, Palette, Eye, EyeOff, Globe, Bell, Shield, Database, Mail, Play, Video, GraduationCap, Activity, Menu, Folder, Tag, Image as ImageIcon } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import AdminOffers from './AdminOffers';
 import AdminLessons from './AdminLessons';
@@ -13,7 +13,6 @@ import AdminMenu from './AdminMenu';
 import AdminStudentAreas from './AdminStudentAreas';
 import AdminOfferAnalyses from './AdminOfferAnalyses';
 import AdminPurchasedAccounts from './AdminPurchasedAccounts';
-import AdminCashDeposits from './AdminCashDeposits';
 import AdminUserOffers from './AdminUserOffers';
 import AdminMFA from './AdminMFA';
 import ActivityLogView from './ActivityLogView';
@@ -563,7 +562,6 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'menu', label: 'Menu Lateral', icon: Menu },
     { key: 'student-areas', label: 'Área do Mentorado', icon: GraduationCap },
     { key: 'purchased-accounts', label: 'Contas Compradas', icon: Shield },
-    { key: 'cash-deposits', label: 'Depósitos de Saldo', icon: Wallet },
     { key: 'user-offers', label: 'Ofertas dos Usuários', icon: Tag },
     { key: 'offer-analyses', label: 'Validar Ofertas', icon: Shield },
     { key: 'banner', label: 'Banner Dashboard', icon: ImageIcon },
@@ -947,7 +945,6 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
         {section === 'menu' && <AdminMenu />}
         {section === 'student-areas' && <AdminStudentAreas />}
         {section === 'purchased-accounts' && <AdminPurchasedAccounts />}
-        {section === 'cash-deposits' && <AdminCashDeposits />}
         {section === 'user-offers' && <AdminUserOffers />}
         {section === 'offers' && <AdminOffers />}
         {section === 'offer-analyses' && <AdminOfferAnalyses />}
