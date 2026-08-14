@@ -139,15 +139,38 @@ export default function ModuloCriacaoSite() {
                   <div className="absolute -inset-0.5 bg-gradient-to-r from-white/10 to-transparent rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000" />
                   <div className="relative p-6 rounded-[14px] bg-black border border-white/10">
                     <p className="text-[11px] uppercase tracking-wider text-white/40 mb-2">Passo 2 — Cole no Lovable</p>
-                    <p className="text-sm text-white/[0.75] italic leading-[1.7]">{PROMPT_LOVABLE}</p>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => copy(PROMPT_LOVABLE, setCopiedLovable)}
-                      className="mt-4 h-8 px-4 rounded-full border-white/10 bg-white/5 text-[11px] font-bold uppercase tracking-widest text-white/70 hover:bg-white hover:text-black transition-colors"
-                    >
-                      {copiedLovable ? 'Copiado!' : 'Copiar Prompt'}
-                    </Button>
+                    <p className="text-sm text-white/[0.75] italic leading-[1.7]">{promptLovable(selectedMode)}</p>
+
+                    <div className="mt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                      <Select
+                        value={selectedMode}
+                        onValueChange={(value) => setSelectedMode(value as 'icp' | 'site_exemplo')}
+                      >
+                        <SelectTrigger className="h-9 w-full sm:w-[180px] rounded-full border-white/10 bg-white/5 text-xs text-white/70 focus:ring-1 focus:ring-white/20 focus:ring-offset-0 px-4">
+                          <SelectValue placeholder="Escolha a base da copy" />
+                        </SelectTrigger>
+                        <SelectContent className="rounded-xl border-white/10 bg-[#141414] text-white/90">
+                          {options.map((opt) => (
+                            <SelectItem
+                              key={opt.value}
+                              value={opt.value}
+                              className="text-xs focus:bg-white/10 focus:text-white cursor-pointer"
+                            >
+                              {opt.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => copy(promptLovable(selectedMode), setCopiedLovable)}
+                        className="h-9 px-5 rounded-full border-white/10 bg-white/5 text-[11px] font-bold uppercase tracking-widest text-white/70 hover:bg-white hover:text-black transition-colors"
+                      >
+                        {copiedLovable ? 'Copiado!' : 'Copiar Prompt'}
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
