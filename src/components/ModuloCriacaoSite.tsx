@@ -35,6 +35,8 @@ const links = [
   { name: 'Lovable', url: 'https://lovable.dev/' },
   { name: 'Claude', url: 'https://claude.ai/' },
   { name: 'Biblioteca de Ads', url: 'https://www.facebook.com/ads/library/' },
+  { name: 'KAST', url: 'https://app.kast.xyz/referral/HFWCR0HJ' },
+  { name: 'Stripe', url: 'https://stripe.com' },
 ];
 
 const SubLabel = ({ children }: { children: React.ReactNode }) => (
