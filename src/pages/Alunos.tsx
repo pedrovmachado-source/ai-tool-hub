@@ -267,6 +267,17 @@ export default function Alunos() {
     { id: '6', title: 'Aula 6: Gestão de Comunidade e LTV', videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ', duration: '30:00', transcriptionUrl: '#' },
   ];
 
+  // Cálculos das calculadoras
+  const reachNum = parseFloat(reach.replace(/\./g, '').replace(',', '.'));
+  const cpmNum = parseFloat(cpm.replace(',', '.'));
+  const creativeInvest = !isNaN(reachNum) && !isNaN(cpmNum) && reachNum > 0 && cpmNum > 0
+    ? (reachNum * 1.5 / 1000) * cpmNum
+    : null;
+
+  const visitsNum = parseInt(visits.replace(/\./g, '').replace(',', ''), 10);
+  const ticketNum = parseFloat(ticket.replace(',', '.'));
+  const sales = !isNaN(visitsNum) && visitsNum > 0 ? visitsNum * 0.05 : null;
+  const revenue = sales !== null && !isNaN(ticketNum) && ticketNum > 0 ? sales * ticketNum : null;
 
   return (
     <div className="flex flex-col min-h-screen bg-black text-white selection:bg-white/20 font-sans overflow-x-hidden">
