@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { type Tool, type Category } from '@/data/tools-data';
 import { useCategories } from '@/hooks/useCategories';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, LayoutDashboard, Users, CreditCard, FileText, Settings, LogOut, Search, Download, Plus, Pencil, Trash2, X, Check, Palette, Eye, EyeOff, Globe, Bell, Shield, Database, Mail, Play, Video, GraduationCap, Activity, Menu, Folder, Tag, Image as ImageIcon } from 'lucide-react';
+import { ArrowLeft, LayoutDashboard, Users, CreditCard, FileText, Settings, LogOut, Search, Download, Plus, Pencil, Trash2, X, Check, Palette, Eye, EyeOff, Globe, Bell, Shield, Database, Mail, Play, Video, GraduationCap, Activity, Menu, Folder, Tag, Image as ImageIcon, Ticket } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import AdminOffers from './AdminOffers';
 import AdminLessons from './AdminLessons';
@@ -566,6 +566,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'user-offers', label: 'Ofertas dos Usuários', icon: Tag },
     { key: 'offer-analyses', label: 'Validar Ofertas', icon: Shield },
     { key: 'subscriptions', label: 'Assinaturas', icon: CreditCard },
+    { key: 'access-panel', label: 'Acesso & Convites', icon: Ticket },
     { key: 'banner', label: 'Banner Dashboard', icon: ImageIcon },
     { key: 'activity', label: 'Atividade', icon: Activity },
     { key: 'mfa', label: 'Segurança (2FA)', icon: Shield },
@@ -718,6 +719,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
               onClick={() => { 
                 setViewingCategory(null); 
                 setSidebarOpen(false); 
+                if (item.key === 'access-panel') { window.location.href = '/admin'; return; }
                 if (item.key === 'site-creation') setSiteCreationInitialTab('products');
                 if (item.key === 'banner') { setSection('settings'); setSettingsSection('banner'); }
                 else setSection(item.key);
