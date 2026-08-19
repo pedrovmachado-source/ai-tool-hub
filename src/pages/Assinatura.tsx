@@ -65,7 +65,21 @@ export default function Assinatura() {
   return (
     <div className="min-h-screen bg-black text-white">
       <Meta title="Assinatura — Convert Club" description="Acesso completo à plataforma Convert Club por R$ 9,90 por mês." />
-      <Navbar />
+      <Navbar
+        onNavigate={(page) => {
+          if (page === 'home') navigate('/');
+          else if (page === 'profile') navigate('/perfil');
+          else if (page === 'menu') navigate('/menu');
+          else if (page === 'alunos' || page === 'lessons') navigate('/alunos');
+          else if (page === 'mentorias') navigate('/mentorias');
+          else if (page === 'ofertas' || page === 'offers') navigate('/ofertas');
+          else {
+            sessionStorage.setItem('adai:initialPage', page);
+            navigate('/ferramentas');
+          }
+        }}
+      />
+
 
       <main className="max-w-4xl mx-auto px-5 pt-28 pb-24">
         <div className="text-center mb-10">
