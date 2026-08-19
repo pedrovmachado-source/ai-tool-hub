@@ -43,6 +43,8 @@ export default function AdminSubscriptions() {
   const [events, setEvents] = useState<KirvanoEvent[]>([]);
   const [grantEmail, setGrantEmail] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState<string | null>(null);
+  const [checkoutUrl, setCheckoutUrl] = useState('');
+  const [savingUrl, setSavingUrl] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -58,6 +60,23 @@ export default function AdminSubscriptions() {
   };
 
   useEffect(() => { void load(); }, []);
+
+  useEffect(() => {
+    supabase.from('site_settings').select('value').eq('key', 'kirvano_checkout_url').maybeSingle().then(({ data }) => {
+      setCheckoutUrl(((data?.value || {}) as any).url || '');
+    });
+  }, []);
+
+  const saveCheckoutUrl = async () => {
+    setSavingUrl(true);
+    const { error } = await supabase.from('site_settings').upsert(
+      { key: 'kirvano_checkout_url', value: { url: checkoutUrl.trim() }, updated_at: new Date().toISOString() },
+      { onConflict: 'key' },
+    );
+    setSavingUrl(false);
+    if (error) { toast({ title: 'Erro ao salvar', description: error.message, variant: 'destructive' }); return; }
+    toast({ title: 'URL do checkout salva' });
+  };
 
   /** Libera 30 dias de acesso para o e-mail de login informado. */
   const grantAccess = async (key: string, loginEmail: string, note: string) => {
@@ -111,6 +130,24 @@ export default function AdminSubscriptions() {
         <Button variant="outline" size="sm" onClick={() => void load()} className="border-white/10 bg-white/5">
           <RefreshCw size={14} className="mr-2" /> Atualizar
         </Button>
+      </div>
+
+      <div className="glass-smooth border border-white/5 rounded-2xl p-5 mb-6">
+        <p className="text-[10px] uppercase tracking-[0.2em] text-white/40 mb-3">Link do checkout Kirvano (oferta R$ 9,90/mês)</p>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Input
+            value={checkoutUrl}
+            onChange={(e) => setCheckoutUrl(e.target.value)}
+            placeholder="https://pay.kirvano.com/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+            className="h-10 bg-white/5 border-white/10 text-sm"
+          />
+          <Button onClick={() => void saveCheckoutUrl()} disabled={savingUrl} className="h-10 bg-white text-black hover:bg-white/90">
+            {savingUrl ? <Loader2 size={14} className="animate-spin" /> : 'Salvar'}
+          </Button>
+        </div>
+        <p className="text-[11px] text-white/30 mt-2">
+          É a URL base da oferta. O site adiciona automaticamente e-mail, nome e o identificador do usuário (utm_content e src).
+        </p>
       </div>
 
       <div className="flex gap-2 mb-6 overflow-x-auto">
