@@ -980,6 +980,57 @@ export type Database = {
           },
         ]
       }
+      subscribers: {
+        Row: {
+          access_source: string | null
+          access_until: string | null
+          charge_frequency: string | null
+          created_at: string
+          email: string
+          id: string
+          kirvano_checkout_id: string | null
+          kirvano_customer_email: string | null
+          kirvano_last_sale_id: string | null
+          next_charge_date: string | null
+          plan_name: string | null
+          subscription_status: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          access_source?: string | null
+          access_until?: string | null
+          charge_frequency?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          kirvano_checkout_id?: string | null
+          kirvano_customer_email?: string | null
+          kirvano_last_sale_id?: string | null
+          next_charge_date?: string | null
+          plan_name?: string | null
+          subscription_status?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          access_source?: string | null
+          access_until?: string | null
+          charge_frequency?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          kirvano_checkout_id?: string | null
+          kirvano_customer_email?: string | null
+          kirvano_last_sale_id?: string | null
+          next_charge_date?: string | null
+          plan_name?: string | null
+          subscription_status?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       suppressed_emails: {
         Row: {
           created_at: string
@@ -1242,6 +1293,7 @@ export type Database = {
       }
       get_tool_premium: { Args: { _tool_key: string }; Returns: Json }
       get_user_emails: { Args: { user_ids: string[] }; Returns: Json }
+      has_active_access: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1358,7 +1410,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "user"
+      app_role: "admin" | "user" | "mentorado" | "member"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1486,7 +1538,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "user"],
+      app_role: ["admin", "user", "mentorado", "member"],
     },
   },
 } as const
