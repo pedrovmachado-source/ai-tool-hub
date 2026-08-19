@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      access_claims: {
+        Row: {
+          created_at: string
+          id: string
+          login_email: string
+          note: string | null
+          purchase_email: string
+          resolved_at: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          login_email: string
+          note?: string | null
+          purchase_email: string
+          resolved_at?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          login_email?: string
+          note?: string | null
+          purchase_email?: string
+          resolved_at?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       activity_logs: {
         Row: {
           action: string
@@ -403,6 +436,30 @@ export type Database = {
           owner_id?: string
           used_at?: string | null
           used_by?: string | null
+        }
+        Relationships: []
+      }
+      kirvano_events: {
+        Row: {
+          event: string
+          id: string
+          payload: Json
+          processed_at: string
+          sale_id: string | null
+        }
+        Insert: {
+          event: string
+          id?: string
+          payload?: Json
+          processed_at?: string
+          sale_id?: string | null
+        }
+        Update: {
+          event?: string
+          id?: string
+          payload?: Json
+          processed_at?: string
+          sale_id?: string | null
         }
         Relationships: []
       }
@@ -1154,6 +1211,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      unmatched_sales: {
+        Row: {
+          email: string | null
+          event: string | null
+          id: string
+          payload: Json
+          received_at: string
+          resolved: boolean
+          sale_id: string | null
+        }
+        Insert: {
+          email?: string | null
+          event?: string | null
+          id?: string
+          payload?: Json
+          received_at?: string
+          resolved?: boolean
+          sale_id?: string | null
+        }
+        Update: {
+          email?: string | null
+          event?: string | null
+          id?: string
+          payload?: Json
+          received_at?: string
+          resolved?: boolean
+          sale_id?: string | null
+        }
+        Relationships: []
       }
       user_offers: {
         Row: {
