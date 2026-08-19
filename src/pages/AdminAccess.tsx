@@ -449,8 +449,8 @@ export default function AdminAccess() {
   if (!allowed) {
     return (
       <div className="min-h-screen bg-background">
-        <Meta title="Acesso restrito | Convert Club" description="Área administrativa restrita." noindex />
-        <Navbar onNavigate={(t) => navigate(t === 'home' ? '/' : `/${t}`)} currentPage="admin" />
+        <Meta title="Acesso restrito | Convert Club" description="Área administrativa restrita." />
+        <Navbar onNavigate={(t) => navigate(t === 'home' ? '/' : `/${t}`)} />
         <div className="max-w-lg mx-auto px-6 pt-40 text-center">
           <ShieldAlert className="w-10 h-10 text-red-300 mx-auto mb-4" />
           <h1 className="text-2xl font-serif-display text-white">Acesso restrito</h1>
@@ -467,8 +467,8 @@ export default function AdminAccess() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Meta title="Painel de acesso | Convert Club" description="Painel administrativo de acesso, convites e assinaturas." noindex />
-      <Navbar onNavigate={(t) => navigate(t === 'home' ? '/' : `/${t}`)} currentPage="admin" />
+      <Meta title="Painel de acesso | Convert Club" description="Painel administrativo de acesso, convites e assinaturas." />
+      <Navbar onNavigate={(t) => navigate(t === 'home' ? '/' : `/${t}`)} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-28 pb-24">
         <div className="flex items-center justify-between mb-6 gap-3">

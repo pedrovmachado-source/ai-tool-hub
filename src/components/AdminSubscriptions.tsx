@@ -35,8 +35,10 @@ interface KirvanoEvent {
 
 const fmt = (d: string) => new Date(d).toLocaleString('pt-BR');
 
-export default function AdminSubscriptions() {
-  const [tab, setTab] = useState<'unmatched' | 'claims' | 'events'>('unmatched');
+type SubsTab = 'unmatched' | 'claims' | 'events';
+
+export default function AdminSubscriptions({ initialTab = 'unmatched' }: { initialTab?: SubsTab } = {}) {
+  const [tab, setTab] = useState<SubsTab>(initialTab);
   const [loading, setLoading] = useState(true);
   const [unmatched, setUnmatched] = useState<UnmatchedSale[]>([]);
   const [claims, setClaims] = useState<AccessClaim[]>([]);
@@ -117,7 +119,7 @@ export default function AdminSubscriptions() {
     void load();
   };
 
-  const tabs: { key: typeof tab; label: string; count: number }[] = [
+  const tabs: { key: SubsTab; label: string; count: number }[] = [
     { key: 'unmatched', label: 'Vendas sem usuário', count: unmatched.filter(u => !u.resolved).length },
     { key: 'claims', label: 'Já paguei e não liberou', count: claims.filter(c => c.status === 'pending').length },
     { key: 'events', label: 'Log de eventos', count: events.length },
