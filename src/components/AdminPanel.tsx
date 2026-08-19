@@ -566,6 +566,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'user-offers', label: 'Ofertas dos Usuários', icon: Tag },
     { key: 'offer-analyses', label: 'Validar Ofertas', icon: Shield },
     { key: 'subscriptions', label: 'Assinaturas', icon: CreditCard },
+    { key: 'access-panel', label: 'Acesso & Convites', icon: Ticket },
     { key: 'banner', label: 'Banner Dashboard', icon: ImageIcon },
     { key: 'activity', label: 'Atividade', icon: Activity },
     { key: 'mfa', label: 'Segurança (2FA)', icon: Shield },
@@ -718,6 +719,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
               onClick={() => { 
                 setViewingCategory(null); 
                 setSidebarOpen(false); 
+                if (item.key === 'access-panel') { window.location.href = '/admin'; return; }
                 if (item.key === 'site-creation') setSiteCreationInitialTab('products');
                 if (item.key === 'banner') { setSection('settings'); setSettingsSection('banner'); }
                 else setSection(item.key);
