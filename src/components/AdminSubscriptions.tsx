@@ -80,31 +80,50 @@ export default function AdminSubscriptions({ initialTab = 'unmatched' }: { initi
     toast({ title: 'URL do checkout salva' });
   };
 
-  /** Libera 30 dias de acesso para o e-mail de login informado. */
-  const grantAccess = async (key: string, loginEmail: string, note: string) => {
+  /** Libera 30 dias de acesso para o e-mail de login informado (via função admin no servidor). */
+  const grantAccess = async (key: string, loginEmail: string, note: string, unmatchedId?: string) => {
     const email = loginEmail.trim().toLowerCase();
     if (!email) { toast({ title: 'Informe o e-mail de login', variant: 'destructive' }); return; }
     setBusy(key);
-    const { data: sub, error } = await supabase
-      .from('subscribers')
-      .select('id, user_id, access_until')
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('user_id, email')
       .ilike('email', email)
       .maybeSingle();
-    if (error || !sub) {
+
+    if (!profile?.user_id) {
       setBusy(null);
       toast({ title: 'Usuário não encontrado', description: 'Esse e-mail não tem conta na plataforma.', variant: 'destructive' });
       return;
     }
+
+    const { data: sub } = await supabase
+      .from('subscribers')
+      .select('access_until')
+      .eq('user_id', profile.user_id)
+      .maybeSingle();
+
     const now = new Date();
-    const current = sub.access_until ? new Date(sub.access_until as string) : null;
+    const current = sub?.access_until ? new Date(sub.access_until as string) : null;
     const base = current && current > now ? current : now;
     const until = new Date(base.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString();
-    const { error: upErr } = await supabase
-      .from('subscribers')
-      .update({ access_until: until, access_source: 'subscription', subscription_status: 'active' })
-      .eq('id', sub.id);
+
+    const { error } = unmatchedId
+      ? await supabase.rpc('admin_link_unmatched_sale', {
+          p_unmatched_id: unmatchedId,
+          p_user_id: profile.user_id,
+          p_access_until: until,
+        })
+      : await supabase.rpc('admin_set_access_until', {
+          p_user_id: profile.user_id,
+          p_access_until: until,
+          p_reason: note,
+          p_source: 'subscription',
+        });
+
     setBusy(null);
-    if (upErr) { toast({ title: 'Erro ao liberar', description: upErr.message, variant: 'destructive' }); return; }
+    if (error) { toast({ title: 'Erro ao liberar', description: error.message, variant: 'destructive' }); return; }
     toast({ title: 'Acesso liberado', description: `${email} até ${new Date(until).toLocaleDateString('pt-BR')} (${note})` });
     void load();
   };
@@ -189,7 +208,7 @@ export default function AdminSubscriptions({ initialTab = 'unmatched' }: { initi
                     <Button
                       size="sm"
                       disabled={busy === u.id}
-                      onClick={() => void grantAccess(u.id, grantEmail[u.id] ?? (u.email || ''), 'venda sem usuário')}
+                      onClick={() => void grantAccess(u.id, grantEmail[u.id] ?? (u.email || ''), 'venda sem usuário', u.id)}
                       className="bg-white text-black hover:bg-white/90"
                     >
                       {busy === u.id ? <Loader2 size={14} className="animate-spin" /> : <><Link2 size={14} className="mr-1" /> Liberar 30d</>}

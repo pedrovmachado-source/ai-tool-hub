@@ -29,6 +29,7 @@ const MinhasOfertas = lazy(() => import("./pages/MinhasOfertas.tsx"));
 const Assinatura = lazy(() => import("./pages/Assinatura.tsx"));
 const AssinaturaRetorno = lazy(() => import("./pages/AssinaturaRetorno.tsx"));
 const Conta = lazy(() => import("./pages/Conta.tsx"));
+const AdminAccess = lazy(() => import("./pages/AdminAccess.tsx"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -67,6 +68,7 @@ const App = () => (
                 <Route path="/completar-perfil" element={<ProtectedRoute><CompleteProfile /></ProtectedRoute>} />
                 <Route path="/alunos" element={<ProtectedRoute><Alunos /></ProtectedRoute>} />
                 <Route path="/bloqueado" element={<ProtectedRoute><Blocked /></ProtectedRoute>} />
+                <Route path="/admin" element={<ProtectedRoute><AdminAccess /></ProtectedRoute>} />
                 <Route path="/admin/bloqueios" element={<ProtectedRoute><AbuseBlocks /></ProtectedRoute>} />
                 <Route path="/mentorias" element={<ProtectedRoute><Mentorias /></ProtectedRoute>} />
                 <Route path="/ofertas" element={<ProtectedRoute><OfertasValidadas /></ProtectedRoute>} />
