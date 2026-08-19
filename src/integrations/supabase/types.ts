@@ -411,31 +411,49 @@ export type Database = {
       }
       invite_codes: {
         Row: {
+          active: boolean
           code: string
           created_at: string
+          description: string | null
+          grants_access_until: string | null
           id: string
           is_used: boolean | null
+          max_uses: number
           owner_id: string
+          redeem_until: string | null
           used_at: string | null
           used_by: string | null
+          uses: number
         }
         Insert: {
+          active?: boolean
           code: string
           created_at?: string
+          description?: string | null
+          grants_access_until?: string | null
           id?: string
           is_used?: boolean | null
+          max_uses?: number
           owner_id: string
+          redeem_until?: string | null
           used_at?: string | null
           used_by?: string | null
+          uses?: number
         }
         Update: {
+          active?: boolean
           code?: string
           created_at?: string
+          description?: string | null
+          grants_access_until?: string | null
           id?: string
           is_used?: boolean | null
+          max_uses?: number
           owner_id?: string
+          redeem_until?: string | null
           used_at?: string | null
           used_by?: string | null
+          uses?: number
         }
         Relationships: []
       }
@@ -1355,6 +1373,81 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_create_invites: {
+        Args: {
+          p_description?: string
+          p_grants_access_until?: string
+          p_max_uses?: number
+          p_quantity?: number
+          p_redeem_until?: string
+        }
+        Returns: {
+          code: string
+        }[]
+      }
+      admin_link_unmatched_sale: {
+        Args: {
+          p_access_until: string
+          p_unmatched_id: string
+          p_user_id: string
+        }
+        Returns: Json
+      }
+      admin_list_invites: {
+        Args: never
+        Returns: {
+          active: boolean
+          code: string
+          created_at: string
+          description: string
+          grants_access_until: string
+          id: string
+          is_used: boolean
+          max_uses: number
+          owner_email: string
+          redeem_until: string
+          uses: number
+        }[]
+      }
+      admin_list_users: {
+        Args: { p_limit?: number; p_search?: string }
+        Returns: {
+          abuse_blocked: boolean
+          access_source: string
+          access_until: string
+          created_at: string
+          email: string
+          next_charge_date: string
+          nome: string
+          plan_name: string
+          plano: string
+          roles: string[]
+          subscription_status: string
+          user_id: string
+        }[]
+      }
+      admin_metrics: { Args: never; Returns: Json }
+      admin_set_access_until: {
+        Args: {
+          p_access_until: string
+          p_reason: string
+          p_source?: string
+          p_user_id: string
+        }
+        Returns: Json
+      }
+      admin_set_invite_active: {
+        Args: { p_active: boolean; p_invite_id: string }
+        Returns: undefined
+      }
+      admin_set_role: {
+        Args: {
+          p_grant: boolean
+          p_role: Database["public"]["Enums"]["app_role"]
+          p_user_id: string
+        }
+        Returns: Json
+      }
       check_rate_limit: {
         Args: { p_endpoint: string; p_key: string; p_max?: number }
         Returns: Json
