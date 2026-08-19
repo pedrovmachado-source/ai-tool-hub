@@ -26,6 +26,9 @@ const Mentorias = lazy(() => import("./pages/Mentorias.tsx"));
 const CompleteProfile = lazy(() => import("./pages/CompleteProfile.tsx"));
 const OfertasValidadas = lazy(() => import("./pages/OfertasValidadas.tsx"));
 const MinhasOfertas = lazy(() => import("./pages/MinhasOfertas.tsx"));
+const Assinatura = lazy(() => import("./pages/Assinatura.tsx"));
+const AssinaturaRetorno = lazy(() => import("./pages/AssinaturaRetorno.tsx"));
+const Conta = lazy(() => import("./pages/Conta.tsx"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -73,6 +76,9 @@ const App = () => (
                 <Route path="/site-creation" element={<ProtectedRoute><Tools page="site-creation" /></ProtectedRoute>} />
                 <Route path="/creative-edit" element={<ProtectedRoute><Tools page="creative-edit" /></ProtectedRoute>} />
                 <Route path="/fb-accounts" element={<ProtectedRoute><Tools page="fb-accounts" /></ProtectedRoute>} />
+                <Route path="/assinatura" element={<Assinatura />} />
+                <Route path="/assinatura/retorno" element={<ProtectedRoute><AssinaturaRetorno /></ProtectedRoute>} />
+                <Route path="/conta" element={<ProtectedRoute><Conta /></ProtectedRoute>} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>

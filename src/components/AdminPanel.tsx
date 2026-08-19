@@ -14,6 +14,7 @@ import AdminStudentAreas from './AdminStudentAreas';
 import AdminOfferAnalyses from './AdminOfferAnalyses';
 import AdminPurchasedAccounts from './AdminPurchasedAccounts';
 import AdminUserOffers from './AdminUserOffers';
+import AdminSubscriptions from './AdminSubscriptions';
 import AdminMFA from './AdminMFA';
 import ActivityLogView from './ActivityLogView';
 import { logActivity } from '@/lib/activity-log';
@@ -564,6 +565,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
     { key: 'purchased-accounts', label: 'Contas Compradas', icon: Shield },
     { key: 'user-offers', label: 'Ofertas dos Usuários', icon: Tag },
     { key: 'offer-analyses', label: 'Validar Ofertas', icon: Shield },
+    { key: 'subscriptions', label: 'Assinaturas', icon: CreditCard },
     { key: 'banner', label: 'Banner Dashboard', icon: ImageIcon },
     { key: 'activity', label: 'Atividade', icon: Activity },
     { key: 'mfa', label: 'Segurança (2FA)', icon: Shield },
@@ -948,6 +950,7 @@ export default function AdminPanel({ onBack, onCategoriesChanged }: { onBack: ()
         {section === 'user-offers' && <AdminUserOffers />}
         {section === 'offers' && <AdminOffers />}
         {section === 'offer-analyses' && <AdminOfferAnalyses />}
+        {section === 'subscriptions' && <AdminSubscriptions />}
         {section === 'activity' && <ActivityLogView />}
         {section === 'mfa' && <AdminMFA />}
 
