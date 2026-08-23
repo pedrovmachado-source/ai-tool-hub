@@ -19,7 +19,7 @@ import UnderConstruction from '@/components/UnderConstruction';
 
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import { Search, Lock } from 'lucide-react';
+import { Search, Lock, Sparkles, ArrowRight } from 'lucide-react';
 import type { Tool, Category } from '@/data/tools-data';
 import { isPaid } from '@/lib/plan';
 
