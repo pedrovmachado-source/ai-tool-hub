@@ -175,21 +175,21 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-background">
-        <div className="text-muted-foreground">Carregando...</div>
+      <div className="flex items-center justify-center min-h-screen bg-black">
+        <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/30">Carregando…</div>
       </div>
     );
   }
 
   if (error && categories.length === 0) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background px-6">
-        <div className="max-w-md text-center">
-          <h1 className="font-serif-display text-3xl text-foreground mb-3">Não foi possível carregar o site</h1>
-          <p className="text-sm text-muted-foreground mb-5">{error}</p>
+      <div className="flex min-h-screen items-center justify-center bg-black px-6">
+        <div className="max-w-md text-center glass-smooth border border-white/5 rounded-[2.5rem] p-10">
+          <h1 className="font-serif-display text-3xl text-white mb-3">Não foi possível carregar</h1>
+          <p className="text-sm text-white/30 font-light mb-6">{error}</p>
           <button
             onClick={() => void fetchCategories()}
-            className="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+            className="inline-flex items-center justify-center rounded-lg border border-white/10 bg-white/5 px-5 py-2.5 text-[11px] font-bold uppercase tracking-[0.2em] text-white transition-colors hover:bg-white hover:text-black"
           >
             Tentar novamente
           </button>
@@ -197,6 +197,7 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
       </div>
     );
   }
+
 
   return (
     <div className="flex flex-col min-h-screen bg-black text-white selection:bg-white/20 font-sans overflow-x-hidden pt-[92px] sm:pt-[116px]">
