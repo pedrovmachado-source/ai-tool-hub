@@ -81,15 +81,15 @@ export default function PromptsLibrary({ category }: { category?: Category }) {
     if (allPrompts.length === 0) return null;
 
     return (
-      <div className="bg-card border border-border rounded-xl p-7 mt-7">
-        <h3 className="text-base font-medium mb-1">✍️ Prompts prontos para esta categoria</h3>
-        <p className="text-[13px] text-muted-foreground mb-5">Copie, adapte e use nos seus projetos</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div className="glass-smooth border border-white/5 rounded-[2.5rem] p-8 sm:p-10 mt-10">
+        <h3 className="font-serif-display text-2xl text-white mb-2">Prompts prontos para esta categoria</h3>
+        <p className="text-sm text-white/30 font-light mb-7">Copie, adapte e use nos seus projetos</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {allPrompts.map((pr, i) => (
-            <div key={i} className="bg-secondary rounded-lg p-4 border-l-3 border-foreground">
-              <div className="text-[10px] font-medium uppercase tracking-wider mb-1.5 text-foreground">{(pr as any).label || (pr as any).title}</div>
-              <p className="text-xs text-muted-foreground leading-relaxed italic">{pr.text}</p>
-              <button onClick={() => copyPrompt(pr.text, i)} className="flex items-center gap-1 mt-2 text-[11.5px] font-medium text-foreground">
+            <div key={i} className="bg-white/5 border border-white/5 rounded-2xl p-6">
+              <div className="text-[9px] font-bold uppercase tracking-[0.2em] mb-3 text-white/40">{(pr as any).label || (pr as any).title}</div>
+              <p className="text-sm text-white/30 leading-relaxed font-light italic">{pr.text}</p>
+              <button onClick={() => copyPrompt(pr.text, i)} className="inline-flex items-center gap-1.5 mt-4 text-[10px] font-bold uppercase tracking-[0.2em] text-white/70 hover:text-white transition-colors">
                 {copiedIdx === i ? <><Check size={12} /> Copiado!</> : <><Copy size={12} /> Copiar prompt</>}
               </button>
             </div>
@@ -97,6 +97,7 @@ export default function PromptsLibrary({ category }: { category?: Category }) {
         </div>
       </div>
     );
+
   }
 
   // Full prompts library page
