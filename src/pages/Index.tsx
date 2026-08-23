@@ -199,7 +199,7 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
   }
 
   return (
-    <div className="flex flex-col min-h-screen pt-[92px] sm:pt-[116px]">
+    <div className="flex flex-col min-h-screen bg-black text-white selection:bg-white/20 font-sans overflow-x-hidden pt-[92px] sm:pt-[116px]">
       <Meta title="Ferramentas de IA | Convert Club" description="Descubra as melhores IAs para turbinar seu negócio com e-books e prompts exclusivos." />
       <header>
         <Navbar onNavigate={handleNavigate} onOpenSavedEbook={(toolKey, categoryKey) => {
@@ -210,80 +210,90 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
       </header>
 
       {/* Hero */}
-      <div className="bg-black py-10 sm:py-14 px-4 sm:px-8 text-center border-b border-white/5">
-        <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 text-muted-foreground text-[10px] sm:text-xs px-3 sm:px-4 py-1 sm:py-1.5 rounded-full mb-4 sm:mb-5">
-          ✨ Curadoria atualizada em 2026
-        </div>
-        <h2 className="font-serif-display text-2xl sm:text-3xl md:text-4xl leading-tight text-primary-foreground tracking-tight mb-3">
-          Descubra as melhores <em className="text-white italic">IAs</em> para<br className="hidden sm:inline" /> turbinar seu negócio
-        </h2>
-        <p className="text-[13px] sm:text-[15px] text-muted-foreground/60 max-w-[520px] mx-auto leading-relaxed">
-          Guia completo com as ferramentas de inteligência artificial mais poderosas para empreendedores. Com e-books, prompts prontos e passo a passo.
-        </p>
-
-        {/* Search */}
-        <div className="max-w-md mx-auto mt-5 sm:mt-6 relative">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <input
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            aria-label="Buscar ferramentas de IA"
-            placeholder="Buscar ferramentas de IA..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-lg text-sm bg-primary-foreground/10 text-primary-foreground placeholder:text-muted-foreground/40 border border-primary-foreground/10 focus:outline-none focus:border-white/40"
-          />
+      <div className="relative px-6 py-16 sm:py-20 border-b border-white/5">
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[80%] rounded-full bg-white/5 blur-[120px]" />
+          <div className="absolute bottom-[-30%] right-[-10%] w-[50%] h-[80%] rounded-full bg-white/5 blur-[120px]" />
         </div>
 
-        {/* Free filter toggle */}
-        <div className="flex items-center justify-center gap-2 mt-4">
-          <button
-            onClick={() => setFreeOnly(v => !v)}
-            className={`inline-flex items-center gap-1.5 text-[11px] sm:text-xs px-3 sm:px-3.5 py-1.5 rounded-full border transition-all ${
-              freeOnly
-                ? 'bg-white text-black border-white shadow-brand-sm'
-                : 'bg-primary-foreground/5 text-muted-foreground border-primary-foreground/15 hover:border-white/50 hover:text-white'
-            }`}
-          >
-            🆓 {freeOnly ? 'Mostrando só IAs 100% gratuitas' : 'Filtrar IAs 100% gratuitas'}
-          </button>
-        </div>
+        <div className="relative z-10 max-w-4xl mx-auto text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg glass-smooth mb-6 border border-white/5">
+            <Sparkles className="w-3 h-3 text-white/50" />
+            <span className="text-[10px] font-bold text-white/50 tracking-[0.2em] uppercase">Curadoria 2026</span>
+          </div>
 
-        {(!user || !isPaid(user.plano)) && (
-          <div className="flex flex-col items-center gap-3 mt-5">
-            <div className="flex items-center justify-center gap-2 text-[12px] sm:text-[13px] text-muted-foreground/40 text-center px-2">
-              <Lock size={14} className="shrink-0" /> E-books completos exclusivos para assinantes Elite
-            </div>
+          <h1 className="font-serif-display text-4xl md:text-6xl leading-[1.05] tracking-tight text-white mb-6">
+            Descubra as melhores <em className="italic font-normal">IAs</em><br className="hidden sm:inline" /> para escalar seu negócio
+          </h1>
+          <p className="text-white/40 text-base sm:text-lg max-w-2xl mx-auto font-light">
+            Guia completo com as ferramentas de inteligência artificial mais poderosas para empreendedores. Com e-books, prompts prontos e passo a passo.
+          </p>
+
+          {/* Search */}
+          <div className="max-w-lg mx-auto mt-10 relative">
+            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" />
+            <input
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              aria-label="Buscar ferramentas de IA"
+              placeholder="Buscar ferramentas de IA..."
+              className="w-full pl-11 pr-4 py-3.5 rounded-2xl text-sm glass-smooth text-white placeholder:text-white/25 border border-white/10 focus:outline-none focus:border-white/30 transition-colors"
+            />
+          </div>
+
+          {/* Free filter toggle */}
+          <div className="flex items-center justify-center gap-2 mt-5">
             <button
-              onClick={() => setPage('pro')}
-              className="inline-flex items-center gap-2 text-xs px-4 py-2 rounded-full bg-white/10 border border-white/25 text-white hover:bg-white/20 transition-all"
+              onClick={() => setFreeOnly(v => !v)}
+              className={`inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.15em] px-4 py-2 rounded-lg border transition-all duration-500 ${
+                freeOnly
+                  ? 'bg-white text-black border-white'
+                  : 'glass-smooth text-white/50 border-white/5 hover:bg-white/10 hover:text-white'
+              }`}
             >
-              ⚡ Seja Elite · R${plan.price} {plan.period === 'vitalicio' ? '(acesso vitalício)' : ''}
+              {freeOnly ? 'Só IAs 100% gratuitas' : 'Filtrar IAs gratuitas'}
             </button>
           </div>
-        )}
+
+          {(!user || !isPaid(user.plano)) && (
+            <div className="flex flex-col items-center gap-4 mt-8">
+              <div className="flex items-center justify-center gap-2 text-[12px] sm:text-[13px] text-white/30 text-center px-2 font-light">
+                <Lock size={14} className="shrink-0" /> E-books completos exclusivos para assinantes Elite
+              </div>
+              <button
+                onClick={() => setPage('pro')}
+                className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.15em] px-6 py-3 rounded-lg glass-smooth border border-white/10 text-white hover:bg-white hover:text-black transition-all duration-500"
+              >
+                Seja Elite · R${plan.price} {plan.period === 'vitalicio' ? '(vitalício)' : ''}
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Tabs */}
       {!searchQuery && <CategoryTabs activeCategory={activeCategory} onSelect={setActiveCategory} categories={categories} />}
 
       {/* Content */}
-      <div className="max-w-[1100px] mx-auto px-4 sm:px-6 py-6 sm:py-8 flex-1 w-full">
+      <div className="max-w-7xl mx-auto px-6 py-12 flex-1 w-full">
         {/* Intro Panel */}
         {!searchQuery && category && (
-          <div className="bg-card border border-border rounded-xl p-5 sm:p-7 mb-6 sm:mb-7 flex flex-col md:flex-row justify-between md:items-start gap-5 md:gap-8">
+          <div className="glass-smooth border border-white/5 rounded-[2.5rem] p-8 sm:p-10 mb-10 flex flex-col md:flex-row justify-between md:items-start gap-8">
             <div className="min-w-0">
-              <h2 className="font-serif-display text-xl sm:text-2xl mb-2">{category.introTitle}</h2>
-              <p className="text-[13px] sm:text-sm text-muted-foreground leading-6 sm:leading-7 max-w-[580px]">{category.introText}</p>
-              <div className="flex flex-wrap gap-1.5 mt-3">
+              <h2 className="font-serif-display text-2xl sm:text-3xl text-white mb-3">{category.introTitle}</h2>
+              <p className="text-sm text-white/30 leading-relaxed font-light max-w-[580px]">{category.introText}</p>
+              <div className="flex flex-wrap gap-2 mt-5">
                 {category.whenTags.map(tag => (
-                  <span key={tag} className="text-[11px] sm:text-xs px-2.5 sm:px-3 py-1 rounded-full border border-border text-muted-foreground">{tag}</span>
+                  <span key={tag} className="text-[9px] font-bold uppercase tracking-[0.2em] px-3 py-1 rounded-lg bg-white/5 border border-white/5 text-white/40">{tag}</span>
                 ))}
               </div>
             </div>
-            <div className="flex md:flex-col gap-2 md:shrink-0 overflow-x-auto md:overflow-visible -mx-1 px-1 md:mx-0 md:px-0">
+            <div className="flex md:flex-col gap-3 md:shrink-0 overflow-x-auto md:overflow-visible -mx-1 px-1 md:mx-0 md:px-0">
               {category.stats.map((s, i) => (
-                <div key={i} className="bg-secondary rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-center min-w-[90px] sm:min-w-[100px] shrink-0">
-                  <div className="text-base sm:text-xl font-medium">{s.num}</div>
-                  <div className="text-[10px] sm:text-[11px] text-muted-foreground mt-0.5">{s.lbl}</div>
+                <div key={i} className="bg-white/5 border border-white/5 rounded-2xl px-5 py-3 text-center min-w-[100px] shrink-0">
+                  <div className="text-xl font-serif-display text-white">{s.num}</div>
+                  <div className="text-[9px] text-white/30 uppercase tracking-[0.2em] font-bold mt-1">{s.lbl}</div>
                 </div>
               ))}
             </div>
@@ -291,11 +301,11 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
         )}
 
         {searchQuery && (
-          <p className="text-sm text-muted-foreground mb-4">{filteredTools.length} resultado(s) para "{searchQuery}"</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/40 mb-6">{filteredTools.length} resultado(s) para "{searchQuery}"</p>
         )}
 
         {/* Tools Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredTools.map(({ tool, category: cat }) => (
             <ToolCard key={tool.key} tool={tool} category={cat} onOpenEbook={() => handleOpenEbook(tool, cat)} />
           ))}
@@ -308,14 +318,9 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
       </div>
 
       {/* Footer */}
-      <footer className="bg-black py-10 px-4 mt-12 border-t border-white/5">
-        <div className="max-w-[1100px] mx-auto flex flex-col items-center gap-8">
-
-          
-          <div className="text-center space-y-2">
-            <p className="text-xs text-muted-foreground/40">AdAI · Guia de Inteligência Artificial para Empreendedores</p>
-            <p className="text-[10px] text-muted-foreground/20">Todos os links são externos e oficiais de cada plataforma</p>
-          </div>
+      <footer className="py-12 px-6 border-t border-white/5 text-center">
+        <div className="text-[9px] text-white/10 font-bold uppercase tracking-[0.5em]">
+          &copy; 2026 CONVERT CLUB · BUILT FOR THE 1%
         </div>
       </footer>
 
@@ -326,3 +331,4 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
     </div>
   );
 }
+
