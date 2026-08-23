@@ -1,4 +1,4 @@
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, ArrowUpRight, BookOpen } from 'lucide-react';
 import type { Tool, Category } from '@/data/tools-data';
 
 interface ToolCardProps {
@@ -12,52 +12,59 @@ export default function ToolCard({ tool, category, onOpenEbook }: ToolCardProps)
   const isFree = badgeLower.includes('grát') || badgeLower.includes('grat') || badgeLower === 'free' || badgeLower.includes('100%') || badgeLower.includes('gratuit');
 
   return (
-    <div
-      className={`bg-card border rounded-xl overflow-hidden transition-all hover:shadow-brand-sm group relative ${isFree ? 'border-border ring-1 ring-border' : 'border-border'}`}
-    >
-      {isFree && (
-        <div className="absolute top-2 right-2 z-10 inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-foreground text-background shadow-brand-sm">
-          🆓 100% Grátis
+    <div className="group relative glass-smooth border border-white/5 rounded-[2rem] p-7 flex flex-col h-full transition-all duration-500 hover:bg-white/10">
+      <div className="flex items-start justify-between gap-3 mb-5">
+        <span
+          className={`inline-block px-3 py-1 rounded-lg text-[9px] font-bold uppercase tracking-[0.2em] border ${
+            isFree
+              ? 'bg-white text-black border-white'
+              : 'bg-white/5 border-white/5 text-white/40'
+          }`}
+        >
+          {isFree ? '100% Grátis' : tool.badge}
+        </span>
+      </div>
+
+      <h3 className="font-serif-display text-2xl text-white mb-2">{tool.name}</h3>
+
+      <a
+        href={tool.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-white/40 hover:text-white transition-colors mb-4 w-fit"
+      >
+        <ExternalLink size={11} /> {tool.urlLabel}
+      </a>
+
+      <p className="text-sm text-white/30 leading-relaxed font-light flex-1">{tool.desc}</p>
+
+      {tool.stats && (
+        <div className="flex gap-3 mt-6">
+          {tool.stats.slice(0, 3).map((s, i) => (
+            <div key={i} className="flex-1 bg-white/5 border border-white/5 rounded-xl px-2 py-2.5 text-center">
+              <div className="text-base font-serif-display text-white">{s.num}</div>
+              <div className="text-[8px] text-white/30 uppercase tracking-[0.2em] font-bold mt-0.5">{s.lbl}</div>
+            </div>
+          ))}
         </div>
       )}
-      <div className="p-4 pb-3.5">
-        <div className="flex items-start justify-between mb-2">
-          <span className="text-[15px] font-medium">{tool.name}</span>
-          {!isFree && (
-            <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">{tool.badge}</span>
-          )}
-        </div>
-        <a href={tool.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs font-medium mb-2 hover:underline text-foreground">
-          <ExternalLink size={11} /> {tool.urlLabel}
-        </a>
-        <p className="text-[13px] text-muted-foreground leading-relaxed">{tool.desc}</p>
-        {tool.stats && (
-          <div className="flex gap-3 mt-3">
-            {tool.stats.slice(0, 3).map((s, i) => (
-              <div key={i} className="text-center">
-                <div className="text-sm font-medium text-foreground">{s.num}</div>
-                <div className="text-[10px] text-muted-foreground">{s.lbl}</div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-      <div className="flex gap-2 px-4 py-3 bg-secondary/50 border-t border-border">
-        <a 
-          href={tool.url} 
-          target="_blank" 
-          rel="noopener noreferrer" 
+
+      <div className="flex gap-3 mt-7">
+        <a
+          href={tool.url}
+          target="_blank"
+          rel="noopener noreferrer"
           aria-label={`Acessar ${tool.name}`}
-          className="flex-1 py-2 rounded-lg text-xs font-medium text-center bg-card border border-border hover:border-foreground/40 transition-colors"
+          className="flex-1 inline-flex items-center justify-center gap-1.5 py-3 rounded-lg text-[10px] font-bold uppercase tracking-[0.2em] bg-white/5 border border-white/5 text-white/70 hover:bg-white/10 hover:text-white transition-all duration-500"
         >
-          Acessar
+          Acessar <ArrowUpRight className="w-3 h-3" />
         </a>
-        <button 
-          onClick={onOpenEbook} 
+        <button
+          onClick={onOpenEbook}
           aria-label={`Abrir e-book de ${tool.name}`}
-          className="flex-1 py-2 rounded-lg text-xs font-medium text-center text-white transition-opacity hover:opacity-90 bg-black" 
+          className="flex-1 inline-flex items-center justify-center gap-1.5 py-3 rounded-lg text-[10px] font-bold uppercase tracking-[0.2em] bg-white text-black hover:opacity-90 transition-opacity"
         >
-          📘 E-Book
+          <BookOpen className="w-3 h-3" /> E-Book
         </button>
       </div>
     </div>
