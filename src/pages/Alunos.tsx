@@ -483,6 +483,9 @@ export default function Alunos() {
                     <p className="text-sm text-white/70 leading-relaxed">
                       <span className="text-white font-medium">Dica:</span> Descobrir páginas em site WordPress — adicione <span className="font-mono text-white/90 bg-white/10 px-1.5 py-0.5 rounded">wp-sitemap.xml</span> no fim do domínio do site.
                     </p>
+                    <p className="text-sm text-white/70 leading-relaxed mt-3">
+                      <span className="text-white font-medium">Dica:</span> Encontrar todas as páginas do mesmo domínio — adicione <span className="font-mono text-white/90 bg-white/10 px-1.5 py-0.5 rounded">?s=</span> no fim do domínio (ex: <span className="font-mono text-white/90 bg-white/10 px-1.5 py-0.5 rounded">exemplo.com/?s=</span>). Isso abre a busca interna do WordPress, listando as páginas indexadas daquele site.
+                    </p>
                   </div>
 
                   {/* Termos de Pesquisa */}
