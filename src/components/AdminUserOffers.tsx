@@ -113,6 +113,31 @@ export default function AdminUserOffers() {
     }
   };
 
+  const removeOffer = async (row: Row) => {
+    if (!window.confirm(`Excluir a oferta "${row.nome}" de ${row.profile?.nome || row.profile?.email || 'aluno'}? Esta ação não pode ser desfeita.`)) return;
+    setBusyId(row.id);
+    try {
+      const { error } = await (supabase as any)
+        .from('user_offers')
+        .delete()
+        .eq('id', row.id);
+      if (error) throw error;
+      setRows(prev => prev.filter(r => r.id !== row.id));
+      await logActivity({
+        action: 'delete',
+        entity_type: 'user_offer',
+        entity_id: row.id,
+        entity_label: row.nome,
+        metadata: { user_id: row.user_id, email: row.profile?.email ?? null },
+      });
+      toast.success('Oferta excluída');
+    } catch (e: any) {
+      toast.error(e?.message || 'Erro ao excluir');
+    } finally {
+      setBusyId(null);
+    }
+  };
+
   const filtered = useMemo(() => {
     const t = q.trim().toLowerCase();
     return rows.filter(r => {
