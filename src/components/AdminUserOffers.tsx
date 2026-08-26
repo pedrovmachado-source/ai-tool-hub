@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Search, ExternalLink, Library, FolderOpen, Globe, ShoppingCart, User as UserIcon, Loader2, Star, Crown } from 'lucide-react';
+import { Search, ExternalLink, Library, FolderOpen, Globe, ShoppingCart, User as UserIcon, Loader2, Star, Crown, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { logActivity } from '@/lib/activity-log';
 
