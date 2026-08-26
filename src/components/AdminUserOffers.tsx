@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Search, ExternalLink, Library, FolderOpen, Globe, ShoppingCart, User as UserIcon, Loader2, Star, Crown } from 'lucide-react';
+import { Search, ExternalLink, Library, FolderOpen, Globe, ShoppingCart, User as UserIcon, Loader2, Star, Crown, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { logActivity } from '@/lib/activity-log';
 
 type Row = {
   id: string;
@@ -113,6 +114,31 @@ export default function AdminUserOffers() {
     }
   };
 
+  const removeOffer = async (row: Row) => {
+    if (!window.confirm(`Excluir a oferta "${row.nome}" de ${row.profile?.nome || row.profile?.email || 'aluno'}? Esta ação não pode ser desfeita.`)) return;
+    setBusyId(row.id);
+    try {
+      const { error } = await (supabase as any)
+        .from('user_offers')
+        .delete()
+        .eq('id', row.id);
+      if (error) throw error;
+      setRows(prev => prev.filter(r => r.id !== row.id));
+      await logActivity({
+        action: 'delete',
+        entity_type: 'user_offer',
+        entity_id: row.id,
+        entity_label: row.nome,
+        metadata: { user_id: row.user_id, email: row.profile?.email ?? null },
+      });
+      toast.success('Oferta excluída');
+    } catch (e: any) {
+      toast.error(e?.message || 'Erro ao excluir');
+    } finally {
+      setBusyId(null);
+    }
+  };
+
   const filtered = useMemo(() => {
     const t = q.trim().toLowerCase();
     return rows.filter(r => {
@@ -197,6 +223,15 @@ export default function AdminUserOffers() {
                   >
                     <Crown className="w-3.5 h-3.5" />
                     {r.is_definitive ? 'Oferta definitiva' : 'Definir principal'}
+                  </button>
+                  <button
+                    disabled={busyId === r.id}
+                    onClick={() => removeOffer(r)}
+                    title="Excluir oferta do aluno"
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-medium border border-destructive/40 bg-destructive/10 text-destructive transition-colors hover:bg-destructive/20 disabled:opacity-50"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    Excluir
                   </button>
                   {busyId === r.id && <Loader2 className="w-3.5 h-3.5 animate-spin text-muted-foreground" />}
                 </div>
