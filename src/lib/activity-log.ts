@@ -11,7 +11,7 @@ export type ActivityEntity =
   | 'niche_module' | 'niche_lesson' | 'student_area'
   | 'site_product' | 'site_order'
   | 'content_section' | 'content_item'
-  | 'site_settings' | 'role';
+  | 'site_settings' | 'role' | 'user_offer';
 
 interface LogParams {
   action: ActivityAction;
