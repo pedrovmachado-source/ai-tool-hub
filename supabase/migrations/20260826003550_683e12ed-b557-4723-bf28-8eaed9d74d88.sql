@@ -1,0 +1,1 @@
+CREATE POLICY "Admins can delete user offers" ON public.user_offers FOR DELETE TO authenticated USING (public.has_role(auth.uid(), 'admin'::app_role));
