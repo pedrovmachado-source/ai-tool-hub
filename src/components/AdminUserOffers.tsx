@@ -224,6 +224,15 @@ export default function AdminUserOffers() {
                     <Crown className="w-3.5 h-3.5" />
                     {r.is_definitive ? 'Oferta definitiva' : 'Definir principal'}
                   </button>
+                  <button
+                    disabled={busyId === r.id}
+                    onClick={() => removeOffer(r)}
+                    title="Excluir oferta do aluno"
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-medium border border-destructive/40 bg-destructive/10 text-destructive transition-colors hover:bg-destructive/20 disabled:opacity-50"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    Excluir
+                  </button>
                   {busyId === r.id && <Loader2 className="w-3.5 h-3.5 animate-spin text-muted-foreground" />}
                 </div>
 
