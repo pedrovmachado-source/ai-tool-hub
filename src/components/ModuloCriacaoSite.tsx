@@ -39,6 +39,67 @@ const links = [
   { name: 'Stripe', url: 'https://stripe.com' },
 ];
 
+const siteStructure = [
+  {
+    title: 'Header',
+    detail: 'Mantenha o topo simples, com a identidade do produto e um botão que leve diretamente à oferta. Evite menus e links que tirem a pessoa da página.',
+  },
+  {
+    title: 'Headline',
+    detail: 'Apresente a principal transformação prometida pelo produto. Seja específico, fale do resultado desejado e desperte curiosidade sem fazer promessas impossíveis.',
+  },
+  {
+    title: 'Sub-headline',
+    detail: 'Complete a promessa da headline explicando para quem é a oferta, como ela ajuda e por que essa solução é diferente das demais.',
+  },
+  {
+    title: 'Imagem do produto',
+    detail: 'Mostre o produto com clareza logo no início. Não precisa gerar a imagem no Lovable: use uma imagem real, mockup ou composição preparada separadamente.',
+  },
+  {
+    title: 'Texto de apresentação',
+    detail: 'Crie uma introdução curta que faça o visitante se reconhecer no problema e entenda que existe um caminho possível para alcançar o resultado.',
+  },
+  {
+    title: 'Dores e soluções — 2 colunas por 3 linhas',
+    detail: 'Monte 6 retângulos. Em cada um, apresente uma dor específica e, logo abaixo, como o produto resolve essa dificuldade de forma prática.',
+    layout: '2 × 3',
+  },
+  {
+    title: 'Imagens do produto — 3 por 3',
+    detail: 'Use uma galeria com 9 imagens para mostrar variedade, qualidade, materiais, módulos ou resultados. Cada imagem deve revelar um aspecto diferente da oferta.',
+    layout: '3 × 3',
+  },
+  {
+    title: 'Prova social de expert',
+    detail: 'Adicione o depoimento de uma autoridade ou profissional ligado ao tema. Inclua foto, nome, especialidade e uma fala objetiva que reforce a confiança no produto.',
+  },
+  {
+    title: 'Imagens de dentro do produto',
+    detail: 'Mostre o que a pessoa realmente receberá: páginas, aulas, materiais, ferramentas, área de membros ou detalhes físicos. Evite deixar a entrega abstrata.',
+  },
+  {
+    title: 'Bater mais nas dores',
+    detail: 'Aprofunde as consequências de não resolver o problema. Use situações reais do cotidiano e conecte essas dificuldades ao desejo de mudança, sem exageros.',
+  },
+  {
+    title: 'Prova social de WhatsApp e Instagram',
+    detail: 'Apresente capturas reais de conversas e directs com relatos específicos. Preserve a privacidade quando necessário e não use depoimentos inventados.',
+  },
+  {
+    title: 'FAQ',
+    detail: 'Responda às objeções que impedem a compra: funcionamento, acesso, entrega, prazo, garantia, pagamento, suporte e para quem o produto é indicado.',
+  },
+  {
+    title: 'CTA detalhada',
+    detail: 'Reúna a oferta completa: o que está incluso, benefícios, bônus, preço, formas de pagamento, garantia e o próximo passo. Finalize com um botão direto e específico.',
+  },
+  {
+    title: 'Mais prova social',
+    detail: 'Feche com novos resultados e depoimentos variados para reduzir a última insegurança. Priorize relatos com contexto, transformação e evidências visuais.',
+  },
+];
+
 const SubLabel = ({ children }: { children: React.ReactNode }) => (
   <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/40">{children}</p>
 );
@@ -109,6 +170,38 @@ export default function ModuloCriacaoSite() {
               <p className="text-sm text-white/[0.75] leading-[1.7]">
                 Antes de produzir o criativo, você precisa de uma página que converta. A sequência é: descubra o ICP do site de referência, monte a estrutura da página e gere o site no Lovable com base na oferta validada.
               </p>
+            </section>
+
+            {/* Estrutura da página */}
+            <section className="space-y-6">
+              <div>
+                <SubLabel>Estrutura recomendada do site</SubLabel>
+                <h4 className="mt-3 text-2xl font-serif-display text-white">Ordem completa da página de oferta</h4>
+                <p className="mt-2 max-w-3xl text-sm leading-[1.7] text-white/50">
+                  Siga esta sequência para conduzir o visitante da primeira promessa até a decisão de compra. Adapte a linguagem, as imagens e as provas ao seu produto e ao seu público.
+                </p>
+              </div>
+
+              <div className="divide-y divide-white/[0.08] border-y border-white/[0.08]">
+                {siteStructure.map((step, index) => (
+                  <article key={step.title} className="grid gap-3 py-6 sm:grid-cols-[3rem_minmax(0,1fr)] sm:gap-5">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/[0.05] text-xs font-bold text-white/60">
+                      {String(index + 1).padStart(2, '0')}
+                    </div>
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h5 className="text-base font-semibold text-white/90">{step.title}</h5>
+                        {step.layout && (
+                          <span className="rounded-md border border-white/10 bg-white/[0.05] px-2 py-1 text-[10px] font-bold uppercase text-white/50">
+                            Grade {step.layout}
+                          </span>
+                        )}
+                      </div>
+                      <p className="mt-2 text-sm leading-[1.7] text-white/55">{step.detail}</p>
+                    </div>
+                  </article>
+                ))}
+              </div>
             </section>
 
             {/* Prompts */}
