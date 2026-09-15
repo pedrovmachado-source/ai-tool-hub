@@ -184,6 +184,9 @@ export default function Menu() {
               <h1 className="text-4xl md:text-6xl font-serif-display tracking-tight text-white mb-6">
                 Bem-vindo ao <em className="italic font-normal">Ecossistema</em>.
               </h1>
+              <p className="mb-4 max-w-2xl text-sm font-medium text-white/70">
+                Aviso: o site está em manutenção no momento.
+              </p>
               <p className="text-white/40 text-lg max-w-2xl font-light">
                 Olá, {user?.nome || 'Membro'}. Selecione a vertical que deseja acessar hoje para continuar sua jornada rumo à escala brutal.
               </p>
