@@ -27,7 +27,7 @@ import { useEffect, useRef, useState } from 'react';
 
 export default function Menu() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const [mentoriaModalOpen, setMentoriaModalOpen] = useState(false);
 
 
@@ -194,25 +194,28 @@ export default function Menu() {
           </header>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {menuItems.map((item, idx) => (
+            {menuItems.map((item, idx) => {
+              const isLocked = item.locked && !isAdmin;
+
+              return (
               <Reveal key={item.title} delay={idx * 150}>
                 <Button
                   type="button"
                   variant="ghost"
-                  disabled={item.locked}
-                  aria-label={item.locked ? `${item.title} bloqueado` : `Acessar ${item.title}`}
+                  disabled={isLocked}
+                  aria-label={isLocked ? `${item.title} bloqueado` : `Acessar ${item.title}`}
                   onClick={() => {
-                    if (item.locked) return;
-                    if (item.path === '/alunos' && !isMentorado(user?.plano)) {
+                    if (isLocked) return;
+                    if (item.path === '/alunos' && !isAdmin && !isMentorado(user?.plano)) {
                       setMentoriaModalOpen(true);
                       return;
                     }
                     navigate(item.path);
                   }}
 
-                  className={`group relative w-full p-8 glass-smooth transition-all duration-500 rounded-[2.5rem] border border-white/5 h-full flex flex-col items-stretch text-left whitespace-normal ${item.locked ? 'cursor-not-allowed opacity-70' : 'cursor-pointer hover:bg-white/10'}`}
+                  className={`group relative w-full p-8 glass-smooth transition-all duration-500 rounded-[2.5rem] border border-white/5 h-full flex flex-col items-stretch text-left whitespace-normal ${isLocked ? 'cursor-not-allowed opacity-70' : 'cursor-pointer hover:bg-white/10'}`}
                 >
-                  {item.locked && (
+                  {isLocked && (
                     <div className="absolute inset-0 z-20 flex items-center justify-center rounded-[2.5rem] bg-background/70 backdrop-blur-[3px]" aria-hidden="true">
                       <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-border bg-card shadow-lg">
                         <Lock className="h-7 w-7 text-foreground" />
@@ -242,7 +245,8 @@ export default function Menu() {
                   </div>
                 </Button>
               </Reveal>
-            ))}
+              );
+            })}
           </div>
 
           <Reveal delay={200} className="mt-24">
