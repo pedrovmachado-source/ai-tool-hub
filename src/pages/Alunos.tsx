@@ -331,8 +331,8 @@ export default function Alunos() {
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
             {/* Left Column: Menu */}
-            <div className="lg:col-span-5 space-y-6">
-              <Reveal delay={100}>
+            <div className="contents">
+              <Reveal delay={100} className="lg:col-span-5 lg:row-start-1">
                 <Accordion type="single" collapsible className="space-y-4">
                   
                   {/* Seção 1 — Aulas Gravadas */}
@@ -415,7 +415,7 @@ export default function Alunos() {
                 </Accordion>
               </Reveal>
 
-              <Reveal delay={200}>
+              <Reveal delay={200} className="lg:col-span-12 lg:row-start-2">
                 <div className="glass-smooth rounded-[2rem] border border-white/5 p-8 space-y-8">
                   {/* 1- Procurar os melhores produtos */}
                   <section className="space-y-4">
@@ -674,18 +674,18 @@ export default function Alunos() {
                 </div>
               </Reveal>
 
-              <Reveal delay={225}>
+              <Reveal delay={225} className="lg:col-span-12 lg:row-start-3">
                 <ModuloCriacaoSite />
               </Reveal>
 
-              <Reveal delay={250}>
+              <Reveal delay={250} className="lg:col-span-12 lg:row-start-4">
                 <ModuloCriativos />
               </Reveal>
             </div>
 
 
             {/* Right Column: Video Player */}
-            <div className="lg:col-span-7" ref={videoRef}>
+            <div className="lg:col-span-7 lg:col-start-6 lg:row-start-1" ref={videoRef}>
               <Reveal delay={200}>
                 <div className="glass-smooth rounded-[2.5rem] border border-white/5 overflow-hidden sticky top-32">
                   {selectedVideo ? (
