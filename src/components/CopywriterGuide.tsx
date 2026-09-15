@@ -1,5 +1,14 @@
-import { ArrowLeft, Check, PenLine, Quote } from 'lucide-react';
+import { useState } from 'react';
+import { ArrowLeft, Check, FileCheck2, Layers3, PenLine, Quote } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+
+type CopySection = 'humanizada' | 'angulo-formato' | 'validacao';
+
+const copySections = [
+  { id: 'humanizada' as const, label: 'Copy Humanizada', icon: PenLine },
+  { id: 'angulo-formato' as const, label: 'Copy, Ângulo e Formato', icon: Layers3 },
+  { id: 'validacao' as const, label: 'Validação prática', icon: FileCheck2 },
+];
 
 const sections = [
   {
@@ -178,6 +187,8 @@ const checklist = [
 ] as const;
 
 export default function CopywriterGuide({ onBack }: { onBack: () => void }) {
+  const [activeSection, setActiveSection] = useState<CopySection>('humanizada');
+
   return (
     <main className="min-h-screen bg-black text-white selection:bg-brand-blue/30">
       <header className="border-b border-white/[0.08] px-5 pb-16 pt-28 sm:px-8 sm:pb-24 sm:pt-36">
@@ -193,6 +204,32 @@ export default function CopywriterGuide({ onBack }: { onBack: () => void }) {
         </div>
       </header>
 
+      <nav aria-label="Seções de copywriting" className="border-b border-white/[0.08] bg-white/[0.02] px-5 py-5 sm:px-8">
+        <div className="mx-auto grid max-w-4xl gap-2 sm:grid-cols-3">
+          {copySections.map(({ id, label, icon: Icon }) => {
+            const isActive = activeSection === id;
+            return (
+              <Button
+                key={id}
+                type="button"
+                variant="outline"
+                aria-pressed={isActive}
+                onClick={() => setActiveSection(id)}
+                className={`h-auto min-h-12 justify-start gap-3 rounded-lg px-4 py-3 text-left whitespace-normal transition-colors sm:justify-center ${
+                  isActive
+                    ? 'border-brand-blue bg-brand-blue/20 text-white hover:bg-brand-blue/25 hover:text-white'
+                    : 'border-white/10 bg-white/[0.03] text-white/55 hover:border-white/20 hover:bg-white/[0.07] hover:text-white'
+                }`}
+              >
+                <Icon className={`h-4 w-4 shrink-0 ${isActive ? 'text-brand-blue-medium' : ''}`} />
+                <span>{label}</span>
+              </Button>
+            );
+          })}
+        </div>
+      </nav>
+
+      {activeSection === 'humanizada' ? (
       <div className="mx-auto max-w-4xl px-5 py-14 sm:px-8 sm:py-20">
         <h2 className="mb-12 font-serif-display text-3xl sm:text-4xl">Guia detalhado</h2>
         <div className="space-y-16">
@@ -252,6 +289,21 @@ export default function CopywriterGuide({ onBack }: { onBack: () => void }) {
           <p className="mt-8 border-t border-white/10 pt-6 leading-8 text-white/60">E o ponto mais importante: não confunda “copy bonita” com “copy humana”. Uma copy pode estar gramaticalmente perfeita, estruturada e lógica e ainda assim não fazer o leitor sentir absolutamente nada.</p>
         </section>
       </div>
+      ) : (
+        <div className="mx-auto flex min-h-[420px] max-w-4xl items-center px-5 py-16 sm:px-8 sm:py-24">
+          <section className="w-full rounded-lg border border-white/10 bg-white/[0.03] p-8 text-center sm:p-14">
+            {activeSection === 'angulo-formato' ? (
+              <Layers3 className="mx-auto h-8 w-8 text-brand-blue-medium" />
+            ) : (
+              <FileCheck2 className="mx-auto h-8 w-8 text-brand-teal" />
+            )}
+            <h2 className="mt-5 font-serif-display text-3xl text-white sm:text-4xl">
+              {activeSection === 'angulo-formato' ? 'Copy, Ângulo e Formato' : 'Validação prática'}
+            </h2>
+            <p className="mx-auto mt-4 max-w-lg leading-7 text-white/55">O conteúdo desta seção será adicionado em breve.</p>
+          </section>
+        </div>
+      )}
     </main>
   );
 }
