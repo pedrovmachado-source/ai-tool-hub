@@ -14,6 +14,7 @@ import {
   ExternalLink,
   Layout,
   MessageSquare,
+  Copy,
 } from 'lucide-react';
 
 const PROMPT_ICP = `(link do site) Crie meu ICP`;
@@ -100,6 +101,15 @@ const siteStructure = [
   },
 ];
 
+const SITE_STRUCTURE_PROMPT = `Utilize de base essa estrutura de site para criar o site da minha oferta sem alterar a copy ou imagens...
+
+${siteStructure
+  .map(
+    (step, index) =>
+      `${index + 1}. ${step.title}${step.layout ? ` (${step.layout})` : ''}\n${step.detail}`,
+  )
+  .join('\n\n')}`;
+
 const SubLabel = ({ children }: { children: React.ReactNode }) => (
   <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/40">{children}</p>
 );
@@ -109,6 +119,7 @@ export default function ModuloCriacaoSite() {
   const [open, setOpen] = useState(true);
   const [copiedIcp, setCopiedIcp] = useState(false);
   const [copiedLovable, setCopiedLovable] = useState(false);
+  const [copiedStructure, setCopiedStructure] = useState(false);
   const [selectedMode, setSelectedMode] = useState<'icp' | 'site_exemplo'>('icp');
 
   const copy = async (text: string, setCopied: (v: boolean) => void) => {
@@ -180,6 +191,15 @@ export default function ModuloCriacaoSite() {
                 <p className="mt-2 max-w-3xl text-sm leading-[1.7] text-white/50">
                   Siga esta sequência para conduzir o visitante da primeira promessa até a decisão de compra. Adapte a linguagem, as imagens e as provas ao seu produto e ao seu público.
                 </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => copy(SITE_STRUCTURE_PROMPT, setCopiedStructure)}
+                  className="mt-5 h-10 gap-2 rounded-full border-white/10 bg-white/5 px-5 text-[11px] font-bold uppercase tracking-widest text-white/70 transition-colors hover:bg-white hover:text-black"
+                >
+                  <Copy className="h-3.5 w-3.5" />
+                  {copiedStructure ? 'Estrutura copiada!' : 'Copiar estrutura para IA'}
+                </Button>
               </div>
 
               <div className="divide-y divide-white/[0.08] border-y border-white/[0.08]">
