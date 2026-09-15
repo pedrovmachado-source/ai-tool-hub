@@ -186,6 +186,185 @@ const checklist = [
   ['Persuasão', ['O gancho cria curiosidade?', 'A exposição mostra um problema real?', 'A realidade muda a percepção?', 'O produto aparece como consequência lógica?', 'O CTA faz sentido depois de tudo que foi apresentado?']],
 ] as const;
 
+const angleFormatSections = [
+  {
+    title: '1. O conceito mais importante: você não testa “criativos”, testa ÂNGULOS',
+    paragraphs: [
+      'Na aula, o processo começa identificando dores, medos e diferentes perspectivas do problema. Depois, cada uma dessas perspectivas é transformada em pares de criativos.',
+      'Isso é muito mais inteligente do que simplesmente fazer oito vídeos diferentes, porque oito vídeos podem estar dizendo exatamente a mesma coisa.',
+    ],
+    highlight: 'Dor 1 → Criativo A + Criativo B\nDor 2 → Criativo C + Criativo D\nMedo 1 → Criativo E + Criativo F\nMedo 2 → Criativo G + Criativo H',
+    after: 'A pergunta correta é: “Quantas razões diferentes estou dando para essa pessoa se interessar pelo produto?” Esse é um conceito que vale levar para todas as suas ofertas.',
+  },
+  {
+    title: '2. Um criativo precisa ter uma função',
+    paragraphs: ['Na aula aparece uma divisão muito importante: criativos de gatilho e criativos de oferta.'],
+    definitions: [
+      ['Criativos de gatilho', 'Chamam atenção, apresentam o problema, geram interesse e fazem a pessoa conhecer o produto.'],
+      ['Criativo de oferta', 'Pega uma pessoa que já teve contato com a oferta, reforça produto e preço e busca gerar conversão.'],
+    ],
+    after: 'Os primeiros funcionam como uma espécie de “boi de piranha”: ajudam a introduzir a oferta, enquanto o anúncio de oferta pode atuar mais diretamente na conversão. Nem todo anúncio precisa vender da mesma maneira.',
+  },
+  {
+    title: '3. Copy não é apenas texto: é função dentro do funil',
+    definitions: [
+      ['COPY DE DESCOBERTA', 'Responde: “Quem é você e por que eu deveria prestar atenção?” Usa curiosidade, dor, medo, identificação, mecanismo e problema.'],
+      ['COPY DE CONSIDERAÇÃO', 'Responde: “Por que isso poderia funcionar para mim?” Usa mecanismo, benefícios, demonstração, diferenciação, prova e objeções.'],
+      ['COPY DE CONVERSÃO', 'Responde: “Por que eu deveria comprar agora?” Usa oferta, preço, desconto, condição, escassez e CTA.'],
+    ],
+    after: 'Essa distinção evita um erro comum: tentar colocar toda a oferta em todos os criativos.',
+  },
+  {
+    title: '4. O nome do produto deve aparecer',
+    paragraphs: [
+      'Toda copy do produto deve falar o nome do produto. O motivo é simples: aumentar a conexão e fazer a pessoa lembrar da oferta.',
+      'Quando alguém vê um criativo sobre o problema, outro sobre uma história, outro sobre transformação e outro sobre oferta, o mesmo nome cria uma associação consistente.',
+    ],
+    highlight: 'Problema → Produto\nDesejo → Produto\nSolução → Produto\nOferta → Produto',
+    after: 'Isso ajuda a construir memorização da oferta, não apenas do problema.',
+  },
+  {
+    title: '5. A estrutura básica de copy',
+    paragraphs: ['A aula utiliza uma estrutura simples e poderosa, que evita complicar a produção:'],
+    definitions: [
+      ['HOOK', 'É a interrupção. Não precisa explicar o produto; precisa fazer a pessoa pensar: “Peraí...”'],
+      ['BODY', 'Desenvolve problema, história, mecanismo, benefício, prova e transformação.'],
+      ['CTA', 'Apresenta o próximo passo.'],
+    ],
+    highlight: 'HOOK → BODY → CTA',
+    after: 'Exemplo: “Você ainda perde horas preparando suas refeições toda semana?” Depois, desenvolva a situação, apresente o produto e o benefício e finalize com: “Conheça o [Produto] e veja como funciona.”',
+  },
+  {
+    title: '6. O hook não precisa ser “bonito”',
+    paragraphs: ['Um hook pode ser uma afirmação, pergunta, contradição, descoberta, reclamação, experiência, opinião, demonstração ou comparação.'],
+    highlight: 'Você não precisa inventar uma frase genial. Precisa encontrar uma entrada interessante para uma conversa.',
+    after: 'Isso se conecta à humanização: se o hook parece uma frase publicitária artificial, ele perde força.',
+  },
+  {
+    title: '7. Leia a copy em voz alta',
+    paragraphs: [
+      'Faça a copy como se estivesse conversando com alguém. Depois, leia a copy como se estivesse conversando com alguém.',
+      'Se você escreveu “Hoje eu gostaria de apresentar a você...” e nunca falaria isso para uma pessoa, corte. Se escreveu “Este produto proporciona uma transformação significativa...”, mas diria “Isso aqui me ajudou pra caramba...”, reescreva.',
+    ],
+    highlight: 'TESTE DA VOZ: copy boa precisa funcionar na boca, não apenas na tela.',
+  },
+  {
+    title: '8. Cuidado com a “dualidade de IA”',
+    paragraphs: [
+      'A IA tende a repetir o padrão “Não é X. É Y.”, como em “Não é apenas um livro. É uma transformação.” ou “Não é sobre emagrecer. É sobre...”',
+      'Esse recurso pode funcionar ocasionalmente. O problema é quando vira um cacoete de escrita.',
+    ],
+    highlight: 'Eu escreveria isso naturalmente ou estou apenas fazendo uma frase de copy?',
+  },
+  {
+    title: '9. O criativo visual também precisa carregar a promessa',
+    paragraphs: ['Para imagens, mostre a transformação visual: problema e resultado, situação ruim e situação desejada. Assim, o cérebro não precisa interpretar tanto texto; a imagem já começa a contar a história.'],
+    highlight: 'Antes → Depois\ngeladeira bagunçada → organizada\npessoa cansada → tranquila\nproblema → resultado',
+  },
+  {
+    title: '10. Para imagem, pense em “prova visual”',
+    paragraphs: [
+      'Em vez de apenas dizer “Nosso produto vai facilitar sua vida”, represente essa facilidade.',
+      'ANTES: uma pessoa diante de dez potes de comida, cansada e com a cozinha bagunçada. DEPOIS: refeições organizadas, freezer cheio e uma pessoa tranquila.',
+    ],
+    after: 'Você não está apenas dizendo “facilita”. Você está mostrando a facilidade.',
+  },
+  {
+    title: '11. O criativo deve parecer nativo da plataforma',
+    paragraphs: [
+      'Não invente um formato se o formato que já funciona está na sua frente. Se o concorrente usa UGC, pessoa falando, demonstração, vídeo de produto ou narração, observe esse formato.',
+      'A ideia é modelar a estrutura do criativo que já está sendo utilizado, em vez de reinventar tudo. Isso é diferente de copiar.',
+    ],
+    highlight: 'Estude: formato + estrutura + ritmo + hook + CTA. Depois, adapte para sua própria oferta.',
+  },
+  {
+    title: '12. “Não invente a roda” é um princípio estratégico',
+    paragraphs: [
+      'Uma oferta anunciada há bastante tempo e com muitos anúncios ativos pode ser um sinal para investigar aquele padrão criativo. Isso não é, por si só, motivo para descartar a oferta.',
+      'Anúncio ativo é sinal de investigação, não prova automática de lucratividade.',
+    ],
+    bullets: ['Tempo ativo', 'Quantidade de anúncios', 'Variações e frequência', 'Comentários', 'Landing page', 'Oferta e preço', 'Ângulos', 'Sinais de escala'],
+  },
+  {
+    title: '13. A biblioteca de anúncios vira uma biblioteca de ideias',
+    paragraphs: ['Use YouTube, Instagram, TikTok e a biblioteca de anúncios para encontrar criativos, analisar formatos, separar hook, body e CTA, identificar padrões e criar sua própria versão.'],
+    highlight: 'Criativo | Hook | Ângulo | Formato | CTA | Oferta | Observação',
+    after: 'Depois de analisar muitos criativos, você começa a enxergar padrões e constrói um verdadeiro banco de ideias.',
+  },
+  {
+    title: '14. Desmonte o criativo',
+    paragraphs: ['Em vez de assistir a um anúncio e pensar apenas “Gostei”, desmonte cada elemento:'],
+    definitions: [
+      ['HOOK', 'O que me fez parar?'], ['BODY', 'O que me manteve assistindo?'], ['MECANISMO', 'Qual explicação foi apresentada?'], ['PROVA', 'Por que eu deveria acreditar?'], ['TRANSFORMAÇÃO', 'O que eu ganho?'], ['OFERTA', 'O que está sendo vendido?'], ['CTA', 'O que querem que eu faça?'], ['FORMATO', 'Como isso foi apresentado?'],
+    ],
+    after: 'Essa análise é muito mais útil do que simplesmente salvar o vídeo.',
+  },
+  {
+    title: '15. Um criativo pode ser desmontado em peças',
+    paragraphs: [
+      'Você pode pegar partes de diferentes vídeos e estudar novas combinações de hook, body e CTA.',
+      'Se o Criativo A tem hook e CTA excelentes, mas body mediano, e o Criativo B tem body excelente, mas hook e CTA ruins, estude: Hook A + Body B + seu CTA.',
+    ],
+    after: 'O objetivo não é copiar o anúncio inteiro. É entender quais componentes possuem potencial individual.',
+  },
+  {
+    title: '16. Criativo de oferta é diferente de criativo de descoberta',
+    paragraphs: ['O criativo de escassez ou oferta fala um pouco da persona, relembra a dor, resume o produto e coloca maior peso em preço, promoção e conversão.'],
+    highlight: 'PRIMEIRO CONTATO: “Olha esse problema.”\nSEGUNDO CONTATO: “Olha essa solução.”\nCONTATO POSTERIOR: “Você já viu isso. Agora existe essa condição para comprar.”',
+    after: 'Essa sequência cria uma jornada muito mais coerente.',
+  },
+  {
+    title: '17. Não faça todos os anúncios iguais',
+    paragraphs: [
+      'Busque diversidade de mensagem, não apenas diversidade de edição. Oito vídeos com pessoas, músicas e legendas diferentes, mas todos dizendo “Compre nosso ebook de receitas”, são essencialmente uma ideia repetida oito vezes.',
+    ],
+    bullets: ['Ângulo 1 — Economize tempo.', 'Ângulo 2 — Pare de comer sempre a mesma coisa.', 'Ângulo 3 — Organize sua semana.', 'Ângulo 4 — Comida pronta sem passar horas na cozinha.'],
+    after: 'Cada ângulo aborda uma razão diferente para comprar.',
+  },
+  {
+    title: '18. O método completo',
+    definitions: [
+      ['FASE 1 — MINERAÇÃO', 'Encontre ofertas e criativos.'], ['FASE 2 — DECONSTRUÇÃO', 'Separe hook, body, CTA, formato, ângulo e oferta.'], ['FASE 3 — PESQUISA DO PÚBLICO', 'Liste dores, medos, desejos, objeções, situações e linguagem.'], ['FASE 4 — MATRIZ DE ÂNGULOS', 'Escolha quatro dores e quatro medos.'], ['FASE 5 — COPY', 'Para cada ângulo, escreva hook, body e CTA.'], ['FASE 6 — HUMANIZAÇÃO', 'Corte frases artificiais, dualidade excessiva, palavras desnecessárias, abstrações e linguagem corporativa.'], ['FASE 7 — FORMATO', 'Escolha o formato que melhor comunica aquele ângulo.'], ['FASE 8 — PRODUÇÃO', 'Produza vídeo, UGC, narração, imagem ou demonstração.'], ['FASE 9 — OFERTA', 'Crie peças específicas para preço, promoção, escassez e CTA.'], ['FASE 10 — TESTE', 'Suba múltiplas hipóteses.'], ['FASE 11 — ANÁLISE', 'Identifique quais ângulos, hooks, formatos e ofertas geram os melhores sinais.'], ['FASE 12 — ITERAÇÃO', 'Descubra qual parte precisa mudar: hook, ângulo, criativo, oferta, página, preço ou CTA.'],
+    ],
+  },
+  {
+    title: '19. Encontre o “DNA” do criativo',
+    paragraphs: [
+      'Depois de analisar muitos anúncios, pare de enxergar apenas “um vídeo de uma mulher fazendo comida” e comece a enxergar: hook + dor + demonstração + benefício + CTA de oferta.',
+      'Vídeos superficialmente diferentes podem compartilhar o mesmo padrão: falta de tempo → solução rápida → demonstração → CTA.',
+    ],
+    after: 'Quando você reconhece esse padrão, encontrou o DNA do criativo.',
+  },
+  {
+    title: '20. Da copy humanizada ao sistema de aquisição',
+    paragraphs: [
+      'A primeira aula ensina como fazer uma copy parecer humana. Esta segunda aula ensina como transformar essa copy em um sistema de aquisição.',
+      'O objetivo não é criar um anúncio perfeito. É construir um sistema capaz de produzir dezenas de boas hipóteses, descobrir quais mensagens funcionam e aprofundar nelas.',
+    ],
+    highlight: 'ÂNGULO → COPY → HOOK → FORMATO → CRIATIVO → OFERTA → DISTRIBUIÇÃO → MÉTRICAS → ITERAR',
+  },
+];
+
+function LessonSections({ items }: { items: typeof sections | typeof angleFormatSections }) {
+  return (
+    <div className="space-y-16">
+      {items.map((section) => (
+        <section key={section.title} className="border-l-2 border-brand-blue/50 pl-5 sm:pl-8">
+          <h2 className="font-serif-display text-2xl leading-snug sm:text-3xl">{section.title}</h2>
+          <div className="mt-6 space-y-4 text-[15px] leading-8 text-white/65 sm:text-base">
+            {section.paragraphs?.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+            {'bullets' in section && section.bullets && <ul className="space-y-2">{section.bullets.map((item) => <li key={item} className="flex gap-3"><Check className="mt-1.5 h-4 w-4 shrink-0 text-brand-teal" /><span>{item}</span></li>)}</ul>}
+            {'definitions' in section && section.definitions && <div className="grid gap-3 sm:grid-cols-2">{section.definitions.map(([term, detail]) => <div key={term} className="rounded-lg border border-white/[0.08] bg-white/[0.03] p-4"><strong className="text-white">{term}</strong><p className="mt-1 text-sm leading-6">{detail}</p></div>)}</div>}
+            {'subheading' in section && section.subheading && <h3 className="pt-2 text-lg font-semibold text-white">{section.subheading}</h3>}
+            {'highlight' in section && section.highlight && <blockquote className="my-6 whitespace-pre-line rounded-lg border border-brand-blue/30 bg-brand-blue/10 p-5 font-medium leading-7 text-white/90"><Quote className="mb-3 h-4 w-4 text-brand-blue-medium" />{section.highlight}</blockquote>}
+            {'after' in section && section.after && <p>{section.after}</p>}
+          </div>
+        </section>
+      ))}
+    </div>
+  );
+}
+
 export default function CopywriterGuide({ onBack }: { onBack: () => void }) {
   const [activeSection, setActiveSection] = useState<CopySection>('humanizada');
 
@@ -232,21 +411,7 @@ export default function CopywriterGuide({ onBack }: { onBack: () => void }) {
       {activeSection === 'humanizada' ? (
       <div className="mx-auto max-w-4xl px-5 py-14 sm:px-8 sm:py-20">
         <h2 className="mb-12 font-serif-display text-3xl sm:text-4xl">Guia detalhado</h2>
-        <div className="space-y-16">
-          {sections.map((section) => (
-            <section key={section.title} className="border-l-2 border-brand-blue/50 pl-5 sm:pl-8">
-              <h2 className="font-serif-display text-2xl leading-snug sm:text-3xl">{section.title}</h2>
-              <div className="mt-6 space-y-4 text-[15px] leading-8 text-white/65 sm:text-base">
-                {section.paragraphs?.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-                {section.bullets && <ul className="space-y-2">{section.bullets.map((item) => <li key={item} className="flex gap-3"><Check className="mt-1.5 h-4 w-4 shrink-0 text-brand-teal" /><span>{item}</span></li>)}</ul>}
-                {section.definitions && <div className="grid gap-3 sm:grid-cols-2">{section.definitions.map(([term, detail]) => <div key={term} className="rounded-lg border border-white/[0.08] bg-white/[0.03] p-4"><strong className="text-white">{term}</strong><p className="mt-1 text-sm leading-6">{detail}</p></div>)}</div>}
-                {section.subheading && <h3 className="pt-2 text-lg font-semibold text-white">{section.subheading}</h3>}
-                {section.highlight && <blockquote className="my-6 whitespace-pre-line rounded-lg border border-brand-blue/30 bg-brand-blue/10 p-5 font-medium leading-7 text-white/90"><Quote className="mb-3 h-4 w-4 text-brand-blue-medium" />{section.highlight}</blockquote>}
-                {section.after && <p>{section.after}</p>}
-              </div>
-            </section>
-          ))}
-        </div>
+        <LessonSections items={sections} />
 
         <section className="mt-24 border-t border-white/10 pt-16">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-blue-medium">15. A transformação completa</p>
@@ -289,17 +454,29 @@ export default function CopywriterGuide({ onBack }: { onBack: () => void }) {
           <p className="mt-8 border-t border-white/10 pt-6 leading-8 text-white/60">E o ponto mais importante: não confunda “copy bonita” com “copy humana”. Uma copy pode estar gramaticalmente perfeita, estruturada e lógica e ainda assim não fazer o leitor sentir absolutamente nada.</p>
         </section>
       </div>
+      ) : activeSection === 'angulo-formato' ? (
+        <div className="mx-auto max-w-4xl px-5 py-14 sm:px-8 sm:py-20">
+          <div className="mb-16">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-blue-medium">Copywriting + Criativos + Estratégia de testes</p>
+            <h2 className="mt-4 font-serif-display text-3xl leading-tight sm:text-5xl">Copy, Ângulo e Formato</h2>
+            <p className="mt-6 max-w-3xl leading-8 text-white/60">Esta aula ensina a construir um sistema de criativos em que copy, ângulo, formato, oferta e distribuição trabalham juntos. A lógica é criar múltiplos criativos a partir de diferentes dores e medos, em vez de depender de uma única mensagem.</p>
+          </div>
+          <LessonSections items={angleFormatSections} />
+          <section className="mt-20 rounded-lg border border-brand-blue/30 bg-brand-blue/10 p-7 sm:p-10">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-blue-medium">Regra de ouro</p>
+            <h2 className="mt-5 font-serif-display text-2xl leading-snug sm:text-4xl">Não pergunte: “Como faço um criativo viral?”</h2>
+            <p className="mt-6 leading-8 text-white/70">Pergunte: “Qual é a melhor maneira de comunicar esta ideia específica para esta pessoa específica, neste estágio específico da decisão de compra?”</p>
+          </section>
+          <section className="mt-10 rounded-lg border border-white/10 bg-white/[0.03] p-7 sm:p-10">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/40">Método completo</p>
+            <p className="mt-5 font-serif-display text-2xl leading-snug text-white sm:text-3xl">Minere o que já funciona, extraia o DNA, escolha um ângulo real, escreva como humano, transforme a copy em um formato nativo e teste várias razões diferentes para a pessoa comprar.</p>
+          </section>
+        </div>
       ) : (
         <div className="mx-auto flex min-h-[420px] max-w-4xl items-center px-5 py-16 sm:px-8 sm:py-24">
           <section className="w-full rounded-lg border border-white/10 bg-white/[0.03] p-8 text-center sm:p-14">
-            {activeSection === 'angulo-formato' ? (
-              <Layers3 className="mx-auto h-8 w-8 text-brand-blue-medium" />
-            ) : (
-              <FileCheck2 className="mx-auto h-8 w-8 text-brand-teal" />
-            )}
-            <h2 className="mt-5 font-serif-display text-3xl text-white sm:text-4xl">
-              {activeSection === 'angulo-formato' ? 'Copy, Ângulo e Formato' : 'Validação prática'}
-            </h2>
+            <FileCheck2 className="mx-auto h-8 w-8 text-brand-teal" />
+            <h2 className="mt-5 font-serif-display text-3xl text-white sm:text-4xl">Persuasão</h2>
             <p className="mx-auto mt-4 max-w-lg leading-7 text-white/55">O conteúdo desta seção será adicionado em breve.</p>
           </section>
         </div>
