@@ -569,7 +569,7 @@ export default function Alunos() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {/* Investimento no criativo */}
                       <div className="p-6 rounded-2xl bg-black border border-white/10 space-y-4">
-                        <h4 className="text-sm font-medium text-white/80">Cálculo de quanto investir no criativo</h4>
+                        <h4 className="text-sm font-medium text-white/80">Cálculo de quanto foi investido nesse criativo.</h4>
                         <div className="space-y-3">
                           <div>
                             <label className="text-[10px] uppercase tracking-wider text-white/40 mb-1.5 block">Número de alcance (0.000.000)</label>
@@ -606,7 +606,7 @@ export default function Alunos() {
 
                       {/* Receita da oferta */}
                       <div className="p-6 rounded-2xl bg-black border border-white/10 space-y-4">
-                        <h4 className="text-sm font-medium text-white/80">Cálculo do quanto provavelmente a oferta vende</h4>
+                        <h4 className="text-sm font-medium text-white/80">Cálculo do quanto provavelmente a oferta vende por mês</h4>
                         <div className="space-y-3">
                           <div>
                             <label className="text-[10px] uppercase tracking-wider text-white/40 mb-1.5 block">Número de visitas à página</label>
