@@ -7,7 +7,7 @@ type CopySection = 'humanizada' | 'angulo-formato' | 'validacao';
 const copySections = [
   { id: 'humanizada' as const, label: 'Copy Humanizada', icon: PenLine },
   { id: 'angulo-formato' as const, label: 'Copy, Ângulo e Formato', icon: Layers3 },
-  { id: 'validacao' as const, label: 'Validação prática', icon: FileCheck2 },
+  { id: 'validacao' as const, label: 'Persuasão', icon: FileCheck2 },
 ];
 
 const sections = [
