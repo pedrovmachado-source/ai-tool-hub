@@ -20,7 +20,8 @@ import {
   Globe2,
   Wand2,
   Facebook,
-  PenTool
+  PenTool,
+  Lock
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
@@ -69,63 +70,72 @@ export default function Menu() {
       description: "Acesse nosso ecossistema de IAs, prompts e utilitários de alta performance.",
       icon: Wrench,
       path: "/ferramentas",
-      badge: "Full Access"
+      badge: "Full Access",
+      locked: true
     },
     {
       title: "Ofertas Validadas",
       description: "Produtos e infoprodutos minerados com alto potencial de escala.",
       icon: Tag,
       path: "/ofertas",
-      badge: "Curadoria"
+      badge: "Curadoria",
+      locked: true
     },
     {
       title: "Área do Mentorado",
       description: "Gravação de aulas, transcrição de reuniões e materiais de apoio.",
       icon: Users,
       path: "/alunos",
-      badge: "Comunidade"
+      badge: "Comunidade",
+      locked: false
     },
     {
       title: "Criativos",
       description: "Criativos validados para parar o scroll e converter seu público.",
       icon: Wand2,
       path: "/creative-edit",
-      badge: "Design"
+      badge: "Design",
+      locked: true
     },
     {
       title: "Copywrite",
       description: "Textos de alta conversão para seus anúncios e páginas de vendas.",
       icon: PenTool,
       path: "/copywrite",
-      badge: "Copy"
+      badge: "Copy",
+      locked: true
     },
     {
       title: "Contas de Facebook Ads",
       description: "Contas e BM's prontas para rodar suas campanhas com segurança.",
       icon: Facebook,
       path: "/fb-accounts",
-      badge: "Ads"
+      badge: "Ads",
+      locked: true
     },
     {
       title: "Comprar Site",
       description: "Landing pages, quizzes e funis de alta conversão para o seu negócio.",
       icon: Globe2,
       path: "/site-creation",
-      badge: "Escala"
+      badge: "Escala",
+      locked: true
     },
     {
       title: "Aulas Gravadas",
       description: "Gravações das mentorias exclusivas com estratégias de escala e conversão.",
       icon: Video,
       path: "/mentorias",
-      badge: "Membro"
+      badge: "Membro",
+      locked: false
     },
     {
       title: "Minhas Ofertas",
       description: "Salve suas próprias ofertas, links de biblioteca, criativos e copies em um só lugar.",
       icon: BookOpen,
       path: "/minhas-ofertas",
-      badge: "Privado"
+      badge: "Privado",
+      locked: false
     }
   ];
 
@@ -183,8 +193,13 @@ export default function Menu() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {menuItems.map((item, idx) => (
               <Reveal key={item.title} delay={idx * 150}>
-                <div 
+                <Button
+                  type="button"
+                  variant="ghost"
+                  disabled={item.locked}
+                  aria-label={item.locked ? `${item.title} bloqueado` : `Acessar ${item.title}`}
                   onClick={() => {
+                    if (item.locked) return;
                     if (item.path === '/alunos' && !isMentorado(user?.plano)) {
                       setMentoriaModalOpen(true);
                       return;
@@ -192,8 +207,16 @@ export default function Menu() {
                     navigate(item.path);
                   }}
 
-                  className="group relative cursor-pointer p-8 glass-smooth hover:bg-white/10 transition-all duration-500 rounded-[2.5rem] border border-white/5 h-full flex flex-col"
+                  className={`group relative w-full p-8 glass-smooth transition-all duration-500 rounded-[2.5rem] border border-white/5 h-full flex flex-col items-stretch text-left whitespace-normal ${item.locked ? 'cursor-not-allowed opacity-70' : 'cursor-pointer hover:bg-white/10'}`}
                 >
+                  {item.locked && (
+                    <div className="absolute inset-0 z-20 flex items-center justify-center rounded-[2.5rem] bg-background/70 backdrop-blur-[3px]" aria-hidden="true">
+                      <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-border bg-card shadow-lg">
+                        <Lock className="h-7 w-7 text-foreground" />
+                      </div>
+                    </div>
+                  )}
+
                   <div className="w-14 h-14 bg-white/5 rounded-2xl mb-8 group-hover:bg-white group-hover:text-black transition-all duration-500 flex items-center justify-center">
                     <item.icon className="w-7 h-7" />
                   </div>
@@ -214,7 +237,7 @@ export default function Menu() {
                     Acessar agora
                     <ArrowRight className="ml-2 w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
                   </div>
-                </div>
+                </Button>
               </Reveal>
             ))}
           </div>
