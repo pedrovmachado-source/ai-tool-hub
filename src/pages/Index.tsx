@@ -11,6 +11,7 @@ import ProPage from '@/components/ProPage';
 import AdminPanel from '@/components/AdminPanel';
 import LessonsPage from '@/components/LessonsPage';
 import ContentSectionPage from '@/components/ContentSectionPage';
+import CopywriterGuide from '@/components/CopywriterGuide';
 import FbAccountsPage from '@/components/FbAccountsPage';
 import SiteCreationPage from '@/components/SiteCreationPage';
 import PromptsLibrary from '@/components/PromptsLibrary';
@@ -159,7 +160,7 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
   }
 
   if (page === 'copywrite') {
-    return <ContentSectionPage slug={page} onBack={() => navigate('/menu')} onUpgrade={() => setPage('pro')} />;
+    return <CopywriterGuide onBack={() => navigate('/menu')} />;
   }
   
   if (page === 'offers') {
