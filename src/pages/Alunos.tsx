@@ -33,7 +33,10 @@ import {
   CreditCard,
   Check,
   Calculator,
-  DollarSign
+  DollarSign,
+  Clock3,
+  PhoneCall,
+  ShieldCheck
 } from 'lucide-react';
 
 import { useEffect, useRef, useState } from 'react';
@@ -413,6 +416,69 @@ export default function Alunos() {
                   </AccordionItem>
 
                 </Accordion>
+
+                <section className="mt-6 overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.04]">
+                  <div className="border-b border-white/10 p-6">
+                    <div className="mb-3 flex items-center gap-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-blue/15">
+                        <ShieldCheck className="h-5 w-5 text-brand-blue" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">Orientações importantes</p>
+                        <h3 className="font-serif-display text-xl text-white">Regras da mentoria</h3>
+                      </div>
+                    </div>
+                    <p className="text-sm leading-relaxed text-white/50">
+                      Para que a mentoria ocorra da melhor forma, confira os horários e prazos de atendimento.
+                    </p>
+                  </div>
+
+                  <div className="space-y-5 p-6">
+                    <div className="flex gap-4">
+                      <Clock3 className="mt-0.5 h-5 w-5 shrink-0 text-brand-blue" />
+                      <div>
+                        <h4 className="mb-2 text-sm font-bold text-white">Horários de atendimento</h4>
+                        <ul className="space-y-1.5 text-sm leading-relaxed text-white/50">
+                          <li><strong className="font-medium text-white/75">Segunda a quinta:</strong> das 9h às 22h</li>
+                          <li><strong className="font-medium text-white/75">Sexta:</strong> das 9h às 18h</li>
+                          <li><strong className="font-medium text-white/75">Sábado:</strong> das 14h às 18h</li>
+                          <li><strong className="font-medium text-white/75">Domingo:</strong> sem atendimento, exceto para alunos com anúncios ativos no dia</li>
+                        </ul>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-4 border-t border-white/5 pt-5">
+                      <PhoneCall className="mt-0.5 h-5 w-5 shrink-0 text-brand-blue" />
+                      <div>
+                        <h4 className="mb-1 text-sm font-bold text-white">Retorno das mensagens</h4>
+                        <p className="text-sm leading-relaxed text-white/50">
+                          Se eu levar mais de 2 horas para responder durante o horário de atendimento, você pode fazer uma única ligação pelo WhatsApp e desligar. Assim, receberei o aviso da sua urgência.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-4 border-t border-white/5 pt-5">
+                      <Check className="mt-0.5 h-5 w-5 shrink-0 text-brand-blue" />
+                      <div>
+                        <h4 className="mb-1 text-sm font-bold text-white">Prazo para validações</h4>
+                        <p className="text-sm leading-relaxed text-white/50">
+                          Materiais, anúncios, páginas, ofertas e qualquer outro item enviado para análise podem levar até 24 horas para serem validados.
+                        </p>
+                      </div>
+                    </div>
+
+                    <Button asChild className="h-12 w-full gap-2 rounded-xl bg-brand-blue font-bold text-white hover:bg-brand-blue/90">
+                      <a
+                        href="https://wa.me/5521965248844?text=Preciso%20de%20suporte"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <MessageSquare className="h-4 w-4" />
+                        Suporte
+                      </a>
+                    </Button>
+                  </div>
+                </section>
               </Reveal>
 
               <Reveal delay={200} className="lg:col-span-12 lg:row-start-2">
