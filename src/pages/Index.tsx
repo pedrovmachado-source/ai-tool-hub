@@ -15,7 +15,6 @@ import FbAccountsPage from '@/components/FbAccountsPage';
 import SiteCreationPage from '@/components/SiteCreationPage';
 import PromptsLibrary from '@/components/PromptsLibrary';
 import UserProfile from '@/components/UserProfile';
-import UnderConstruction from '@/components/UnderConstruction';
 
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -147,8 +146,6 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
   if (page === 'pro') return <ProPage onBack={() => navigate('/menu')} onNavigate={handleNavigate} />;
   if (page === 'lessons') return <LessonsPage onBack={() => navigate('/menu')} />;
   
-  const constructionPages = ['copywrite'];
-  
   if (page === 'site-creation') {
     return <SiteCreationPage onBack={() => navigate('/menu')} />;
   }
@@ -161,12 +158,8 @@ export default function Index({ initialPage: propPage, initialCategory: propCat 
     return <ContentSectionPage slug={page} onBack={() => navigate('/menu')} onUpgrade={() => setPage('pro')} />;
   }
 
-  if (constructionPages.includes(page)) {
-    return (
-      <UnderConstruction onBack={() => navigate('/menu')}>
-        <ContentSectionPage slug={page} onBack={() => navigate('/menu')} onUpgrade={() => setPage('pro')} />
-      </UnderConstruction>
-    );
+  if (page === 'copywrite') {
+    return <ContentSectionPage slug={page} onBack={() => navigate('/menu')} onUpgrade={() => setPage('pro')} />;
   }
   
   if (page === 'offers') {

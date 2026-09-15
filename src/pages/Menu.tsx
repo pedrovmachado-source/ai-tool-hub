@@ -2,10 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
 import Meta from '@/components/Meta';
-import MentoriaModal from '@/components/MentoriaModal';
 import DashboardBanner from '@/components/DashboardBanner';
-
-import { isMentorado } from '@/lib/plan';
 
 import { Button } from '@/components/ui/button';
 import { 
@@ -20,15 +17,13 @@ import {
   Globe2,
   Wand2,
   Facebook,
-  PenTool,
-  Lock
+  PenTool
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 export default function Menu() {
   const navigate = useNavigate();
-  const { user, isAdmin } = useAuth();
-  const [mentoriaModalOpen, setMentoriaModalOpen] = useState(false);
+  const { user } = useAuth();
 
 
   useEffect(() => {
@@ -71,7 +66,7 @@ export default function Menu() {
       icon: Wrench,
       path: "/ferramentas",
       badge: "Full Access",
-      locked: true
+      locked: false
     },
     {
       title: "Ofertas Validadas",
@@ -79,7 +74,7 @@ export default function Menu() {
       icon: Tag,
       path: "/ofertas",
       badge: "Curadoria",
-      locked: true
+      locked: false
     },
     {
       title: "Área do Mentorado",
@@ -95,7 +90,7 @@ export default function Menu() {
       icon: Wand2,
       path: "/creative-edit",
       badge: "Design",
-      locked: true
+      locked: false
     },
     {
       title: "Copywrite",
@@ -103,7 +98,7 @@ export default function Menu() {
       icon: PenTool,
       path: "/copywrite",
       badge: "Copy",
-      locked: true
+      locked: false
     },
     {
       title: "Contas de Facebook Ads",
@@ -111,7 +106,7 @@ export default function Menu() {
       icon: Facebook,
       path: "/fb-accounts",
       badge: "Ads",
-      locked: true
+      locked: false
     },
     {
       title: "Comprar Site",
@@ -119,7 +114,7 @@ export default function Menu() {
       icon: Globe2,
       path: "/site-creation",
       badge: "Escala",
-      locked: true
+      locked: false
     },
     {
       title: "Aulas Gravadas",
@@ -194,35 +189,16 @@ export default function Menu() {
           </header>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {menuItems.map((item, idx) => {
-              const isLocked = item.locked && !isAdmin;
-
-              return (
+            {menuItems.map((item, idx) => (
               <Reveal key={item.title} delay={idx * 150}>
                 <Button
                   type="button"
                   variant="ghost"
-                  disabled={isLocked}
-                  aria-label={isLocked ? `${item.title} bloqueado` : `Acessar ${item.title}`}
-                  onClick={() => {
-                    if (isLocked) return;
-                    if (item.path === '/alunos' && !isAdmin && !isMentorado(user?.plano)) {
-                      setMentoriaModalOpen(true);
-                      return;
-                    }
-                    navigate(item.path);
-                  }}
+                  aria-label={`Acessar ${item.title}`}
+                  onClick={() => navigate(item.path)}
 
-                  className={`group relative w-full p-8 glass-smooth transition-all duration-500 rounded-[2.5rem] border border-white/5 h-full flex flex-col items-stretch text-left whitespace-normal ${isLocked ? 'cursor-not-allowed opacity-70' : 'cursor-pointer hover:bg-white/10'}`}
+                  className="group relative w-full p-8 glass-smooth transition-all duration-500 rounded-[2.5rem] border border-white/5 h-full flex flex-col items-stretch text-left whitespace-normal cursor-pointer hover:bg-white/10"
                 >
-                  {isLocked && (
-                    <div className="absolute inset-0 z-20 flex items-center justify-center rounded-[2.5rem] bg-background/70 backdrop-blur-[3px]" aria-hidden="true">
-                      <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-border bg-card shadow-lg">
-                        <Lock className="h-7 w-7 text-foreground" />
-                      </div>
-                    </div>
-                  )}
-
                   <div className="w-14 h-14 bg-white/5 rounded-2xl mb-8 group-hover:bg-white group-hover:text-black transition-all duration-500 flex items-center justify-center">
                     <item.icon className="w-7 h-7" />
                   </div>
@@ -245,8 +221,7 @@ export default function Menu() {
                   </div>
                 </Button>
               </Reveal>
-              );
-            })}
+            ))}
           </div>
 
           <Reveal delay={200} className="mt-24">
@@ -281,7 +256,6 @@ export default function Menu() {
           &copy; 2026 CONVERT CLUB · BUILT FOR THE 1%
         </div>
       </footer>
-      <MentoriaModal isOpen={mentoriaModalOpen} onClose={() => setMentoriaModalOpen(false)} />
     </div>
 
   );
