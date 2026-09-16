@@ -83,7 +83,7 @@ export default function Menu() {
       icon: Users,
       path: "/alunos",
       badge: "Comunidade",
-      locked: true
+      locked: false
     },
     {
       title: "Criativos",
@@ -91,7 +91,7 @@ export default function Menu() {
       icon: Wand2,
       path: "/creative-edit",
       badge: "Design",
-      locked: false
+      locked: true
     },
     {
       title: "Copywrite",
@@ -99,7 +99,7 @@ export default function Menu() {
       icon: PenTool,
       path: "/copywrite",
       badge: "Copy",
-      locked: true
+      locked: false
     },
     {
       title: "Contas de Facebook Ads",
@@ -115,7 +115,7 @@ export default function Menu() {
       icon: Globe2,
       path: "/site-creation",
       badge: "Escala",
-      locked: false
+      locked: true
     },
     {
       title: "Aulas Gravadas",
