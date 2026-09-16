@@ -17,7 +17,8 @@ import {
   Globe2,
   Wand2,
   Facebook,
-  PenTool
+  PenTool,
+  Lock
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
@@ -66,7 +67,7 @@ export default function Menu() {
       icon: Wrench,
       path: "/ferramentas",
       badge: "Full Access",
-      locked: false
+      locked: true
     },
     {
       title: "Ofertas Validadas",
@@ -74,7 +75,7 @@ export default function Menu() {
       icon: Tag,
       path: "/ofertas",
       badge: "Curadoria",
-      locked: false
+      locked: true
     },
     {
       title: "Área do Mentorado",
@@ -82,7 +83,7 @@ export default function Menu() {
       icon: Users,
       path: "/alunos",
       badge: "Comunidade",
-      locked: false
+      locked: true
     },
     {
       title: "Criativos",
@@ -98,7 +99,7 @@ export default function Menu() {
       icon: PenTool,
       path: "/copywrite",
       badge: "Copy",
-      locked: false
+      locked: true
     },
     {
       title: "Contas de Facebook Ads",
@@ -106,7 +107,7 @@ export default function Menu() {
       icon: Facebook,
       path: "/fb-accounts",
       badge: "Ads",
-      locked: false
+      locked: true
     },
     {
       title: "Comprar Site",
@@ -194,10 +195,12 @@ export default function Menu() {
                 <Button
                   type="button"
                   variant="ghost"
-                  aria-label={`Acessar ${item.title}`}
-                  onClick={() => navigate(item.path)}
-
-                  className="group relative w-full p-8 glass-smooth transition-all duration-500 rounded-[2.5rem] border border-white/5 h-full flex flex-col items-stretch text-left whitespace-normal cursor-pointer hover:bg-white/10"
+                  aria-label={item.locked ? `${item.title} — indisponível` : `Acessar ${item.title}`}
+                  disabled={item.locked}
+                  onClick={() => {
+                    if (!item.locked) navigate(item.path);
+                  }}
+                  className={`group relative w-full p-8 glass-smooth transition-all duration-500 rounded-[2.5rem] border border-white/5 h-full flex flex-col items-stretch text-left whitespace-normal ${item.locked ? 'cursor-not-allowed overflow-hidden' : 'cursor-pointer hover:bg-white/10'}`}
                 >
                   <div className="w-14 h-14 bg-white/5 rounded-2xl mb-8 group-hover:bg-white group-hover:text-black transition-all duration-500 flex items-center justify-center">
                     <item.icon className="w-7 h-7" />
@@ -216,9 +219,18 @@ export default function Menu() {
                   </p>
 
                   <div className="flex items-center text-sm font-bold text-white/70 group-hover:text-white transition-colors">
-                    Acessar agora
-                    <ArrowRight className="ml-2 w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+                    {item.locked ? 'Indisponível' : 'Acessar agora'}
+                    {!item.locked && <ArrowRight className="ml-2 w-4 h-4 transform group-hover:translate-x-1 transition-transform" />}
                   </div>
+
+                  {item.locked && (
+                    <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 bg-black/75 backdrop-blur-sm" aria-hidden="true">
+                      <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-white/15 bg-white/10 shadow-2xl">
+                        <Lock className="h-8 w-8 text-white" />
+                      </div>
+                      <span className="text-xs font-bold uppercase tracking-[0.2em] text-white/80">Acesso bloqueado</span>
+                    </div>
+                  )}
                 </Button>
               </Reveal>
             ))}
