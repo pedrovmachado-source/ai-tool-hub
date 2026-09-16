@@ -107,7 +107,7 @@ export default function Menu() {
       icon: Facebook,
       path: "/fb-accounts",
       badge: "Ads",
-      locked: true
+      locked: false
     },
     {
       title: "Comprar Site",
