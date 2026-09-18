@@ -345,7 +345,201 @@ const angleFormatSections = [
   },
 ];
 
-function LessonSections({ items }: { items: typeof sections | typeof angleFormatSections }) {
+const persuasionSections = [
+  {
+    title: '1. O que é',
+    paragraphs: [
+      'O termo é usado para duas coisas diferentes. Você precisa das duas, e elas se combinam.',
+      'Empilhamento horizontal (de produção): você valida um corpo de criativo e produz N criativos trocando só os primeiros segundos. 1 corpo × 12 ganchos = 12 anúncios que testam uma única variável: atenção. É assim que se fabrica volume de teste barato.',
+      'Empilhamento vertical (dentro do criativo): você encadeia vários ganchos dentro do mesmo vídeo, posicionados exatamente nos pontos onde a curva de retenção cai. Cada novo gancho reabre a atenção antes que a pessoa role.',
+    ],
+    highlight: 'Horizontal escala produção. Vertical escala retenção. O sistema é usar vertical dentro da peça e horizontal na fábrica.',
+  },
+  {
+    title: '2. Por que é o motor específico do low-ticket',
+    paragraphs: [
+      'Em ticket de €14–€27 (NutriChefs, MenteAttiva a €19,90) a compra é impulsiva e o criativo é a oferta — a landing só confirma a decisão já tomada no feed. Três consequências:',
+    ],
+    bullets: [
+      'Margem pequena por venda: o CPA só fecha com CPM baixo e CTR alto, e os dois dependem do gancho, não do corpo.',
+      'Fadiga violenta. Público amplo em país pequeno (Holanda, Bélgica, Croácia) satura em dias. Você precisa de fluxo, não de peças.',
+      'Produzir do zero custa roteiro + gravação + edição. Com corpo modular, o custo marginal de um criativo novo cai para minutos.',
+    ],
+    after: 'E o principal: empilhamento é método de aprendizado. Se você troca gancho, corpo e formato ao mesmo tempo, o resultado não ensina nada.',
+  },
+  {
+    title: '3. Anatomia modular do criativo',
+    paragraphs: ['Pare de pensar em "vídeo" e passe a pensar em blocos:'],
+    definitions: [
+      ['G1 — Gancho de interrupção | 0–3s', 'Parar o scroll'],
+      ['G2 — Gancho de contexto | 3–8s', 'Qualificar e prometer'],
+      ['G3 — Gancho de prova | 8–15s', 'Provar e segurar até a oferta'],
+      ['C — Corpo | 15–25s', 'Mecanismo, demonstração'],
+      ['O — Oferta + CTA | final', 'Preço, bônus, garantia, chamada'],
+    ],
+    highlight: 'A regra operacional que faz tudo funcionar: grave o corpo sem nenhuma referência aos ganchos. Nada de “como eu te falei”, “isso que mostrei agora”. Se o corpo depende do gancho, os ganchos não são plugáveis e o empilhamento horizontal morre. Corpo neutro = corpo reutilizável em 20 criativos.',
+  },
+  {
+    title: '4. Empilhamento vertical: os 3 ganchos no mesmo vídeo',
+    subheading: 'Por que 3 e não 1',
+    paragraphs: [
+      'A curva de retenção de um vídeo vertical curto tem quedas previsíveis, não uma queda contínua:',
+      'Queda 1 — segundo 0 a 3. É o scroll. Aqui você perde 65–80% das impressões.',
+      'Queda 2 — segundo 5 a 8. É o momento “isso é pra mim?”. A pessoa parou, mas ainda não decidiu ficar. Se a promessa não for renovada e especificada aqui, ela sai.',
+      'Queda 3 — segundo 12 a 18. É o momento “isso vai demorar?”. A pessoa já entendeu o tema e está avaliando se vale o investimento de tempo. Sem prova concreta aqui, ela sai antes de ver preço.',
+      'Um gancho só resolve a queda 1. O modelo mental correto é: cada gancho é uma promessa de curtíssimo prazo. Um gancho compra 3 segundos de atenção. Três ganchos empilhados compram 25.',
+      'Gancho 1 (0–3s) — interrupção',
+      'Função: interromper padrão. Não é vender, não é explicar, não é apresentar. É criar uma pergunta aberta na cabeça de quem está rolando.',
+      'As três camadas trabalham juntas nos mesmos 3 segundos:',
+    ],
+    bullets: [
+      'Visual: movimento já no primeiro frame. Rosto em close, mão entrando em quadro, algo fora do lugar. Nada de plano parado bonito.',
+      'Áudio: a primeira sílaba começa antes ou exatamente no primeiro frame (cold open). Som que entra 0,4s depois já perdeu.',
+      'Texto na tela: 3 a 6 palavras, alto contraste, posicionado no terço superior — fora da área onde a UI do Reels/Stories cobre.',
+    ],
+    after: 'Erros que matam o G1: logo, intro, fade-in, respirar antes de falar, enquadrar devagar, começar com “oi gente”. Regra prática de edição: corte fora o primeiro 0,5 segundo de qualquer gravação — quase sempre é lixo respiratório.',
+  },
+  {
+    title: 'Gancho 2 (3–8s) — contexto e promessa',
+    paragraphs: [
+      'Função: responder “por que isso é pra mim?” e abrir o loop maior. Aqui entram o callout de público, a dor específica e a promessa de resultado.',
+      'A mecânica precisa é: o G2 honra parcialmente o G1 e cria uma nova pendência. Ele nunca fecha o loop, ele estreita.',
+    ],
+    highlight: 'G1: “Você usa a airfryer do jeito errado.”\nG2: “E não é a temperatura. É o que você coloca dentro antes de ligar.”',
+    after: 'Isso resolve o mistério do G1 o suficiente para a pessoa sentir progresso, e abre um mistério maior. Regra sensorial: o G2 tem que vir acompanhado de uma mudança visual — corte de plano, troca de enquadramento, entrada de B-roll, zoom, mudança de cor do texto. O cérebro re-engaja com novidade visual, não só com a frase. Um G2 excelente falado com a câmera no mesmo plano do G1 rende metade.',
+  },
+  {
+    title: 'Gancho 3 (8–15s) — prova e reabertura',
+    paragraphs: [
+      'Função: entregar a primeira prova concreta e reabrir para o fechamento. É o “olha isso funcionando”.',
+      'Formatos que funcionam:',
+    ],
+    bullets: [
+      'Demonstração visual: o prato saindo pronto, a criança preenchendo a ficha em silêncio, o PDF sendo aberto no celular',
+      'Número ou prova social: “1.000 cópias em um único dia” — você tem isso na NutriChefs e é material de G3, não só de landing',
+      'Objeção destruída: “e sem dieta, sem academia, sem contar caloria”',
+      'Reversão: “o mais estranho é que funciona melhor com quem odeia salada”',
+    ],
+    after: 'É aqui que a maioria dos criativos low-ticket morre. Eles pulam do G2 direto para a oferta no segundo 9, sem nunca ter entregado nada. A pessoa vê preço antes de ver motivo e sai.',
+  },
+  {
+    title: 'As emendas entre os ganchos',
+    paragraphs: ['Empilhar mal é pior que não empilhar. Quatro regras de costura:'],
+    bullets: [
+      'Nunca feche todos os loops antes da oferta. Cada gancho fecha um loop pequeno e abre outro.',
+      'Nenhum plano passa de ~2,5s sem corte, movimento de câmera ou mudança de texto na tela.',
+      'Áudio contínuo. Silêncio na emenda é ponto de saída. Música ou voz atravessam o corte.',
+      'Não reinicie o contexto. O G2 não pode soar como um vídeo novo começando — isso o espectador lê como “acabou” e ele rola.',
+    ],
+  },
+  {
+    title: 'Roteiro-modelo aplicado (MenteAttiva, mercado italiano)',
+    definitions: [
+      ['0–3s | G1', 'Mão da criança agarrando o tablet, mãe puxando. Texto na tela: “3 horas de tela por dia?”'],
+      ['3–8s | G2', 'Corte seco para a mesa com as fichas impressas. “Não é castigo e não é gritar. São 10 minutos por dia.”'],
+      ['8–15s | G3', 'B-roll da criança concentrada, preenchendo sozinha. “+200 fichas, 9 áreas, de 3 a 9 anos. Você imprime e acabou.”'],
+      ['15–25s | C', 'Folheando as áreas, close nos exercícios. Mecanismo: por que 10 min focados valem mais que 1h'],
+      ['25–35s | O', 'Tela do checkout / bônus. €19,90, acesso vitalício, garantia de 14 dias, CTA'],
+    ],
+    after: 'Escreva assim em português, bloco a bloco — como você já faz — e adapte para o italiano depois. Só lembre que os ganchos são a parte que mais sofre na tradução literal (ponto detalhado no item 10).',
+  },
+  {
+    title: 'Quantos ganchos por duração',
+    bullets: [
+      'Vídeo de 15s: 2 ganchos (0–3s e 4–8s), oferta a partir de 9s',
+      'Vídeo de 25–40s: 3 ganchos — o padrão de low-ticket',
+      'VSL curto de 60–120s: 4 a 6 ganchos, um a cada ~15s',
+    ],
+    after: 'O espaçamento aumenta conforme o vídeo avança: quem ficou 30 segundos já está qualificado e precisa de menos reforço que quem está no segundo 4.',
+  },
+  {
+    title: 'Como isso funciona em estático e carrossel',
+    paragraphs: ['O empilhamento vertical não é exclusivo de vídeo — só muda o suporte:'],
+    bullets: [
+      'Estático: imagem = G1, headline sobre a imagem = G2, primeira linha do texto primário = G3',
+      'Carrossel: card 1 = G1, card 2 = G2, card 3 = G3, cards seguintes = corpo e oferta',
+    ],
+  },
+  {
+    title: '5. O banco de ganchos: pense em eixos, não em frases',
+    paragraphs: ['Dez frases diferentes do mesmo eixo são um teste, não dez. Os eixos que funcionam em infoproduto low-ticket na Europa:'],
+    bullets: [
+      'Callout de público — “Mães italianas de filhos de 3 a 9 anos:”',
+      'Negação de crença — “Não é falta de disciplina da criança”',
+      'Erro/contraste — “Você usa a airfryer do jeito errado”',
+      'Curiosidade mecânica com número — “10 minutos por dia”, “as 3 verduras que sabotam sua salada”',
+      'Demonstração visual pura — 0 palavras nos 3 primeiros segundos',
+      'Prova social concreta — “1.000 cópias em um único dia”',
+      'Objeção antecipada — “Sem dieta, sem academia”',
+      'Antes/depois de situação — “3 horas de tela → 10 minutos de foco”',
+      'Novidade/localidade — “Novo na Holanda”',
+      'Confissão/persona — “Eu era a mãe que gritava toda noite no jantar”',
+      'Ataque à alternativa — “Esquece os apps de receita”',
+      'Pergunta de sim fácil — “Sua filha come salada?”',
+    ],
+    after: 'Cada gancho tem três camadas independentes: texto (o que é dito), visual (o que se vê) e entrega (UGC, voz off, POV, screen recording, texto estático). 10 textos × 3 aberturas visuais = 30 variações sem regravar um corpo. Essa é a matriz.',
+  },
+  {
+    title: '6. Como testar — e a métrica de cada gancho',
+    paragraphs: [
+      'Estrutura: campanha de teste (Vendas), público amplo, um único ad set com 5 a 8 criativos — mesmo corpo, ganchos de eixos diferentes. Mesmo ad set para comparar gancho contra gancho no mesmo leilão.',
+      'Orçamento: ~1 a 2× o ticket por criativo por dia. Oferta de €20 com 6 criativos → ad set de €40–€60/dia.',
+      'Janela: gancho se julga com ~1.000–2.000 impressões por criativo (1–2 dias). CPA precisa de pelo menos ~3× o ticket em gasto antes de matar por conversão.',
+      'A tabela diagnóstica — cada gancho tem sua própria métrica:',
+    ],
+    definitions: [
+      ['Hook rate = views 3s ÷ impressões | G1', 'Baixo = o G1 não interrompe. Troque de eixo, não de palavra'],
+      ['Hold rate = views 15s ÷ views 3s | G2', 'Parou e caiu no 5–8s = a promessa não foi especificada'],
+      ['Retenção 50–75% | G3', 'Cai antes da oferta = faltou prova concreta'],
+      ['CTR de link | Corpo + CTA', 'Retenção boa e CTR baixo = falta tensão de oferta'],
+      ['CPA com CTR bom | LP / checkout / preço', 'Saiu do criativo — pare de produzir gancho'],
+    ],
+    after: 'Isso muda como você testa: teste um gancho por vez. Primeiro fixe o G1 pelo hook rate, com G2 e G3 congelados. Com o G1 vencedor definido, rode a rodada seguinte variando só o G2 e leia o hold rate. Depois o G3 pela retenção. Se você trocar os três de uma vez, tem 8 combinações e nenhum aprendizado. Calibre os números com a sua própria conta — hook rate na Polônia com CPM baixo não se compara com Alemanha. O que importa é o ranking relativo dentro da mesma rodada.',
+  },
+  {
+    title: '7. Do vencedor até a escala',
+    paragraphs: ['Achou um gancho que ganha? Não copie — empilhe em cima dele, uma camada por vez:'],
+    bullets: [
+      'Variações do mesmo eixo (5–10 reescritas) → aqui mora a maior parte do dinheiro',
+      'Mesmo G1, corpos diferentes → agora o corpo é a variável',
+      'Mesmo G1, formatos diferentes → UGC, estático, carrossel, VSL curto',
+      'Mesmo G1, personas diferentes → você já roda personas femininas holandesas na NutriChefs',
+      'Nunca mude dois níveis ao mesmo tempo.',
+    ],
+    after: 'A sacada estratégica: o criativo fadiga, o eixo de gancho não. Frequência sobe, CTR cai, CPM sobe, o vídeo morre. Mas “prova social” ou “negação de crença” roda meses com roupa nova. O ativo real da operação não é a pasta de vídeos: é o banco de ganchos com histórico de performance por mercado.',
+  },
+  {
+    title: '8. Nomenclatura',
+    highlight: 'OFERTA_MERCADO_G1[eixo]_G2[eixo]_C[corpo]_F[formato]_v[n]\n\nExemplo: NUTRI_NL_G1-06provasocial_G2-01callout_C02_FUGC_v1',
+    after: 'Em cada rodada só um campo varia — é o que permite exportar o relatório, agrupar por eixo numa planilha e descobrir que callout performa na Itália e prova social na Holanda.',
+  },
+  {
+    title: '9. Ciclo semanal por oferta',
+    definitions: [
+      ['Segunda', 'alimentar o banco — 10 ganchos novos da Ad Library (o minerador já entrega), comentários dos concorrentes, reviews, fóruns, perguntas do seu suporte'],
+      ['Terça', 'produção em lote — 1 corpo novo + 8 a 10 G1 plugados'],
+      ['Quarta', 'sobe a rodada'],
+      ['Quinta/sexta', 'leitura por camada (hook rate → hold rate → retenção → CTR), corta os 50% piores'],
+      ['Sexta', 'vencedores para escala + 5 variações para a rodada seguinte'],
+    ],
+    highlight: 'Volume-alvo em low-ticket: 15 a 30 criativos novos por semana por oferta ativa. Abaixo de ~10 você vive de sorte, não de sistema.',
+  },
+  {
+    title: '10. Os erros que matam o método',
+    bullets: [
+      'Trocar G1, G2, corpo e thumbnail juntos — nenhum aprendizado',
+      'Gancho descolado da oferta: hook rate lindo, CPA horrível',
+      'Julgar gancho por venda com 300 impressões',
+      '10 variações do mesmo eixo achando que são 10 testes',
+      'Corpo gravado grudado no gancho (mata a modularidade)',
+      'Empilhar G2 e G3 que fecham o loop cedo demais — a pessoa já entendeu tudo no segundo 10 e não tem motivo pra ficar',
+      'Silêncio ou plano parado na emenda entre os ganchos',
+      'Traduzir gancho literalmente do português. Seu fluxo de escrever a copy em PT e depois passar para o idioma do mercado funciona bem para corpo e oferta, mas o gancho é a parte que mais quebra: é referência cultural, gíria, formato de frase. Corpo você traduz; gancho você minera nativo na Ad Library local e adapta. Um gancho alemão bom raramente é a tradução de um gancho brasileiro bom.',
+    ],
+  },
+];
+
+function LessonSections({ items }: { items: typeof sections | typeof angleFormatSections | typeof persuasionSections }) {
   return (
     <div className="space-y-16">
       {items.map((section) => (
@@ -473,12 +667,13 @@ export default function CopywriterGuide({ onBack }: { onBack: () => void }) {
           </section>
         </div>
       ) : (
-        <div className="mx-auto flex min-h-[420px] max-w-4xl items-center px-5 py-16 sm:px-8 sm:py-24">
-          <section className="w-full rounded-lg border border-white/10 bg-white/[0.03] p-8 text-center sm:p-14">
-            <FileCheck2 className="mx-auto h-8 w-8 text-brand-teal" />
-            <h2 className="mt-5 font-serif-display text-3xl text-white sm:text-4xl">Persuasão</h2>
-            <p className="mx-auto mt-4 max-w-lg leading-7 text-white/55">O conteúdo desta seção será adicionado em breve.</p>
-          </section>
+        <div className="mx-auto max-w-4xl px-5 py-14 sm:px-8 sm:py-20">
+          <div className="mb-16">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-blue-medium">Produção + Retenção + Escala</p>
+            <h2 className="mt-4 font-serif-display text-3xl leading-tight text-white sm:text-5xl">Empilhamento de gancho para low-ticket</h2>
+            <p className="mt-6 max-w-3xl leading-8 text-white/60">Um sistema modular para fabricar volume de teste, reabrir a atenção nos pontos de queda e aprender com cada rodada.</p>
+          </div>
+          <LessonSections items={persuasionSections} />
         </div>
       )}
     </main>
