@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Menu, Bookmark, X, GraduationCap, Sparkles, Globe2, Wand2, BookOpen, Shield, ChevronRight, LogOut, Video, CreditCard, Star, Zap, Rocket, Users, Facebook, PenTool, Layout } from 'lucide-react';
+import { Menu, Bookmark, X, GraduationCap, Sparkles, Globe2, Wand2, BookOpen, Shield, ChevronRight, LogOut, Video, CreditCard, Star, Zap, Rocket, Users, Facebook, PenTool, Layout, Lock, Lock } from 'lucide-react';
 
 
 import QuizModal from './QuizModal';
@@ -13,21 +13,22 @@ import logoAdai from '@/assets/logo.png';
 import { planLabel, planBadgeClass, isPaid } from '@/lib/plan';
 
 const ICON_MAP: Record<string, typeof Sparkles> = {
-  Sparkles, Globe2, Wand2, BookOpen, GraduationCap, Shield, Video, CreditCard, Star, Zap, Rocket, Users, Facebook, PenTool, Layout
+  Sparkles, Globe2, Wand2, BookOpen, GraduationCap, Shield, Video, CreditCard, Star, Zap, Rocket, Users, Facebook, PenTool, Layout, Lock
 };
 
-interface NavItem { key: string; label: string; icon: string; color: string; target: string; enabled: boolean; sort_order: number; }
+interface NavItem { key: string; label: string; icon: string; color: string; target: string; enabled: boolean; sort_order: number; locked?: boolean; }
 
 const DEFAULT_ITEMS: NavItem[] = [
-  { key: 'menu', label: 'Ais', icon: 'Sparkles', color: 'text-white', target: 'ferramentas', enabled: true, sort_order: 1 },
-  { key: 'offers', label: 'Ofertas validadas', icon: 'Sparkles', color: 'text-white', target: 'ofertas', enabled: true, sort_order: 2 },
+  { key: 'menu', label: 'Ais', icon: 'Sparkles', color: 'text-white', target: 'ferramentas', enabled: true, sort_order: 1, locked: true },
+  { key: 'offers', label: 'Ofertas validadas', icon: 'Sparkles', color: 'text-white', target: 'ofertas', enabled: true, sort_order: 2, locked: true },
   { key: 'alunos', label: 'Área do Mentorado', icon: 'Users', color: 'text-white', target: 'alunos', enabled: true, sort_order: 3 },
-  { key: 'creative-edit', label: 'Criativos', icon: 'Wand2', color: 'text-white', target: 'creative-edit', enabled: true, sort_order: 4 },
+  { key: 'creative-edit', label: 'Criativos', icon: 'Wand2', color: 'text-white', target: 'creative-edit', enabled: true, sort_order: 4, locked: true },
   { key: 'copywrite', label: 'Copywrite', icon: 'PenTool', color: 'text-white', target: 'copywrite', enabled: true, sort_order: 5 },
   { key: 'fb-accounts', label: 'Contas de Facebook Ads', icon: 'Facebook', color: 'text-white', target: 'fb-accounts', enabled: true, sort_order: 6 },
   { key: 'purchased', label: 'Contas Compradas', icon: 'CreditCard', color: 'text-white', target: 'https://billing.stripe.com/p/login/test_6oE8xU1v0fXn5EYcMM', enabled: true, sort_order: 7 },
-  { key: 'site-creation', label: 'Comprar Site', icon: 'Globe2', color: 'text-white', target: 'site-creation', enabled: true, sort_order: 8 },
+  { key: 'site-creation', label: 'Comprar Site', icon: 'Globe2', color: 'text-white', target: 'site-creation', enabled: true, sort_order: 8, locked: true },
   { key: 'lessons', label: 'Aulas gravadas', icon: 'GraduationCap', color: 'text-white', target: 'mentorias', enabled: true, sort_order: 9 },
+  { key: 'my-offers', label: 'Minhas Ofertas', icon: 'BookOpen', color: 'text-white', target: 'minhas-ofertas', enabled: true, sort_order: 10 },
 ];
 
 function isNavItem(value: unknown): value is NavItem {
@@ -79,7 +80,8 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
     }, 300);
   };
 
-  const go = (target: string) => {
+  const go = (target: string, locked?: boolean) => {
+    if (locked) return;
     closeMenu();
     if (target.startsWith('http')) {
       window.open(target, '_blank');
@@ -169,7 +171,8 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
               <button onClick={(e) => { e.stopPropagation(); closeMenu(); }} className="text-white/40 hover:text-white p-1 rounded-md hover:bg-white/10"><X size={18} /></button>
             </div>
             <div className="flex-1 overflow-y-auto py-2 relative">
-              {menuItems.map(({ key, label, icon, color, target }) => {
+              {menuItems.map((item) => {
+                const { key, label, icon, color, target, locked } = item;
                 const Icon = ICON_MAP[icon] || Sparkles;
                 const hasSubmenu = false;
                 const submenuOptions: string[] = [];
@@ -182,14 +185,14 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
                     onMouseLeave={() => hasSubmenu && setHoveredItem(null)}
                   >
                     <button 
-                      onClick={() => !hasSubmenu && go(target)} 
-                      className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/5 transition-colors text-left group"
+                      onClick={() => !hasSubmenu && go(target, locked)} 
+                      className={`w-full flex items-center justify-between px-5 py-4 transition-colors text-left group ${locked ? "opacity-50 cursor-not-allowed" : "hover:bg-white/5"}`}
                     >
                       <span className="flex items-center gap-3">
                         <Icon size={18} className="text-white/60 group-hover:text-white transition-colors" />
                         <span className="text-sm font-light text-white/70 group-hover:text-white transition-colors">{label}</span>
                       </span>
-                      <ChevronRight size={14} className={`text-white/10 group-hover:text-white/40 group-hover:translate-x-0.5 transition-all ${hasSubmenu ? 'rotate-0 group-hover/nav-item:rotate-90' : ''}`} />
+                      {locked ? (<Lock size={14} className="text-white/20" />) : (<ChevronRight size={14} className={`text-white/10 group-hover:text-white/40 group-hover:translate-x-0.5 transition-all ${hasSubmenu ? "rotate-0 group-hover/nav-item:rotate-90" : ""}`} />)}
                     </button>
 
                     {hasSubmenu && (
@@ -213,7 +216,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
               {isAdmin && (
                 <>
                   <div className="my-2 border-t border-white/5" />
-                  <button onClick={() => go('admin')} className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/5 transition-colors text-left group">
+                  <button onClick={() => go('admin')} className={`w-full flex items-center justify-between px-5 py-4 transition-colors text-left group ${locked ? "opacity-50 cursor-not-allowed" : "hover:bg-white/5"}`}>
                     <span className="flex items-center gap-3">
                       <Shield size={18} className="text-white/60 group-hover:text-white transition-colors" />
                       <span className="text-sm font-light text-white/70 group-hover:text-white transition-colors">Painel administrativo</span>
