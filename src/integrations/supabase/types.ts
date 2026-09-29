@@ -1274,6 +1274,9 @@ export type Database = {
           link_drive: string
           link_site: string
           nome: string
+          rejected: boolean
+          rejected_at: string | null
+          rejected_by: string | null
           tags: Json
           updated_at: string
           user_id: string
@@ -1291,6 +1294,9 @@ export type Database = {
           link_drive?: string
           link_site?: string
           nome: string
+          rejected?: boolean
+          rejected_at?: string | null
+          rejected_by?: string | null
           tags?: Json
           updated_at?: string
           user_id: string
@@ -1308,6 +1314,9 @@ export type Database = {
           link_drive?: string
           link_site?: string
           nome?: string
+          rejected?: boolean
+          rejected_at?: string | null
+          rejected_by?: string | null
           tags?: Json
           updated_at?: string
           user_id?: string
