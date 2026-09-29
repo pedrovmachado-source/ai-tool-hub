@@ -28,6 +28,7 @@ const DEFAULT_ITEMS: NavItem[] = [
   { key: 'purchased', label: 'Contas Compradas', icon: 'CreditCard', color: 'text-white', target: 'https://billing.stripe.com/p/login/test_6oE8xU1v0fXn5EYcMM', enabled: true, sort_order: 7 },
   { key: 'site-creation', label: 'Comprar Site', icon: 'Globe2', color: 'text-white', target: 'site-creation', enabled: true, sort_order: 8, locked: true },
   { key: 'lessons', label: 'Aulas gravadas', icon: 'GraduationCap', color: 'text-white', target: 'mentorias', enabled: true, sort_order: 9 },
+  { key: 'my-offers', label: 'Minhas Ofertas', icon: 'BookOpen', color: 'text-white', target: 'minhas-ofertas', enabled: true, sort_order: 10 },
 ];
 
 function isNavItem(value: unknown): value is NavItem {
