@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Meta from '@/components/Meta';
 import AdminSubscriptions from '@/components/AdminSubscriptions';
+import ExportAllDataButton from '@/components/ExportAllDataButton';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -476,9 +477,12 @@ export default function AdminAccess() {
             <h1 className="text-2xl sm:text-4xl font-serif-display tracking-tight text-white">Painel de acesso</h1>
             <p className="text-white/35 text-xs mt-1">Convites, assinaturas e liberações manuais.</p>
           </div>
+          <div className="flex gap-2">
+          <ExportAllDataButton />
           <Button variant="outline" size="sm" onClick={() => void loadMetrics()} className="border-white/10 bg-white/5">
             {refreshing ? <Loader2 size={14} className="animate-spin" /> : <><RefreshCw size={14} className="mr-2" /> Atualizar</>}
           </Button>
+          </div>
         </div>
 
         <div className="mb-8">
