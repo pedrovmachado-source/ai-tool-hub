@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Menu, Bookmark, X, GraduationCap, Sparkles, Globe2, Wand2, BookOpen, Shield, ChevronRight, LogOut, Video, CreditCard, Star, Zap, Rocket, Users, Facebook, PenTool, Layout, Lock, Lock } from 'lucide-react';
+import { Menu, Bookmark, X, GraduationCap, Sparkles, Globe2, Wand2, BookOpen, Shield, ChevronRight, LogOut, Video, CreditCard, Star, Zap, Rocket, Users, Facebook, PenTool, Layout, Lock } from 'lucide-react';
 
 
 import QuizModal from './QuizModal';
@@ -216,7 +216,7 @@ export default function Navbar({ onNavigate, onOpenSavedEbook, hideAuth }: { onN
               {isAdmin && (
                 <>
                   <div className="my-2 border-t border-white/5" />
-                  <button onClick={() => go('admin')} className={`w-full flex items-center justify-between px-5 py-4 transition-colors text-left group ${locked ? "opacity-50 cursor-not-allowed" : "hover:bg-white/5"}`}>
+                  <button onClick={() => go('admin')} className={`w-full flex items-center justify-between px-5 py-4 transition-colors text-left group hover:bg-white/5`}>
                     <span className="flex items-center gap-3">
                       <Shield size={18} className="text-white/60 group-hover:text-white transition-colors" />
                       <span className="text-sm font-light text-white/70 group-hover:text-white transition-colors">Painel administrativo</span>
