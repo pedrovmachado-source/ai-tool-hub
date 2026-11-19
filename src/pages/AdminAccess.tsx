@@ -472,12 +472,12 @@ export default function AdminAccess() {
       <Navbar onNavigate={(t) => navigate(t === 'home' ? '/' : `/${t}`)} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-28 pb-24">
-        <div className="flex items-center justify-between mb-6 gap-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-3">
           <div>
             <h1 className="text-2xl sm:text-4xl font-serif-display tracking-tight text-white">Painel de acesso</h1>
             <p className="text-white/35 text-xs mt-1">Convites, assinaturas e liberações manuais.</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
           <ExportAllDataButton />
           <Button variant="outline" size="sm" onClick={() => void loadMetrics()} className="border-white/10 bg-white/5">
             {refreshing ? <Loader2 size={14} className="animate-spin" /> : <><RefreshCw size={14} className="mr-2" /> Atualizar</>}
